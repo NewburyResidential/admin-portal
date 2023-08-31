@@ -1,5 +1,5 @@
 // sections
-import SixView from 'src/sections/six/view';
+import OneView from 'src/sections/one/view';
 
 // ----------------------------------------------------------------------
 
@@ -8,5 +8,5 @@ export const metadata = {
 };
 
 export default function Page() {
-  return <SixView />;
+  return <OneView />;
 }

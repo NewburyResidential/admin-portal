@@ -16,16 +16,14 @@ export const paths = {
       register: `${ROOTS.AUTH}/jwt/register`,
     },
   },
-  // DASHBOARD
+  // DASHBOARD - come back and rename
   dashboard: {
     root: ROOTS.DASHBOARD,
     one: `${ROOTS.DASHBOARD}/one`,
-    two: `${ROOTS.DASHBOARD}/two`,
-    three: `${ROOTS.DASHBOARD}/three`,
     group: {
       root: `${ROOTS.DASHBOARD}/group`,
-      five: `${ROOTS.DASHBOARD}/group/five`,
-      six: `${ROOTS.DASHBOARD}/group/six`,
+      one: `${ROOTS.DASHBOARD}/group/one`,
+      two: `${ROOTS.DASHBOARD}/group/two`,
     },
   },
 };
