@@ -7,7 +7,7 @@ import { useResponsive } from 'src/hooks/use-responsive';
 import { bgBlur } from 'src/theme/css';
 // components
 import Iconify from 'src/components/iconify';
-import { useSettingsContext } from 'src/components/settings';
+import { useSettingsContext } from 'src/components/display-settings';
 //
 import { NAV } from '../config-layout';
 

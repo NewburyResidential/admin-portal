@@ -13,7 +13,7 @@ import { useResponsive } from 'src/hooks/use-responsive';
 // components
 import Logo from 'src/components/logo';
 import SvgColor from 'src/components/svg-color';
-import { useSettingsContext } from 'src/components/settings';
+import { useSettingsContext } from 'src/components/display-settings';
 //
 import { HEADER, NAV } from '../config-layout';
 import {

@@ -7,7 +7,7 @@ import { useMemo } from 'react';
 import CssBaseline from '@mui/material/CssBaseline';
 import { createTheme, ThemeProvider as MuiThemeProvider } from '@mui/material/styles';
 // components
-import { useSettingsContext } from 'src/components/settings';
+import { useSettingsContext } from 'src/components/display-settings';
 // system
 import { palette } from './palette';
 import { shadows } from './shadows';

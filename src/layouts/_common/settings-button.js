@@ -7,7 +7,7 @@ import Badge, { badgeClasses } from '@mui/material/Badge';
 // components
 import Iconify from 'src/components/iconify';
 import { varHover } from 'src/components/animate';
-import { useSettingsContext } from 'src/components/settings';
+import { useSettingsContext } from 'src/components/display-settings';
 
 // ----------------------------------------------------------------------
 

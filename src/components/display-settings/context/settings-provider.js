@@ -19,22 +19,7 @@ export function SettingsProvider({ children, defaultSettings }) {
 
   const [openDrawer, setOpenDrawer] = useState(false);
 
-  const isArabic = localStorageGetItem('i18nextLng') === 'ar';
 
-  useEffect(() => {
-    if (isArabic) {
-      onChangeDirectionByLang('ar');
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isArabic]);
-
-  // Direction by lang
-  const onChangeDirectionByLang = useCallback(
-    (lang) => {
-      update('themeDirection', lang === 'ar' ? 'rtl' : 'ltr');
-    },
-    [update]
-  );
 
   // Drawer
   const onToggleDrawer = useCallback(() => {
@@ -51,8 +36,6 @@ export function SettingsProvider({ children, defaultSettings }) {
     () => ({
       ...state,
       onUpdate: update,
-      // Direction
-      onChangeDirectionByLang,
       // Reset
       canReset,
       onReset: reset,
@@ -69,7 +52,6 @@ export function SettingsProvider({ children, defaultSettings }) {
       openDrawer,
       onCloseDrawer,
       onToggleDrawer,
-      onChangeDirectionByLang,
     ]
   );
 

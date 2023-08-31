@@ -13,7 +13,7 @@ import { primaryFont } from 'src/theme/typography';
 // components
 import ProgressBar from 'src/components/progress-bar';
 import { MotionLazy } from 'src/components/animate/motion-lazy';
-import { SettingsProvider, SettingsDrawer } from 'src/components/settings';
+import { SettingsProvider, SettingsDrawer } from 'src/components/display-settings';
 // auth
 import { AuthProvider, AuthConsumer } from 'src/auth/context/jwt';
 

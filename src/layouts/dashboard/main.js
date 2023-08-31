@@ -3,7 +3,7 @@ import Box from '@mui/material/Box';
 // hooks
 import { useResponsive } from 'src/hooks/use-responsive';
 // components
-import { useSettingsContext } from 'src/components/settings';
+import { useSettingsContext } from 'src/components/display-settings';
 //
 import { HEADER, NAV } from '../config-layout';
 
