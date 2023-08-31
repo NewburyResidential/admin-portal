@@ -14,6 +14,7 @@ import { useSettingsContext } from 'src/components/display-settings';
 export default function SettingsButton({ sx }) {
   const settings = useSettingsContext();
 
+
   return (
     <Badge
       color="error"
@@ -28,10 +29,6 @@ export default function SettingsButton({ sx }) {
       }}
     >
       <Box
-        component={m.div}
-        animate={{
-          rotate: [0, settings.open ? 0 : 360],
-        }}
         transition={{
           duration: 12,
           ease: 'linear',
@@ -48,9 +45,10 @@ export default function SettingsButton({ sx }) {
           sx={{
             width: 40,
             height: 40,
+            color: (theme) => theme.palette.grey[500],
           }}
         >
-          <Iconify icon="solar:settings-bold-duotone" width={24} />
+          <Iconify icon="gis:color" width={30} />
         </IconButton>
       </Box>
     </Badge>
