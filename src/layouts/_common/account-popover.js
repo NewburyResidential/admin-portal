@@ -21,10 +21,7 @@ import CustomPopover, { usePopover } from 'src/components/custom-popover';
 // ----------------------------------------------------------------------
 
 const OPTIONS = [
-  {
-    label: 'Home',
-    linkTo: '/',
-  },
+
   {
     label: 'Profile',
     linkTo: '/#1',
