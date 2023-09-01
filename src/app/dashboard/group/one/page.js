@@ -1,5 +1,5 @@
 // sections
-import OneView from 'src/sections/one/view';
+import SpringportView from 'src/sections/utility-management/billing/SpringportView';
 
 // ----------------------------------------------------------------------
 
@@ -8,5 +8,5 @@ export const metadata = {
 };
 
 export default function Page() {
-  return <OneView />;
+  return <SpringportView />;
 }
