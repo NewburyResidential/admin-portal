@@ -18,7 +18,7 @@ export function useMockedUser() {
     displayName: 'Brian Murphy',
     email: 'Brian@newburyresidential.com',
     password: 'demo1234',
-    photoURL: _mock.image.avatar(1),
+    photoURL: _mock.image.avatar(66),
     phoneNumber: '+40 777666555',
     country: 'United States',
     address: '90210 Broadway Blvd',
