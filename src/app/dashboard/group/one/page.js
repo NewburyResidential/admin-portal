@@ -1,5 +1,5 @@
 // sections
-import SpringportView from 'src/sections/utility-management/billing/SpringportView';
+import SpringportView from 'src/sections/utility-management/billing/Springport/View';
 
 // ----------------------------------------------------------------------
 
