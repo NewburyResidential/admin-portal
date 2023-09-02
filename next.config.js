@@ -1,3 +1,5 @@
+const path = require('path');
+
 module.exports = {
   trailingSlash: true,
   modularizeImports: {
@@ -8,11 +10,14 @@ module.exports = {
       transform: '@mui/lab/{{member}}',
     },
   },
-  webpack(config) {
+  webpack: (config) => {
     config.module.rules.push({
       test: /\.svg$/,
       use: ['@svgr/webpack'],
     });
+
+    config.resolve.alias['@components'] = path.join(__dirname, 'src/components');
+    
     return config;
   },
 };
