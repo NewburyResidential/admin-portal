@@ -18,7 +18,7 @@ export default function View() {
   return (
     <Container>
       <Typography sx={{mb: 6}} variant="h4">2138 SpringPort Utilities </Typography>
-      <Grid container spacing={2}>
+      <Grid container spacing={3}>
         <Grid xs={9}>
         <UtilityProgressWidget />
         </Grid>
@@ -29,7 +29,6 @@ export default function View() {
           />
         </Grid>
       </Grid>
-  
       <UploadMultiFiles />
     </Container>
   );
