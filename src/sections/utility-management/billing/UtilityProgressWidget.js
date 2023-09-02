@@ -10,7 +10,7 @@ import { useTheme } from '@mui/material/styles';
 import { _invoices } from 'src/_mock';
 
 import Scrollbar from '@components/scrollbar';
-import InvoiceAnalytic from 'src/components/cards/Analytic';
+import UtilityAnalytic from 'src/sections/utility-management/billing/UtilityAnalytic';
 import { Button } from '@mui/material';
 
 
@@ -30,7 +30,7 @@ export default function UtilityProgressWidget() {
               divider={<Divider orientation="vertical" flexItem sx={{ borderStyle: 'dashed' }} />}
               sx={{ py: 3 }}
             >
-              <InvoiceAnalytic
+              <UtilityAnalytic
                 title="Water & Sewer"
                 total={15}
                 percent={50}
@@ -38,7 +38,7 @@ export default function UtilityProgressWidget() {
                 icon="ion:water-sharp"
                 color={theme.palette.primary.light}
               />
-               <InvoiceAnalytic
+               <UtilityAnalytic
                 title="Electric"
                 total={13}
                 percent={20}
@@ -46,7 +46,7 @@ export default function UtilityProgressWidget() {
                 icon="material-symbols:electric-bolt"
                 color={theme.palette.primary.light}
               />
-               <InvoiceAnalytic
+               <UtilityAnalytic
                 title="Gas"
                 total={5}
                 percent={5}

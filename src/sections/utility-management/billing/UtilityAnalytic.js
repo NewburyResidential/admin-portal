@@ -14,7 +14,7 @@ import { varHover } from 'src/components/animate';
 
 // ----------------------------------------------------------------------
 
-export default function InvoiceAnalytic({ title, total, icon, color, percent }) {
+export default function UtilityAnalytic({ title, total, icon, color, percent }) {
   return (
     <Box
     component={m.div}
@@ -73,7 +73,7 @@ export default function InvoiceAnalytic({ title, total, icon, color, percent }) 
   );
 }
 
-InvoiceAnalytic.propTypes = {
+UtilityAnalytic.propTypes = {
   color: PropTypes.string,
   icon: PropTypes.oneOfType([PropTypes.element, PropTypes.string]),
   percent: PropTypes.number,
