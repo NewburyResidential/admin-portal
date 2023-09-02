@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import { m } from 'framer-motion';
 // @mui
 import { alpha } from '@mui/material/styles';
 import Box from '@mui/material/Box';
@@ -9,11 +10,22 @@ import CircularProgress from '@mui/material/CircularProgress';
 import { fShortenNumber, fCurrency } from 'src/utils/format-number';
 // components
 import Iconify from 'src/components/iconify';
+import { varHover } from 'src/components/animate';
 
 // ----------------------------------------------------------------------
 
-export default function InvoiceAnalytic({ title, total, icon, color, percent, price }) {
+export default function InvoiceAnalytic({ title, total, icon, color, percent }) {
   return (
+    <Box
+    component={m.div}
+    whileTap="tap"
+    whileHover="hover"
+    variants={varHover(1.05)}
+    sx={{
+      mx: "auto",
+      cursor: "pointer", 
+    }}
+    >
     <Stack
       spacing={2.5}
       direction="row"
@@ -57,6 +69,7 @@ export default function InvoiceAnalytic({ title, total, icon, color, percent, pr
         {/* <Typography variant="subtitle2">5/26</Typography> MORE DETAILS */}
       </Stack>
     </Stack>
+    </Box>
   );
 }
 
