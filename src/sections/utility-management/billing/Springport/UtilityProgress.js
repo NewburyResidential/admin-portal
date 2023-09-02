@@ -9,8 +9,9 @@ import { useTheme } from '@mui/material/styles';
 
 import { _invoices } from 'src/_mock';
 
-import Scrollbar from 'src/components/scrollbar';
-import InvoiceAnalytic from '../../../../components/cards/Analytic';
+import Scrollbar from '@components/scrollbar';
+import InvoiceAnalytic from '@components/cards/Analytic';
+
 
 export default function UtilityProgress() {
   const theme = useTheme();
@@ -19,7 +20,7 @@ export default function UtilityProgress() {
     <>
      <Card
           sx={{
-            mb: { xs: 3, md: 5 },
+            mb: { xs: 3, md: 4 },
           }}
         >
           <Scrollbar>
@@ -30,7 +31,7 @@ export default function UtilityProgress() {
             >
               <InvoiceAnalytic
                 title="Water & Sewer"
-                total={tableData.length}
+                total={15}
                 percent={50}
                 price={sumBy(tableData, 'totalAmount')}
                 icon="ion:water-sharp"
@@ -38,7 +39,7 @@ export default function UtilityProgress() {
               />
                <InvoiceAnalytic
                 title="Electric"
-                total={tableData.length}
+                total={13}
                 percent={100}
                 price={sumBy(tableData, 'totalAmount')}
                 icon="material-symbols:electric-bolt"
@@ -46,7 +47,7 @@ export default function UtilityProgress() {
               />
                <InvoiceAnalytic
                 title="Gas"
-                total={tableData.length}
+                total={5}
                 percent={100}
                 price={sumBy(tableData, 'totalAmount')}
                 icon="mdi:gas"
