@@ -10,10 +10,10 @@ import { useTheme } from '@mui/material/styles';
 import { _invoices } from 'src/_mock';
 
 import Scrollbar from '@components/scrollbar';
-import InvoiceAnalytic from '@components/cards/Analytic';
+import InvoiceAnalytic from 'src/components/cards/Analytic';
 
 
-export default function UtilityProgress() {
+export default function UtilityProgressWidget() {
   const theme = useTheme();
   const [tableData, setTableData] = useState(_invoices);
   return (
@@ -40,7 +40,7 @@ export default function UtilityProgress() {
                <InvoiceAnalytic
                 title="Electric"
                 total={13}
-                percent={100}
+                percent={20}
                 price={sumBy(tableData, 'totalAmount')}
                 icon="material-symbols:electric-bolt"
                 color={theme.palette.primary.light}
@@ -48,13 +48,11 @@ export default function UtilityProgress() {
                <InvoiceAnalytic
                 title="Gas"
                 total={5}
-                percent={100}
+                percent={5}
                 price={sumBy(tableData, 'totalAmount')}
                 icon="mdi:gas"
                 color={theme.palette.primary.light}
               />
-
-             
             </Stack>
           </Scrollbar>
         </Card>
