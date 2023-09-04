@@ -88,7 +88,7 @@ export default function UtilityInfoDrawer({ openDrawer, setOpenDrawer }) {
 
   const renderTabel = (
 <>
-<Box component="span" sx={{ color: 'text.secondary', textAlign: 'center', p: 3, fontWeight: 'bold' }}>
+<Box component="span" sx={{ color: 'error.dark', textAlign: 'center', p: 3, fontWeight: 'bold' }}>
         Missing Utility Bills
       </Box>
 <TableContainer sx={{ height: '100%'}}>

@@ -14,7 +14,7 @@ import UtilityAnalytic from 'src/sections/utility-management/billing/UtilityAnal
 
 
 
-export default function UtilityProgressWidget() {
+export default function UtilityProgressWidget({handleOpenDrawer}) {
   const theme = useTheme();
   const [tableData, setTableData] = useState(_invoices);
   return (
@@ -37,6 +37,7 @@ export default function UtilityProgressWidget() {
                 price={sumBy(tableData, 'totalAmount')}
                 icon="ion:water-sharp"
                 color={theme.palette.primary.light}
+                handleOpenDrawer={handleOpenDrawer}
               />
                <UtilityAnalytic
                 title="Electric"
@@ -45,6 +46,7 @@ export default function UtilityProgressWidget() {
                 price={sumBy(tableData, 'totalAmount')}
                 icon="material-symbols:electric-bolt"
                 color={theme.palette.primary.light}
+                handleOpenDrawer={handleOpenDrawer}
               />
                <UtilityAnalytic
                 title="Gas"
@@ -53,6 +55,7 @@ export default function UtilityProgressWidget() {
                 price={sumBy(tableData, 'totalAmount')}
                 icon="mdi:gas"
                 color={theme.palette.primary.light}
+                handleOpenDrawer={handleOpenDrawer}
               />
             </Stack>
           </Scrollbar>

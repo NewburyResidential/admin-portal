@@ -14,24 +14,25 @@ import UtilityProgressWidget from '../UtilityProgressWidget';
 import MonthWidget from '../MonthWidget';
 import UtilityInfoDrawer from '../UtilityInfoDrawer/Drawer';
 
-
 // ----------------------------------------------------------------------
 
 export default function View() {
-  const [openDrawer, setOpenDrawer] = useState(true)
+  const [openDrawer, setOpenDrawer] = useState(true); // Change to Context
+  const handleOpenDrawer = () => {
+    setOpenDrawer(true);
+  };
   return (
     <Container>
-      <UtilityInfoDrawer openDrawer={openDrawer} setOpenDrawer={setOpenDrawer}/>
-      <Typography sx={{mb: 6}} variant="h4">2138 SpringPort Utilities </Typography>
+      <UtilityInfoDrawer openDrawer={openDrawer} setOpenDrawer={setOpenDrawer} />
+      <Typography sx={{ mb: 6 }} variant="h4">
+        2138 SpringPort Utilities
+      </Typography>
       <Grid container spacing={3}>
         <Grid xs={9}>
-        <UtilityProgressWidget />
+          <UtilityProgressWidget handleOpenDrawer={handleOpenDrawer} />
         </Grid>
         <Grid xs={3}>
-        <MonthWidget
-            title="September"
-            subTitle="Billing Utilities"
-          />
+          <MonthWidget title="September" subTitle="Billing Utilities" />
         </Grid>
       </Grid>
       <UploadMultiFiles />

@@ -14,7 +14,7 @@ import { varHover } from 'src/components/animate';
 
 // ----------------------------------------------------------------------
 
-export default function UtilityAnalytic({ title, total, icon, color, percent }) {
+export default function UtilityAnalytic({ title, total, icon, color, percent, handleOpenDrawer }) {
   return (
     <Box
     component={m.div}
@@ -25,6 +25,7 @@ export default function UtilityAnalytic({ title, total, icon, color, percent }) 
       mx: "auto",
       cursor: "pointer", 
     }}
+    onClick={handleOpenDrawer}
     >
     <Stack
       spacing={2.5}
