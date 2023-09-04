@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 // @mui
 import { styled, alpha } from '@mui/material/styles';
 import Box from '@mui/material/Box';
@@ -9,6 +9,8 @@ import { bgGradient } from 'src/theme/css';
 // components
 import Image from 'src/components/image';
 import Carousel, { CarouselArrowIndex, useCarousel } from 'src/components/carousel';
+import Lightbox from 'yet-another-react-lightbox';
+import 'yet-another-react-lightbox/styles.css';
 
 // ----------------------------------------------------------------------
 
@@ -61,6 +63,8 @@ const StyledThumbnailsContainer = styled('div')(({ length, theme }) => ({
 // ----------------------------------------------------------------------
 
 export default function CarouselThumbnail({ data }) {
+  const [openLightBox, setOpenLightBox] = useState(false);
+
   const carouselLarge = useCarousel({
     rtl: false,
     draggable: false,
@@ -82,6 +86,13 @@ export default function CarouselThumbnail({ data }) {
     carouselThumb.onSetNav();
   }, [carouselLarge, carouselThumb]);
 
+  const renderLightBox = (
+    <Lightbox 
+    open={openLightBox} 
+    close={() => setOpenLightBox(false)} 
+    slides={data} />
+  );
+
   const renderLargeImg = (
     <Box
       sx={{
@@ -97,7 +108,16 @@ export default function CarouselThumbnail({ data }) {
         ref={carouselLarge.carouselRef}
       >
         {data.map((item) => (
-          <Image key={item.id} alt={item.title} src={item.coverUrl} ratio="16/9" />
+          <Image
+            onClick={() => {
+              setOpenLightBox(true);
+            }}
+            sx={{cursor: 'pointer'}}
+            key={item.id}
+            alt={item.title}
+            src={item.coverUrl}
+            ratio="16/9"
+          />
         ))}
       </Carousel>
 
@@ -148,8 +168,8 @@ export default function CarouselThumbnail({ data }) {
         },
       }}
     >
+      {renderLightBox}
       {renderLargeImg}
-
       {renderThumbnails}
     </Box>
   );
