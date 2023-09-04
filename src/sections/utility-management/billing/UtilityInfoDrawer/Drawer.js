@@ -15,7 +15,6 @@ import CardHeader from '@mui/material/CardHeader';
 import CardContent from '@mui/material/CardContent';
 import Grid from '@mui/material/Unstable_Grid2';
 
-
 import { _mock } from 'src/_mock';
 // theme
 import { paper } from 'src/theme/css';
@@ -24,25 +23,25 @@ import Iconify from 'src/components/iconify';
 import Scrollbar from 'src/components/scrollbar';
 import { Box } from '@mui/material';
 import Carousel from './Carousel';
-import Image from 'src/components/image';
-
-
-import Lightbox from "yet-another-react-lightbox";
-import "yet-another-react-lightbox/styles.css";
 
 // ----------------------------------------------------------------------
 
-const _carouselsExample = [...Array(2)].map((_, index) => ({
+const fakeBills = [
+  {
     id: 2,
-    title: "pdf",
-    src: _mock.image.cover(index + 1),
-    description: "this is a pdf"
-  }));
-  
+    title: 'pdf',
+    src: '/assets/utility-bills/bill1.png',
+    description: 'this is a pdf',
+  },
+  {
+    id: 2,
+    title: 'pdf',
+    src: '/assets/utility-bills/bill2.png',
+    description: 'this is a pdf',
+  },
+];
 
-export default function UtilityInfoDrawer({openDrawer, setOpenDrawer}) {
-
-
+export default function UtilityInfoDrawer({ openDrawer, setOpenDrawer }) {
   const theme = useTheme();
 
   const renderHead = (
@@ -56,72 +55,62 @@ export default function UtilityInfoDrawer({openDrawer, setOpenDrawer}) {
         Info
       </Typography>
 
-      <IconButton onClick={() => {setOpenDrawer(false)}}>
+      <IconButton
+        onClick={() => {
+          setOpenDrawer(false);
+        }}
+      >
         <Iconify icon="mingcute:close-line" />
       </IconButton>
     </Stack>
   );
 
-  console.log(_carouselsExample.slice(0, 4))
-
-
   return (
     <>
-    <Drawer
-      anchor="right"
-      open={openDrawer}
-      onClose={() => {setOpenDrawer(false)}}
-      slotProps={{
-        backdrop: { invisible: true },
-      }}
-      sx={{
-        [`& .${drawerClasses.paper}`]: {
-          ...paper({ theme, bgcolor: theme.palette.background.default }),
-          width: 380,
-          
-        },
-      }}
-    >
-      {renderHead}
+      <Drawer
+        anchor="right"
+        open={openDrawer}
+        onClose={() => {
+          setOpenDrawer(false);
+        }}
+        slotProps={{
+          backdrop: { invisible: true },
+        }}
+        sx={{
+          [`& .${drawerClasses.paper}`]: {
+            ...paper({ theme, bgcolor: theme.palette.background.default }),
+            width: 380,
+          },
+        }}
+      >
+        {renderHead}
 
-      <Stack
-            spacing={2.5}
-            justifyContent="center"
-            sx={{
-              p: 2.5,
-              bgcolor: 'background.neutral',
-            }}
-          >
-           <Box component="span" sx={{ color: 'text.secondary' }}>
-           Accepted Utility Bills
-           </Box>
- 
-            
-      <Carousel onClick={() => setOpen(true)} data={_carouselsExample.slice(0, 4)} />
+        <Stack
+          spacing={2.5}
+          justifyContent="center"
+          sx={{
+            p: 2.5,
+            bgcolor: 'background.neutral',
+          }}
+        >
+          <Box component="span" sx={{ color: 'text.secondary' }}>
+            Accepted Utility Bills
+          </Box>
 
-           
-      
-         
+          <Carousel onClick={() => setOpen(true)} data={fakeBills} />
 
-      <Divider sx={{ borderStyle: 'dashed' }} />
-      
-      <Typography variant="body1">
-        Upload a PDF or PNG file that reflects the bill shown above. Multiple bills can be added. If uploading a scanned bill, make sure it is clear and readable
-      </Typography>
-     
+          <Divider sx={{ borderStyle: 'dashed' }} />
 
-          </Stack>
-         
-
-
-      <Scrollbar>
-        <Stack spacing={3} sx={{ p: 3 }}>
-       
+          <Typography variant="body1">
+            Upload a PDF or PNG file that reflects the bill shown above. Multiple bills can be
+            added. If uploading a scanned bill, make sure it is clear and readable
+          </Typography>
         </Stack>
-      </Scrollbar>
-    
-    </Drawer>
-    
-   </>
+
+        <Scrollbar>
+          <Stack spacing={3} sx={{ p: 3 }}></Stack>
+        </Scrollbar>
+      </Drawer>
+    </>
   );
 }
