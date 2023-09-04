@@ -4,18 +4,11 @@ import { useState } from 'react';
 // @mui
 import { useTheme } from '@mui/material/styles';
 import Stack from '@mui/material/Stack';
-import Badge from '@mui/material/Badge';
 import Divider from '@mui/material/Divider';
-import Tooltip from '@mui/material/Tooltip';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import Drawer, { drawerClasses } from '@mui/material/Drawer';
-import Card from '@mui/material/Card';
-import CardHeader from '@mui/material/CardHeader';
-import CardContent from '@mui/material/CardContent';
-import Grid from '@mui/material/Unstable_Grid2';
 
-import { _mock } from 'src/_mock';
 // theme
 import { paper } from 'src/theme/css';
 //
@@ -65,6 +58,30 @@ export default function UtilityInfoDrawer({ openDrawer, setOpenDrawer }) {
     </Stack>
   );
 
+  const renderPdfInfo = (
+    <Stack
+      spacing={2.5}
+      justifyContent="center"
+      sx={{
+        p: 2.5,
+        bgcolor: 'background.neutral',
+      }}
+    >
+      <Box component="span" sx={{ color: 'text.secondary' }}>
+        Accepted Utility Bills
+      </Box>
+
+      <Carousel onClick={() => setOpen(true)} data={fakeBills} />
+
+      <Divider sx={{ borderStyle: 'dashed' }} />
+
+      <Typography variant="body1">
+        Upload a PDF or PNG file that reflects the bill shown above. Multiple bills can be added.
+        Make sure it is clear and readable
+      </Typography>
+    </Stack>
+  );
+
   return (
     <>
       <Drawer
@@ -84,28 +101,7 @@ export default function UtilityInfoDrawer({ openDrawer, setOpenDrawer }) {
         }}
       >
         {renderHead}
-
-        <Stack
-          spacing={2.5}
-          justifyContent="center"
-          sx={{
-            p: 2.5,
-            bgcolor: 'background.neutral',
-          }}
-        >
-          <Box component="span" sx={{ color: 'text.secondary' }}>
-            Accepted Utility Bills
-          </Box>
-
-          <Carousel onClick={() => setOpen(true)} data={fakeBills} />
-
-          <Divider sx={{ borderStyle: 'dashed' }} />
-
-          <Typography variant="body1">
-            Upload a PDF or PNG file that reflects the bill shown above. Multiple bills can be
-            added. If uploading a scanned bill, make sure it is clear and readable
-          </Typography>
-        </Stack>
+        {renderPdfInfo}
 
         <Scrollbar>
           <Stack spacing={3} sx={{ p: 3 }}></Stack>

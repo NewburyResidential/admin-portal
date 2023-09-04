@@ -120,7 +120,7 @@ export default function CarouselThumbnail({ data }) {
             key={item.id}
             alt={item.title}
             src={item.src}
-            ratio="16/9"
+            ratio="4/3"
           />
         ))}
       </Carousel>
