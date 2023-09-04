@@ -17,7 +17,7 @@ import UtilityInfoDrawer from '../UtilityInfoDrawer/Drawer';
 // ----------------------------------------------------------------------
 
 export default function View() {
-  const [openDrawer, setOpenDrawer] = useState(true); // Change to Context
+  const [openDrawer, setOpenDrawer] = useState(false); // Change to Context
   const handleOpenDrawer = () => {
     setOpenDrawer(true);
   };
