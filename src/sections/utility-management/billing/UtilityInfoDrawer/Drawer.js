@@ -67,7 +67,7 @@ const slides = [
 
 export default function UtilityInfoDrawer({openDrawer, setOpenDrawer}) {
 
-    const [open, setOpen] = useState(false);
+
   const theme = useTheme();
 
   const renderHead = (
@@ -120,14 +120,8 @@ export default function UtilityInfoDrawer({openDrawer, setOpenDrawer}) {
            <Box component="span" sx={{ color: 'text.secondary' }}>
            Accepted Utility Bills
            </Box>
-           <button type="button" onClick={() => setOpen(true)}>
-                Open Lightbox
-            </button>
-            <Lightbox
-                open={open}
-                close={() => setOpen(false)}
-                slides={[{ src: "/image1.jpg" }, { src: "/image2.jpg" }, { src: "/image3.jpg" }]}
-            />
+ 
+            
       <Carousel onClick={() => setOpen(true)} data={_carouselsExample.slice(0, 4)} />
 
            
