@@ -64,6 +64,7 @@ const StyledThumbnailsContainer = styled('div')(({ length, theme }) => ({
 
 export default function CarouselThumbnail({ data }) {
   const [openLightBox, setOpenLightBox] = useState(false);
+  const [clickedImageIndex, setClickedImageIndex] = useState(null);
 
   const carouselLarge = useCarousel({
     rtl: false,
@@ -90,7 +91,9 @@ export default function CarouselThumbnail({ data }) {
     <Lightbox 
     open={openLightBox} 
     close={() => setOpenLightBox(false)} 
-    slides={data} />
+    slides={data}
+    index={clickedImageIndex} 
+     />
   );
 
   const renderLargeImg = (
@@ -107,15 +110,16 @@ export default function CarouselThumbnail({ data }) {
         asNavFor={carouselThumb.nav}
         ref={carouselLarge.carouselRef}
       >
-        {data.map((item) => (
+        {data.map((item, index) => (
           <Image
             onClick={() => {
               setOpenLightBox(true);
+              setClickedImageIndex(index);
             }}
             sx={{cursor: 'pointer'}}
             key={item.id}
             alt={item.title}
-            src={item.coverUrl}
+            src={item.src}
             ratio="16/9"
           />
         ))}
@@ -142,7 +146,7 @@ export default function CarouselThumbnail({ data }) {
             <Avatar
               variant="rounded"
               alt={item.title}
-              src={item.coverUrl}
+              src={item.src}
               sx={{
                 width: THUMB_SIZE,
                 height: THUMB_SIZE,

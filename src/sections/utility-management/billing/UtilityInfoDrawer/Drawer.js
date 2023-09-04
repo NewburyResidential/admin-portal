@@ -35,34 +35,9 @@ import "yet-another-react-lightbox/styles.css";
 const _carouselsExample = [...Array(2)].map((_, index) => ({
     id: 2,
     title: "pdf",
-    coverUrl: "./m.png",
+    src: _mock.image.cover(index + 1),
     description: "this is a pdf"
   }));
-  console.log(_carouselsExample)
-  const images = [...Array(4)].map((_, index) => ({
-    src: _mock.image.cover(index + 1),
-    title: 'Flamingo',
-    description: 'Vicko Mozara \n Veliki zali, Dubravica, Croatia',
-  }));
-  
-
-
-const slides = [
-    ...images,
-    {
-      type: 'video',
-      width: 1280,
-      height: 720,
-      poster:
-        'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/images/BigBuckBunny.jpg',
-      sources: [
-        {
-          src: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
-          type: 'video/mp4',
-        },
-      ],
-    },
-  ];
   
 
 export default function UtilityInfoDrawer({openDrawer, setOpenDrawer}) {
@@ -87,7 +62,7 @@ export default function UtilityInfoDrawer({openDrawer, setOpenDrawer}) {
     </Stack>
   );
 
-  
+  console.log(_carouselsExample.slice(0, 4))
 
 
   return (
