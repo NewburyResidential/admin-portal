@@ -1,4 +1,5 @@
 'use client';
+import { useState } from 'react';
 
 // @mui
 import { alpha } from '@mui/material/styles';
@@ -11,12 +12,16 @@ import { useSettingsContext } from 'src/components/display-settings';
 import UploadMultiFiles from 'src/components/upload-files/UploadMultiFiles';
 import UtilityProgressWidget from '../UtilityProgressWidget';
 import MonthWidget from '../MonthWidget';
+import UtilityInfoDrawer from '../UtilityInfoDrawer/Drawer';
+
 
 // ----------------------------------------------------------------------
 
 export default function View() {
+  const [openDrawer, setOpenDrawer] = useState(true)
   return (
     <Container>
+      <UtilityInfoDrawer openDrawer={openDrawer} setOpenDrawer={setOpenDrawer}/>
       <Typography sx={{mb: 6}} variant="h4">2138 SpringPort Utilities </Typography>
       <Grid container spacing={3}>
         <Grid xs={9}>
