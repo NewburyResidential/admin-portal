@@ -13,6 +13,7 @@ import UploadMultiFiles from 'src/components/upload-files/UploadMultiFiles';
 import UtilityProgressWidget from '../UtilityProgressWidget';
 import MonthWidget from '../MonthWidget';
 import UtilityInfoDrawer from '../UtilityInfoDrawer/Drawer';
+import Calendar from '../Calendar';
 
 // ----------------------------------------------------------------------
 
@@ -36,6 +37,7 @@ export default function View() {
         </Grid>
       </Grid>
       <UploadMultiFiles />
+      <Calendar />
     </Container>
   );
 }
