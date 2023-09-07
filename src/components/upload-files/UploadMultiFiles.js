@@ -51,6 +51,7 @@ export default function UploadMultiFiles({onUpload}) {
   const handleRemoveFile = (inputFile) => {
     const filesFiltered = files.filter((fileFiltered) => fileFiltered !== inputFile);
     setFiles(filesFiltered);
+    setDuplicateFiles([])
   };
 
   const handleRemoveAllFiles = () => {
