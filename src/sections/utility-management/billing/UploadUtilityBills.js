@@ -12,7 +12,7 @@ export default function UploadUtilityBills() {
         formData.append('files', file);
       });
 
-      const response = await fetch('/api/documentAI/storageUpload', {
+      const response = await fetch('/api/documentAI', {
         method: 'POST',
         body: formData,
       });
