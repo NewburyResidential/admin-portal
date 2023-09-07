@@ -18,14 +18,27 @@ import { Upload } from 'src/components/upload-files';
 
 export default function UploadMultiFiles({onUpload}) {
   const preview = useBoolean();
-
   const [files, setFiles] = useState([]);
+  const [duplicateFiles, setDuplicateFiles] = useState([]);
 
   const handleDropMultiFile = useCallback(
     (acceptedFiles) => {
+      const duplicates = [];
+      const uniqueAcceptedFiles = acceptedFiles.filter((newFile) => {
+        const isDuplicate = files.some((files) => files.name === newFile.name);
+        if (isDuplicate) {
+          duplicates.push({
+            file: newFile,
+            errors: [{ code: 'duplicate-file', message: 'File Can Not Be Duplicate' }],
+          });
+        }
+        return !isDuplicate;
+      });
+      setDuplicateFiles(duplicates)
+  
       setFiles([
         ...files,
-        ...acceptedFiles.map((newFile) =>
+        ...uniqueAcceptedFiles.map((newFile) =>
           Object.assign(newFile, {
             preview: URL.createObjectURL(newFile),
           })
@@ -41,6 +54,7 @@ export default function UploadMultiFiles({onUpload}) {
   };
 
   const handleRemoveAllFiles = () => {
+    setDuplicateFiles([])
     setFiles([]);
   };
 
@@ -65,8 +79,11 @@ export default function UploadMultiFiles({onUpload}) {
                 onDrop={handleDropMultiFile}
                 onRemove={handleRemoveFile}
                 onRemoveAll={handleRemoveAllFiles}
-                onUpload={() => {onUpload(files)}}
-
+                onUpload={() => {
+                  setDuplicateFiles([])
+                  onUpload(files)
+                }}
+                duplicateFiles={duplicateFiles}
               />
             </CardContent>
           </Card>

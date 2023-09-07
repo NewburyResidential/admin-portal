@@ -19,6 +19,7 @@ import SingleFilePreview from './preview-single-file';
 // ----------------------------------------------------------------------
 
 export default function Upload({
+  duplicateFiles,
   disabled,
   multiple = false,
   accept,
@@ -156,7 +157,7 @@ export default function Upload({
 
       {helperText && helperText}
 
-      <RejectionFiles fileRejections={fileRejections} />
+      <RejectionFiles fileRejections={[...duplicateFiles, ...fileRejections]} />
 
       {renderMultiPreview}
     </Box>

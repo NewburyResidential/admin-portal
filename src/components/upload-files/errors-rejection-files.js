@@ -4,8 +4,6 @@ import { alpha } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
-// utils
-import { fData } from 'src/utils/format-number';
 //
 import { fileData } from '../file-thumbnail';
 
@@ -15,7 +13,7 @@ export default function RejectionFiles({ fileRejections }) {
   if (!fileRejections.length) {
     return null;
   }
-
+  
   return (
     <Paper
       variant="outlined"
@@ -30,12 +28,12 @@ export default function RejectionFiles({ fileRejections }) {
       }}
     >
       {fileRejections.map(({ file, errors }) => {
-        const { path, size } = fileData(file);
+        const { path } = fileData(file);
 
         return (
           <Box key={path} sx={{ my: 1 }}>
             <Typography variant="subtitle2" noWrap>
-              {path} - {size ? fData(size) : ''}
+              {path} - Error Uploading
             </Typography>
 
             {errors.map((error) => (
