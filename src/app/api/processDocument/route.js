@@ -6,7 +6,7 @@ export async function GET(req, res) {
   const project_id = '609778734661';
   const location = 'us';
   const processor_id = '9bbdea563b5e2c4a';
-  const file_path = 'public/bill.pdf';
+  const file_path = 'public/pdfs/bill.pdf';
 
   // Create a Document AI client
   const client = new DocumentProcessorServiceClient({

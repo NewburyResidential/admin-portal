@@ -14,6 +14,7 @@ import UtilityProgressWidget from '../UtilityProgressWidget';
 import MonthWidget from '../MonthWidget';
 import UtilityInfoDrawer from '../UtilityInfoDrawer/Drawer';
 import Calendar from '../Calendar';
+import UploadUtilityBills from '../UploadUtilityBills';
 
 // ----------------------------------------------------------------------
 
@@ -36,7 +37,7 @@ export default function View() {
           <MonthWidget title="September" subTitle="Billing Utilities" />
         </Grid>
       </Grid>
-      <UploadMultiFiles />
+      <UploadUtilityBills />
       <Calendar />
     </Container>
   );

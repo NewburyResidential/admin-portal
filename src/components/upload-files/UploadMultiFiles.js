@@ -16,7 +16,7 @@ import { Upload } from 'src/components/upload-files';
 
 // ----------------------------------------------------------------------
 
-export default function UploadMultiFiles() {
+export default function UploadMultiFiles({onUpload}) {
   const preview = useBoolean();
 
   const [files, setFiles] = useState([]);
@@ -65,7 +65,7 @@ export default function UploadMultiFiles() {
                 onDrop={handleDropMultiFile}
                 onRemove={handleRemoveFile}
                 onRemoveAll={handleRemoveAllFiles}
-                onUpload={() => console.info('ON UPLOAD')}
+                onUpload={() => {onUpload(files)}}
 
               />
             </CardContent>
