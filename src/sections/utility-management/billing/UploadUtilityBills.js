@@ -3,6 +3,12 @@ import { useState } from 'react';
 
 export default function UploadUtilityBills() {
 
+    const acceptedFiles = ({ 
+        'image/png': ['.png'],
+        'image/png': ['.jpg','.jpeg'], 
+        'application/pdf': ['.pdf'], 
+        })
+
   const onUpload = async (files) => {
     console.log(files);
 
@@ -30,7 +36,7 @@ export default function UploadUtilityBills() {
 
   return (
     <>
-      <UploadMultiFiles onUpload={onUpload} />
+      <UploadMultiFiles onUpload={onUpload} accept={acceptedFiles}/>
     </>
   );
 }

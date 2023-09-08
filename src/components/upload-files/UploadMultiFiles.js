@@ -16,7 +16,7 @@ import { Upload } from 'src/components/upload-files';
 
 // ----------------------------------------------------------------------
 
-export default function UploadMultiFiles({onUpload}) {
+export default function UploadMultiFiles({ onUpload, accept}) {
   const preview = useBoolean();
   const [files, setFiles] = useState([]);
   const [duplicateFiles, setDuplicateFiles] = useState([]);
@@ -34,8 +34,8 @@ export default function UploadMultiFiles({onUpload}) {
         }
         return !isDuplicate;
       });
-      setDuplicateFiles(duplicates)
-  
+      setDuplicateFiles(duplicates);
+
       setFiles([
         ...files,
         ...uniqueAcceptedFiles.map((newFile) =>
@@ -51,43 +51,43 @@ export default function UploadMultiFiles({onUpload}) {
   const handleRemoveFile = (inputFile) => {
     const filesFiltered = files.filter((fileFiltered) => fileFiltered !== inputFile);
     setFiles(filesFiltered);
-    setDuplicateFiles([])
+    setDuplicateFiles([]);
   };
 
   const handleRemoveAllFiles = () => {
-    setDuplicateFiles([])
+    setDuplicateFiles([]);
     setFiles([]);
   };
 
   return (
     <>
-          <Card>
-            <CardHeader
-              title="Upload Utility Bills"
-              action={
-                <FormControlLabel
-                  control={<Switch checked={preview.value} onClick={preview.onToggle} />}
-                  label="Expand Files"
-                />
-              }
+      <Card>
+        <CardHeader
+          title="Upload Utility Bills"
+          action={
+            <FormControlLabel
+              control={<Switch checked={preview.value} onClick={preview.onToggle} />}
+              label="Expand Files"
             />
-            <CardContent>
-              <Upload
-                multiple
-                accept={{'application/pdf': ['.pdf']}}
-                thumbnail={!preview.value}
-                files={files}
-                onDrop={handleDropMultiFile}
-                onRemove={handleRemoveFile}
-                onRemoveAll={handleRemoveAllFiles}
-                onUpload={() => {
-                  setDuplicateFiles([])
-                  onUpload(files)
-                }}
-                duplicateFiles={duplicateFiles}
-              />
-            </CardContent>
-          </Card>
+          }
+        />
+        <CardContent>
+          <Upload
+            multiple
+            accept={accept}
+            thumbnail={!preview.value}
+            files={files}
+            onDrop={handleDropMultiFile}
+            onRemove={handleRemoveFile}
+            onRemoveAll={handleRemoveAllFiles}
+            onUpload={() => {
+              setDuplicateFiles([]);
+              onUpload(files);
+            }}
+            duplicateFiles={duplicateFiles}
+          />
+        </CardContent>
+      </Card>
     </>
   );
 }
