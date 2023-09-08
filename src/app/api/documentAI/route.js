@@ -35,7 +35,7 @@ export async function POST(request) {
       uploadedDocuments.push({ gcsUri, mimeType });
     }
 
-    const docRequest = {
+    const batchRequest = {
       name,
       inputDocuments: {
         gcsDocuments: {
@@ -48,10 +48,10 @@ export async function POST(request) {
     };
 
     // Trigger Document AI processing for the current document
-    const [operation] = await client.batchProcessDocuments(docRequest);
+    const [operation] = await client.batchProcessDocuments(batchRequest);
     console.log(`Started batch processing`);
-    const [response] = await operation.promise();
-    console.log(`Document batch processing complete`);
+    const response = await operation.promise();
+
 
     const query = {
       prefix: gcsOutputUriPrefix,
@@ -61,17 +61,16 @@ export async function POST(request) {
 
     // List all of the files in the Storage bucket
     const [files] = await storage.bucket(gcsOutputUri).getFiles(query);
-
-    // Process the downloaded files (you can add more logic here)
     for (const fileInfo of files) {
       const [file] = await fileInfo.download();
       const document = JSON.parse(file.toString());
-      documentResponses.push(document);
+      const entities = document?.entities || []
+      documentResponses.push(entities);
     }
 
     // Return the document responses in the JSON response to the client
     return new Response(
-      JSON.stringify({ message: 'Files uploaded and processed successfully', documentResponses }),
+      JSON.stringify({ message: 'Files uploaded and processed successfully', documentResponses, response}),
       {
         headers: { 'Content-Type': 'application/json' },
         status: 200,
