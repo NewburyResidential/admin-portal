@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 const { DocumentProcessorServiceClient } = require('@google-cloud/documentai').v1beta3;
 const { Storage } = require('@google-cloud/storage');
+import PQueue from 'p-queue';
 
 const client = new DocumentProcessorServiceClient();
 const storage = new Storage();
@@ -15,6 +16,7 @@ const gcsOutputUriPrefix = 'output/results'; // Replace with your desired prefix
 const name = `projects/${projectId}/locations/${location}/processors/${processorId}`;
 
 export async function POST(request) {
+  let docRes = []
   try {
     const formData = await request.formData();
     const processingPromises = [];
@@ -32,12 +34,16 @@ export async function POST(request) {
 
       const docRequest = {
         name,
-        inputConfigs: [
-          {
-            gcsSource: gcsInputUri,
-            mimeType: 'application/pdf',
+        inputDocuments: {
+          gcsDocuments: {
+            documents: [
+              {
+                gcsUri: gcsInputUri,
+                mimeType: 'application/pdf',
+              },
+            ],
           },
-        ],
+        },
         outputConfig: {
           gcsDestination: `${gcsOutputUri}/${gcsOutputUriPrefix}/`,
         },
@@ -47,15 +53,14 @@ export async function POST(request) {
       const processingPromise = client.batchProcessDocuments(docRequest);
 
       // Add a status update promise to log when processing is complete
-      const statusUpdatePromise = processingPromise
-        .then(([operation]) => {
-          console.log(`Started Document AI processing for ${fileName}`);
-          return operation.promise().then((response) => {
-            console.log(`Document AI processing complete for ${fileName}`);
-            // Store the response in the array
-            documentResponses.push({ fileName, response });
-          });
+      const statusUpdatePromise = processingPromise.then(([operation]) => {
+        console.log(`Started Document AI processing for ${fileName}`);
+        return operation.promise().then((response) => {
+          console.log(`Document AI processing complete for ${fileName}`);
+          // Store the response in the array
+          documentResponses.push({ fileName, response });
         });
+      });
 
       processingPromises.push(statusUpdatePromise);
 
@@ -66,10 +71,33 @@ export async function POST(request) {
     // Wait for all processing operations and status updates to complete
     await Promise.all(processingPromises);
     console.log('All Document AI processing completed.');
-    console.log(documentResponses)
+  
+    const query = {
+      prefix: gcsOutputUriPrefix,
+    };
+  
+    console.log('Fetching results ...');
+  
+    // List all of the files in the Storage bucket
+    const [files] = await storage.bucket(gcsOutputUri).getFiles(query);
+  
+    // Add all asynchronous downloads to queue for execution.
+    const queue = new PQueue({concurrency: 15});
+    const tasks = files.map((fileInfo) => async () => {
+      const [file] = await fileInfo.download();
+      const document = JSON.parse(file.toString());
+      docRes.push(document.entities)
+    });
+    await queue.addAll(tasks);
+
+
+
+
+
+
     // Return the document responses in the JSON response to the client
     return new Response(
-      JSON.stringify({ message: 'Files uploaded and processed successfully', documentResponses }),
+      JSON.stringify({ message: 'Files uploaded and processed successfully', docRes }),
       {
         headers: { 'Content-Type': 'application/json' },
         status: 200,
