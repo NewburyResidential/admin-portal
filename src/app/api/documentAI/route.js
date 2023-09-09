@@ -12,7 +12,7 @@ export async function POST(request) {
   const bucketName = 'pdf-bucket-storage-1';
   const projectId = '609778734661';
   const location = 'us';
-  const processorId = '9bbdea563b5e2c4a';
+  const processorId = '7d699c35756df498';
   const gcsOutputUri = 'gs://pdf-bucket-storage-1';
   const gcsOutputUriPrefix = `${batchId}/output`;
   const name = `projects/${projectId}/locations/${location}/processors/${processorId}`;
@@ -70,7 +70,7 @@ export async function POST(request) {
 
     // Return the document responses in the JSON response to the client
     return new Response(
-      JSON.stringify({ message: 'Files uploaded and processed successfully', documentResponses, response}),
+      JSON.stringify({documentResponses}),
       {
         headers: { 'Content-Type': 'application/json' },
         status: 200,

@@ -16,19 +16,24 @@ import UtilityInfoDrawer from '../UtilityInfoDrawer/Drawer';
 import Calendar from '../Calendar';
 import UploadUtilityBills from '../UploadUtilityBills';
 
+import { useBoolean } from 'src/hooks/use-boolean';
+import UtilityDialog from '../UtilityDialog';
 // ----------------------------------------------------------------------
 
 export default function View() {
-  const [openDrawer, setOpenDrawer] = useState(false); // Change to Context
+  const dialog = useBoolean();
+
   const handleOpenDrawer = () => {
-    setOpenDrawer(true);
+   dialog.onTrue()
   };
+
   return (
     <Container>
-      <UtilityInfoDrawer openDrawer={openDrawer} setOpenDrawer={setOpenDrawer} />
+      
       <Typography sx={{ mb: 6 }} variant="h4">
         2138 SpringPort Utilities
       </Typography>
+      <UtilityDialog dialog={dialog}/>
       <Grid container spacing={3}>
         <Grid xs={9}>
           <UtilityProgressWidget handleOpenDrawer={handleOpenDrawer} />
