@@ -22,6 +22,7 @@ import UtilityDialog from '../UtilityDialog';
 
 export default function View() {
   const dialog = useBoolean();
+  const [data, setData] = useState([])
 
   const handleOpenDrawer = () => {
    dialog.onTrue()
@@ -33,7 +34,7 @@ export default function View() {
       <Typography sx={{ mb: 6 }} variant="h4">
         2138 SpringPort Utilities
       </Typography>
-      <UtilityDialog dialog={dialog}/>
+      <UtilityDialog data={data} dialog={dialog}/>
       <Grid container spacing={3}>
         <Grid xs={9}>
           <UtilityProgressWidget handleOpenDrawer={handleOpenDrawer} />
@@ -42,7 +43,7 @@ export default function View() {
           <MonthWidget title="September" subTitle="Billing Utilities" />
         </Grid>
       </Grid>
-      <UploadUtilityBills />
+      <UploadUtilityBills setData={setData}/>
       <Calendar />
     </Container>
   );

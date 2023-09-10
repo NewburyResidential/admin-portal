@@ -4,38 +4,12 @@ import { DataGrid } from '@mui/x-data-grid';
 import Iconify from 'src/components/iconify';
 import { _mock } from 'src/_mock';
 import { Box, Tooltip, Typography } from '@mui/material';
+import Link from 'next/link';
 
-const data_sample = [
-  {
-    meterNumber: 222,
-    billMonth: 'April',
-    utilityType: 'gas',
-    startReadDate: '6',
-    endReadDate: '7',
-    billImageLink: 'link',
-    id: 2,
-    confidence: {
-      meterNumber: 1,
-      billMonth: 1,
-      utilityType: 1,
-      startReadDate: 1,
-      endReadDate: 1,
-    },
-  },
-];
+
 
 const cellStyles = (params) => {
-  return {
-    backgroundColor: params.row.endReadDate.confidence <= 0.9 ? 'yellow' : 'initial',
-    width: '100%',
-    height: '100%',
-    paddingLeft: '10px',
-    paddingRight: '10px',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-  };
+  return 
 };
 
 // Define a custom cell renderer for the firstName column
@@ -46,10 +20,12 @@ const billLinkColumn = {
   headerAlign: 'center',
   sortable: false,
   disableColumnMenu: true,
-  renderCell: () => (
-    <IconButton>
+  renderCell: (params) => (
+    <Link href={`${params.value}`} target="_blank">
+    <IconButton >
       <Iconify icon="solar:bill-list-linear" />
     </IconButton>
+    </Link>
   ),
 };
 
@@ -63,10 +39,19 @@ const editableColumn = (headerName, value) => {
     disableColumnMenu: true,
     flex: 1,
     renderCell: (params) => {
-      const styles = cellStyles(params);
-      console.log(params)
+
       return (
-        <Box sx={styles}>
+        <Box sx={{
+          backgroundColor: params.row.confidence[value] <= 0.9 ? 'red' : 'initial',
+          width: '100%',
+          height: '100%',
+          paddingLeft: '10px',
+          paddingRight: '10px',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}>
           <Typography>{params.value}</Typography>
           <Typography variant="caption" fontSize={'11px'} color={'#637381'}>
           {params.row.confidence[value]}
@@ -78,15 +63,16 @@ const editableColumn = (headerName, value) => {
 };
 
 const columns = [
-  editableColumn('Meter Number', 'meterNumber'),
   editableColumn('Utility', 'utilityType'),
+  editableColumn('Meter Number', 'meterNumber'),
   editableColumn('Bill Month', 'billMonth'),
   editableColumn('Start Service', 'startReadDate'),
   editableColumn('End Service', 'endReadDate'),
+  editableColumn('Amount', 'amount'),
   billLinkColumn,
 ];
 
-export default function ApprovalDataTable() {
+export default function ApprovalDataTable({data}) {
   return (
     <DataGrid
       sx={{
@@ -95,7 +81,7 @@ export default function ApprovalDataTable() {
         },
       }}
       columns={columns}
-      rows={data_sample}
+      rows={data}
       checkboxSelection
       disableRowSelectionOnClick
       density={'comfortable'}

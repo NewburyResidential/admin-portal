@@ -18,7 +18,7 @@ import ApprovalDataTable from './ApprovalDataTable';
 
 // ----------------------------------------------------------------------
 
-export default function UtilityDialog({dialog}) {
+export default function UtilityDialog({dialog, data}) {
 
   return (
     <>
@@ -37,7 +37,7 @@ export default function UtilityDialog({dialog}) {
           <Card>
             <CardHeader title="Needs Approval" sx={{ mb: 2 }} />
             <Box sx={{ height: 390 }}>
-              <ApprovalDataTable />
+              <ApprovalDataTable data={data} />
             </Box>
           </Card>
         </DialogContent>

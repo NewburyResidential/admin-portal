@@ -1,7 +1,7 @@
 import UploadMultiFiles from 'src/components/upload-files/UploadMultiFiles';
 import { useState } from 'react';
 
-export default function UploadUtilityBills() {
+export default function UploadUtilityBills({setData}) {
 
     const acceptedFiles = ({ 
         'image/png': ['.png'],
@@ -25,6 +25,7 @@ export default function UploadUtilityBills() {
 
       if (response.ok) {
         const responseData = await response.json(); // Parse response body as JSON
+        setData(responseData.documentResponses)
         console.log('Response data:', responseData);
       } else {
         console.error('File upload failed.');
