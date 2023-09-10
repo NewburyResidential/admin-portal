@@ -6,10 +6,8 @@ import { _mock } from 'src/_mock';
 import { Box, Tooltip, Typography } from '@mui/material';
 import Link from 'next/link';
 
-
-
 const cellStyles = (params) => {
-  return 
+  return;
 };
 
 // Define a custom cell renderer for the firstName column
@@ -22,9 +20,9 @@ const billLinkColumn = {
   disableColumnMenu: true,
   renderCell: (params) => (
     <Link href={`${params.value}`} target="_blank">
-    <IconButton >
-      <Iconify icon="solar:bill-list-linear" />
-    </IconButton>
+      <IconButton>
+        <Iconify icon="solar:bill-list-linear" />
+      </IconButton>
     </Link>
   ),
 };
@@ -39,23 +37,27 @@ const editableColumn = (headerName, value) => {
     disableColumnMenu: true,
     flex: 1,
     renderCell: (params) => {
-
+      const confidence = params.row.confidence[value];
       return (
-        <Box sx={{
-          backgroundColor: params.row.confidence[value] <= 0.9 ? 'red' : 'initial',
-          width: '100%',
-          height: '100%',
-          paddingLeft: '10px',
-          paddingRight: '10px',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}>
+        <Box
+          sx={{
+            backgroundColor: confidence < 1 ? '#FFCCCB' : 'initial',
+            width: '100%',
+            height: '100%',
+            paddingLeft: '10px',
+            paddingRight: '10px',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
           <Typography>{params.value}</Typography>
-          <Typography variant="caption" fontSize={'11px'} color={'#637381'}>
-          {params.row.confidence[value]}
-          </Typography>
+          {confidence < 1 && (
+            <Typography variant="caption" fontSize={'11px'} color={'#637381'}>
+              {Number(confidence).toFixed(2).replace(/^0/, '')}
+            </Typography>
+          )}
         </Box>
       );
     },
@@ -72,7 +74,7 @@ const columns = [
   billLinkColumn,
 ];
 
-export default function ApprovalDataTable({data}) {
+export default function ApprovalDataTable({ data }) {
   return (
     <DataGrid
       sx={{
@@ -86,7 +88,6 @@ export default function ApprovalDataTable({data}) {
       disableRowSelectionOnClick
       density={'comfortable'}
       pageSizeOptions={[]}
-
     />
   );
 }
