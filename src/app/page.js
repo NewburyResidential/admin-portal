@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation';
 // config
-import { PATH_AFTER_LOGIN } from 'src/config-global';
+import { PATH_AFTER_LOGIN } from 'src/routes/paths';
 
 // ----------------------------------------------------------------------
 

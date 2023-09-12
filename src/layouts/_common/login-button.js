@@ -4,7 +4,7 @@ import Button from '@mui/material/Button';
 // routes
 import { RouterLink } from 'src/routes/components';
 // config
-import { PATH_AFTER_LOGIN } from 'src/config-global';
+import { PATH_AFTER_LOGIN } from 'src/routes/paths';
 
 // ----------------------------------------------------------------------
 

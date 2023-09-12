@@ -8,11 +8,10 @@ const ROOTS = {
 // ----------------------------------------------------------------------
 
 export const paths = {
-  minimalUI: 'https://mui.com/store/items/minimal-dashboard/',
   // AUTH
   auth: {
     jwt: {
-      login: `${ROOTS.AUTH}/jwt/login`,
+      login: `${ROOTS.AUTH}/microsoft/login`,
       register: `${ROOTS.AUTH}/jwt/register`,
     },
   },
@@ -27,3 +26,5 @@ export const paths = {
     },
   },
 };
+
+export const PATH_AFTER_LOGIN = paths.dashboard.root; // as '/dashboard'
