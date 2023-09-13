@@ -18,21 +18,20 @@ export default function UploadUtilityBills({setData}) {
         formData.append('files', file);
       });
 
-      const response = await fetch('/api/documentAI', {
+      const response = await fetch('/api/batchFormRecognizer', {
         method: 'POST',
         body: formData,
       });
 
       if (response.ok) {
-        const responseData = await response.json(); // Parse response body as JSON
-        setData(responseData.documentResponses)
+        const responseData = await response.json(); 
+        //setData(responseData.documentResponses)
         console.log('Response data:', responseData);
       } else {
-        console.error('File upload failed.');
+        const responseData = await response.json();
+        console.log(responseData)
       }
-    } catch (err) {
-      console.error('Error uploading files:', err);
-    }
+    } catch (err) {console.error('Error uploading files:', err)}
   };
 
   return (

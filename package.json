@@ -17,6 +17,8 @@
     "re-build-test": "rm -rf node_modules .next out dist build && npm install && npm run build"
   },
   "dependencies": {
+    "@azure/ai-form-recognizer": "^5.0.0",
+    "@azure/storage-blob": "^12.15.0",
     "@emotion/cache": "^11.10.5",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
