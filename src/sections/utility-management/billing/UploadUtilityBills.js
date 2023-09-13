@@ -18,7 +18,7 @@ export default function UploadUtilityBills({setData}) {
         formData.append('files', file);
       });
 
-      const response = await fetch('/api/batchFormRecognizer', {
+      const response = await fetch('/api/formRecognizer', {
         method: 'POST',
         body: formData,
       });
