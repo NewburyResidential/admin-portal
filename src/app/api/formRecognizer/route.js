@@ -3,12 +3,11 @@
 import { NextResponse } from 'next/server';
 import { AZURE_FORM_RECOGNIZER } from 'src/config-global';
 const { DocumentAnalysisClient, AzureKeyCredential } = require('@azure/ai-form-recognizer');
-const { BlobServiceClient } = require('@azure/storage-blob');
-const {
-  generateBlobSASQueryParameters,
-  BlobSASPermissions,
-  StorageSharedKeyCredential,
-} = require('@azure/storage-blob');
+const { generateBlobSASQueryParameters, BlobSASPermissions, StorageSharedKeyCredential, BlobServiceClient} = require('@azure/storage-blob');
+
+import { fConverToNumber } from 'src/utils/format-number';
+import { fToCamelCase } from 'src/utils/format-string';
+
 
 export async function POST(request) {
   const currentDateTime = new Date();
@@ -52,8 +51,11 @@ export async function POST(request) {
       // Process File from Blob Storage
       console.log('Starting file processing...');
       const poller = await client.beginAnalyzeDocumentFromUrl(modelId, blobUrl);
-      const { documents } = await poller.pollUntilDone();
-      results.push(documents);
+      const {documents} = await poller.pollUntilDone();
+
+      // Clean up response and push to results
+      const fields = transformOutput(documents[0].fields);
+      results.push(fields);
     } catch (error) {
       errors.push({
         summary: `Error Processing file: ${file.name}`,
@@ -85,3 +87,22 @@ function generateContainerSASToken(containerName) {
   ).toString();
   return containerSAS;
 }
+
+
+// Transform Output to be cleaner
+
+function transformOutput (obj) {
+  let newObj = {};
+  for (const key in obj) {
+    const camelCaseKey = fToCamelCase(key);
+    let value = obj[key].content || null;
+    if (value ? obj[key].kind === 'number' : false) {
+      value = fConverToNumber(value);
+    }
+    newObj[camelCaseKey] = {
+      value,
+      confidence: obj[key].confidence,
+    };
+  }
+  return newObj;
+};
