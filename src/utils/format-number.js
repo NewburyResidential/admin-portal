@@ -1,6 +1,13 @@
 import numeral from 'numeral';
 
 // ----------------------------------------------------------------------
+export function fConverToNumber(string) {
+  return numeral(string).value();
+}
+
+export function fTwoDecimals(number) {
+  return parseFloat(number.toFixed(2));
+}
 
 export function fNumber(number) {
   return numeral(number).format();
