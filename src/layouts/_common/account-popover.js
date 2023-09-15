@@ -1,4 +1,5 @@
 import { m } from 'framer-motion';
+import { signOut } from "next-auth/react";
 // @mui
 import { alpha } from '@mui/material/styles';
 import Box from '@mui/material/Box';
@@ -42,15 +43,11 @@ export default function AccountPopover() {
 
   const popover = usePopover();
 
-  const handleLogout = async () => {
-    try {
-      await logout();
-      popover.onClose();
-      router.replace('/');
-    } catch (error) {
-      console.error(error);
+  const handleLogout =  () => {
+    signOut( { callbackUrl: "http://localhost:3034/auth/logout" } )
+
     }
-  };
+
 
   const handleClickItem = (path) => {
     popover.onClose();
