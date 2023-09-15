@@ -1,52 +1,40 @@
-import { useState, useCallback } from 'react';
 // @mui
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-
-import Typography from '@mui/material/Typography';
-
-import DialogTitle from '@mui/material/DialogTitle';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
+import AppBar from '@mui/material/AppBar';
 import Dialog from '@mui/material/Dialog';
-import Card from '@mui/material/Card';
-import CardHeader from '@mui/material/CardHeader';
+import Button from '@mui/material/Button';
+import Toolbar from '@mui/material/Toolbar';
+import Iconify from 'src/components/iconify';
+import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
 import ApprovalDataTable from './ApprovalDataTable';
-
-// hooks
-
+import DialogActions from '@mui/material/DialogActions';
 
 // ----------------------------------------------------------------------
 
-export default function UtilityDialog({dialog, data}) {
-
+export default function UtilityDialog({ dialog, data }) {
   return (
     <>
-      <Dialog
-        open={dialog.value}
-        maxWidth={'lg'}
-        onClose={dialog.onFalse}
-        fullWidth={true}
-      >
-        <DialogTitle>Electric and Gas</DialogTitle>
-
-        <DialogContent>
-          <Typography sx={{ color: 'text.secondary' }}>
- 
-          </Typography>
-          <Card>
-            <CardHeader title="Needs Approval" sx={{ mb: 2 }} />
-            <Box sx={{ height: 390 }}>
-              <ApprovalDataTable data={data} />
-            </Box>
-          </Card>
-        </DialogContent>
-
+      <Dialog open={dialog.value} maxWidth="lg" onClose={dialog.onFalse} fullWidth={true}>
+        <AppBar position="relative" color="default">
+          <Toolbar>
+            <IconButton color="inherit" edge="start" onClick={dialog.onFalse}>
+              <Iconify icon="mingcute:close-line" />
+            </IconButton>
+            <Typography variant="h6" sx={{ flex: 1, ml: 2 }}>
+              Electric & Gas Approval
+            </Typography>
+          </Toolbar>
+        </AppBar>
+        <ApprovalDataTable rows={data} />
         <DialogActions>
-          <Button onClick={dialog.onFalse} variant="contained">
-            Close
+          <Button sx={{width: '80px'}} onClick={dialog.onFalse}  variant="outlined">
+            Deny
+          </Button>
+          <Button sx={{width: '80px'}} onClick={dialog.onFalse}  variant="contained">
+            Approve
           </Button>
         </DialogActions>
+        
       </Dialog>
     </>
   );

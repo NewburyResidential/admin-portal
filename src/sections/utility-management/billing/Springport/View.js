@@ -18,11 +18,13 @@ import UploadUtilityBills from '../UploadUtilityBills';
 
 import { useBoolean } from 'src/hooks/use-boolean';
 import UtilityDialog from '../UtilityDialog';
+import datafake from 'public/data.json';
 // ----------------------------------------------------------------------
 
 export default function View() {
   const dialog = useBoolean();
   const [data, setData] = useState([])
+    
 
   const handleOpenDrawer = () => {
    dialog.onTrue()
@@ -34,7 +36,7 @@ export default function View() {
       <Typography sx={{ mb: 6 }} variant="h4">
         2138 SpringPort Utilities
       </Typography>
-      <UtilityDialog data={data} dialog={dialog}/>
+      <UtilityDialog data={datafake} dialog={dialog}/>
       <Grid container spacing={3}>
         <Grid xs={9}>
           <UtilityProgressWidget handleOpenDrawer={handleOpenDrawer} />
