@@ -21,6 +21,8 @@ import Switch from '@mui/material/Switch';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { visuallyHidden } from '@mui/utils';
+import Iconify from 'src/components/iconify';
+import Link from 'next/link';
 
 function stableSort(array) {
   const stabilizedThis = array.map((el, index) => [el, index]);
@@ -88,7 +90,7 @@ EnhancedTableToolbar.propTypes = {
 };
 
 export default function EnhancedTable({ rows }) {
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [rowsPerPage, setRowsPerPage] = React.useState(25);
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
 
@@ -152,24 +154,49 @@ export default function EnhancedTable({ rows }) {
           <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
             <TableBody>
               {visibleRows.map((invoice, index) => {
-                const isItemSelected = isSelected(invoice.id);
+                const isItemSelected = isSelected(index);
                 const labelId = `enhanced-table-checkbox-${index}`;
-
+// TODO CHECK INDEX
                 return (
                   <>
-                    <TableRow key={invoice.id} selected={isItemSelected}>
+                    <TableRow key={index} selected={isItemSelected}>
                       <TableCell padding="checkbox" style={{ padding: '16px 8px' }}>
                         <Checkbox
                           color="primary"
-                          onClick={(event) => handleClick(event, invoice.id)}
+                          onClick={(event) => handleClick(event, index)}
                           checked={isItemSelected}
                           inputProps={{
                             'aria-labelledby': labelId,
                           }}
                         />
                       </TableCell>
-                      <TableCell id={labelId} scope="row">
-                        {invoice.id}
+                      <TableCell id={labelId} align="center">
+                        <Typography variant="body2" fontWeight={600}>
+                          ID: {invoice.id}
+                        </Typography>
+                      </TableCell>
+                      <TableCell id={labelId}  align="center">
+                        <Typography variant="body2" fontWeight={300}>
+                          Due: September 30, 2021
+                        </Typography>
+                      </TableCell>
+                      <TableCell id={labelId}>
+                        <Typography variant="body2" fontWeight={300} align="center">
+                          Address: 4 Cranberry Lane Lynnfiled
+                        </Typography>
+                      </TableCell>
+                      <TableCell id={labelId}>
+                        <Typography variant="body2" fontWeight={300} align="center">
+                          Code: 2100 SpringPort Apartments
+                        </Typography>
+                      </TableCell>
+
+                      <TableCell id={labelId} align="right">
+                        <Link href={`fjdals`} target="_blank">
+                          <IconButton>
+                            <Iconify icon="solar:bill-list-linear"  />
+                          </IconButton>
+                        </Link>
                       </TableCell>
                     </TableRow>
 
@@ -185,7 +212,7 @@ export default function EnhancedTable({ rows }) {
                                 <TableCell align="center">{bill.serviceEnd}</TableCell>
                                 <TableCell align="center">{bill.amount}</TableCell>
                                 <TableCell align="center">{bill.tax}</TableCell>
-                                <TableCell align="center">{bill.totalAmount}</TableCell>
+                                {/* <TableCell align="center">{bill.totalAmount}</TableCell> */}
                               </TableRow>
                             </TableBody>
                           ))}
@@ -199,7 +226,7 @@ export default function EnhancedTable({ rows }) {
           </Table>
         </TableContainer>
         <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
+          rowsPerPageOptions={[]}
           component="div"
           count={rows.length}
           rowsPerPage={rowsPerPage}
