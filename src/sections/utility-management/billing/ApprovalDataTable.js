@@ -1,28 +1,24 @@
-import * as React from 'react';
-import PropTypes from 'prop-types';
+import { useState, useMemo } from 'react';
+import Link from 'next/link';
+
 import { alpha } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Table from '@mui/material/Table';
+import Paper from '@mui/material/Paper';
+import Toolbar from '@mui/material/Toolbar';
+import Tooltip from '@mui/material/Tooltip';
+import TableRow from '@mui/material/TableRow';
+import Checkbox from '@mui/material/Checkbox';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TablePagination from '@mui/material/TablePagination';
-import TableRow from '@mui/material/TableRow';
-import TableSortLabel from '@mui/material/TableSortLabel';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import Paper from '@mui/material/Paper';
-import Checkbox from '@mui/material/Checkbox';
+import Container  from '@mui/material/Container';
+import ClearIcon from '@mui/icons-material/Clear';
 import IconButton from '@mui/material/IconButton';
-import Tooltip from '@mui/material/Tooltip';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Switch from '@mui/material/Switch';
-import DeleteIcon from '@mui/icons-material/Delete';
-import FilterListIcon from '@mui/icons-material/FilterList';
-import { visuallyHidden } from '@mui/utils';
+import Typography from '@mui/material/Typography';
+import TableContainer from '@mui/material/TableContainer';
+import TablePagination from '@mui/material/TablePagination';
+
 import Iconify from 'src/components/iconify';
-import Link from 'next/link';
 
 function stableSort(array) {
   const stabilizedThis = array.map((el, index) => [el, index]);
@@ -30,19 +26,42 @@ function stableSort(array) {
   return stabilizedThis.map((el) => el[0]);
 }
 
-// const headCells = [
-//   { id: 'utilityType', label: 'Utility Type' },
-//   { id: 'meterNumber', label: 'Meter Number' },
-//   { id: 'serviceStart', label: 'Service Start' },
-//   { id: 'serviceEnd', label: 'Service End' },
-//   { id: 'amount', label: 'Amount' },
-//   { id: 'tax', label: 'Tax' },
-//   { id: 'totalAmount', label: 'Total Amount' },
-// ];
+function HeadLabels({ cellWidth }) {
+  const headCells = [
+    { id: 'utilityType', label: 'Utility Type' },
+    { id: 'meterNumber', label: 'Meter Number' },
+    { id: 'serviceStart', label: 'Service Start' },
+    { id: 'serviceEnd', label: 'Service End' },
+    { id: 'amount', label: 'Amount' },
+    { id: 'tax', label: 'Tax' },
+    // { id: 'totalAmount', label: 'Total Amount' },
+  ];
 
-function EnhancedTableToolbar(props) {
-  const { numSelected, rowCount, onSelectAllClick } = props;
+  return (
+    <Container
+      sx={{
+        padding: '0 6px',
+        bgcolor: (theme) => {
+          console.log(theme.palette)
+          return theme.palette.mode === 'light' ? theme.palette.grey[200] : theme.palette.grey[700]
+        }
+      }}
+    >
+      <Table sx={{ width: '100%' }}>
+        <TableRow sx={{}}>
+          {headCells.map((headCell) => (
+            <TableCell key={headCell.id} sx={{ width: `${cellWidth}%` }} align="center">
+              {headCell.label}
+            </TableCell>
+          ))}
+        </TableRow>
+      </Table>
+    </Container>
+  );
+}
 
+function TableToolbar(props) {
+  const { numSelected, rowCount, onSelectAllClick, onRemoveAllClick } = props;
   return (
     <Toolbar
       sx={{
@@ -59,9 +78,7 @@ function EnhancedTableToolbar(props) {
         indeterminate={numSelected > 0 && numSelected < rowCount}
         checked={rowCount > 0 && numSelected === rowCount}
         onChange={onSelectAllClick}
-        inputProps={{
-          'aria-label': 'select all desserts',
-        }}
+        inputProps={{ 'aria-label': 'select all invoices' }}
         sx={{ marginRight: 1 }}
       />
       {numSelected > 0 ? (
@@ -70,14 +87,13 @@ function EnhancedTableToolbar(props) {
         </Typography>
       ) : (
         <Typography sx={{ flex: '1 1 100%' }} variant="h6" id="tableTitle" component="div">
-          Approval
+          Electric & Gas Approval
         </Typography>
       )}
-
       {numSelected > 0 ? (
         <Tooltip title="Delete">
-          <IconButton>
-            <DeleteIcon />
+          <IconButton onClick={onRemoveAllClick}>
+            <ClearIcon />
           </IconButton>
         </Tooltip>
       ) : null}
@@ -85,14 +101,11 @@ function EnhancedTableToolbar(props) {
   );
 }
 
-EnhancedTableToolbar.propTypes = {
-  numSelected: PropTypes.number.isRequired,
-};
-
-export default function EnhancedTable({ rows }) {
-  const [rowsPerPage, setRowsPerPage] = React.useState(25);
-  const [selected, setSelected] = React.useState([]);
-  const [page, setPage] = React.useState(0);
+export default function ApprovalDataTable({ rows }) {
+  const [selected, setSelected] = useState([]);
+  const [page, setPage] = useState(0);
+  const rowsPerPage = 10;
+  const cellWidth = 100 / 6;
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
@@ -102,11 +115,13 @@ export default function EnhancedTable({ rows }) {
     }
     setSelected([]);
   };
+  const onRemoveAllClick = () => {
+    setSelected([]);
+  };
 
   const handleClick = (event, name) => {
     const selectedIndex = selected.indexOf(name);
     let newSelected = [];
-
     if (selectedIndex === -1) {
       newSelected = newSelected.concat(selected, name);
     } else if (selectedIndex === 0) {
@@ -127,43 +142,34 @@ export default function EnhancedTable({ rows }) {
   };
   const isSelected = (name) => selected.indexOf(name) !== -1;
 
-  // Avoid a layout jump when reaching the last page with empty rows.
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
-
-  const visibleRows = React.useMemo(
+  const visibleRows = useMemo(
     () => stableSort(rows).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
     [page, rowsPerPage]
   );
 
-  console.log(visibleRows);
-
   return (
     <Box sx={{ width: '100%' }}>
       <Paper sx={{ width: '100%', mb: 2 }}>
-        <EnhancedTableToolbar
+        <TableToolbar
           numSelected={selected.length}
           onSelectAllClick={handleSelectAllClick}
           rowCount={rows.length}
+          onRemoveAllClick={onRemoveAllClick}
         />
-        {/* <EnhancedTableHead
-              numSelected={selected.length}
-              onSelectAllClick={handleSelectAllClick}
-              rowCount={rows.length}
-            /> */}
+        <HeadLabels cellWidth={cellWidth} />
         <TableContainer sx={{ maxHeight: 600, overflow: 'auto' }}>
           <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
             <TableBody>
               {visibleRows.map((invoice, index) => {
-                const isItemSelected = isSelected(index);
-                const labelId = `enhanced-table-checkbox-${index}`;
-// TODO CHECK INDEX
+                const isItemSelected = isSelected(invoice.id);
+                const labelId = `table-checkbox-${invoice.id}`;
                 return (
                   <>
-                    <TableRow key={index} selected={isItemSelected}>
+                    <TableRow key={invoice.id} selected={isItemSelected}>
                       <TableCell padding="checkbox" style={{ padding: '16px 8px' }}>
                         <Checkbox
                           color="primary"
-                          onClick={(event) => handleClick(event, index)}
+                          onClick={(event) => handleClick(event, invoice.id)}
                           checked={isItemSelected}
                           inputProps={{
                             'aria-labelledby': labelId,
@@ -175,7 +181,7 @@ export default function EnhancedTable({ rows }) {
                           ID: {invoice.id}
                         </Typography>
                       </TableCell>
-                      <TableCell id={labelId}  align="center">
+                      <TableCell id={labelId} align="center">
                         <Typography variant="body2" fontWeight={300}>
                           Due: September 30, 2021
                         </Typography>
@@ -194,31 +200,42 @@ export default function EnhancedTable({ rows }) {
                       <TableCell id={labelId} align="right">
                         <Link href={`fjdals`} target="_blank">
                           <IconButton>
-                            <Iconify icon="solar:bill-list-linear"  />
+                            <Iconify icon="solar:bill-list-linear" />
                           </IconButton>
                         </Link>
                       </TableCell>
                     </TableRow>
-
-                    <TableRow selected={isItemSelected}>
-                      <TableCell colSpan={10} style={{ padding: '4px 6px' }}>
-                        <Table size="small" aria-label="utility">
-                          {invoice.bills.map((bill) => (
+                    {invoice.bills.map((bill) => (
+                      <TableRow selected={isItemSelected}>
+                        <TableCell colSpan={6} style={{ padding: '4px 6px' }}>
+                          <Table size="small" aria-label="utility">
                             <TableBody>
                               <TableRow key={'4'}>
-                                <TableCell align="center">{bill.utilityType}</TableCell>
-                                <TableCell align="center">{bill.meterNumber}</TableCell>
-                                <TableCell align="center">{bill.serviceStart}</TableCell>
-                                <TableCell align="center">{bill.serviceEnd}</TableCell>
-                                <TableCell align="center">{bill.amount}</TableCell>
-                                <TableCell align="center">{bill.tax}</TableCell>
+                                <TableCell sx={{ width: `${cellWidth}%` }} align="center">
+                                  {bill.utilityType}
+                                </TableCell>
+                                <TableCell sx={{ width: `${cellWidth}%` }} align="center">
+                                  {bill.meterNumber}
+                                </TableCell>
+                                <TableCell sx={{ width: `${cellWidth}%` }} align="center">
+                                  {bill.serviceStart}
+                                </TableCell>
+                                <TableCell sx={{ width: `${cellWidth}%` }} align="center">
+                                  {bill.serviceEnd}
+                                </TableCell>
+                                <TableCell sx={{ width: `${cellWidth}%` }} align="center">
+                                  {bill.amount}
+                                </TableCell>
+                                <TableCell sx={{ width: `${cellWidth}%` }} align="center">
+                                  {bill.tax}
+                                </TableCell>
                                 {/* <TableCell align="center">{bill.totalAmount}</TableCell> */}
                               </TableRow>
                             </TableBody>
-                          ))}
-                        </Table>
-                      </TableCell>
-                    </TableRow>
+                          </Table>
+                        </TableCell>
+                      </TableRow>
+                    ))}
                   </>
                 );
               })}
