@@ -4,15 +4,11 @@ import Link from 'next/link';
 import { alpha } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Table from '@mui/material/Table';
-import Paper from '@mui/material/Paper';
 import Toolbar from '@mui/material/Toolbar';
-import Tooltip from '@mui/material/Tooltip';
 import TableRow from '@mui/material/TableRow';
 import Checkbox from '@mui/material/Checkbox';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
-import Container  from '@mui/material/Container';
-import ClearIcon from '@mui/icons-material/Clear';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import TableContainer from '@mui/material/TableContainer';
@@ -22,7 +18,6 @@ import Iconify from 'src/components/iconify';
 
 function stableSort(array) {
   const stabilizedThis = array.map((el, index) => [el, index]);
-  console.log(stabilizedThis);
   return stabilizedThis.map((el) => el[0]);
 }
 
@@ -38,25 +33,23 @@ function HeadLabels({ cellWidth }) {
   ];
 
   return (
-    <Container
-      sx={{
-        padding: '0 6px',
-        bgcolor: (theme) => {
-          console.log(theme.palette)
-          return theme.palette.mode === 'light' ? theme.palette.grey[200] : theme.palette.grey[700]
-        }
-      }}
-    >
-      <Table sx={{ width: '100%' }}>
-        <TableRow sx={{}}>
-          {headCells.map((headCell) => (
-            <TableCell key={headCell.id} sx={{ width: `${cellWidth}%` }} align="center">
-              {headCell.label}
-            </TableCell>
-          ))}
-        </TableRow>
-      </Table>
-    </Container>
+    <Table sx={{ width: '100%' }}>
+      <TableRow
+        sx={{
+          bgcolor: (theme) => {
+            return theme.palette.mode === 'light'
+              ? theme.palette.grey[200]
+              : theme.palette.grey[700];
+          },
+        }}
+      >
+        {headCells.map((headCell) => (
+          <TableCell key={headCell.id} sx={{ width: `${cellWidth}%` }} align="center">
+            {headCell.label}
+          </TableCell>
+        ))}
+      </TableRow>
+    </Table>
   );
 }
 
@@ -81,22 +74,9 @@ function TableToolbar(props) {
         inputProps={{ 'aria-label': 'select all invoices' }}
         sx={{ marginRight: 1 }}
       />
-      {numSelected > 0 ? (
-        <Typography sx={{ flex: '1 1 100%' }} color="inherit" variant="subtitle1" component="div">
-          {numSelected} selected
-        </Typography>
-      ) : (
-        <Typography sx={{ flex: '1 1 100%' }} variant="h6" id="tableTitle" component="div">
-          Electric & Gas Approval
-        </Typography>
-      )}
-      {numSelected > 0 ? (
-        <Tooltip title="Delete">
-          <IconButton onClick={onRemoveAllClick}>
-            <ClearIcon />
-          </IconButton>
-        </Tooltip>
-      ) : null}
+      <Typography sx={{ flex: '1 1 100%' }} color="inherit" variant="subtitle1" component="div">
+        {numSelected} selected
+      </Typography>
     </Toolbar>
   );
 }
@@ -148,109 +128,107 @@ export default function ApprovalDataTable({ rows }) {
   );
 
   return (
-    <Box sx={{ width: '100%' }}>
-      <Paper sx={{ width: '100%', mb: 2 }}>
-        <TableToolbar
-          numSelected={selected.length}
-          onSelectAllClick={handleSelectAllClick}
-          rowCount={rows.length}
-          onRemoveAllClick={onRemoveAllClick}
-        />
-        <HeadLabels cellWidth={cellWidth} />
-        <TableContainer sx={{ maxHeight: 600, overflow: 'auto' }}>
-          <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
-            <TableBody>
-              {visibleRows.map((invoice, index) => {
-                const isItemSelected = isSelected(invoice.id);
-                const labelId = `table-checkbox-${invoice.id}`;
-                return (
-                  <>
-                    <TableRow key={invoice.id} selected={isItemSelected}>
-                      <TableCell padding="checkbox" style={{ padding: '16px 8px' }}>
-                        <Checkbox
-                          color="primary"
-                          onClick={(event) => handleClick(event, invoice.id)}
-                          checked={isItemSelected}
-                          inputProps={{
-                            'aria-labelledby': labelId,
-                          }}
-                        />
-                      </TableCell>
-                      <TableCell id={labelId} align="center">
-                        <Typography variant="body2" fontWeight={600}>
-                          ID: {invoice.id}
-                        </Typography>
-                      </TableCell>
-                      <TableCell id={labelId} align="center">
-                        <Typography variant="body2" fontWeight={300}>
-                          Due: September 30, 2021
-                        </Typography>
-                      </TableCell>
-                      <TableCell id={labelId}>
-                        <Typography variant="body2" fontWeight={300} align="center">
-                          Address: 4 Cranberry Lane Lynnfiled
-                        </Typography>
-                      </TableCell>
-                      <TableCell id={labelId}>
-                        <Typography variant="body2" fontWeight={300} align="center">
-                          Code: 2100 SpringPort Apartments
-                        </Typography>
-                      </TableCell>
+    <Box>
+      <TableToolbar
+        numSelected={selected.length}
+        onSelectAllClick={handleSelectAllClick}
+        rowCount={rows.length}
+        onRemoveAllClick={onRemoveAllClick}
+      />
+      <HeadLabels cellWidth={cellWidth} />
+      <TableContainer sx={{ maxHeight: '52vh', overflow: 'auto' }}>
+        <Table aria-labelledby="tableTitle">
+          <TableBody>
+            {visibleRows.map((invoice, index) => {
+              const isItemSelected = isSelected(invoice.id);
+              const labelId = `table-checkbox-${invoice.id}`;
+              return (
+                <>
+                  <TableRow key={invoice.id} selected={isItemSelected}>
+                    <TableCell padding="checkbox" style={{ padding: '16px 8px' }}>
+                      <Checkbox
+                        color="primary"
+                        onClick={(event) => handleClick(event, invoice.id)}
+                        checked={isItemSelected}
+                        inputProps={{
+                          'aria-labelledby': labelId,
+                        }}
+                      />
+                    </TableCell>
+                    <TableCell id={labelId} align="center">
+                      <Typography variant="body2" fontWeight={600}>
+                        ID: {invoice.id}
+                      </Typography>
+                    </TableCell>
+                    <TableCell id={labelId} align="center">
+                      <Typography variant="body2" fontWeight={300}>
+                        Due: September 30, 2021
+                      </Typography>
+                    </TableCell>
+                    <TableCell id={labelId}>
+                      <Typography variant="body2" fontWeight={300} align="center">
+                        Address: 4 Cranberry Lane Lynnfiled
+                      </Typography>
+                    </TableCell>
+                    <TableCell id={labelId}>
+                      <Typography variant="body2" fontWeight={300} align="center">
+                        Code: 2100 SpringPort Apartments
+                      </Typography>
+                    </TableCell>
 
-                      <TableCell id={labelId} align="right">
-                        <Link href={`fjdals`} target="_blank">
-                          <IconButton>
-                            <Iconify icon="solar:bill-list-linear" />
-                          </IconButton>
-                        </Link>
+                    <TableCell id={labelId} align="right">
+                      <Link href={`fjdals`} target="_blank">
+                        <IconButton>
+                          <Iconify icon="solar:bill-list-linear" />
+                        </IconButton>
+                      </Link>
+                    </TableCell>
+                  </TableRow>
+                  {invoice.bills.map((bill) => (
+                    <TableRow selected={isItemSelected}>
+                      <TableCell colSpan={6} style={{ padding: '4px 0px' }}>
+                        <Table size="small" aria-label="utility">
+                          <TableBody>
+                            <TableRow key={'4'}>
+                              <TableCell sx={{ width: `${cellWidth}%` }} align="center">
+                                {bill.utilityType}
+                              </TableCell>
+                              <TableCell sx={{ width: `${cellWidth}%` }} align="center">
+                                {bill.meterNumber}
+                              </TableCell>
+                              <TableCell sx={{ width: `${cellWidth}%` }} align="center">
+                                {bill.serviceStart}
+                              </TableCell>
+                              <TableCell sx={{ width: `${cellWidth}%` }} align="center">
+                                {bill.serviceEnd}
+                              </TableCell>
+                              <TableCell sx={{ width: `${cellWidth}%` }} align="center">
+                                {bill.amount}
+                              </TableCell>
+                              <TableCell sx={{ width: `${cellWidth}%` }} align="center">
+                                {bill.tax}
+                              </TableCell>
+                              {/* <TableCell align="center">{bill.totalAmount}</TableCell> */}
+                            </TableRow>
+                          </TableBody>
+                        </Table>
                       </TableCell>
                     </TableRow>
-                    {invoice.bills.map((bill) => (
-                      <TableRow selected={isItemSelected}>
-                        <TableCell colSpan={6} style={{ padding: '4px 6px' }}>
-                          <Table size="small" aria-label="utility">
-                            <TableBody>
-                              <TableRow key={'4'}>
-                                <TableCell sx={{ width: `${cellWidth}%` }} align="center">
-                                  {bill.utilityType}
-                                </TableCell>
-                                <TableCell sx={{ width: `${cellWidth}%` }} align="center">
-                                  {bill.meterNumber}
-                                </TableCell>
-                                <TableCell sx={{ width: `${cellWidth}%` }} align="center">
-                                  {bill.serviceStart}
-                                </TableCell>
-                                <TableCell sx={{ width: `${cellWidth}%` }} align="center">
-                                  {bill.serviceEnd}
-                                </TableCell>
-                                <TableCell sx={{ width: `${cellWidth}%` }} align="center">
-                                  {bill.amount}
-                                </TableCell>
-                                <TableCell sx={{ width: `${cellWidth}%` }} align="center">
-                                  {bill.tax}
-                                </TableCell>
-                                {/* <TableCell align="center">{bill.totalAmount}</TableCell> */}
-                              </TableRow>
-                            </TableBody>
-                          </Table>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </>
-                );
-              })}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <TablePagination
-          rowsPerPageOptions={[]}
-          component="div"
-          count={rows.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-        />
-      </Paper>
+                  ))}
+                </>
+              );
+            })}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      <TablePagination
+        rowsPerPageOptions={[]}
+        component="div"
+        count={rows.length}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onPageChange={handleChangePage}
+      />
     </Box>
   );
 }
