@@ -1,20 +1,25 @@
 'use client';
 
 import { useEffect } from 'react';
-import { signIn } from 'next-auth/react';
 import { SplashScreen } from 'src/components/loading-screen';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 
-export default function Login({ session, params }) {
-  const callbackUrl = params || '/dashboard';
+export default function Login({ redirectPath }) {
+  const supabase = createClientComponentClient();
+  const signInWithAzure = async () => {
+    await supabase.auth.signInWithOAuth({
+      provider: 'azure',
+      options: {
+        scopes: 'email',
+        redirectTo: `${location.origin}/api/auth/?redirectedFrom=${redirectPath}`,
+      },
+    });
+  };
+
   useEffect(() => {
-    if (!session) {
-      signIn('azure-ad', { callbackUrl });
-    }
-  }, [params, session]);
+    signInWithAzure();
+  }, []);
 
-  return (
-    <>
-      <SplashScreen />
-    </>
-  );
+  return <SplashScreen />
+
 }
