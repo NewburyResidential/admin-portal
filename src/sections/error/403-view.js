@@ -7,10 +7,11 @@ import Typography from '@mui/material/Typography';
 // layouts
 import CompactLayout from 'src/layouts/compact';
 // assets
-import { ForbiddenIllustration } from 'src/assets/illustrations';
-// components
+
 import { RouterLink } from 'src/routes/components';
 import { MotionContainer, varBounce } from 'src/components/animate';
+import SeoIllustration from 'src/assets/illustrations/seo-illustration';
+
 
 // ----------------------------------------------------------------------
 
@@ -20,24 +21,24 @@ export default function View403() {
       <MotionContainer>
         <m.div variants={varBounce().in}>
           <Typography variant="h3" sx={{ mb: 2 }}>
-            No permission
+          Log Out Successful
           </Typography>
         </m.div>
 
         <m.div variants={varBounce().in}>
           <Typography sx={{ color: 'text.secondary' }}>
-            The page you&apos;re trying access has restricted access.
+          You have successfully logged out of your session
             <br />
-            Please refer to your system administrator
+            and will have restricted access until you sign back in with your Azure Credentials
           </Typography>
         </m.div>
 
         <m.div variants={varBounce().in}>
-          <ForbiddenIllustration sx={{ height: 260, my: { xs: 5, sm: 10 } }} />
+          <SeoIllustration sx={{ height: 260, my: { xs: 5, sm: 10 } }} />
         </m.div>
 
-        <Button component={RouterLink} href="/" size="large" variant="contained">
-          Go to Home
+        <Button sx={{width: '120px'}} component={RouterLink} href="/auth/login" size="large" variant="contained">
+          Sign In 
         </Button>
       </MotionContainer>
     </CompactLayout>

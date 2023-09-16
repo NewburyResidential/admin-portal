@@ -1,5 +1,4 @@
 import { m } from 'framer-motion';
-import { signOut } from "next-auth/react";
 // @mui
 import { alpha } from '@mui/material/styles';
 import Box from '@mui/material/Box';
@@ -18,6 +17,8 @@ import { useMockedUser } from 'src/hooks/use-mocked-user';
 // components
 import { varHover } from 'src/components/animate';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+
 
 // ----------------------------------------------------------------------
 
@@ -40,13 +41,13 @@ export default function AccountPopover() {
 
   const { user } = useMockedUser();
 
-
   const popover = usePopover();
 
-  const handleLogout =  () => {
-    signOut( { callbackUrl: "http://localhost:3034/auth/logout" } )
-
-    }
+  const supabase = createClientComponentClient();
+  async function handleLogout() {
+    const { error } = await supabase.auth.signOut()
+    router.push('/auth/logout')
+  }
 
 
   const handleClickItem = (path) => {
