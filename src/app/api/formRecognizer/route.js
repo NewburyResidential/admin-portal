@@ -1,22 +1,23 @@
-//https://github.com/Azure/azure-sdk-for-python/issues/31934
+// https://github.com/Azure/azure-sdk-for-python/issues/31934
 
 import { NextResponse } from 'next/server';
 import { AZURE_FORM_RECOGNIZER } from 'src/config-global';
-const { DocumentAnalysisClient, AzureKeyCredential } = require('@azure/ai-form-recognizer');
-const { generateBlobSASQueryParameters, BlobSASPermissions, StorageSharedKeyCredential, BlobServiceClient} = require('@azure/storage-blob');
 
 import { fConverToNumber } from 'src/utils/format-number';
 import { fToCamelCase } from 'src/utils/format-string';
+
+const { DocumentAnalysisClient, AzureKeyCredential } = require('@azure/ai-form-recognizer');
+const { generateBlobSASQueryParameters, BlobSASPermissions, StorageSharedKeyCredential, BlobServiceClient} = require('@azure/storage-blob');
 
 
 export async function POST(request) {
   const currentDateTime = new Date();
   const batchId = currentDateTime.toISOString().replace(/Z$/, '_EST');
 
-  const formApiKey = AZURE_FORM_RECOGNIZER.formApiKey;
-  const formEndpoint = AZURE_FORM_RECOGNIZER.formEndpoint;
-  const storageConnectionString = AZURE_FORM_RECOGNIZER.storageConnectionString;
-  const storageContainer = AZURE_FORM_RECOGNIZER.storageContainer;
+  const {formApiKey} = AZURE_FORM_RECOGNIZER;
+  const {formEndpoint} = AZURE_FORM_RECOGNIZER;
+  const {storageConnectionString} = AZURE_FORM_RECOGNIZER;
+  const {storageContainer} = AZURE_FORM_RECOGNIZER;
   const modelId = 'consumersmodel';
 
   const blobServiceClient = BlobServiceClient.fromConnectionString(storageConnectionString);
@@ -92,7 +93,7 @@ function generateContainerSASToken(containerName) {
 // Transform Output to be cleaner
 
 function transformOutput (obj) {
-  let newObj = {};
+  const newObj = {};
   for (const key in obj) {
     const camelCaseKey = fToCamelCase(key);
     let value = obj[key].content || null;

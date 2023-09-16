@@ -1,4 +1,5 @@
 'use client';
+
 import { useState } from 'react';
 import sumBy from 'lodash/sumBy';
 
@@ -9,16 +10,15 @@ import { useTheme } from '@mui/material/styles';
 
 import { _invoices } from 'src/_mock';
 
-import Scrollbar from '@components/scrollbar';
-import InvoiceAnalytic from '@components/cards/Analytic';
+import Scrollbar from 'src/components/scrollbar';
+import InvoiceAnalytic from '../UtilityAnalytic';
 
 
 export default function UtilityProgress() {
   const theme = useTheme();
   const [tableData, setTableData] = useState(_invoices);
   return (
-    <>
-     <Card
+    <Card
           sx={{
             mb: { xs: 3, md: 4 },
           }}
@@ -58,6 +58,5 @@ export default function UtilityProgress() {
             </Stack>
           </Scrollbar>
         </Card>
-    </>
   )
 }

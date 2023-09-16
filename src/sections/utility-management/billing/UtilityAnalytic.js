@@ -7,7 +7,7 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import CircularProgress from '@mui/material/CircularProgress';
 // utils
-import { fShortenNumber, fCurrency } from 'src/utils/format-number';
+import { fShortenNumber } from 'src/utils/format-number';
 // components
 import Iconify from 'src/components/iconify';
 import { varHover } from 'src/components/animate';
@@ -78,7 +78,7 @@ UtilityAnalytic.propTypes = {
   color: PropTypes.string,
   icon: PropTypes.oneOfType([PropTypes.element, PropTypes.string]),
   percent: PropTypes.number,
-  price: PropTypes.number,
   title: PropTypes.string,
   total: PropTypes.number,
+  handleOpenDrawer: PropTypes.func,
 };

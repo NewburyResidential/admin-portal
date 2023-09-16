@@ -1,21 +1,9 @@
+import PropTypes from 'prop-types';
+
 import UploadMultiFiles from 'src/components/upload-files/UploadMultiFiles';
-import { useState } from 'react';
-import data from 'public/data.json';
-import {
-  fConverToNumber,
-  fCurrency,
-  fNumber,
-  fShortenNumber,
-  fTwoDecimals,
-} from 'src/utils/format-number';
 
 export default function UploadUtilityBills({ setData }) {
-
- 
-
-
   const acceptedFiles = {
-    'image/png': ['.png'],
     'image/png': ['.jpg', '.jpeg'],
     'application/pdf': ['.pdf'],
   };
@@ -36,7 +24,7 @@ export default function UploadUtilityBills({ setData }) {
 
       if (response.ok) {
         const responseData = await response.json();
-        //setData(responseData.documentResponses)
+        // setData(responseData.documentResponses)
         console.log('Response data:', responseData);
       } else {
         const responseData = await response.json();
@@ -47,9 +35,9 @@ export default function UploadUtilityBills({ setData }) {
     }
   };
 
-  return (
-    <>
-      <UploadMultiFiles onUpload={onUpload} accept={acceptedFiles} />
-    </>
-  );
+  return <UploadMultiFiles onUpload={onUpload} accept={acceptedFiles} />;
 }
+
+UploadUtilityBills.propTypes = {
+  setData: PropTypes.func,
+};

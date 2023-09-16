@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import PropTypes from 'prop-types';
 // @mui
 import { useTheme } from '@mui/material/styles';
 import Stack from '@mui/material/Stack';
@@ -12,7 +12,6 @@ import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 
 // theme
@@ -73,9 +72,7 @@ export default function UtilityInfoDrawer({ openDrawer, setOpenDrawer }) {
         bgcolor: 'background.neutral',
       }}
     >
-     
-
-      <Carousel onClick={() => setOpen(true)} data={fakeBills} />
+      <Carousel onClick={() => setOpenDrawer(true)} data={fakeBills} />
 
       <Divider sx={{ borderStyle: 'dashed' }} />
 
@@ -87,66 +84,62 @@ export default function UtilityInfoDrawer({ openDrawer, setOpenDrawer }) {
   );
 
   const renderTabel = (
-<>
-<Box component="span" sx={{ color: 'error.dark', textAlign: 'center', p: 3, fontWeight: 'bold' }}>
+    <>
+      <Box
+        component="span"
+        sx={{ color: 'error.dark', textAlign: 'center', p: 3, fontWeight: 'bold' }}
+      >
         Missing Utility Bills
       </Box>
-<TableContainer sx={{ height: '100%'}}>
-      <Table sx={{ maxWidth: 400, tableLayout: 'auto', }} aria-label="simple table">
-
-        <TableBody>
-          <TableRow
-            key={'row1'}
-            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-          >
-            <TableCell align="center">Garage #1</TableCell>
-            <TableCell align="center">31189745</TableCell>
-          </TableRow>
-          <TableRow
-            key={'row2'}
-            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-          >
-            <TableCell align="center">Garage #2</TableCell>
-            <TableCell align="center">33289745</TableCell>
-          </TableRow>
-          <TableRow
-            key={'row3'}
-            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-          >
-            <TableCell align="center">Main Building</TableCell>
-            <TableCell align="center">4991264</TableCell>
-          </TableRow>
-        </TableBody>
-      </Table>
-    </TableContainer>
-</>
-  )
-
-  return (
-    <>
-      <Drawer
-        anchor="right"
-        open={openDrawer}
-        onClose={() => {
-          setOpenDrawer(false);
-        }}
-        slotProps={{
-          backdrop: { invisible: true },
-        }}
-        sx={{
-          [`& .${drawerClasses.paper}`]: {
-            ...paper({ theme, bgcolor: theme.palette.background.default }),
-            width: 400,
-          },
-        }}
-      >
-        {renderHead}
-        {renderPdfInfo}
-        {renderTabel}
-        <Scrollbar>
-          <Stack spacing={3} sx={{ p: 3 }}></Stack>
-        </Scrollbar>
-      </Drawer>
+      <TableContainer sx={{ height: '100%' }}>
+        <Table sx={{ maxWidth: 400, tableLayout: 'auto' }} aria-label="simple table">
+          <TableBody>
+            <TableRow key="row1" sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+              <TableCell align="center">Garage #1</TableCell>
+              <TableCell align="center">31189745</TableCell>
+            </TableRow>
+            <TableRow key="row2" sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+              <TableCell align="center">Garage #2</TableCell>
+              <TableCell align="center">33289745</TableCell>
+            </TableRow>
+            <TableRow key="row3" sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+              <TableCell align="center">Main Building</TableCell>
+              <TableCell align="center">4991264</TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
+      </TableContainer>
     </>
   );
+
+  return (
+    <Drawer
+      anchor="right"
+      open={openDrawer}
+      onClose={() => {
+        setOpenDrawer(false);
+      }}
+      slotProps={{
+        backdrop: { invisible: true },
+      }}
+      sx={{
+        [`& .${drawerClasses.paper}`]: {
+          ...paper({ theme, bgcolor: theme.palette.background.default }),
+          width: 400,
+        },
+      }}
+    >
+      {renderHead}
+      {renderPdfInfo}
+      {renderTabel}
+      <Scrollbar>
+        <Stack spacing={3} sx={{ p: 3 }} />
+      </Scrollbar>
+    </Drawer>
+  );
 }
+
+UtilityInfoDrawer.propTypes = {
+  openDrawer: PropTypes.bool,
+  setOpenDrawer: PropTypes.func,
+};

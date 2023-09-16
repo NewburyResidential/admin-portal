@@ -8,8 +8,7 @@ const NewburyLogo = () => {
 
 const fillColor = "rgb(33, 43, 54)"
   return (
-    <>
-      <Box
+    <Box
         sx={{
           textAlign: 'center',
         }}
@@ -98,13 +97,9 @@ const fillColor = "rgb(33, 43, 54)"
           />
         </svg>
       </Box>
-    </>
   );
 };
 
-NewburyLogo.propTypes = {
-  disabledLink: PropTypes.bool,
-  sx: PropTypes.object,
-};
+
 
 export default NewburyLogo;

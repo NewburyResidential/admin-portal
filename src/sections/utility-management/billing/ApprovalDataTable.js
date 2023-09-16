@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types';
+
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
 
@@ -32,15 +34,14 @@ function HeadLabels({ cellWidth }) {
     // { id: 'totalAmount', label: 'Total Amount' },
   ];
 
+
+
   return (
     <Table sx={{ width: '100%' }}>
       <TableRow
         sx={{
-          bgcolor: (theme) => {
-            return theme.palette.mode === 'light'
-              ? theme.palette.grey[200]
-              : theme.palette.grey[700];
-          },
+          bgcolor: (theme) =>
+            theme.palette.mode === 'light' ? theme.palette.grey[200] : theme.palette.grey[700],
         }}
       >
         {headCells.map((headCell) => (
@@ -54,7 +55,7 @@ function HeadLabels({ cellWidth }) {
 }
 
 function TableToolbar(props) {
-  const { numSelected, rowCount, onSelectAllClick, onRemoveAllClick } = props;
+  const { numSelected, rowCount, onSelectAllClick } = props;
   return (
     <Toolbar
       sx={{
@@ -124,7 +125,7 @@ export default function ApprovalDataTable({ rows }) {
 
   const visibleRows = useMemo(
     () => stableSort(rows).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
-    [page, rowsPerPage]
+    [page, rowsPerPage, rows]
   );
 
   return (
@@ -177,7 +178,7 @@ export default function ApprovalDataTable({ rows }) {
                     </TableCell>
 
                     <TableCell id={labelId} align="right">
-                      <Link href={`fjdals`} target="_blank">
+                      <Link href="fjdals" target="_blank">
                         <IconButton>
                           <Iconify icon="solar:bill-list-linear" />
                         </IconButton>
@@ -189,7 +190,7 @@ export default function ApprovalDataTable({ rows }) {
                       <TableCell colSpan={6} style={{ padding: '4px 0px' }}>
                         <Table size="small" aria-label="utility">
                           <TableBody>
-                            <TableRow key={'4'}>
+                            <TableRow key="4">
                               <TableCell sx={{ width: `${cellWidth}%` }} align="center">
                                 {bill.utilityType}
                               </TableCell>
@@ -232,3 +233,36 @@ export default function ApprovalDataTable({ rows }) {
     </Box>
   );
 }
+
+
+HeadLabels.propTypes = {
+  cellWidth: PropTypes.number
+};
+
+
+
+TableToolbar.propTypes = {
+  numSelected: PropTypes.number.isRequired,           
+  rowCount: PropTypes.number.isRequired,              
+  onSelectAllClick: PropTypes.func.isRequired,        
+      
+};
+
+
+ApprovalDataTable.propTypes = {
+  rows: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      bills: PropTypes.arrayOf(
+        PropTypes.shape({
+          utilityType: PropTypes.string,
+          meterNumber: PropTypes.string,
+          serviceStart: PropTypes.string,
+          serviceEnd: PropTypes.string,
+          amount: PropTypes.string,
+          tax: PropTypes.string,
+        })
+      ).isRequired,
+    })
+  ).isRequired, 
+};

@@ -15,10 +15,10 @@ import Scrollbar from 'src/components/scrollbar';
 import { usePathname } from 'src/routes/hooks';
 import { NavSectionVertical } from 'src/components/nav-section';
 //
+import NewburyLogo from 'src/components/logo/newburyLogo';
 import { NAV } from '../config-layout';
 import { useNavData } from './config-navigation';
 import { NavToggleButton } from '../_common';
-import NewburyLogo from 'src/components/logo/newburyLogo';
 
 // ----------------------------------------------------------------------
 

@@ -11,7 +11,7 @@ import { bgBlur } from 'src/theme/css';
 import { useOffSetTop } from 'src/hooks/use-off-set-top';
 import { useResponsive } from 'src/hooks/use-responsive';
 // components
-//import Logo from 'src/components/logo/logo';
+// import Logo from 'src/components/logo/logo';
 import SvgColor from 'src/components/svg-color';
 import { useSettingsContext } from 'src/components/display-settings';
 //
@@ -42,7 +42,7 @@ export default function Header({ onOpenNav }) {
 
   const renderContent = (
     <>
-      {/* {lgUp && isNavHorizontal && <Logo sx={{ mr: 2.5 }} />} Add Logo*/}
+      {/* {lgUp && isNavHorizontal && <Logo sx={{ mr: 2.5 }} />} Add Logo */}
 
       {!lgUp && (
         <IconButton onClick={onOpenNav}>

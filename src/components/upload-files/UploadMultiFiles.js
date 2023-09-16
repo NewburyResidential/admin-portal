@@ -1,10 +1,11 @@
 'use client';
 
+import PropTypes from 'prop-types';
+
 import { useState, useCallback } from 'react';
 // @mui
 import Card from '@mui/material/Card';
 import Switch from '@mui/material/Switch';
-import Container from '@mui/material/Container';
 import CardHeader from '@mui/material/CardHeader';
 import CardContent from '@mui/material/CardContent';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -25,7 +26,7 @@ export default function UploadMultiFiles({ onUpload, accept}) {
     (acceptedFiles) => {
       const duplicates = [];
       const uniqueAcceptedFiles = acceptedFiles.filter((newFile) => {
-        const isDuplicate = files.some((files) => files.name === newFile.name);
+        const isDuplicate = files.some((file) => file.name === newFile.name);
         if (isDuplicate) {
           duplicates.push({
             file: newFile,
@@ -60,8 +61,7 @@ export default function UploadMultiFiles({ onUpload, accept}) {
   };
 
   return (
-    <>
-      <Card>
+    <Card>
         <CardHeader
           title="Upload Utility Bills"
           action={
@@ -88,6 +88,11 @@ export default function UploadMultiFiles({ onUpload, accept}) {
           />
         </CardContent>
       </Card>
-    </>
   );
 }
+
+
+UploadMultiFiles.propTypes = {
+  onUpload: PropTypes.func,
+  accept: PropTypes.string
+};
