@@ -15,6 +15,6 @@ storageName: process.env.AZURE_FORM_RECOGNIZER_STORAGE_NAME,
 storageKey: process.env.AZURE_FORM_RECOGNIZER_STORAGE_KEY,
 }
 
-
+export const BASEURL = process.env.NEXT_PUBLIC_BASE_URL;
 export const HOST_API = process.env.NEXT_PUBLIC_HOST_API;
 export const ASSETS_API = process.env.NEXT_PUBLIC_ASSETS_API;
