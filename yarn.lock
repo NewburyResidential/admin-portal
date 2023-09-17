@@ -1866,16 +1866,12 @@
   dependencies:
     "jose" "^4.14.3"
 
-"@supabase/functions-js@^2.1.0":
-  "integrity" "sha512-5EEhei1hFCMBX4Pig4kGKjJ59DZvXwilcIBYYp4wyK/iHdAN6Vw9di9VN6/oRXRVS/6jgZd0jdmI+QgGGSxZsA=="
-  "resolved" "https://registry.npmjs.org/@supabase/functions-js/-/functions-js-2.1.4.tgz"
-  "version" "2.1.4"
+"@supabase/functions-js@^2.1.5":
+  "version" "2.1.5"
   dependencies:
-    "cross-fetch" "^3.1.5"
+    "@supabase/node-fetch" "^2.6.14"
 
-"@supabase/gotrue-js@^2.46.1":
-  "integrity" "sha512-9bXV38OTd4tNHukwPDkfYNLyoGuzKeNPRaQ675rsv4JV7YCTliGLJiDadTCZjsMo2v1gVDDUtrJHF8kIxxPP1w=="
-  "resolved" "https://registry.npmjs.org/@supabase/gotrue-js/-/gotrue-js-2.51.0.tgz"
+"@supabase/gotrue-js@^2.51.0":
   "version" "2.51.0"
   dependencies:
     "@supabase/node-fetch" "^2.6.14"
@@ -1887,9 +1883,7 @@
   dependencies:
     "whatwg-url" "^5.0.0"
 
-"@supabase/postgrest-js@^1.8.0":
-  "integrity" "sha512-ELjpvhb04wILUiJz9zIsTSwaz9LQNlX+Ig5/LgXQ7k68qQI6NqHVn+ISRNt53DngUIyOnLHjeqqIRHBZ7zpgGA=="
-  "resolved" "https://registry.npmjs.org/@supabase/postgrest-js/-/postgrest-js-1.8.4.tgz"
+"@supabase/postgrest-js@^1.8.4":
   "version" "1.8.4"
   dependencies:
     "@supabase/node-fetch" "^2.6.14"
@@ -1903,24 +1897,20 @@
     "@types/websocket" "^1.0.3"
     "websocket" "^1.0.34"
 
-"@supabase/storage-js@^2.5.1":
-  "integrity" "sha512-wyCkBFMTiehvyLUvvvSszvhPkhaHKHcPx//fYN8NoKEa1TQwC2HuO5EIaJ5EagtAVmI1N3EFQ+M4RER6mnTaNg=="
-  "resolved" "https://registry.npmjs.org/@supabase/storage-js/-/storage-js-2.5.3.tgz"
-  "version" "2.5.3"
+"@supabase/storage-js@^2.5.4":
+  "version" "2.5.4"
   dependencies:
-    "cross-fetch" "^3.1.5"
+    "@supabase/node-fetch" "^2.6.14"
 
 "@supabase/supabase-js@^2.19.0", "@supabase/supabase-js@^2.33.1":
-  "integrity" "sha512-jA00rquPTppPOHpBB6KABW98lfg0gYXcuGqP3TB1iiduznRVsi3GGk2qBKXPDLMYSe0kRlQp5xCwWWthaJr8eA=="
-  "resolved" "https://registry.npmjs.org/@supabase/supabase-js/-/supabase-js-2.33.1.tgz"
-  "version" "2.33.1"
+  "version" "2.33.2"
   dependencies:
-    "@supabase/functions-js" "^2.1.0"
-    "@supabase/gotrue-js" "^2.46.1"
-    "@supabase/postgrest-js" "^1.8.0"
+    "@supabase/functions-js" "^2.1.5"
+    "@supabase/gotrue-js" "^2.51.0"
+    "@supabase/node-fetch" "^2.6.14"
+    "@supabase/postgrest-js" "^1.8.4"
     "@supabase/realtime-js" "^2.7.4"
-    "@supabase/storage-js" "^2.5.1"
-    "cross-fetch" "^3.1.5"
+    "@supabase/storage-js" "^2.5.4"
 
 "@svgr/babel-plugin-add-jsx-attribute@8.0.0":
   "integrity" "sha512-b9MIk7yhdS1pMCZM8VeNfUlSKVRhsHZNMl5O9SfaX0l0t5wjdgu4IDzGB8bpnGBBOjGST3rRFVsaaEtI4W6f7g=="
@@ -2285,6 +2275,11 @@
   dependencies:
     "@typescript-eslint/types" "5.62.0"
     "eslint-visitor-keys" "^3.3.0"
+
+"@vercel/analytics@^1.0.2":
+  "integrity" "sha512-BZFxVrv24VbNNl5xMxqUojQIegEeXMI6rX3rg1uVLYUEXsuKNBSAEQf4BWEcjQDp/8aYJOj6m8V4PUA3x/cxgg=="
+  "resolved" "https://registry.npmjs.org/@vercel/analytics/-/analytics-1.0.2.tgz"
+  "version" "1.0.2"
 
 "abort-controller@^3.0.0":
   "integrity" "sha512-h8lQ8tacZYnR3vNQTgibj+tODHI5/+l06Au2Pcriv/Gmet0eaj4TwWH41sO9wnHDiQsEj19q0drzdWdeAHtweg=="
@@ -2851,13 +2846,6 @@
     "js-yaml" "^4.1.0"
     "parse-json" "^5.0.0"
     "path-type" "^4.0.0"
-
-"cross-fetch@^3.1.5":
-  "integrity" "sha512-cvA+JwZoU0Xq+h6WkMvAUqPEYy92Obet6UdKLfW60qn99ftItKjB5T+BkyWOFWe2pUyfQ+IJHmpOTznqk1M6Kg=="
-  "resolved" "https://registry.npmjs.org/cross-fetch/-/cross-fetch-3.1.8.tgz"
-  "version" "3.1.8"
-  dependencies:
-    "node-fetch" "^2.6.12"
 
 "cross-spawn@^7.0.2", "cross-spawn@^7.0.3":
   "integrity" "sha512-iRDPJKUPVEND7dHPO8rkbOnPpyDygcDFtWjpeWNCgy8WP2rXcxXL8TskReQl6OrB2G7+UJrags1q15Fudc7G6w=="
@@ -4755,7 +4743,7 @@
     "lower-case" "^2.0.2"
     "tslib" "^2.0.3"
 
-"node-fetch@^2.6.1", "node-fetch@^2.6.12", "node-fetch@^2.6.7", "node-fetch@^2.6.9":
+"node-fetch@^2.6.1", "node-fetch@^2.6.7", "node-fetch@^2.6.9":
   "integrity" "sha512-c4FRfUm/dbcWZ7U+1Wq0AwCyFL+3nt2bEw05wfxSz+DWpWsitgmSgYmy2dQdWyKC1694ELPqMs/YzUSNozLt8A=="
   "resolved" "https://registry.npmjs.org/node-fetch/-/node-fetch-2.7.0.tgz"
   "version" "2.7.0"

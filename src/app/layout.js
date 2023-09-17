@@ -14,7 +14,8 @@ import { primaryFont } from 'src/theme/typography';
 import ProgressBar from 'src/components/progress-bar';
 import { MotionLazy } from 'src/components/animate/motion-lazy';
 import { SettingsProvider, SettingsDrawer } from 'src/components/display-settings';
-// auth
+// analytics
+import { Analytics } from '@vercel/analytics/react';
 
 
 // ----------------------------------------------------------------------
@@ -75,6 +76,7 @@ export default function RootLayout({ children }) {
                 <SettingsDrawer />
                 <ProgressBar />
                 {children}
+                <Analytics />
               </MotionLazy>
             </ThemeProvider>
           </SettingsProvider>

@@ -32,6 +32,7 @@
     "@mui/x-data-grid": "^6.13.0",
     "@supabase/auth-helpers-nextjs": "^0.7.4",
     "@supabase/supabase-js": "^2.33.1",
+    "@vercel/analytics": "^1.0.2",
     "autosuggest-highlight": "^3.3.4",
     "axios": "^1.5.0",
     "date-fns": "^2.30.0",
