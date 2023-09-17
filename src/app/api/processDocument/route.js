@@ -3,6 +3,7 @@
 // const { DocumentProcessorServiceClient } = require('@google-cloud/documentai').v1beta3;
 
 // export async function GET(req, res) {
+  
 //   const googleCredentials = JSON.parse(process.env.GOOGLE_CREDENTIALS || '{}');
 //   const project_id = '609778734661';
 //   const location = 'us';
