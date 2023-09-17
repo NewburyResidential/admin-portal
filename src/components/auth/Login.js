@@ -8,8 +8,6 @@ import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { BASEURL } from 'src/config-global';
 
 export default function Login({ redirectPath }) {
-  console.log(redirectPath)
-  console.log(BASEURL)
   const supabase = createClientComponentClient();
   useEffect(() => {
     const signInWithAzure = async () => {
