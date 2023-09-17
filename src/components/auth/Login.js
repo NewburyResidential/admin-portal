@@ -8,30 +8,23 @@ import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { BASEURL } from 'src/config-global';
 
 export default function Login({ redirectPath }) {
-  console.log(redirectPath);
-  console.log(BASEURL);
+  console.log(redirectPath)
+  console.log(BASEURL)
   const supabase = createClientComponentClient();
-  // useEffect(() => {
-  //   const signInWithAzure = async () => {
-  //     await supabase.auth.signInWithOAuth({
-  //       provider: 'azure',
-  //       options: {
-  //         scopes: 'email',
-  //         redirectTo: `${BASEURL}/api/auth/?redirectedFrom=${redirectPath}`,
-  //       },
-  //     });
-  //   };
-  //   signInWithAzure();
-  // }, [redirectPath, supabase.auth]);
+  useEffect(() => {
+    const signInWithAzure = async () => {
+      await supabase.auth.signInWithOAuth({
+        provider: 'azure',
+        options: {
+          scopes: 'email',
+          redirectTo: `${BASEURL}/api/auth/?redirectedFrom=${redirectPath}`,
+        },
+      });
+    };
+    signInWithAzure();
+  }, [redirectPath, supabase.auth]);
 
-  return <>
-  <div>
-    {BASEURL}
-  </div>
-  <div>
-    {redirectPath}
-  </div>
-  </>;
+  return <SplashScreen />;
 }
 
 Login.propTypes = {
