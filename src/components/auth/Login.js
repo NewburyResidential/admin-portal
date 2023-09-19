@@ -20,11 +20,12 @@ export default function Login({ redirectPath, origin }) {
       });
     };
     signInWithAzure();
-  }, [redirectPath, supabase.auth]);
+  }, [redirectPath, supabase.auth, origin]);
 
   return <SplashScreen />;
 }
 
 Login.propTypes = {
   redirectPath: PropTypes.string,
+  origin: PropTypes.string,
 };
