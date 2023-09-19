@@ -5,9 +5,9 @@ import PropTypes from 'prop-types';
 import { useEffect } from 'react';
 import { SplashScreen } from 'src/components/loading-screen';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
-import { BASEURL } from 'src/config-global';
 
-export default function Login({ redirectPath }) {
+export default function Login({ redirectPath, origin }) {
+  console.log(origin)
   const supabase = createClientComponentClient();
   useEffect(() => {
     const signInWithAzure = async () => {
@@ -15,7 +15,7 @@ export default function Login({ redirectPath }) {
         provider: 'azure',
         options: {
           scopes: 'email',
-          redirectTo: `${BASEURL}/api/auth/?redirectedFrom=${redirectPath}`,
+          redirectTo: `${origin}/api/auth/?redirectedFrom=${redirectPath}`,
         },
       });
     };
