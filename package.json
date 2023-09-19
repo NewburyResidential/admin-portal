@@ -8,9 +8,9 @@
     "dev": "next dev -p 3034",
     "start": "next start",
     "build": "next build",
-    "lint": "eslint \"src/**/*.{js,jsx,ts,tsx}\"",
-    "lint:fix": "eslint --fix \"src/**/*.{js,jsx,ts,tsx}\"",
-    "prettier": "prettier --write \"src/**/*.{js,jsx,ts,tsx}\"",
+    "lint": "eslint \"src/**/*.{js,jsx}\"",
+    "lint:fix": "eslint --fix \"src/**/*.{js,jsx}\"",
+    "prettier": "prettier --write \"src/**/*.{js,jsx}\"",
     "clear-all": "rm -rf node_modules .next out dist build",
     "re-start": "rm -rf node_modules .next out dist build && yarn install && yarn dev",
     "re-build": "rm -rf node_modules .next out dist build && yarn install && yarn build",
@@ -30,7 +30,7 @@
     "@mui/lab": "^5.0.0-alpha.142",
     "@mui/material": "^5.14.8",
     "@mui/x-data-grid": "^6.13.0",
-    "@supabase/auth-helpers-nextjs": "^0.7.4",
+    "@supabase/auth-helpers-nextjs": "^0.8.1",
     "@supabase/supabase-js": "^2.33.1",
     "@vercel/analytics": "^1.0.2",
     "autosuggest-highlight": "^3.3.4",
@@ -40,7 +40,7 @@
     "framer-motion": "^10.16.2",
     "jwt-decode": "^3.1.2",
     "lodash": "^4.17.21",
-    "next": "^13.4.19",
+    "next": "^13.5.1",
     "next-auth": "^4.23.1",
     "nprogress": "^0.2.0",
     "numeral": "^2.0.6",
@@ -64,7 +64,6 @@
     "@babel/plugin-syntax-flow": "^7.22.5",
     "@babel/plugin-transform-react-jsx": "^7.22.5",
     "@svgr/webpack": "^8.1.0",
-    "@types/react": "^18.2.21",
     "eslint": "^8.48.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-prettier": "^9.0.0",
@@ -77,7 +76,6 @@
     "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-unused-imports": "^3.0.0",
-    "prettier": "^3.0.3",
-    "typescript": "^5.2.2"
+    "prettier": "^3.0.3"
   }
 }
