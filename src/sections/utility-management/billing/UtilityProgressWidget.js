@@ -63,5 +63,5 @@ export default function UtilityProgressWidget({ handleOpenDrawer }) {
 }
 
 UtilityProgressWidget.propTypes = {
-  handleOpenDrawer: PropTypes.bool,
+  handleOpenDrawer: PropTypes.func,
 };
