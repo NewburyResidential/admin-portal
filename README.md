@@ -56,7 +56,7 @@ This admin portal, built using Next.js, is a platform designed as a tool to be u
 
 Before getting started, make sure you have the following installed and configured:
 
-- Node.js and npm: Make sure you have Node.js (v16 or higher) and npm installed on your development machine.
+- Node.js and Yarn: Make sure you have Node.js (v16 or higher) and yarn installed on your development machine.
 
 ### Installation
 
@@ -75,7 +75,7 @@ Before getting started, make sure you have the following installed and configure
 5. Install the project dependencies:
         
     ```
-   npm install
+   yarn install
     ```
 
 ### Configuration
@@ -88,7 +88,7 @@ Before getting started, make sure you have the following installed and configure
 To start the development server, run:
 
 ```
-npm run dev
+yarn dev
 ```
 
 The admin portal should now be accessible at http://localhost:3034
@@ -98,18 +98,18 @@ To build and run the project locally, follow these steps:
 
 1. Check the entire app for linting errors and warnings
   ```
-  npm run lint
+  yarn lint
   ```
 
 If ESLint reports any issues, review and address them based on the provided recommendations
 
 3. After clearing errors and warnings, build the app
 ```
-npm run build
+yarn build
 ```
 4. Start the app
 ```
-npm run start
+yarn start
 ```
 
 
