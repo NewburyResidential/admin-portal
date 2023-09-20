@@ -5,6 +5,7 @@ import { alpha } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
+import { convertConsumersGasElectric } from 'src/models/ConsumersEnergy';
 // components
 
 
@@ -12,7 +13,7 @@ import Typography from '@mui/material/Typography';
 
 export default function OneView() {
 
-
+convertConsumersGasElectric()
   return (
     <Container >
       <Typography variant="h4"> Page One </Typography>

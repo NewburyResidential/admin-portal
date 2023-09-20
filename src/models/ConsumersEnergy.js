@@ -1,40 +1,72 @@
-// export const adjustData = (data) => {
+import { fConverToNumber } from 'src/utils/format-number';
+import { dummyData } from './dumb';
 
-// const gasExists = Boolean(transformed.gasMeterNumber.value);
-// const electricExists = Boolean(transformed.electricMeterNumber.value);
+const matchesPattern = (regex, value) => {
+  return regex.test(value);
+};
+const betweenExpectedAmount = (min, max, num) => {
+    return num > min && num < max;
+  }
+const modifyAccountNumber = (accountNumber) => {
+  return fConverToNumber(accountNumber);
+};
+const modifyBillMonth = (monthYear) => {
+  const [month, year] = monthYear.split('/');
+  return `${month}/${`20${year}`}`;
+};
+export const convertConsumersGasElectric = () => {
+  const newObject = { confidence: {},  };
 
-//   const calculateSalesTax = () => {
- 
-//     const gasBeforeTax = transformed.totalNaturalGas.value;
-//     const electricBeforeTax = transformed.totalElectric.value;
-//     const totalAfterTax = transformed.totalAmount.value;
+  newObject.venderId = '63374'
+  newObject.venderLocationId = '33957'
+  newObject.propertyId = '1166181' // TODO: get from request
 
-//     const setTaxValues = (type, taxAmount) => {
-//       transformed[type].value = fTwoDecimals(taxAmount + (type === 'totalNaturalGas' ? gasBeforeTax : electricBeforeTax));
-//       transformed[`${type  }Tax`] = {
-//         value: fTwoDecimals(taxAmount),
-//         confidence: Math.min(transformed.totalAmount.confidence, transformed[type].confidence),
-//       };
-//     };
+  newObject.invoiceUrl = 'https://www.consumersenergy.com/-/media/CE/Documents/My-Account/Billing/Consumers-Energy-Bill.pdf'
   
-//     if (gasExists && electricExists) {
-//       const totalBeforeTax = gasBeforeTax + electricBeforeTax;
-//       const totalSalesTax = totalAfterTax - totalBeforeTax;
-//       const gasTax = (gasBeforeTax / totalBeforeTax) * totalSalesTax;
-//       const electricTax = (electricBeforeTax / totalBeforeTax) * totalSalesTax;
+  newObject.accountNumber = modifyAccountNumber(dummyData.account.value);
+  newObject.confidence.accountNumber = {
+    processor: [{ name: 'Account Number', value: dummyData.account.confidence }],
+    pattern: matchesPattern(/^\d{12}$/, modifyAccountNumber(dummyData.account.value)),
+  };
+
+  newObject.postMonth = modifyBillMonth(dummyData.billMonth.value);
+  newObject.confidence.postMonth = {
+    processor: [{ name: 'Bill Month', value: dummyData.billMonth.confidence }],
+    pattern: matchesPattern(/^(0[1-9]|1[0-2])\/(2\d{3})$/, modifyBillMonth(dummyData.billMonth.value)),
+  };
+
+  newObject.invoiceId = dummyData.invoice.value;
+  newObject.confidence.invoiceId = {
+    processor: [{ name: 'Invoice ID', value: dummyData.invoice.confidence }],
+    pattern: matchesPattern(/^\d+$/, dummyData.invoice.value),
+  };
+
+  newObject.salesTax = dummyData.salesTax.value;
+  newObject.confidence.salesTax = {
+    processor: [{ name: 'Total Sales Tax', value: dummyData.salesTax.confidence }],
+    pattern: betweenExpectedAmount(0, 2000, dummyData.salesTax.value),
+  };
+
+  newObject.totalAmount = dummyData.totalAmount.value;
+  newObject.confidence.totalAmount = {
+    processor: [{ name: 'Total Amount', value: dummyData.totalAmount.confidence }],
+    pattern: betweenExpectedAmount(0, 10000, dummyData.totalAmount.value),
+  };
+
+  newObject.address = dummyData.address.value;
+  newObject.confidence.address = {
+    processor: [{ name: 'Address', value: dummyData.address.confidence }],
+    pattern: true,
+  };
+
+  let utilities = {confidence: {}}
+
+  utilities.type = 'electric'
+  newObject.confidence.address = {
+    processor: [{ name: 'Address', value: dummyData.address.confidence }],
+    pattern: true,
+  };
   
-//       setTaxValues('totalNaturalGas', gasTax);
-//       setTaxValues('totalElectric', electricTax);
-//     } else if (gasExists) {
-//       const gasTax = totalAfterTax - gasBeforeTax;
-//       setTaxValues('totalNaturalGas', gasTax);
-//     } else if (electricExists) {
-//       const electricTax = totalAfterTax - electricBeforeTax;
-//       setTaxValues('totalElectric', electricTax);
-//     }
-//   };
-
-
-
-//   calculateSalesTax();
-// }
+console.log(newObject)
+  return newObject;
+};

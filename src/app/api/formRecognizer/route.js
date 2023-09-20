@@ -7,17 +7,20 @@
 // import { fToCamelCase } from 'src/utils/format-string';
 
 // const { DocumentAnalysisClient, AzureKeyCredential } = require('@azure/ai-form-recognizer');
-// const { generateBlobSASQueryParameters, BlobSASPermissions, StorageSharedKeyCredential, BlobServiceClient} = require('@azure/storage-blob');
-
+// const {
+//   generateBlobSASQueryParameters,
+//   BlobSASPermissions,
+//   StorageSharedKeyCredential,
+//   BlobServiceClient,
+// } = require('@azure/storage-blob');
 
 // export async function POST(request) {
 //   const currentDateTime = new Date();
 //   const batchId = currentDateTime.toISOString().replace(/Z$/, '_EST');
 
-//   const {formApiKey} = AZURE_FORM_RECOGNIZER;
-//   const {formEndpoint} = AZURE_FORM_RECOGNIZER;
-//   const {storageConnectionString} = AZURE_FORM_RECOGNIZER;
-//   const {storageContainer} = AZURE_FORM_RECOGNIZER;
+//   const { formApiKey, formEndpoint, storageConnectionString, storageContainer } =
+//     AZURE_FORM_RECOGNIZER;
+
 //   const modelId = 'consumersmodel';
 
 //   const blobServiceClient = BlobServiceClient.fromConnectionString(storageConnectionString);
@@ -28,18 +31,19 @@
 //   try {
 //     sasToken = generateContainerSASToken(storageContainer);
 //   } catch (error) {
-//     return NextResponse.json({ 
-//       summary: 'Failed to retireve SAS Token',
-//       message: error.message,
-//       stack: error.stack,
-//    }, { status: 500 });
+//     return NextResponse.json(
+//       {
+//         summary: 'Failed to retireve SAS Token',
+//         message: error.message,
+//         stack: error.stack,
+//       },
+//       { status: 500 }
+//     );
 //   }
 
 //   const formData = await request.formData();
-//   const results = [];
-//   const errors = [];
 
-//   for (const [fieldName, file] of formData.entries()) {
+//   const promises = Array.from(formData.entries()).map(async ([fieldName, file]) => {
 //     try {
 //       // Upload File to Blob Storage
 //       const fileName = file.name;
@@ -52,19 +56,24 @@
 //       // Process File from Blob Storage
 //       console.log('Starting file processing...');
 //       const poller = await client.beginAnalyzeDocumentFromUrl(modelId, blobUrl);
-//       const {documents} = await poller.pollUntilDone();
+//       const { documents } = await poller.pollUntilDone();
 
-//       // Clean up response and push to results
-//       const fields = transformOutput(documents[0].fields);
-//       results.push(fields);
+//       // Clean up response and return result
+//       return transformOutput(documents[0].fields);
 //     } catch (error) {
-//       errors.push({
-//         summary: `Error Processing file: ${file.name}`,
-//         message: error.message,
-//         stack: error.stack,
-//       });
+//       return {
+//         error: {
+//           summary: `Error Processing file: ${file.name}`,
+//           message: error.message,
+//           stack: error.stack,
+//         },
+//       };
 //     }
-//   }
+//   });
+
+//   const processedData = await Promise.all(promises);
+//   const results = processedData.filter((item) => !item.error);
+//   const errors = processedData.filter((item) => item.error).map((item) => item.error);
 
 //   console.log('Everything Finished');
 //   return NextResponse.json({ results, errors }, { status: 200 });
@@ -89,21 +98,17 @@
 //   return containerSAS;
 // }
 
-
 // // Transform Output to be cleaner
 
-// function transformOutput (obj) {
-//   const newObj = {};
-//   for (const key in obj) {
+// function transformOutput(obj) {
+//   return Object.entries(obj).reduce((acc, [key, valueObj]) => {
 //     const camelCaseKey = fToCamelCase(key);
-//     let value = obj[key].content || null;
-//     if (value ? obj[key].kind === 'number' : false) {
-//       value = fConverToNumber(value);
-//     }
-//     newObj[camelCaseKey] = {
+//     const value =
+//       valueObj.content || (valueObj.kind === 'number' ? fConverToNumber(valueObj.content) : null);
+//     acc[camelCaseKey] = {
 //       value,
-//       confidence: obj[key].confidence,
+//       confidence: valueObj.confidence,
 //     };
-//   }
-//   return newObj;
-// };
+//     return acc;
+//   }, {});
+// }
