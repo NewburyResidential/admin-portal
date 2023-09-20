@@ -1,47 +1,88 @@
-const betweenExpectedAmount = (min, max, num) => num > min && num < max;
+const isNumberInRange = (num, min = 0, max = 10000) => num > min && num < max;
 const matchesPattern = (regex, value) => regex.test(value);
 
 const createRegexConfidenceObject = (name, pattern, value, confidence) => ({
   processor: { name, value: confidence },
   pattern: matchesPattern(pattern, value),
 });
-const createBetweenConfidenceObject = (name, isBetween, confidence) => ({
+const createConfidenceObject = (name, boolean, confidence) => ({
   processor: { name, value: confidence },
-  pattern: isBetween,
+  pattern: boolean,
 });
 
-// Create Utilities
 const glAccounts = {
   electric: 234232,
   gas: 4235234,
 };
 
-const utilityMeterNumberPattern = /^[0-9]+$/;
-const utilityServiceDatePatten = /^(0[1-9]|1[0-2])\/(0[1-9]|1[0-9]|2[0-9]|3[0-1])$/;
+const postMonthPattern = /^(0[1-9]|1[0-2])\/(2\d{3})$/;
+const serviceDatePatten = /^(0[1-9]|1[0-2])\/(0[1-9]|1[0-9]|2[0-9]|3[0-1])$/;
 
 export const createUtilityBill = ({
   type,
-  meterNumberValue,
-  startServiceValue, //Expects mm/dd
-  endServiceValue, //Expects mm/dd
-  amountValue, //Expects a number
-  meterNumberPattern = utilityMeterNumberPattern,
+  meterNumber,
+  serviceStart, // Expects mm/dd
+  serviceEnd, // Expects mm/dd
+  amount, // Expects a number
   meterNumberConfidence,
-  startServiceConfidence,
-  endServiceConfidence,
-  amountConfidence
+  serviceStartConfidence,
+  serviceEndConfidence,
+  amountConfidence,
+  meterNumberPattern,
 }) => ({
   type,
+  meterNumber,
+  serviceStart,
+  serviceEnd,
+  amount,
   glAccountId: glAccounts[type],
-  meterNumber: meterNumberValue,
-  serviceStart: startServiceValue,
-  serviceEnd: endServiceValue,
-  amount: amountValue,
   confidence: {
-    meterNumber: createRegexConfidenceObject('Meter Number', meterNumberPattern, meterNumberValue, meterNumberConfidence),
-    serviceStart: createRegexConfidenceObject('Start Service', utilityServiceDatePatten, startServiceValue, startServiceConfidence),
-    serviceEnd: createRegexConfidenceObject('End Service', utilityServiceDatePatten, endServiceValue, endServiceConfidence),
-    amount: createBetweenConfidenceObject('Amount', betweenExpectedAmount(0, 10000, amountValue), amountConfidence),
-    type: createBetweenConfidenceObject('Amount', betweenExpectedAmount(0, 10000, amountValue), amountConfidence),
+    meterNumber: createRegexConfidenceObject('Meter Number', meterNumberPattern, meterNumber, meterNumberConfidence),
+    serviceStart: createRegexConfidenceObject('Start Service', serviceDatePatten, serviceStart, serviceStartConfidence),
+    serviceEnd: createRegexConfidenceObject('End Service', serviceDatePatten, serviceEnd, serviceEndConfidence),
+    amount: createConfidenceObject('Amount', isNumberInRange(amount), amountConfidence),
+    type: createConfidenceObject('Amount', isNumberInRange(amount), amountConfidence),
   },
 });
+
+export const createAccount = ({
+    venderId,
+    venderLocationId,
+    propertyId,
+    invoiceUrl,
+    accountNumber,
+    postMonth,
+    invoiceId,
+    address,
+    totalSalesTax,
+    totalAmount,
+    accountNumberConfidence,
+    postMonthConfidence,
+    invoiceIdConfidence,
+    addressConfidence,
+    totalSalesTaxConfidence,
+    totalAmountConfidence,
+    accountNumberPattern,
+    invoiceIdPattern,
+  }) => ({
+    venderId,
+    venderLocationId,
+    propertyId,
+    invoiceUrl,
+    accountNumber,
+    postMonth,
+    invoiceId,
+    totalSalesTax,
+    totalAmount,
+    address,
+    utilityBills: [],
+    confidence: {
+      accountNumber: createRegexConfidenceObject('Account Number', accountNumberPattern, accountNumber, accountNumberConfidence),
+      postMonth: createRegexConfidenceObject('Post Month', postMonthPattern, postMonth, postMonthConfidence),
+      invoiceId: createRegexConfidenceObject('Invoice ID', invoiceIdPattern, invoiceId, invoiceIdConfidence),
+      address: createConfidenceObject('Address', true, address, addressConfidence),
+      totalSalesTax: createConfidenceObject('Sales Tax', isNumberInRange(totalSalesTax), totalSalesTaxConfidence),
+      totalAmount: createConfidenceObject('Total Amount', isNumberInRange(totalAmount), totalAmountConfidence),
+
+    },
+  });
