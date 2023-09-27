@@ -12,7 +12,7 @@ const modifyServiceDate = (serviceDate) => {
   return `${parts[0]}/${parts[1]}`;
 };
 
-export const convertConsumersGasElectric = (data, propertyId = '1166181') => {
+export const convertConsumersGasElectric = (propertyId = '1166181') => {
   const venderId = '63374';
   const venderLocationId = '33957';
 

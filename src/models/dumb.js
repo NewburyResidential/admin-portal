@@ -1,4 +1,4 @@
-export const dummyData = {
+export const data = {
     account: {
       value: '1030 4396 9148',
       confidence: 0.976,
@@ -24,7 +24,7 @@ export const dummyData = {
       confidence: 0.971,
     },
     totalElectric: {
-      value: '1,883.99',
+      value: 1883.99,
       confidence: 0.978,
     },
     gasMeterNumber: {
@@ -44,7 +44,7 @@ export const dummyData = {
       confidence: 0.947,
     },
     totalAmount: {
-      value: 1929.38,
+      value: '1929.38',
       confidence: 0.947,
     },
     salesTax: {
