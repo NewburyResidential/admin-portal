@@ -4,6 +4,7 @@ import { useState, useMemo } from 'react';
 import Link from 'next/link';
 
 import { alpha } from '@mui/material/styles';
+import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import Table from '@mui/material/Table';
 import Toolbar from '@mui/material/Toolbar';
@@ -15,6 +16,8 @@ import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import TableContainer from '@mui/material/TableContainer';
 import TablePagination from '@mui/material/TablePagination';
+import DialogActions from '@mui/material/DialogActions';
+
 
 import Iconify from 'src/components/iconify';
 
@@ -129,6 +132,7 @@ export default function ApprovalDataTable({ rows }) {
   );
 
   return (
+    <>
     <Box>
       <TableToolbar
         numSelected={selected.length}
@@ -231,6 +235,15 @@ export default function ApprovalDataTable({ rows }) {
         onPageChange={handleChangePage}
       />
     </Box>
+    <DialogActions>
+        <Button sx={{ width: '80px' }} onClick={() => {setData(4)}} variant="outlined">
+          Deny
+        </Button>
+        <Button sx={{ width: '80px' }} onClick={() => {setData(4)}} variant="contained">
+          Approve
+        </Button>
+      </DialogActions>
+    </>
   );
 }
 
