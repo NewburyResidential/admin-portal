@@ -1,12 +1,19 @@
 import PropTypes from 'prop-types';
 
 import UploadMultiFiles from 'src/components/upload-files/UploadMultiFiles';
+import { useSnackbar } from 'src/utils/providers/SnackbarProvider';
+import { usePathname } from 'next/navigation';
+
 
 export default function UploadUtilityBills({ setData }) {
+  const pathname = usePathname();
+  const modalLink = `${pathname}?utility=consumers`
+  const { showResponseSnackbar } = useSnackbar();
   const acceptedFiles = {
     'image/png': ['.jpg', '.jpeg'],
     'application/pdf': ['.pdf'],
   };
+  console.log()
 
   const onUpload = async (files) => {
     console.log(files);
@@ -21,17 +28,27 @@ export default function UploadUtilityBills({ setData }) {
         method: 'POST',
         body: formData,
       });
-
+      
       if (response.ok) {
-        const responseData = await response.json();
+        const data = await response.json();
+        console.log(data)
+        if (data.results.length !== 0) {
+          if (data.errors.length) {
+            showResponseSnackbar({ type: 'warning', message: 'Some Files Processed', modalLink});
+          } else {
+            showResponseSnackbar({ type: 'success', message: 'Files Processed Succesfully', modalLink});
+          }
+        } else {
+          showResponseSnackbar({ type: 'error', message: 'Error Uploading Files', modalLink});
+        }
+       
         // setData(responseData.documentResponses)
-        console.log('Response data:', responseData);
       } else {
-        const responseData = await response.json();
-        console.log(responseData);
+        const err = await response.json();
+        showResponseSnackbar({ type: 'error', message: 'Error Uploading Files', error: err });
       }
     } catch (err) {
-      console.error('Error uploading files:', err);
+      showResponseSnackbar({ type: 'error', message: 'Error Uploading Files', error: err });
     }
   };
 
