@@ -9,7 +9,7 @@ export const useSnackbar = () => {
     throw new Error('useSnackbar must be used within a SnackbarProvider');
   }
   return context;
-}
+};
 
 export const SnackbarProvider = ({ children }) => {
   const [snackbarConfig, setSnackbarConfig] = useState({
@@ -19,8 +19,8 @@ export const SnackbarProvider = ({ children }) => {
     error: null,
   });
 
-  const showResponseSnackbar = useCallback(({ type, message = '', error = null }) => {
-    setSnackbarConfig({ show: true, type, message, error });
+  const showResponseSnackbar = useCallback(({ type, message = '', error = null, modalLink = null }) => {
+    setSnackbarConfig({ show: true, type, message, error, modalLink });
   }, []);
 
   return (
