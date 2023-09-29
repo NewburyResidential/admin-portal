@@ -49,7 +49,7 @@ export default function UtilityDialog({ setData, data }) {
           </Typography>
         </Toolbar>
       </AppBar>
-      <Stack spacing={3} sx={{ mx: 3, mt: 1 }}>
+      <Stack spacing={3} sx={{ mx: 3, mt: 3 }}>
         {errorFiles.length > 0 && <Errors errorFiles={errorFiles} />}
         <Card>
           <ApprovalDataTable rows={[]} />

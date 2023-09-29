@@ -33,7 +33,7 @@ export default function UploadUtilityBills({ setData }) {
         const data = await response.json();
         console.log(data)
         if (data.results.length !== 0) {
-          if (data.errors.length) {
+          if (data.errors.length !==0) {
             showResponseSnackbar({ type: 'warning', message: 'Some Files Processed', modalLink});
           } else {
             showResponseSnackbar({ type: 'success', message: 'Files Processed Succesfully', modalLink});
@@ -42,7 +42,7 @@ export default function UploadUtilityBills({ setData }) {
           showResponseSnackbar({ type: 'error', message: 'Error Uploading Files', modalLink});
         }
        
-        // setData(responseData.documentResponses)
+       setData(data)
       } else {
         const err = await response.json();
         showResponseSnackbar({ type: 'error', message: 'Error Uploading Files', error: err });
