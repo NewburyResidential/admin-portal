@@ -18,8 +18,18 @@ import TableContainer from '@mui/material/TableContainer';
 import TablePagination from '@mui/material/TablePagination';
 import DialogActions from '@mui/material/DialogActions';
 
-
 import Iconify from 'src/components/iconify';
+
+const NoFiles = () => {
+  return (
+    <Box mt={3} display="flex" flexDirection="column" alignItems="center" justifyContent="center" height="30vh" textAlign="center">
+      <Typography sx={{ color: 'text.secondary', width: '450px' }}>
+        No invoices are currently available for review. Please upload a file; once processed, it will appear in this queue
+      </Typography>
+      <Iconify icon="grommet-icons:document-missing" width={62} mt={6} color="text.secondary" />
+    </Box>
+  );
+};
 
 function stableSort(array) {
   const stabilizedThis = array.map((el, index) => [el, index]);
@@ -37,14 +47,11 @@ function HeadLabels({ cellWidth }) {
     // { id: 'totalAmount', label: 'Total Amount' },
   ];
 
-
-
   return (
     <Table sx={{ width: '100%' }}>
       <TableRow
         sx={{
-          bgcolor: (theme) =>
-            theme.palette.mode === 'light' ? theme.palette.grey[200] : theme.palette.grey[700],
+          bgcolor: (theme) => (theme.palette.mode === 'light' ? theme.palette.grey[200] : theme.palette.grey[700]),
         }}
       >
         {headCells.map((headCell) => (
@@ -65,8 +72,7 @@ function TableToolbar(props) {
         pl: { sm: 2 },
         pr: { xs: 1, sm: 1 },
         ...(numSelected > 0 && {
-          bgcolor: (theme) =>
-            alpha(theme.palette.primary.main, theme.palette.action.activatedOpacity),
+          bgcolor: (theme) => alpha(theme.palette.primary.main, theme.palette.action.activatedOpacity),
         }),
       }}
     >
@@ -113,10 +119,7 @@ export default function ApprovalDataTable({ rows }) {
     } else if (selectedIndex === selected.length - 1) {
       newSelected = newSelected.concat(selected.slice(0, -1));
     } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1)
-      );
+      newSelected = newSelected.concat(selected.slice(0, selectedIndex), selected.slice(selectedIndex + 1));
     }
     setSelected(newSelected);
   };
@@ -133,134 +136,151 @@ export default function ApprovalDataTable({ rows }) {
 
   return (
     <>
-    <Box>
-      <TableToolbar
-        numSelected={selected.length}
-        onSelectAllClick={handleSelectAllClick}
-        rowCount={rows.length}
-        onRemoveAllClick={onRemoveAllClick}
-      />
-      <HeadLabels cellWidth={cellWidth} />
-      <TableContainer sx={{ maxHeight: '52vh', overflow: 'auto' }}>
-        <Table aria-labelledby="tableTitle">
-          <TableBody>
-            {visibleRows.map((invoice, index) => {
-              const isItemSelected = isSelected(invoice.id);
-              const labelId = `table-checkbox-${invoice.id}`;
-              return (
-                <>
-                  <TableRow key={invoice.id} selected={isItemSelected}>
-                    <TableCell padding="checkbox" style={{ padding: '16px 8px' }}>
-                      <Checkbox
-                        color="primary"
-                        onClick={(event) => handleClick(event, invoice.id)}
-                        checked={isItemSelected}
-                        inputProps={{
-                          'aria-labelledby': labelId,
-                        }}
-                      />
-                    </TableCell>
-                    <TableCell id={labelId} align="center">
-                      <Typography variant="body2" fontWeight={600}>
-                        ID: {invoice.id}
-                      </Typography>
-                    </TableCell>
-                    <TableCell id={labelId} align="center">
-                      <Typography variant="body2" fontWeight={300}>
-                        Due: September 30, 2021
-                      </Typography>
-                    </TableCell>
-                    <TableCell id={labelId}>
-                      <Typography variant="body2" fontWeight={300} align="center">
-                        Address: 4 Cranberry Lane Lynnfiled
-                      </Typography>
-                    </TableCell>
-                    <TableCell id={labelId}>
-                      <Typography variant="body2" fontWeight={300} align="center">
-                        Code: 2100 SpringPort Apartments
-                      </Typography>
-                    </TableCell>
+      <Box>
+        <TableToolbar
+          numSelected={selected.length}
+          onSelectAllClick={handleSelectAllClick}
+          rowCount={rows.length}
+          onRemoveAllClick={onRemoveAllClick}
+        />
+        <HeadLabels cellWidth={cellWidth} />
+        <NoFiles />
 
-                    <TableCell id={labelId} align="right">
-                      <Link href="fjdals" target="_blank">
-                        <IconButton>
-                          <Iconify icon="solar:bill-list-linear" />
-                        </IconButton>
-                      </Link>
-                    </TableCell>
-                  </TableRow>
-                  {invoice.bills.map((bill) => (
-                    <TableRow selected={isItemSelected}>
-                      <TableCell colSpan={6} style={{ padding: '4px 0px' }}>
-                        <Table size="small" aria-label="utility">
-                          <TableBody>
-                            <TableRow key="4">
-                              <TableCell sx={{ width: `${cellWidth}%` }} align="center">
-                                {bill.utilityType}
-                              </TableCell>
-                              <TableCell sx={{ width: `${cellWidth}%` }} align="center">
-                                {bill.meterNumber}
-                              </TableCell>
-                              <TableCell sx={{ width: `${cellWidth}%` }} align="center">
-                                {bill.serviceStart}
-                              </TableCell>
-                              <TableCell sx={{ width: `${cellWidth}%` }} align="center">
-                                {bill.serviceEnd}
-                              </TableCell>
-                              <TableCell sx={{ width: `${cellWidth}%` }} align="center">
-                                {bill.amount}
-                              </TableCell>
-                              <TableCell sx={{ width: `${cellWidth}%` }} align="center">
-                                {bill.tax}
-                              </TableCell>
-                              {/* <TableCell align="center">{bill.totalAmount}</TableCell> */}
-                            </TableRow>
-                          </TableBody>
-                        </Table>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </>
-              );
-            })}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      <TablePagination
-        rowsPerPageOptions={[]}
-        component="div"
-        count={rows.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={handleChangePage}
-      />
-    </Box>
-    <DialogActions>
-        <Button sx={{ width: '80px' }} onClick={() => {setData(4)}} variant="outlined">
-          Deny
-        </Button>
-        <Button sx={{ width: '80px' }} onClick={() => {setData(4)}} variant="contained">
-          Approve
-        </Button>
-      </DialogActions>
+        {false && (
+          <>
+            <TableContainer sx={{ overflow: 'auto', minHeight: '52vh' }}>
+              <Table aria-labelledby="tableTitle">
+                <TableBody>
+                  {visibleRows.map((invoice, index) => {
+                    const isItemSelected = isSelected(invoice.id);
+                    const labelId = `table-checkbox-${invoice.id}`;
+                    return (
+                      <>
+                        <TableRow key={invoice.id} selected={isItemSelected}>
+                          <TableCell padding="checkbox" style={{ padding: '16px 8px' }}>
+                            <Checkbox
+                              color="primary"
+                              onClick={(event) => handleClick(event, invoice.id)}
+                              checked={isItemSelected}
+                              inputProps={{
+                                'aria-labelledby': labelId,
+                              }}
+                            />
+                          </TableCell>
+                          <TableCell id={labelId} align="center">
+                            <Typography variant="body2" fontWeight={600}>
+                              ID: {invoice.id}
+                            </Typography>
+                          </TableCell>
+                          <TableCell id={labelId} align="center">
+                            <Typography variant="body2" fontWeight={300}>
+                              Due: September 30, 2021
+                            </Typography>
+                          </TableCell>
+                          <TableCell id={labelId}>
+                            <Typography variant="body2" fontWeight={300} align="center">
+                              Address: 4 Cranberry Lane Lynnfiled
+                            </Typography>
+                          </TableCell>
+                          <TableCell id={labelId}>
+                            <Typography variant="body2" fontWeight={300} align="center">
+                              Code: 2100 SpringPort Apartments
+                            </Typography>
+                          </TableCell>
+
+                          <TableCell id={labelId} align="right">
+                            <Link href="fjdals" target="_blank">
+                              <IconButton>
+                                <Iconify icon="solar:bill-list-linear" />
+                              </IconButton>
+                            </Link>
+                          </TableCell>
+                        </TableRow>
+                        {invoice.bills.map((bill) => (
+                          <TableRow selected={isItemSelected}>
+                            <TableCell colSpan={6} style={{ padding: '4px 0px' }}>
+                              <Table size="small" aria-label="utility">
+                                <TableBody>
+                                  <TableRow key="4">
+                                    <TableCell sx={{ width: `${cellWidth}%` }} align="center">
+                                      {bill.utilityType}
+                                    </TableCell>
+                                    <TableCell sx={{ width: `${cellWidth}%` }} align="center">
+                                      {bill.meterNumber}
+                                    </TableCell>
+                                    <TableCell sx={{ width: `${cellWidth}%` }} align="center">
+                                      {bill.serviceStart}
+                                    </TableCell>
+                                    <TableCell sx={{ width: `${cellWidth}%` }} align="center">
+                                      {bill.serviceEnd}
+                                    </TableCell>
+                                    <TableCell sx={{ width: `${cellWidth}%` }} align="center">
+                                      {bill.amount}
+                                    </TableCell>
+                                    <TableCell sx={{ width: `${cellWidth}%` }} align="center">
+                                      {bill.tax}
+                                    </TableCell>
+                                    {/* <TableCell align="center">{bill.totalAmount}</TableCell> */}
+                                  </TableRow>
+                                </TableBody>
+                              </Table>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            </TableContainer>
+            <TablePagination
+              rowsPerPageOptions={[]}
+              component="div"
+              count={rows.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onPageChange={handleChangePage}
+            />
+          </>
+        )}
+      </Box>
+        <DialogActions>
+          <Button
+          disabled={true}
+            sx={{ width: '80px' }}
+            onClick={() => {
+              setData(4);
+            }}
+            variant="outlined"
+          >
+            Deny
+          </Button>
+          <Button
+          disabled={true}
+
+            sx={{ width: '80px' }}
+            onClick={() => {
+              setData(4);
+            }}
+            variant="contained"
+          >
+            Approve
+          </Button>
+        </DialogActions>
+      
     </>
   );
 }
 
-
 HeadLabels.propTypes = {
-  cellWidth: PropTypes.number
+  cellWidth: PropTypes.number,
 };
-
-
 
 TableToolbar.propTypes = {
-  numSelected: PropTypes.number.isRequired,           
-  rowCount: PropTypes.number.isRequired,              
-  onSelectAllClick: PropTypes.func.isRequired,        
-      
+  numSelected: PropTypes.number.isRequired,
+  rowCount: PropTypes.number.isRequired,
+  onSelectAllClick: PropTypes.func.isRequired,
 };
-
 
 ApprovalDataTable.propTypes = {
   rows: PropTypes.arrayOf(
@@ -277,5 +297,5 @@ ApprovalDataTable.propTypes = {
         })
       ).isRequired,
     })
-  ).isRequired, 
+  ).isRequired,
 };
