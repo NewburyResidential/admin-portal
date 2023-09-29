@@ -10,7 +10,6 @@ export default function Errors({ errorFiles }) {
       sx={{
         py: 1,
         px: 2,
-        mt: 3,
         textAlign: 'left',
         borderStyle: 'dashed',
         borderColor: 'error.main',
