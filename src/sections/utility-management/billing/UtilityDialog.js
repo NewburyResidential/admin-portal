@@ -23,6 +23,7 @@ export default function UtilityDialog({ setData, data }) {
   const pathname = usePathname();
   const Transition = forwardRef((props, ref) => <Slide direction="up" ref={ref} {...props} />);
 
+  const errorFiles = data.errors || [];
   return (
     <Dialog
       open={true}
@@ -49,9 +50,9 @@ export default function UtilityDialog({ setData, data }) {
         </Toolbar>
       </AppBar>
       <Stack spacing={3} sx={{ mx: 3, mt: 1 }}>
-        <Errors />
+        {errorFiles.length > 0 && <Errors errorFiles={errorFiles} />}
         <Card>
-          <ApprovalDataTable rows={data} />
+          <ApprovalDataTable rows={[]} />
         </Card>
       </Stack>
     </Dialog>
