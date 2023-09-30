@@ -13,11 +13,9 @@ export default function UploadUtilityBills({ setData }) {
     'image/png': ['.jpg', '.jpeg'],
     'application/pdf': ['.pdf'],
   };
-  console.log()
+
 
   const onUpload = async (files) => {
-    console.log(files);
-
     try {
       const formData = new FormData();
       files.forEach((file) => {

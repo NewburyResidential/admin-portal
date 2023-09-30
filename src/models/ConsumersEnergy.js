@@ -11,9 +11,9 @@ const modifyServiceDate = (serviceDate) => {
   return `${parts[0]}/${parts[1]}`;
 };
 
-export const convertConsumersGasElectric = (data, propertyId = '1166181') => {
-  const venderId = '63374';
-  const venderLocationId = '33957';
+export const convertConsumersGasElectric = (data, invoiceUrl, propertyId = '1166181') => {
+  const vendorId = '63374';
+  const vendorLocationId = '33957';
 
   const utilities = {
     gas: {
@@ -26,13 +26,11 @@ export const convertConsumersGasElectric = (data, propertyId = '1166181') => {
     },
   };
 
-  console.log(data)
   const account = createAccount({
-    venderId,
-    venderLocationId,
+    vendorId,
+    vendorLocationId,
     propertyId,
-    invoiceUrl:
-      'https://www.consumersenergy.com/-/media/CE/Documents/My-Account/Billing/Consumers-Energy-Bill.pdf',
+    invoiceUrl,
     accountNumber: fRemoveSpaces(data.account.value),
     postMonth: modifyBillMonth(data.portion.value),
     invoiceId: data.invoice.value,

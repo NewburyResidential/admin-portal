@@ -6,75 +6,78 @@ import { fToCamelCase } from 'src/utils/format-string';
 import { handleError } from 'src/utils/format-response';
 import { convertConsumersGasElectric } from 'src/models/ConsumersEnergy';
 
-const { DocumentAnalysisClient, AzureKeyCredential } = require('@azure/ai-form-recognizer');
-const {
-  generateBlobSASQueryParameters,
-  BlobSASPermissions,
-  StorageSharedKeyCredential,
-  BlobServiceClient,
-} = require('@azure/storage-blob');
+import { DocumentAnalysisClient, AzureKeyCredential } from '@azure/ai-form-recognizer';
+import { generateBlobSASQueryParameters, BlobSASPermissions, StorageSharedKeyCredential, BlobServiceClient } from '@azure/storage-blob';
 
 export async function POST(request) {
-  const currentDateTime = new Date();
-  const batchId = currentDateTime.toISOString().replace(/Z$/, '_EST');
-
-  const { formApiKey, formEndpoint, storageConnectionString, storageContainer } = AZURE_FORM_RECOGNIZER;
-
-  const modelId = 'conusmers_electric_gas';
-
-  const blobServiceClient = BlobServiceClient.fromConnectionString(storageConnectionString);
-  const containerClient = blobServiceClient.getContainerClient(storageContainer);
-  const client = new DocumentAnalysisClient(formEndpoint, new AzureKeyCredential(formApiKey));
-
-  let sasToken;
+  const batchId = generateBatchId();
+  const { storageConnectionString, storageContainer } = AZURE_FORM_RECOGNIZER;
+  const containerClient = getContainerClient(storageConnectionString, storageContainer);
+  let sasToken
   try {
-    sasToken = generateContainerSASToken(storageContainer);
-  } catch (error) {
-    return handleError(error, 'Failed to retrieve SAS Token [Failed at generateSASToken in formRecognizerAPI]');
-  }
+    //throw Error('Forced Error')
+  sasToken = generateContainerSASToken(storageContainer);
+} catch (err) {
+  return handleError(err, "Failed to generate container SAS token in Form Recognizer API");
+}
+  const formData = await request.formData();
+
+  const [results, errors] = await processFormData(formData, containerClient, batchId, sasToken);
+
+  return NextResponse.json({ results, errors }, { status: 200 });
+}
+
+function generateBatchId() {
+  const currentDateTime = new Date();
+  return currentDateTime.toISOString().replace(/Z$/, '_EST');
+}
+
+function getContainerClient(storageConnectionString, storageContainer) {
+  const blobServiceClient = BlobServiceClient.fromConnectionString(storageConnectionString);
+  return blobServiceClient.getContainerClient(storageContainer);
+}
+
+async function processFormData(formData, containerClient, batchId, sasToken) {
   const results = [];
   const errors = [];
 
-  const formData = await request.formData();
-
   const promises = Array.from(formData.entries()).map(async ([fieldName, file]) => {
-    let blobUrl;
     try {
-      // Upload File to Blob Storage
-      const fileName = file.name;
-      const fileBuffer = Buffer.from(await file.arrayBuffer());
-      const blobName = `submitted/${batchId}/${fileName}`;
-      const blockBlobClient = containerClient.getBlockBlobClient(blobName);
-      await blockBlobClient.uploadData(fileBuffer);
-      blobUrl = `${blockBlobClient.url}?${sasToken}`;
+      //if (file.name === "11.pdf") {throw Error('error')}
+      const blobUrl = await uploadFileToBlob(containerClient, file, batchId, sasToken);
+      const responseObject = await analyzeDocumentFromBlob(blobUrl);
+      results.push(convertConsumersGasElectric(responseObject, blobUrl));
     } catch (err) {
-      handleError(err, 'Failed to uplaod File to BlobStorage', false);
+      handleError(err, `Failed for ${file.name}`, false);
       errors.push(file.name);
-      return;
-    }
-    try {
-      // Process File from Blob Storage
-      const poller = await client.beginAnalyzeDocumentFromUrl(modelId, blobUrl);
-      const { documents } = await poller.pollUntilDone();
-
-      // Clean up response and return result
-      const restructuredObject = restructureObject(documents[0].fields);
-      results.push(convertConsumersGasElectric(restructuredObject));
-      return;
-    } catch (err) {
-      handleError(err, 'Failed to Analyze File With Form Recognizer', false);
-      errors.push(file.name);
-      return;
     }
   });
 
   await Promise.all(promises);
-  return NextResponse.json({ results, errors }, { status: 200 });
+  return [results, errors];
 }
 
-// generate SAS token for container
+async function uploadFileToBlob(containerClient, file, batchId, sasToken) {
+  const fileName = file.name;
+  const fileBuffer = Buffer.from(await file.arrayBuffer());
+  const blobName = `submitted/${batchId}/${fileName}`;
+  const blockBlobClient = containerClient.getBlockBlobClient(blobName);
+  await blockBlobClient.uploadData(fileBuffer);
+  return `${blockBlobClient.url}?${sasToken}`;
+}
+
+async function analyzeDocumentFromBlob(blobUrl) {
+  const { formApiKey, formEndpoint } = AZURE_FORM_RECOGNIZER;
+  const modelId = 'conusmers_electric_gas';
+  const client = new DocumentAnalysisClient(formEndpoint, new AzureKeyCredential(formApiKey));
+  const poller = await client.beginAnalyzeDocumentFromUrl(modelId, blobUrl);
+  const { documents } = await poller.pollUntilDone();
+  return restructureObject(documents[0].fields);
+}
+
 
 function generateContainerSASToken(containerName) {
+
   const sharedKeyCredential = new StorageSharedKeyCredential(AZURE_FORM_RECOGNIZER.storageName, AZURE_FORM_RECOGNIZER.storageKey);
   const containerSAS = generateBlobSASQueryParameters(
     {
@@ -86,9 +89,8 @@ function generateContainerSASToken(containerName) {
     sharedKeyCredential
   ).toString();
   return containerSAS;
+ 
 }
-
-// Transform Output to be cleaner
 
 function restructureObject(obj) {
   return Object.entries(obj).reduce((acc, [key, valueObj]) => {

@@ -191,7 +191,7 @@ export default function ApprovalDataTable({ rows }) {
                           </TableCell>
 
                           <TableCell id={labelId} align="right">
-                            <Link href="fjdals" target="_blank">
+                            <Link href={invoice.invoiceUrl} target="_blank">
                               <IconButton>
                                 <Iconify icon="solar:bill-list-linear" />
                               </IconButton>

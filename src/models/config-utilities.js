@@ -46,8 +46,8 @@ export const createUtilityBill = ({
 });
 
 export const createAccount = ({
-    venderId,
-    venderLocationId,
+    vendorId,
+    vendorLocationId,
     propertyId,
     invoiceUrl,
     accountNumber,
@@ -65,8 +65,8 @@ export const createAccount = ({
     accountNumberPattern,
     invoiceIdPattern,
   }) => ({
-    venderId,
-    venderLocationId,
+    vendorId,
+    vendorLocationId,
     propertyId,
     invoiceUrl,
     accountNumber,
