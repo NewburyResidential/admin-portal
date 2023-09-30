@@ -1,11 +1,10 @@
-// https://github.com/Azure/azure-sdk-for-python/issues/31934
-
 import { NextResponse } from 'next/server';
 import { AZURE_FORM_RECOGNIZER } from 'src/config-global';
 
 import { fConverToNumber } from 'src/utils/format-number';
 import { fToCamelCase } from 'src/utils/format-string';
 import { handleError } from 'src/utils/format-response';
+import { convertConsumersGasElectric } from 'src/models/ConsumersEnergy';
 
 const { DocumentAnalysisClient, AzureKeyCredential } = require('@azure/ai-form-recognizer');
 const {
@@ -21,7 +20,7 @@ export async function POST(request) {
 
   const { formApiKey, formEndpoint, storageConnectionString, storageContainer } = AZURE_FORM_RECOGNIZER;
 
-  const modelId = 'consumersmodel';
+  const modelId = 'conusmers_electric_gas';
 
   const blobServiceClient = BlobServiceClient.fromConnectionString(storageConnectionString);
   const containerClient = blobServiceClient.getContainerClient(storageContainer);
@@ -33,43 +32,43 @@ export async function POST(request) {
   } catch (error) {
     return handleError(error, 'Failed to retrieve SAS Token [Failed at generateSASToken in formRecognizerAPI]');
   }
+  const results = [];
+  const errors = [];
 
   const formData = await request.formData();
 
   const promises = Array.from(formData.entries()).map(async ([fieldName, file]) => {
+    let blobUrl;
     try {
-
       // Upload File to Blob Storage
       const fileName = file.name;
       const fileBuffer = Buffer.from(await file.arrayBuffer());
       const blobName = `submitted/${batchId}/${fileName}`;
       const blockBlobClient = containerClient.getBlockBlobClient(blobName);
       await blockBlobClient.uploadData(fileBuffer);
-      const blobUrl = `${blockBlobClient.url}?${sasToken}`;
-
+      blobUrl = `${blockBlobClient.url}?${sasToken}`;
+    } catch (err) {
+      handleError(err, 'Failed to uplaod File to BlobStorage', false);
+      errors.push(file.name);
+      return;
+    }
+    try {
       // Process File from Blob Storage
-      console.log('Starting file processing...');
       const poller = await client.beginAnalyzeDocumentFromUrl(modelId, blobUrl);
       const { documents } = await poller.pollUntilDone();
 
       // Clean up response and return result
-      return transformOutput(documents[0].fields);
-    } catch (error) {
-      return {
-        error: {
-          summary: `Error Processing file: ${file.name}`,
-          message: error.message,
-          stack: error.stack,
-        },
-      };
+      const restructuredObject = restructureObject(documents[0].fields);
+      results.push(convertConsumersGasElectric(restructuredObject));
+      return;
+    } catch (err) {
+      handleError(err, 'Failed to Analyze File With Form Recognizer', false);
+      errors.push(file.name);
+      return;
     }
   });
 
-  const processedData = await Promise.all(promises);
-  const results = processedData.filter((item) => !item.error);
-  const errors = processedData.filter((item) => item.error).map((item) => item.error);
-
-  console.log('Everything Finished');
+  await Promise.all(promises);
   return NextResponse.json({ results, errors }, { status: 200 });
 }
 
@@ -91,7 +90,7 @@ function generateContainerSASToken(containerName) {
 
 // Transform Output to be cleaner
 
-function transformOutput(obj) {
+function restructureObject(obj) {
   return Object.entries(obj).reduce((acc, [key, valueObj]) => {
     const camelCaseKey = fToCamelCase(key);
     const value = valueObj.content || (valueObj.kind === 'number' ? fConverToNumber(valueObj.content) : null);

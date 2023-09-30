@@ -1,5 +1,4 @@
 import { createAccount, createUtilityBill } from './config-utilities';
-import { data } from './dumb';
 import { fRemoveSpaces } from 'src/utils/format-string';
 
 const modifyBillMonth = (monthYear) => {
@@ -12,7 +11,7 @@ const modifyServiceDate = (serviceDate) => {
   return `${parts[0]}/${parts[1]}`;
 };
 
-export const convertConsumersGasElectric = (propertyId = '1166181') => {
+export const convertConsumersGasElectric = (data, propertyId = '1166181') => {
   const venderId = '63374';
   const venderLocationId = '33957';
 
@@ -27,6 +26,7 @@ export const convertConsumersGasElectric = (propertyId = '1166181') => {
     },
   };
 
+  console.log(data)
   const account = createAccount({
     venderId,
     venderLocationId,
@@ -34,17 +34,17 @@ export const convertConsumersGasElectric = (propertyId = '1166181') => {
     invoiceUrl:
       'https://www.consumersenergy.com/-/media/CE/Documents/My-Account/Billing/Consumers-Energy-Bill.pdf',
     accountNumber: fRemoveSpaces(data.account.value),
-    postMonth: modifyBillMonth(data.billMonth.value),
+    postMonth: modifyBillMonth(data.portion.value),
     invoiceId: data.invoice.value,
-    address: data.address.value,
-    totalSalesTax: data.salesTax.value,
-    totalAmount: data.totalAmount.value,
+    address: data.serviceAddress.value,
+    totalSalesTax: data.stateSalesTax.value,
+    totalAmount: data.totalEnergyCharges.value,
     accountNumberConfidence: data.account.confidence,
-    postMonthConfidence: data.billMonth.confidence,
+    postMonthConfidence: data.portion.confidence,
     invoiceIdConfidence: data.invoice.confidence,
-    addressConfidence: data.address.confidence,
-    totalSalesTaxConfidence: data.salesTax.confidence,
-    totalAmountConfidence: data.totalAmount.confidence,
+    addressConfidence: data.serviceAddress.confidence,
+    totalSalesTaxConfidence: data.stateSalesTax.confidence,
+    totalAmountConfidence: data.totalEnergyCharges.confidence,
     accountNumberPattern: /^\d{12}$/,
     invoiceIdPattern: /^\d+$/,
   });
@@ -53,13 +53,13 @@ export const convertConsumersGasElectric = (propertyId = '1166181') => {
     account.utilityBills.push(
       createUtilityBill({
         type: utilities.electric.type,
-        meterNumber: data.electricMeterNumber.value,
-        serviceStart: modifyServiceDate(data.electricBeginningReadDate.value),
-        serviceEnd: modifyServiceDate(data.electricEndingReadDate.value),
+        meterNumber: data.electricServiceMeterNumber.value,
+        serviceStart: modifyServiceDate(data.electricServiceBeginningReadDate.value),
+        serviceEnd: modifyServiceDate(data.electricServiceEndingReadDate.value),
         amount: data.totalElectric.value,
-        meterNumberConfidence: data.electricMeterNumber.confidence,
-        serviceStartConfidence: data.electricBeginningReadDate.confidence,
-        serviceEndConfidence: data.electricEndingReadDate.confidence,
+        meterNumberConfidence: data.electricServiceMeterNumber.confidence,
+        serviceStartConfidence: data.electricServiceBeginningReadDate.confidence,
+        serviceEndConfidence: data.electricServiceEndingReadDate.confidence,
         amountConfidence: data.totalElectric.confidence,
         meterNumberPattern: /^[0-9]+$/,
       })
@@ -69,19 +69,18 @@ export const convertConsumersGasElectric = (propertyId = '1166181') => {
     account.utilityBills.push(
       createUtilityBill({
         type: utilities.gas.type,
-        meterNumber: data.gasMeterNumber.value,
-        serviceStart: modifyServiceDate(data.gasBeginningReadDate.value),
-        serviceEnd: modifyServiceDate(data.gasEndingReadDate.value),
+        meterNumber: data.gasServiceMeterNumber.value,
+        serviceStart: modifyServiceDate(data.gasServiceBeginningReadDate.value),
+        serviceEnd: modifyServiceDate(data.gasServiceEndingReadDate.value),
         amount: data.totalNaturalGas.value,
-        meterNumberConfidence: data.gasMeterNumber.confidence,
-        serviceStartConfidence: data.gasBeginningReadDate.confidence,
-        serviceEndConfidence: data.gasEndingReadDate.confidence,
+        meterNumberConfidence: data.gasServiceMeterNumber.confidence,
+        serviceStartConfidence: data.gasServiceBeginningReadDate.confidence,
+        serviceEndConfidence: data.gasServiceEndingReadDate.confidence,
         amountConfidence: data.totalNaturalGas.confidence,
         meterNumberPattern: /^[0-9]+$/,
       })
     );
   }
 
-  console.log(account);
   return account;
 };

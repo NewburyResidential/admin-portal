@@ -7,7 +7,7 @@ export const SUPABASE_API = {
 };
 
 export const AZURE_FORM_RECOGNIZER = {
-formEndpoint: "https://comparison.cognitiveservices.azure.com/",
+formEndpoint: "https://document-intelligence-utilities.cognitiveservices.azure.com/",
 formApiKey: process.env.AZURE_FORM_RECOGNIZER_API_KEY,
 storageContainer: "consumers-energy-gas-electric",
 storageConnectionString: process.env.AZURE_FORM_RECOGNIZER_STORAGE_CONNECTION_STRING,
