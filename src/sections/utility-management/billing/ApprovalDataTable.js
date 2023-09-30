@@ -43,8 +43,6 @@ function HeadLabels({ cellWidth }) {
     { id: 'serviceStart', label: 'Service Start' },
     { id: 'serviceEnd', label: 'Service End' },
     { id: 'amount', label: 'Amount' },
-    { id: 'tax', label: 'Tax' },
-    // { id: 'totalAmount', label: 'Total Amount' },
   ];
 
   return (
@@ -95,7 +93,7 @@ export default function ApprovalDataTable({ rows }) {
   const [selected, setSelected] = useState([]);
   const [page, setPage] = useState(0);
   const rowsPerPage = 10;
-  const cellWidth = 100 / 6;
+  const cellWidth = 100 / 5;
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
@@ -144,23 +142,22 @@ export default function ApprovalDataTable({ rows }) {
           onRemoveAllClick={onRemoveAllClick}
         />
         <HeadLabels cellWidth={cellWidth} />
-        <NoFiles />
 
-        {false && (
+        {rows.length !== 0 ? (
           <>
-            <TableContainer sx={{ overflow: 'auto', minHeight: '52vh' }}>
+            <TableContainer sx={{ overflow: 'auto', minHeight: '52vh', maxHeight: '52vh' }}>
               <Table aria-labelledby="tableTitle">
                 <TableBody>
                   {visibleRows.map((invoice, index) => {
-                    const isItemSelected = isSelected(invoice.id);
-                    const labelId = `table-checkbox-${invoice.id}`;
+                    const isItemSelected = isSelected(invoice.invoiceId);
+                    const labelId = `table-checkbox-${invoice.invoiceId}`;
                     return (
                       <>
-                        <TableRow key={invoice.id} selected={isItemSelected}>
+                        <TableRow key={invoice.invoiceId} selected={isItemSelected}>
                           <TableCell padding="checkbox" style={{ padding: '16px 8px' }}>
                             <Checkbox
                               color="primary"
-                              onClick={(event) => handleClick(event, invoice.id)}
+                              onClick={(event) => handleClick(event, invoice.invoiceId)}
                               checked={isItemSelected}
                               inputProps={{
                                 'aria-labelledby': labelId,
@@ -169,22 +166,27 @@ export default function ApprovalDataTable({ rows }) {
                           </TableCell>
                           <TableCell id={labelId} align="center">
                             <Typography variant="body2" fontWeight={600}>
-                              ID: {invoice.id}
+                              ID: {invoice.invoiceId}
                             </Typography>
                           </TableCell>
                           <TableCell id={labelId} align="center">
-                            <Typography variant="body2" fontWeight={300}>
-                              Due: September 30, 2021
+                            <Typography variant="body2" fontWeight={600}>
+                              Post Month: {invoice.postMonth}
                             </Typography>
                           </TableCell>
                           <TableCell id={labelId}>
-                            <Typography variant="body2" fontWeight={300} align="center">
-                              Address: 4 Cranberry Lane Lynnfiled
+                            <Typography variant="body2" fontWeight={600} align="center">
+                              Address: {invoice.address.toLowerCase()}
                             </Typography>
                           </TableCell>
                           <TableCell id={labelId}>
-                            <Typography variant="body2" fontWeight={300} align="center">
-                              Code: 2100 SpringPort Apartments
+                            <Typography variant="body2" fontWeight={600} align="center">
+                              Tax: {invoice.totalSalesTax}
+                            </Typography>
+                          </TableCell>
+                          <TableCell id={labelId}>
+                            <Typography variant="body2" fontWeight={600} align="center">
+                              Total: {invoice.totalAmount}
                             </Typography>
                           </TableCell>
 
@@ -196,14 +198,14 @@ export default function ApprovalDataTable({ rows }) {
                             </Link>
                           </TableCell>
                         </TableRow>
-                        {invoice.bills.map((bill) => (
+                        {invoice.utilityBills.map((bill) => (
                           <TableRow selected={isItemSelected}>
-                            <TableCell colSpan={6} style={{ padding: '4px 0px' }}>
+                            <TableCell colSpan={7} style={{ padding: '4px 0px' }}>
                               <Table size="small" aria-label="utility">
                                 <TableBody>
                                   <TableRow key="4">
                                     <TableCell sx={{ width: `${cellWidth}%` }} align="center">
-                                      {bill.utilityType}
+                                      {bill.type}
                                     </TableCell>
                                     <TableCell sx={{ width: `${cellWidth}%` }} align="center">
                                       {bill.meterNumber}
@@ -217,10 +219,6 @@ export default function ApprovalDataTable({ rows }) {
                                     <TableCell sx={{ width: `${cellWidth}%` }} align="center">
                                       {bill.amount}
                                     </TableCell>
-                                    <TableCell sx={{ width: `${cellWidth}%` }} align="center">
-                                      {bill.tax}
-                                    </TableCell>
-                                    {/* <TableCell align="center">{bill.totalAmount}</TableCell> */}
                                   </TableRow>
                                 </TableBody>
                               </Table>
@@ -242,32 +240,32 @@ export default function ApprovalDataTable({ rows }) {
               onPageChange={handleChangePage}
             />
           </>
+        ) : (
+          <NoFiles />
         )}
       </Box>
-        <DialogActions>
-          <Button
-          disabled={true}
-            sx={{ width: '80px' }}
-            onClick={() => {
-              setData(4);
-            }}
-            variant="outlined"
-          >
-            Deny
-          </Button>
-          <Button
-          disabled={true}
-
-            sx={{ width: '80px' }}
-            onClick={() => {
-              setData(4);
-            }}
-            variant="contained"
-          >
-            Approve
-          </Button>
-        </DialogActions>
-      
+      <DialogActions>
+        <Button
+          disabled={selected.length === 0}
+          sx={{ width: '80px' }}
+          onClick={() => {
+            setData(4);
+          }}
+          variant="outlined"
+        >
+          Deny
+        </Button>
+        <Button
+          disabled={selected.length === 0}
+          sx={{ width: '80px' }}
+          onClick={() => {
+            setData(4);
+          }}
+          variant="contained"
+        >
+          Approve
+        </Button>
+      </DialogActions>
     </>
   );
 }
@@ -285,7 +283,7 @@ TableToolbar.propTypes = {
 ApprovalDataTable.propTypes = {
   rows: PropTypes.arrayOf(
     PropTypes.shape({
-      id: PropTypes.string.isRequired,
+      invoiceId: PropTypes.string.isRequired,
       bills: PropTypes.arrayOf(
         PropTypes.shape({
           utilityType: PropTypes.string,

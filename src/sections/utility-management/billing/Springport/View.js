@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 
 // @mui
@@ -21,14 +21,15 @@ export default function View() {
   const searchParams = useSearchParams();
   const utilityType = searchParams.get('utility');
 
+  const [data, setData] = useState({});
 
-
-  const [data, setData] = useState(1);
   return (
     <Container>
-      <Typography sx={{ mb: 6 }} variant="h4">2138 SpringPort Utilities</Typography>
-      {utilityType && <UtilityDialog data={[]} setData={setData} />}
-      <UtilitiesReview />
+      <Typography sx={{ mb: 6 }} variant="h4">
+        2138 SpringPort Utilities
+      </Typography>
+      {utilityType && <UtilityDialog data={data} setData={setData} />}
+      <UtilitiesReview data={data} />
       <Grid container spacing={3} mb={3}></Grid>
       <UploadUtilityBills setData={setData} />
     </Container>
