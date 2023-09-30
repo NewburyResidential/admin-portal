@@ -11,12 +11,13 @@ import LinearProgress from '@mui/material/LinearProgress';
 // utils
 import Iconify from 'src/components/iconify';
 import { varHover } from 'src/components/animate';
+import Label from 'src/components/label/label';
 
 
 
 // ----------------------------------------------------------------------
 
-export default function UtilityWidget({ title, value, total, icon, ...other }) {
+export default function UtilityWidget({ title, value, total, icon, resultsLength, ...other }) {
   const router = useRouter();
   const pathname = usePathname();
   return (
@@ -35,6 +36,20 @@ export default function UtilityWidget({ title, value, total, icon, ...other }) {
         router.push(`${pathname}/?utility=consumers`);
       }}
     >
+       {resultsLength !== 0 && <Box
+      sx={{
+        position: 'absolute', 
+        top: 0, 
+        right: 0, 
+        pr: 3,
+        pt: 3, 
+  
+      }}
+    >
+      <Label color="default"  >
+        {resultsLength} Bills For Review
+      </Label>
+    </Box>}
       
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
         <Box
