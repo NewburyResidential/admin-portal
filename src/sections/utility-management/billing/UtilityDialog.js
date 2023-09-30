@@ -24,6 +24,7 @@ export default function UtilityDialog({ setData, data }) {
   const Transition = forwardRef((props, ref) => <Slide direction="up" ref={ref} {...props} />);
 
   const errorFiles = data.errors || [];
+  const resultFiles = data.results || [];
   return (
     <Dialog
       open={true}
@@ -52,7 +53,7 @@ export default function UtilityDialog({ setData, data }) {
       <Stack spacing={3} sx={{ mx: 3, mt: 3 }}>
         {errorFiles.length > 0 && <Errors errorFiles={errorFiles} />}
         <Card>
-          <ApprovalDataTable rows={[]} />
+          <ApprovalDataTable rows={resultFiles} />
         </Card>
       </Stack>
     </Dialog>
@@ -60,5 +61,5 @@ export default function UtilityDialog({ setData, data }) {
 }
 
 UtilityDialog.propTypes = {
-  data: PropTypes.array,
+  data: PropTypes.object,
 };
