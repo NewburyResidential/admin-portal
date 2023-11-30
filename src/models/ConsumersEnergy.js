@@ -17,7 +17,7 @@ export const convertConsumersGasElectric = (data, invoiceUrl, propertyId = '1166
 
   const utilities = {
     gas: {
-      exists: Boolean(data.totalNaturalGas && data.totalNaturalGas.value),
+      exists: Boolean(data?.totalNaturalGas && data.totalNaturalGas.value),
       type: 'gas',
     },
     electric: {

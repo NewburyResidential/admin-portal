@@ -46,8 +46,7 @@ const ICONS = {
 export function useNavData() {
   const data = useMemo(
     () => [
-      // OVERVIEW
-      // ----------------------------------------------------------------------
+      // OVERVIEW---------------------------------------------------------------
       {
         subheader: 'Overview',
         items: [
@@ -55,19 +54,29 @@ export function useNavData() {
         ],
       },
 
-      // MANAGEMENT
-      // ----------------------------------------------------------------------
+      // MANAGEMENT-------------------------------------------------------------
+      
+      // {
+      //   subheader: 'Utility Management',
+      //   items: [
+      //     {
+      //       title: 'Billing',
+      //       path: paths.dashboard.group.root,
+      //       icon: ICONS.user,
+      //       children: [
+      //         { title: '2138 Springport', path: paths.dashboard.group.one },
+      //         { title: '380 Union', path: paths.dashboard.group.two },
+      //       ],
+      //     },
+      //   ],
+      // },
       {
-        subheader: 'Utility Management',
+        subheader: 'Expenses',
         items: [
           {
-            title: 'Billing',
-            path: paths.dashboard.group.root,
-            icon: ICONS.user,
-            children: [
-              { title: '2138 Springport', path: paths.dashboard.group.one },
-              { title: '380 Union', path: paths.dashboard.group.two },
-            ],
+            title: 'Expenses',
+            path: paths.dashboard.creditCards,
+            icon: ICONS.banking,
           },
         ],
       },

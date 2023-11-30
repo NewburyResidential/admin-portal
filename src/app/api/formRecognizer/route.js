@@ -15,7 +15,6 @@ export async function POST(request) {
   const containerClient = getContainerClient(storageConnectionString, storageContainer);
   let sasToken
   try {
-    //throw Error('Forced Error')
   sasToken = generateContainerSASToken(storageContainer);
 } catch (err) {
   return handleError(err, "Failed to generate container SAS token in Form Recognizer API");
@@ -43,7 +42,7 @@ async function processFormData(formData, containerClient, batchId, sasToken) {
 
   const promises = Array.from(formData.entries()).map(async ([fieldName, file]) => {
     try {
-      //if (file.name === "11.pdf") {throw Error('error')}
+      if (file.name === "11.pdf") {throw Error('error')}
       const blobUrl = await uploadFileToBlob(containerClient, file, batchId, sasToken);
       const responseObject = await analyzeDocumentFromBlob(blobUrl);
       results.push(convertConsumersGasElectric(responseObject, blobUrl));

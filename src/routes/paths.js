@@ -24,6 +24,7 @@ export const paths = {
       one: `${ROOTS.DASHBOARD}/group/one`,
       two: `${ROOTS.DASHBOARD}/group/two`,
     },
+    creditCards: `${ROOTS.DASHBOARD}/credit-cards`,
   },
 };
 

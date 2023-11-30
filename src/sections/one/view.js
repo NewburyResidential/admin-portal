@@ -13,7 +13,7 @@ import { convertConsumersGasElectric } from 'src/models/ConsumersEnergy';
 
 export default function OneView() {
 
-convertConsumersGasElectric()
+//convertConsumersGasElectric()
   return (
     <Container >
       <Typography variant="h4"> Page One </Typography>

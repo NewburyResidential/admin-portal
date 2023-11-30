@@ -2482,6 +2482,15 @@ axios@^1.5.0:
     form-data "^4.0.0"
     proxy-from-env "^1.1.0"
 
+axios@^1.6.2:
+  version "1.6.2"
+  resolved "https://registry.yarnpkg.com/axios/-/axios-1.6.2.tgz#de67d42c755b571d3e698df1b6504cde9b0ee9f2"
+  integrity sha512-7i24Ri4pmDRfJTR7LDBhsOTtcm+9kjX5WiY1X3wIisx6G9So3pfMkEiU7emUBe46oceVImccTEM3k6C5dbVW8A==
+  dependencies:
+    follow-redirects "^1.15.0"
+    form-data "^4.0.0"
+    proxy-from-env "^1.1.0"
+
 axobject-query@^3.1.1:
   version "3.2.1"
   resolved "https://registry.yarnpkg.com/axobject-query/-/axobject-query-3.2.1.tgz#39c378a6e3b06ca679f29138151e45b2b32da62a"
@@ -4493,6 +4502,10 @@ lines-and-columns@^1.1.6:
   resolved "https://registry.yarnpkg.com/lines-and-columns/-/lines-and-columns-1.2.4.tgz#eca284f75d2965079309dc0ad9255abb2ebc1632"
   integrity sha512-7ylylesZQ/PV29jhEDl3Ufjo6ZX7gCqJr5F7PKrqc93v7fzSymt1BpwEU8nAUXs8qzzvqhbjhK5QZg6Mt/HkBg==
 
+link@plaid/link:
+  version "0.0.0"
+  resolved "https://codeload.github.com/plaid/link/tar.gz/15bc6fe7303245f0cd9832c53d77bffe608bb881"
+
 locate-path@^6.0.0:
   version "6.0.0"
   resolved "https://registry.yarnpkg.com/locate-path/-/locate-path-6.0.0.tgz#55321eb309febbc59c4801d931a72452a681d286"
@@ -4984,6 +4997,13 @@ picomatch@^2.3.1:
   resolved "https://registry.yarnpkg.com/picomatch/-/picomatch-2.3.1.tgz#3ba3833733646d9d3e4995946c1365a67fb07a42"
   integrity sha512-JU3teHTNjmE2VCGFzuY8EXzCDVwEqB2a8fsIvwaStHhAWJEeVd1o1QD80CU6+ZdEXXSLbSsuLwJjkCBWqRQUVA==
 
+plaid@^18.1.0:
+  version "18.1.0"
+  resolved "https://registry.yarnpkg.com/plaid/-/plaid-18.1.0.tgz#2e91575dfcea6814797a4f1c0a947d27faf822f1"
+  integrity sha512-4DKWXV6YhJ7hyIZAm8ZQaQ+bQIwRP/EG4CQyItIb4Hlh+K4vkXZbBrwBnw4ykgMfZiGu/EyHjcIs5f+08XjMFg==
+  dependencies:
+    axios "^1.6.2"
+
 postcss@8.4.14:
   version "8.4.14"
   resolved "https://registry.yarnpkg.com/postcss/-/postcss-8.4.14.tgz#ee9274d5622b4858c1007a74d76e42e56fd21caf"
@@ -5032,7 +5052,7 @@ process@^0.11.10:
   resolved "https://registry.yarnpkg.com/process/-/process-0.11.10.tgz#7332300e840161bda3e69a1d1d91a7d4bc16f182"
   integrity sha512-cdGef/drWFoydD1JsMzuFf8100nZl+GT+yacc2bEced5f9Rjk4z+WtFUTBu9PhOi9j/jfmBPu0mMEY4wIdAF8A==
 
-prop-types@^15.6.2, prop-types@^15.8.1:
+prop-types@^15.6.2, prop-types@^15.7.2, prop-types@^15.8.1:
   version "15.8.1"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.8.1.tgz#67d87bf1a694f48435cf332c24af10214a3140b5"
   integrity sha512-oj87CgZICdulUohogVAR7AjlC0327U4el4L6eAvOqCeudMDVU0NThNaV+b9Df4dXgSP1gXMTnPdhfe/2qDH5cg==
@@ -5135,6 +5155,19 @@ react-lazy-load-image-component@^1.6.0:
   dependencies:
     lodash.debounce "^4.0.8"
     lodash.throttle "^4.1.1"
+
+react-plaid-link@^3.5.1:
+  version "3.5.1"
+  resolved "https://registry.yarnpkg.com/react-plaid-link/-/react-plaid-link-3.5.1.tgz#3807fb53cde67c7e0ecc62640c6716ea951e9685"
+  integrity sha512-OSbPVEIQY3RDroDGyimRh9vUpZfSVzKVCwrbGOSIjcmluHnPKTkvJ1BnYbvE7kH+v8urJXMHloV43uMTNY3SLg==
+  dependencies:
+    prop-types "^15.7.2"
+    react-script-hook "^1.6.0"
+
+react-script-hook@^1.6.0:
+  version "1.7.2"
+  resolved "https://registry.yarnpkg.com/react-script-hook/-/react-script-hook-1.7.2.tgz#ec130d67f9a25fcde57fbfd1faa87e5b97521948"
+  integrity sha512-fhyCEfXb94fag34UPRF0zry1XGwmVY+79iibWwTqAoOiCzYJQOYTiWJ7CnqglA9tMSV8g45cQpHCMcBwr7dwhA==
 
 react-slick@^0.29.0:
   version "0.29.0"
