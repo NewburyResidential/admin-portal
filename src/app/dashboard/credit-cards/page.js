@@ -6,8 +6,8 @@ import getUnapprovedTransactions from "src/utils/services/CCExpenses/getUnapprov
 export default async function page () {
   const vendors = await getVendorLocations();
   const chartOfAccounts = await getChartOfAccounts();
-  const transactions = await getUnapprovedTransactions();
-  console.log(transactions)
+  //const transactions = await getUnapprovedTransactions();
+
 
   return (
     <div>

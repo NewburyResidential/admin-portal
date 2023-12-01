@@ -7,7 +7,6 @@ import { SplashScreen } from 'src/components/loading-screen';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 
 export default function Login({ redirectPath, origin }) {
-  console.log(origin)
   const supabase = createClientComponentClient();
   useEffect(() => {
     const signInWithAzure = async () => {

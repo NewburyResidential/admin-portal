@@ -1,12 +1,11 @@
 import React, { useState, useMemo } from 'react';
-import { Autocomplete } from '@mui/lab';
-import { FormControl, TextField } from '@mui/material';
+import { Autocomplete, FormControl, TextField } from '@mui/material';
 
 export default function VendorDropDown({ vendors }) {
   const [inputValue, setInputValue] = useState('');
   const [selectedVendor, setSelectedVendor] = useState(null);
 
-  const optionsLimit = 25; 
+  const optionsLimit = 8; 
 
   const filteredOptions = useMemo(() => {
     return vendors.filter(vendor => 
@@ -27,9 +26,17 @@ export default function VendorDropDown({ vendors }) {
         onInputChange={(event, newInputValue) => {
           setInputValue(newInputValue);
         }}
-        renderInput={(params) => (
-          <TextField {...params} label="Vendor" variant="outlined" />
-        )}
+        renderInput={(params) => {
+          const { key, ...rest } = params;
+          return <TextField {...rest} label="Vendor" variant="outlined" />;
+        }}
+        renderOption={(props, option) => {
+          return (
+            <li {...props} key={option.id}>
+              {option.name}
+            </li>
+          );
+        }}
       />
     </FormControl>
   );

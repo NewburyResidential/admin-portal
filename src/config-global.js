@@ -1,4 +1,4 @@
-const mode = 'production'; // dev | prod
+const mode = 'dev'; // dev | prod
 
 // API ----------------------------------------------------------------------
 

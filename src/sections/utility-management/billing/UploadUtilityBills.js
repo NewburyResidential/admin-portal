@@ -29,7 +29,6 @@ export default function UploadUtilityBills({ setData }) {
       
       if (response.ok) {
         const data = await response.json();
-        console.log(data)
         if (data.results.length !== 0) {
           if (data.errors.length !==0) {
             showResponseSnackbar({ type: 'warning', message: 'Some Files Processed', modalLink});

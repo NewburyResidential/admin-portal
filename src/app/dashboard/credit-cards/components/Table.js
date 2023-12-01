@@ -32,7 +32,7 @@ const rows = [
 ];
 
 export default function CustomTable({vendors, chartOfAccounts}) {
-  console.log(chartOfAccounts)
+  //console.log(chartOfAccounts)
   console.log(vendors)
 
   //console.log(vendors.response.result.Locations.Location)
