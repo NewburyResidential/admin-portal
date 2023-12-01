@@ -21,6 +21,7 @@ import AltRouteIcon from '@mui/icons-material/AltRoute';
 
 import AddIcon from '@mui/icons-material/Add';
 import Iconify from 'src/components/iconify/iconify';
+import VendorDropDown from './VendorDropDown';
 
 // Example data
 const rows = [
@@ -33,6 +34,7 @@ const rows = [
 export default function CustomTable({vendors, chartOfAccounts}) {
   console.log(chartOfAccounts)
   console.log(vendors)
+
   //console.log(vendors.response.result.Locations.Location)
   //const objectWithLocations = vendors.response.result.Locations.Location
   //console.log(Object.keys(objectWithLocations).length); 
@@ -68,14 +70,17 @@ export default function CustomTable({vendors, chartOfAccounts}) {
           <Iconify icon="material-symbols:arrow-split-rounded" />
           </IconButton>
         </TableCell>
-        <TableCell colSpan={2} sx={{ width: '30%' }}>
+        <TableCell sx={{ width: '22%' }}>
           <TextField fullWidth id="notes-input" label="Notes" variant="outlined" />
         </TableCell>
-        <TableCell sx={{ width: '30%' }}>
+        <TableCell sx={{ width: '22%' }}>
           <AssetDropDown />
         </TableCell>
-        <TableCell sx={{ width: '30%' }}>
-          <GLDropDown />
+        <TableCell sx={{ width: '22%' }}>
+          <VendorDropDown vendors={vendors} />
+        </TableCell>
+        <TableCell sx={{ width: '22%' }}>
+          <GLDropDown chartOfAccounts={chartOfAccounts} />
         </TableCell>
         <TableCell sx={{ width: '10%' }}>
           <TextField
