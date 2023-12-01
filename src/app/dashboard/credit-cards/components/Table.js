@@ -30,7 +30,8 @@ const rows = [
   { id: 4, date: '08/10', description: 'Logan Parking', cardAccount: 'Mike', glAccount: '8901', amount: 400 },
 ];
 
-export default function CustomTable({vendors}) {
+export default function CustomTable({vendors, chartOfAccounts}) {
+  console.log(chartOfAccounts)
   console.log(vendors)
   //console.log(vendors.response.result.Locations.Location)
   //const objectWithLocations = vendors.response.result.Locations.Location
