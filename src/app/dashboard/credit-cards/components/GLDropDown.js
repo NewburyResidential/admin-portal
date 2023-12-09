@@ -4,7 +4,6 @@ import { Autocomplete, TextField, ListSubheader } from '@mui/material';
 
 
 export default function GlDropDown({chartOfAccounts, allocation, handleGlAccountChange, id}) {
-console.log(allocation)
 
     return (
         <Autocomplete

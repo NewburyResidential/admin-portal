@@ -52,7 +52,7 @@ export default function CustomTable({ vendors, chartOfAccounts, unapprovedTransa
           } else {
             newAllocations.forEach((allocation) => (allocation.amount = 0));
           }
-          
+
           return {
             ...transaction,
             allocations: newAllocations,
@@ -78,8 +78,18 @@ export default function CustomTable({ vendors, chartOfAccounts, unapprovedTransa
     );
   }, []);
 
-
- 
+  const handleReceiptChange = useCallback((transactionId, newReceipt) => {
+    setTransactions((prevTransactions) =>
+      prevTransactions.map((transaction) =>
+        transaction.id === transactionId
+          ? {
+              ...transaction,
+              receipt: newReceipt,
+            }
+          : transaction
+      )
+    );
+  }, []);
 
   return (
     <TableContainer component={Paper}>
@@ -96,6 +106,7 @@ export default function CustomTable({ vendors, chartOfAccounts, unapprovedTransa
                 handleAddSplit={handleAddSplit}
                 handleDeleteSplit={handleDeleteSplit}
                 handleGlAccountChange={handleGlAccountChange}
+                handleReceiptChange={handleReceiptChange}
               />
             </React.Fragment>
           ))}
