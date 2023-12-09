@@ -3,14 +3,16 @@ import React, { useState } from 'react';
 import { Autocomplete, TextField, ListSubheader } from '@mui/material';
 
 
-export default function GLDropDown({chartOfAccounts}) {
-    const [value, setValue] = useState(null);
+export default function GlDropDown({chartOfAccounts, allocation, handleGlAccountChange, id}) {
+console.log(allocation)
 
     return (
         <Autocomplete
-            value={value}
+            value={allocation.glAccount === '' ? null : allocation.glAccount}
+            defaultValue={null}
             onChange={(event, newValue) => {
-                setValue(newValue);
+              console.log(newValue)
+                handleGlAccountChange(id, allocation.id, newValue);
             }}
             id="grouped-gl-accounts"
             options={chartOfAccounts.sort((a, b) => b.category.localeCompare(a.category))}

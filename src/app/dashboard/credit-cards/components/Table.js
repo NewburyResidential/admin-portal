@@ -33,7 +33,7 @@ export default function CustomTable({ vendors, chartOfAccounts, unapprovedTransa
                   ...allocation,
                   amount: 0,
                 })),
-                { id: newAllocationId, amount: 0 },
+                { id: newAllocationId, amount: 0, glAccount: '' },
               ],
             }
           : transaction
@@ -63,6 +63,24 @@ export default function CustomTable({ vendors, chartOfAccounts, unapprovedTransa
     );
   }, []);
 
+  const handleGlAccountChange = useCallback((transactionId, allocationId, newGlAccount) => {
+    setTransactions((prevTransactions) =>
+      prevTransactions.map((transaction) =>
+        transaction.id === transactionId
+          ? {
+              ...transaction,
+              allocations: transaction.allocations.map((allocation) =>
+                allocation.id === allocationId ? { ...allocation, glAccount: newGlAccount } : allocation
+              ),
+            }
+          : transaction
+      )
+    );
+  }, []);
+
+
+ 
+
   return (
     <TableContainer component={Paper}>
       <Table aria-label="customized table">
@@ -77,6 +95,7 @@ export default function CustomTable({ vendors, chartOfAccounts, unapprovedTransa
                 handleAllocationAmountChange={handleAllocationAmountChange}
                 handleAddSplit={handleAddSplit}
                 handleDeleteSplit={handleDeleteSplit}
+                handleGlAccountChange={handleGlAccountChange}
               />
             </React.Fragment>
           ))}
