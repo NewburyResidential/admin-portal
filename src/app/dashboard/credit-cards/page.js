@@ -6,12 +6,12 @@ import getUnapprovedTransactions from "src/utils/services/CCExpenses/getUnapprov
 export default async function page () {
   const vendors = await getVendorLocations();
   const chartOfAccounts = await getChartOfAccounts();
-  //const transactions = await getUnapprovedTransactions();
+  const unapprovedTransactions = await getUnapprovedTransactions();
 
 
   return (
     <div>
-      <Table vendors={vendors} chartOfAccounts={chartOfAccounts}/>
+      <Table vendors={vendors} chartOfAccounts={chartOfAccounts} unapprovedTransactions={unapprovedTransactions}/>
     </div>
   )
 }

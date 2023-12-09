@@ -13,18 +13,26 @@ export default function GLDropDown({chartOfAccounts}) {
                 setValue(newValue);
             }}
             id="grouped-gl-accounts"
-            options={chartOfAccounts.sort((a, b) => b.Category.localeCompare(a.Category))}
-            groupBy={(option) => option.Category}
-            getOptionLabel={(option) => option.AccountName}
+            options={chartOfAccounts.sort((a, b) => b.category.localeCompare(a.category))}
+            groupBy={(option) => option.category}
+            getOptionLabel={(option) => option.accountName}
             renderInput={(params) => <TextField {...params} label="GL Account" />}
+            renderOption={(props, option) => {
+                return (
+                  <li {...props} key={option.accountNumber}>
+                    {option.accountName}
+                  </li>
+                );
+              }}
             renderGroup={(params) => (
-                <li key={params.key}>
-                    <ListSubheader sx={{ fontWeight: 'bold', color: 'primary.darker' }}>
-                        {params.group}
-                    </ListSubheader>
-                    {params.children}
-                </li>
-            )}
+                <div key={params.key}>
+                  <ListSubheader sx={{ fontWeight: 'bold', color: 'primary.darker' }}>
+                    {params.group}
+                  </ListSubheader>
+                  {params.children}
+                </div>
+              )}
+              
         />
     );
 }

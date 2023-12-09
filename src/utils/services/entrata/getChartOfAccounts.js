@@ -30,9 +30,9 @@ function condenseGlAccountData(glAccountObjects) {
     const refinedAccounts = glAccountObjects
         .filter(account => accountToCategoryLookup[account.AccountNumber])
         .map(account => ({
-            AccountName: account.AccountName,
-            AccountNumber: account.AccountNumber,
-            Category: accountToCategoryLookup[account.AccountNumber]
+            accountName: account.AccountName,
+            accountNumber: account.AccountNumber,
+            category: accountToCategoryLookup[account.AccountNumber]
         }));
 
     return refinedAccounts;
