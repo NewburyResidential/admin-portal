@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { TableRow, TableCell, IconButton, TextField, Checkbox } from '@mui/material';
+import { m } from 'framer-motion';
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
 import RowSubItem from './RowSubItem';
 import AddReceipt from './AddReceipt';
@@ -29,11 +30,17 @@ function RowItem({
       : difference % 1 === 0
       ? `-${Math.abs(difference)}`
       : `-${Math.abs(difference).toFixed(2)}`;
+
   return (
     <>
-      <TableRow sx={{ backgroundColor: index % 2 !== 0 ? '#f0f0f0' : '#f0f0f0' }}>
+      <TableRow sx={{ backgroundColor: index % 2 !== 0 ? '#f0f0f0' : '#f0f0f0', border: 'none' }} >
         <TableCell sx={{ paddingLeft: '10px' }}>
-          <Checkbox checked={item.checked} onChange={() => {handleCheckboxToggle(item.id)}} />
+          <Checkbox
+            checked={item.checked}
+            onChange={() => {
+              handleCheckboxToggle(item.id);
+            }}
+          />
         </TableCell>
         <TableCell align="center">{item.postedDate}</TableCell>
         <TableCell align="center">{item.accountName}</TableCell>

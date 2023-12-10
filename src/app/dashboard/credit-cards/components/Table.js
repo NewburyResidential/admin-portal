@@ -4,8 +4,9 @@ import { Table, TableBody, TableContainer, Paper, Card, Button, CardActions } fr
 import TablePagination from '@mui/material/TablePagination';
 
 import RowItem from './RowItem';
-import { all } from 'axios';
 import { isIncorrectAmounts, isMissingValue } from 'src/utils/missing-value';
+import updateTransactions from 'src/utils/services/CCExpenses/updateTransactions';
+import { AnimatePresence, m } from 'framer-motion';
 
 export default function CustomTable({ vendors, chartOfAccounts, unapprovedTransactions }) {
   const [transactions, setTransactions] = useState(() =>
@@ -171,9 +172,11 @@ export default function CustomTable({ vendors, chartOfAccounts, unapprovedTransa
 
   const haveSelected = transactions.some((transaction) => transaction.checked);
 
-  const handleApproveTransactions = () => {
+  const handleApproveTransactions = async () => {
+    let validTransactions = [];
     transactions.forEach((transaction) => {
       if (transaction.checked) {
+        let transactionValid = true;
         setTransactionSubmitted(transaction.id);
         transaction.allocations.forEach((allocation) => {
           let allocationValid = true;
@@ -198,19 +201,55 @@ export default function CustomTable({ vendors, chartOfAccounts, unapprovedTransa
 
           if (!allocationValid) {
             console.log(`Allocation ID ${allocation.id} in transaction ID ${transaction.id} is missing: ${missingFields.join(', ')}`);
+            transactionValid = false;
           }
         });
+        if (transactionValid) {
+          validTransactions.push({ ...transaction, status: 'Unapproved' }); //Change back to Unapprove
+        }
       }
     });
+    if (validTransactions.length > 0) {
+      try {
+        const response = await updateTransactions(validTransactions);
+        if (response.ids.length > 0) {
+          const updatedTransactionIds = response.ids;
+          setTransactions((prevTransactions) => prevTransactions.filter((transaction) => !updatedTransactionIds.includes(transaction.id)));
+        }
+      } catch (error) {
+        console.error('Error Updating Transactions: ', error);
+      }
+    }
   };
+
 
   return (
     <Card sx={{ borderRadius: '10px' }}>
-      <TableContainer component={Paper} sx={{ maxHeight: '72vh', borderRadius: '0px' }}>
+      <TableContainer component={Paper} sx={{ maxHeight: '72vh', height: '72vh', borderRadius: '0px', overflowX: 'hidden' }}>
         <Table aria-label="customized table">
-          <TableBody>
+          <AnimatePresence>
             {transactions.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((item, index) => (
-              <React.Fragment key={item.id}>
+              <TableBody
+                component={m.tbody}
+                key={item.id}
+                initial={{ opacity: 0, scale: 0.6 }}
+                animate={{
+                  opacity: 1,
+                  scale: 1,
+                  transition: {
+                    type: 'spring',
+                    stiffness: 260,
+                    damping: 20,
+                    delay: index * 0.12,
+                  },
+                }}
+                exit={{
+                  x: [0, 700],
+                  opacity: 0,
+                  transition: { duration: 0.3 },
+                }}
+                layout
+              >
                 <RowItem
                   item={item}
                   index={index}
@@ -226,9 +265,9 @@ export default function CustomTable({ vendors, chartOfAccounts, unapprovedTransa
                   handleAssetsChange={handleAssetsChange}
                   handleCheckboxToggle={handleCheckboxToggle}
                 />
-              </React.Fragment>
+              </TableBody>
             ))}
-          </TableBody>
+          </AnimatePresence>
         </Table>
       </TableContainer>
       <CardActions>

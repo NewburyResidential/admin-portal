@@ -1,11 +1,11 @@
-export default async function getUnapprovedTransactions() {
-  const url = 'https://0yxexcpp8f.execute-api.us-east-1.amazonaws.com/unapprovedTransactions';
+export default async function updateTransactions(transactionsToUpdate) {
+  const url = 'https://0yxexcpp8f.execute-api.us-east-1.amazonaws.com/updateTransactions';
   const requestOptions = {
-    cache: 'no-store', 
-    method: 'GET',
+    method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
+    body: JSON.stringify(transactionsToUpdate),
   };
 
   try {
