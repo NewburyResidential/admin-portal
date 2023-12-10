@@ -17,6 +17,7 @@ function RowItem({
   handleNoteChange,
   handleVendorChange,
   handleAssetsChange,
+  handleCheckboxToggle,
 }) {
   const sumOfAllocations = item.allocations.reduce((sum, allocation) => sum + parseFloat(allocation.amount || 0), 0);
   const difference = item.amount - sumOfAllocations;
@@ -28,13 +29,11 @@ function RowItem({
       : difference % 1 === 0
       ? `-${Math.abs(difference)}`
       : `-${Math.abs(difference).toFixed(2)}`;
-console.log(item)
   return (
     <>
-      <TableRow sx={{ backgroundColor: index % 2 !== 0 ? '#FAFBFC' : '#f0f0f0' }}>
-        
-        <TableCell padding="checkbox">
-          <Checkbox />
+      <TableRow sx={{ backgroundColor: index % 2 !== 0 ? '#f0f0f0' : '#f0f0f0' }}>
+        <TableCell sx={{ paddingLeft: '10px' }}>
+          <Checkbox checked={item.checked} onChange={() => {handleCheckboxToggle(item.id)}} />
         </TableCell>
         <TableCell align="center">{item.postedDate}</TableCell>
         <TableCell align="center">{item.accountName}</TableCell>

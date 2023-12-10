@@ -1,5 +1,6 @@
 'use client';
 import { Autocomplete, TextField, Checkbox, ListItemText, Chip, ListSubheader, Popper } from '@mui/material';
+import { isMissingValue } from 'src/utils/missing-value';
 
 const assetItems = [
   { category: 'Properties', label: 'The Landing', id: 'P1' },
@@ -8,7 +9,7 @@ const assetItems = [
   { category: 'Home Office', label: 'Acquisitions', id: 'H1' },
 ];
 
-export default function AssetDropDown({ id, allocation, handleAssetsChange }) {
+export default function AssetDropDown({ item, allocation, handleAssetsChange }) {
   const currentValues = allocation.assets ? allocation.assets : [];
   const sortedAssetItems = assetItems.sort((a, b) => {
     if (a.category === 'Properties' && b.category !== 'Properties') {
@@ -34,7 +35,7 @@ export default function AssetDropDown({ id, allocation, handleAssetsChange }) {
       groupBy={(option) => option.category}
       getOptionLabel={(option) => option.label}
       onChange={(event, newValue) => {
-        handleAssetsChange(id, allocation.id, newValue);
+        handleAssetsChange(item.id, allocation.id, newValue);
       }}
       renderGroup={(params) => (
         <div key={params.key}>
@@ -44,12 +45,14 @@ export default function AssetDropDown({ id, allocation, handleAssetsChange }) {
           {params.children}
         </div>
       )}
-      renderOption={(props, option, { selected }) => (
-        <li {...props} key={option.id}>
-          <Checkbox checked={selected} />
-          {option.label}
-        </li>
-      )}
+      renderOption={(props, option, { selected }) => {
+        return (
+          <div {...props} key={option.id}>
+            <Checkbox checked={selected} key={option.id} />
+            {option.label}
+          </div>
+        );
+      }}
       renderInput={(params) => {
         const { key, ...rest } = params;
         return (
@@ -57,18 +60,22 @@ export default function AssetDropDown({ id, allocation, handleAssetsChange }) {
             {...rest}
             label="Location"
             variant="outlined"
+            error={item?.isSubmitted && isMissingValue(currentValues)}
             sx={{
               '.MuiInputBase-input.MuiOutlinedInput-input': {
                 position: currentValues.length !== 0 && 'absolute',
                 left: currentValues.length !== 0 && '-9999px',
               },
-        
             }}
           />
         );
       }}
       renderTags={(tagValue, getTagProps) =>
-        tagValue.map((option, index) => <Chip sx={{ fontSize: '11px', height: '29.2px' }} label={option.label} {...getTagProps({ index })} />)
+        tagValue.map((option, index) => {
+          const { key, ...otherProps } = getTagProps({ index });
+
+          return <Chip key={option.id} sx={{ fontSize: '11px', height: '29.2px' }} label={option.label} {...otherProps} />;
+        })
       }
     />
   );
