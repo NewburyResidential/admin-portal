@@ -14,6 +14,9 @@ function RowItem({
   handleDeleteSplit,
   handleGlAccountChange,
   handleReceiptChange,
+  handleNoteChange,
+  handleVendorChange,
+  handleAssetsChange,
 }) {
   const sumOfAllocations = item.allocations.reduce((sum, allocation) => sum + parseFloat(allocation.amount || 0), 0);
   const difference = item.amount - sumOfAllocations;
@@ -25,7 +28,7 @@ function RowItem({
       : difference % 1 === 0
       ? `-${Math.abs(difference)}`
       : `-${Math.abs(difference).toFixed(2)}`;
-
+console.log(item)
   return (
     <>
       <TableRow sx={{ backgroundColor: index % 2 !== 0 ? '#FAFBFC' : '#f0f0f0' }}>
@@ -56,6 +59,9 @@ function RowItem({
               handleAddSplit={handleAddSplit}
               handleDeleteSplit={handleDeleteSplit}
               handleGlAccountChange={handleGlAccountChange}
+              handleNoteChange={handleNoteChange}
+              handleVendorChange={handleVendorChange}
+              handleAssetsChange={handleAssetsChange}
             />
           </React.Fragment>
         );

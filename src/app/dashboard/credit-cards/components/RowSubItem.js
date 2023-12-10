@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { TableRow, TableCell, IconButton, TextField, Checkbox } from '@mui/material';
+import { TableRow, TableCell, IconButton, TextField, Checkbox, Box } from '@mui/material';
 import { v4 as uuidv4 } from 'uuid';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 
@@ -8,7 +8,7 @@ import Iconify from 'src/components/iconify/iconify';
 import AssetDropDown from './AssetDropDown';
 import VendorDropDown from './VendorDropDown';
 import GlDropDown from './GlDropDown';
-
+import NoteTextField from './NoteTextField';
 
 export default function RowSubItem({
   allocation,
@@ -21,9 +21,11 @@ export default function RowSubItem({
   message,
   handleAddSplit,
   handleDeleteSplit,
-  handleGlAccountChange
+  handleGlAccountChange,
+  handleNoteChange,
+  handleVendorChange,
+  handleAssetsChange,
 }) {
-    
   return (
     <TableRow style={{ backgroundColor: index % 2 === 0 ? '#f0f0f0' : '#FAFBFC' }}>
       <TableCell padding="checkbox" style={{ paddingLeft: '32px' }}>
@@ -33,16 +35,16 @@ export default function RowSubItem({
           <Iconify icon={allocation.id !== 'default' ? 'fluent:delete-12-regular' : 'material-symbols:arrow-split-rounded'} />
         </IconButton>
       </TableCell>
-      <TableCell sx={{ width: '22%' }}>
-        <TextField fullWidth id="notes-input" label="Notes" variant="outlined" />
+      <TableCell sx={{ width: '20%' }}>
+        <NoteTextField id={item.id} allocation={allocation} handleNoteChange={handleNoteChange} />
       </TableCell>
-      <TableCell sx={{ width: '22%' }}>
-        <AssetDropDown />
+      <TableCell sx={{ width: '20%' }}>
+          <AssetDropDown id={item.id} allocation={allocation} handleAssetsChange={handleAssetsChange} />
       </TableCell>
-      <TableCell sx={{ width: '22%' }}>
-        <VendorDropDown vendors={vendors} />
+      <TableCell sx={{ width: '20%' }}>
+        <VendorDropDown vendors={vendors} id={item.id} allocation={allocation} handleVendorChange={handleVendorChange} />
       </TableCell>
-      <TableCell sx={{ width: '22%' }}>
+      <TableCell sx={{ width: '20%' }}>
         <GlDropDown chartOfAccounts={chartOfAccounts} id={item.id} allocation={allocation} handleGlAccountChange={handleGlAccountChange} />
       </TableCell>
       <TableCell sx={{ width: '10%', position: 'relative' }}>
@@ -53,22 +55,20 @@ export default function RowSubItem({
           disabled={item.allocations.length === 1}
           variant="outlined"
           autoComplete="off"
-         
         />
-       {allocation.amount === 0 || allocation.amount === '' ? (
-  <IconButton
-    sx={{
-      position: 'absolute',
-      right: '2px',
-      top: '50%',
-      transform: 'translateY(-50%)',
-    }}
-    onClick={(e) => handleAllocationAmountChange(item.id, allocation.id, difference)}
-  >
-    <AddCircleIcon />
-  </IconButton>
-) : null}
-
+        {allocation.amount === 0 || allocation.amount === '' ? (
+          <IconButton
+            sx={{
+              position: 'absolute',
+              right: '2px',
+              top: '50%',
+              transform: 'translateY(-50%)',
+            }}
+            onClick={(e) => handleAllocationAmountChange(item.id, allocation.id, difference)}
+          >
+            <AddCircleIcon />
+          </IconButton>
+        ) : null}
       </TableCell>
     </TableRow>
   );

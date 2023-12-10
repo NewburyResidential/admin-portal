@@ -33,7 +33,7 @@ export default function CustomTable({ vendors, chartOfAccounts, unapprovedTransa
                   ...allocation,
                   amount: 0,
                 })),
-                { id: newAllocationId, amount: 0, glAccount: '' },
+                { id: newAllocationId, amount: 0, glAccount: null, note: '', vendor: null, assets: [] },
               ],
             }
           : transaction
@@ -78,6 +78,51 @@ export default function CustomTable({ vendors, chartOfAccounts, unapprovedTransa
     );
   }, []);
 
+  const handleAssetsChange = useCallback((transactionId, allocationId, newAssetsArray) => {
+    setTransactions((prevTransactions) =>
+      prevTransactions.map((transaction) =>
+        transaction.id === transactionId
+          ? {
+              ...transaction,
+              allocations: transaction.allocations.map((allocation) =>
+                allocation.id === allocationId ? { ...allocation, assets: newAssetsArray } : allocation
+              ),
+            }
+          : transaction
+      )
+    );
+  }, []);
+
+  const handleVendorChange = useCallback((transactionId, allocationId, newVendor) => {
+    setTransactions((prevTransactions) =>
+      prevTransactions.map((transaction) =>
+        transaction.id === transactionId
+          ? {
+              ...transaction,
+              allocations: transaction.allocations.map((allocation) =>
+                allocation.id === allocationId ? { ...allocation, vendor: newVendor } : allocation
+              ),
+            }
+          : transaction
+      )
+    );
+  }, []);
+
+  const handleNoteChange = useCallback((transactionId, allocationId, newNote) => {
+    setTransactions((prevTransactions) =>
+      prevTransactions.map((transaction) =>
+        transaction.id === transactionId
+          ? {
+              ...transaction,
+              allocations: transaction.allocations.map((allocation) =>
+                allocation.id === allocationId ? { ...allocation, note: newNote } : allocation
+              ),
+            }
+          : transaction
+      )
+    );
+  }, []);
+
   const handleReceiptChange = useCallback((transactionId, newReceipt) => {
     setTransactions((prevTransactions) =>
       prevTransactions.map((transaction) =>
@@ -107,6 +152,9 @@ export default function CustomTable({ vendors, chartOfAccounts, unapprovedTransa
                 handleDeleteSplit={handleDeleteSplit}
                 handleGlAccountChange={handleGlAccountChange}
                 handleReceiptChange={handleReceiptChange}
+                handleNoteChange={handleNoteChange}
+                handleVendorChange={handleVendorChange}
+                handleAssetsChange={handleAssetsChange}
               />
             </React.Fragment>
           ))}
