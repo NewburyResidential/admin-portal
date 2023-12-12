@@ -31,9 +31,19 @@ function RowItem({
       ? `-${Math.abs(difference)}`
       : `-${Math.abs(difference).toFixed(2)}`;
 
+  function titleCase(str) {
+    return str
+      .toLowerCase()
+      .split(' ')
+      .map(function (word) {
+        return word.charAt(0).toUpperCase() + word.slice(1);
+      })
+      .join(' ');
+  }
+
   return (
     <>
-      <TableRow sx={{ backgroundColor: index % 2 !== 0 ? '#f0f0f0' : '#f0f0f0', border: 'none' }} >
+      <TableRow sx={{ backgroundColor: index % 2 !== 0 ? '#FAFBFC' : '#f0f0f0', border: 'none' }}>
         <TableCell sx={{ paddingLeft: '10px' }}>
           <Checkbox
             checked={item.checked}
@@ -44,8 +54,8 @@ function RowItem({
         </TableCell>
         <TableCell align="center">{item.postedDate}</TableCell>
         <TableCell align="center">{item.accountName}</TableCell>
-        <TableCell align="center">{item.name}</TableCell>
-        <TableCell align="center"></TableCell>
+        <TableCell align="center">{item.merchant}</TableCell>
+        <TableCell align="center">{titleCase(item.name)}</TableCell>
         <TableCell align="center">
           <AddReceipt item={item} handleReceiptChange={handleReceiptChange} />
         </TableCell>

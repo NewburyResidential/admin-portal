@@ -15,6 +15,7 @@ export default function CustomTable({ vendors, chartOfAccounts, unapprovedTransa
       checked: false,
     }))
   );
+  const [useLayoutAnimation, setUseLayoutAnimation] = useState(false);
   const [rowsPerPage, setRowsPerPage] = useState(25);
   const [page, setPage] = useState(0);
 
@@ -222,7 +223,6 @@ export default function CustomTable({ vendors, chartOfAccounts, unapprovedTransa
     }
   };
 
-
   return (
     <Card sx={{ borderRadius: '10px' }}>
       <TableContainer component={Paper} sx={{ maxHeight: '72vh', height: '72vh', borderRadius: '0px', overflowX: 'hidden' }}>
@@ -246,9 +246,10 @@ export default function CustomTable({ vendors, chartOfAccounts, unapprovedTransa
                 exit={{
                   x: [0, 700],
                   opacity: 0,
-                  transition: { duration: 0.3 },
+                  transition: { duration: 0.4 },
                 }}
-                layout
+                //layout={true}
+                //- maybe this won't suck one day
               >
                 <RowItem
                   item={item}

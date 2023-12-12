@@ -5,5 +5,5 @@ export default function NoteTextField({ id, allocation, handleNoteChange }) {
     handleNoteChange(id, allocation.id, event.target.value);
   };
 
-  return <TextField fullWidth label="Notes" variant="outlined" value={allocation.note ? allocation.note : ''} onChange={handleChange} />;
+  return <TextField autoComplete="off" fullWidth label="Notes" variant="outlined" value={allocation.note ? allocation.note : ''} onChange={handleChange} />;
 }

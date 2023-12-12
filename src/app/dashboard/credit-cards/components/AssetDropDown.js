@@ -6,7 +6,9 @@ const assetItems = [
   { category: 'Properties', label: 'The Landing', id: 'P1' },
   { category: 'Properties', label: 'Edge At 1010', id: 'P2' },
   { category: 'Properties', label: '2100 Springport', id: 'P3' },
-  { category: 'Home Office', label: 'Acquisitions', id: 'H1' },
+  { category: 'Properties', label: 'Sycamore Place', id: 'P4' },
+
+  { category: 'Home Office', label: 'Newbury Residential', id: 'H1' },
 ];
 
 export default function AssetDropDown({ item, allocation, handleAssetsChange }) {

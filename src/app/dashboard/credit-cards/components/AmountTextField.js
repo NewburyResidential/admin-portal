@@ -23,7 +23,7 @@ export default function AmountTextField({ handleAllocationAmountChange, item, al
             top: '50%',
             transform: 'translateY(-50%)',
           }}
-          onClick={(e) => handleAllocationAmountChange(item.id, allocation.id, difference + Number(currentValue))}
+          onClick={(e) => handleAllocationAmountChange(item.id, allocation.id, (difference + Number(currentValue)).toFixed(2))}
         >
           <AddCircleIcon />
         </IconButton>

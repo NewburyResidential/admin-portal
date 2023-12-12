@@ -1,8 +1,7 @@
 import React from 'react';
 
-import { TableRow, TableCell, IconButton, TextField, Checkbox, Box } from '@mui/material';
+import { TableRow, TableCell, IconButton,} from '@mui/material';
 import { v4 as uuidv4 } from 'uuid';
-import AddCircleIcon from '@mui/icons-material/AddCircle';
 
 import Iconify from 'src/components/iconify/iconify';
 import AssetDropDown from './AssetDropDown';
@@ -27,8 +26,10 @@ export default function RowSubItem({
   handleVendorChange,
   handleAssetsChange,
 }) {
+
+  
   return (
-    <TableRow style={{ backgroundColor: index % 2 === 0 ? '#FAFBFC' : '#FAFBFC' }}>
+    <TableRow style={{ backgroundColor: index % 2 === 0 ? '#f0f0f0' : '#FAFBFC' }}>
       <TableCell padding="checkbox" style={{ paddingLeft: '32px' }}>
         <IconButton
           onClick={() => (allocation.id !== 'default' ? handleDeleteSplit(item.id, allocation.id) : handleAddSplit(item.id, uuidv4()))}
