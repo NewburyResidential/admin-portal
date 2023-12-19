@@ -2,8 +2,8 @@ import React, { useState, useMemo } from 'react';
 import { Autocomplete, FormControl, Popper, TextField } from '@mui/material';
 import { isMissingValue } from 'src/utils/missing-value';
 
-export default function VendorDropDown({ vendors, handleVendorChange, item, allocation }) {
-  const currentValue = allocation.vendor ? allocation.vendor : null;
+export default function VendorDropDown({ vendors, handleVendorChange, item }) {
+  const currentValue = item.vendor ? item.vendor : null;
   const [inputValue, setInputValue] = useState('');
 
   const optionsLimit = 7;
@@ -21,14 +21,14 @@ export default function VendorDropDown({ vendors, handleVendorChange, item, allo
         getOptionLabel={(option) => option.name}
         value={currentValue}
         onChange={(event, newValue) => {
-          handleVendorChange(item.id, allocation.id, newValue);
+          handleVendorChange(item.id, newValue);
         }}
         onInputChange={(event, newInputValue) => {
           setInputValue(newInputValue);
         }}
         renderInput={(params) => {
           const { key, ...rest } = params;
-          return <TextField {...rest} label="Vendor" variant="outlined" error={item?.isSubmitted && isMissingValue(currentValue)} />;
+          return <TextField {...rest} label={`Add ${item.merchant} Vendor`} variant="filled" error={item?.isSubmitted && isMissingValue(currentValue)} />;
         }}
         renderOption={(props, option) => {
           return (

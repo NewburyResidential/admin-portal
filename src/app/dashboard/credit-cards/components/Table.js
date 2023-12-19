@@ -107,14 +107,14 @@ export default function CustomTable({ vendors, chartOfAccounts, unapprovedTransa
     );
   }, []);
 
-  const handleAssetsChange = useCallback((transactionId, allocationId, newAssetsArray) => {
+  const handleAssetsChange = useCallback((transactionId, allocationId, newAsset) => {
     setTransactions((prevTransactions) =>
       prevTransactions.map((transaction) =>
         transaction.id === transactionId
           ? {
               ...transaction,
               allocations: transaction.allocations.map((allocation) =>
-                allocation.id === allocationId ? { ...allocation, assets: newAssetsArray } : allocation
+                allocation.id === allocationId ? { ...allocation, asset: newAsset } : allocation
               ),
             }
           : transaction
