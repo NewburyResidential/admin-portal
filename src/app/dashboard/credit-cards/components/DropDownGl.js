@@ -2,7 +2,7 @@
 import { Autocomplete, TextField, ListSubheader, Popper } from '@mui/material';
 import { isMissingValue } from 'src/utils/missing-value';
 
-export default function GlDropDown({ chartOfAccounts, allocation, handleGlAccountChange, item }) {
+export default function DropDownGl({ chartOfAccounts, allocation, handleGlAccountChange, item }) {
   const currentValue = allocation.glAccount ? allocation.glAccount : null;
   return (
     <Autocomplete

@@ -1,7 +1,7 @@
 import { IconButton, TextField } from '@mui/material';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import { isIncorrectAmounts, isMissingValue } from 'src/utils/missing-value';
-export default function AmountTextField({ handleAllocationAmountChange, item, allocation, difference, message, isSplit }) {
+export default function TextFieldAmount({ handleAllocationAmountChange, item, allocation, difference, message, isSplit }) {
   const allocationAmount = allocation.amount;
 
   const formatToTwoDecimalPlacesIfNeeded = (number) => {

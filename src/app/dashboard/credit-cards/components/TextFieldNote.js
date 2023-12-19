@@ -1,6 +1,6 @@
 import { TextField } from '@mui/material';
 
-export default function NoteTextField({ id, allocation, handleNoteChange }) {
+export default function TextFieldNote({ id, allocation, handleNoteChange }) {
   const handleChange = (event) => {
     handleNoteChange(id, allocation.id, event.target.value);
   };

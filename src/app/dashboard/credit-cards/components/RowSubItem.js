@@ -4,15 +4,13 @@ import { TableRow, TableCell, IconButton } from '@mui/material';
 import { v4 as uuidv4 } from 'uuid';
 
 import Iconify from 'src/components/iconify/iconify';
-import AssetDropDown from './AssetDropDown';
-import VendorDropDown from './VendorDropDown';
 
-import NoteTextField from './NoteTextField';
-import AmountTextField from './AmountTextField';
-import LocationDropDown from './LocationDropDown';
-import GlDropDown from './GlDropDown';
-import PercentTextField from './PercentTextField';
-import UnitTextField from './UnitTextField';
+import PercentTextField from './TextFieldPercent';
+import TextFieldAmount from './TextFieldAmount';
+import TextFieldUnitNumber from './TextFieldUnitNumber';
+import DropDownGl from './DropDownGl';
+import DropDownAsset from './DropDownAsset';
+import TextFieldNote from './TextFieldNote';
 
 export default function RowSubItem({
   allocation,
@@ -40,14 +38,14 @@ export default function RowSubItem({
         </IconButton>
       </TableCell>
       <TableCell sx={{ width: '30%' }} colSpan={isSplit ? 1 : 2}>
-        <NoteTextField id={item.id} allocation={allocation} handleNoteChange={handleNoteChange} />
+        <TextFieldNote id={item.id} allocation={allocation} handleNoteChange={handleNoteChange} />
       </TableCell>
       <TableCell sx={{ width: '30%' }}>
-        <AssetDropDown item={item} allocation={allocation} handleAssetsChange={handleAssetsChange} />
+        <DropDownAsset item={item} allocation={allocation} handleAssetsChange={handleAssetsChange} />
       </TableCell>
 
       <TableCell sx={{ width: '30%' }}>
-        <GlDropDown chartOfAccounts={chartOfAccounts} item={item} allocation={allocation} handleGlAccountChange={handleGlAccountChange} />
+        <DropDownGl chartOfAccounts={chartOfAccounts} item={item} allocation={allocation} handleGlAccountChange={handleGlAccountChange} />
       </TableCell>
       {isSplit && (
         <TableCell sx={{ width: '5%' }}>
@@ -60,7 +58,7 @@ export default function RowSubItem({
               message={message}
             />
           ) : (
-            <UnitTextField
+            <TextFieldUnitNumber
               item={item}
               allocation={allocation}
             />
@@ -69,7 +67,7 @@ export default function RowSubItem({
       )}
 
       <TableCell sx={{ width: '10%' }}>
-        <AmountTextField
+        <TextFieldAmount
           handleAllocationAmountChange={handleAllocationAmountChange}
           item={item}
           allocation={allocation}

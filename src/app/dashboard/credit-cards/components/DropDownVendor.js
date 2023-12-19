@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { Autocomplete, FormControl, Popper, TextField } from '@mui/material';
 import { isMissingValue } from 'src/utils/missing-value';
 
-export default function VendorDropDown({ vendors, handleVendorChange, item }) {
+export default function DropDownVendor({ vendors, handleVendorChange, item }) {
   const currentValue = item.vendor ? item.vendor : null;
   const [inputValue, setInputValue] = useState('');
 

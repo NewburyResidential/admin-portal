@@ -1,7 +1,7 @@
 import { TextField } from '@mui/material';
 import { isIncorrectAmounts, isMissingValue } from 'src/utils/missing-value';
 
-export default function PercentTextField({ handleAllocationAmountChange, item, allocation, amountDifference }) {
+export default function TextFieldPercent({ handleAllocationAmountChange, item, allocation, amountDifference }) {
   const percentDifference = Math.round((amountDifference / item.amount) * 100);
 
   const message =
@@ -13,10 +13,8 @@ export default function PercentTextField({ handleAllocationAmountChange, item, a
       ? `-${Math.abs(percentDifference)}`
       : `-${Math.abs(percentDifference).toFixed(2)}`;
 
-  console.log(percentDifference);
-  console.log(message);
+
   let currentValue;
-  let current;
 
   const allocationAmount = parseFloat(allocation.amount);
   const itemAmount = parseFloat(item.amount);
@@ -25,7 +23,7 @@ export default function PercentTextField({ handleAllocationAmountChange, item, a
     if (allocationAmount === 0) {
       currentValue = '';
     } else {
-      current = Math.round((allocationAmount / itemAmount) * 100);
+      currentValue = Math.round((allocationAmount / itemAmount) * 100);
     }
   } else {
     currentValue = '';

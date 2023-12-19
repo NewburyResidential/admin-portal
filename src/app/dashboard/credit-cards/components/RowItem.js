@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import { TableRow, TableCell, IconButton, TextField, Checkbox, ButtonGroup, Button } from '@mui/material';
 import RowSubItem from './RowSubItem';
 import AddReceipt from './AddReceipt';
-import VendorDropDown from './VendorDropDown';
+import VendorDropDown from './DropDownVendor';
 import CalculationButtonGroup from './CalculationButtonGroup';
+import DropDownVendor from './DropDownVendor';
 
 function RowItem({
   item,
@@ -59,7 +60,7 @@ function RowItem({
         <TableCell align="center">{item.accountName}</TableCell>
         <TableCell align="center">{titleCase(item.name)}</TableCell>
         <TableCell align="center" >
-          <VendorDropDown vendors={vendors} item={item} handleVendorChange={handleVendorChange} />
+          <DropDownVendor vendors={vendors} item={item} handleVendorChange={handleVendorChange} />
         </TableCell>
         {/* <TableCell align="center">{item.merchant}</TableCell> */}
         <TableCell align="center">

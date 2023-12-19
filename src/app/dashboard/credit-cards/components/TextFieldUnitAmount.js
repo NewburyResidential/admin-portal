@@ -2,8 +2,8 @@ import { TextField } from '@mui/material'
 import React from 'react'
 import { isIncorrectAmounts } from 'src/utils/missing-value'
 
-export default function UnitTextField({item, allocation}) {
-    console.log(allocation)
+export default function TextFieldUnitAmount({item, allocation}) {
+    //console.log(allocation)
   return (
     <TextField
       label={'Units'}
