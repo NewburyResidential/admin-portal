@@ -1,6 +1,6 @@
 'use client';
 import { Autocomplete, TextField, ListSubheader, Popper } from '@mui/material';
-import { isMissingValue } from 'src/utils/missing-value';
+import { isMissingValue } from 'src/utils/expense-calculations/missing-value';
 
 export default function DropDownGl({ chartOfAccounts, allocation, handleGlAccountChange, item }) {
   const currentValue = allocation.glAccount ? allocation.glAccount : null;

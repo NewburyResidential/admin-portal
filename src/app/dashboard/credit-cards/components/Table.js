@@ -4,9 +4,10 @@ import { Table, TableBody, TableContainer, Paper, Card, Button, CardActions } fr
 import TablePagination from '@mui/material/TablePagination';
 
 import RowItem from './RowItem';
-import { isIncorrectAmounts, isMissingValue } from 'src/utils/missing-value';
+import { isIncorrectAmounts, isMissingValue } from 'src/utils/expense-calculations/missing-value';
 import updateTransactions from 'src/utils/services/CCExpenses/updateTransactions';
 import { AnimatePresence, m } from 'framer-motion';
+import { recalculateUnitDistribution } from 'src/utils/expense-calculations/recalculate-unit-distribution';
 
 export default function CustomTable({ vendors, chartOfAccounts, unapprovedTransactions }) {
   const [transactions, setTransactions] = useState(() =>
@@ -51,7 +52,7 @@ export default function CustomTable({ vendors, chartOfAccounts, unapprovedTransa
     );
   }, []);
 
-  const handleAddSplit = useCallback((transactionId, newAllocationId) => {
+  const handleAddSplit = useCallback((transactionId, newAllocationId, isAmountCalculation = true) => {
     setTransactions((prevTransactions) =>
       prevTransactions.map((transaction) =>
         transaction.id === transactionId

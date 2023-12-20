@@ -1,17 +1,16 @@
 import { TextField } from '@mui/material'
 import React from 'react'
-import { isIncorrectAmounts } from 'src/utils/missing-value'
 
-export default function TextFieldUnitNumber({item, allocation}) {
-    //console.log(allocation)
+export default function TextFieldUnitNumber({allocation}) {
+  const currentValue = allocation?.asset ? allocation.asset.units : 0
   return (
     <TextField
       label={'Units'}
-      value={'0'}
+      value={currentValue}
       disabled={true}
       variant="outlined"
       autoComplete="off"
-      error={item?.isSubmitted && isIncorrectAmounts(item)}
+
     />
   )
 }

@@ -1,5 +1,5 @@
 import { TextField } from '@mui/material';
-import { isIncorrectAmounts, isMissingValue } from 'src/utils/missing-value';
+import { isIncorrectAmounts, isMissingValue } from 'src/utils/expense-calculations/missing-value';
 
 export default function TextFieldPercent({ handleAllocationAmountChange, item, allocation, amountDifference }) {
   const percentDifference = Math.round((amountDifference / item.amount) * 100);
@@ -12,7 +12,6 @@ export default function TextFieldPercent({ handleAllocationAmountChange, item, a
       : percentDifference % 1 === 0
       ? `-${Math.abs(percentDifference)}`
       : `-${Math.abs(percentDifference).toFixed(2)}`;
-
 
   let currentValue;
 
@@ -32,7 +31,7 @@ export default function TextFieldPercent({ handleAllocationAmountChange, item, a
   const updatePercent = (newValue) => {
     if (newValue >= 1 && newValue <= 100) {
       const roundedValue = (newValue / 100) * item.amount;
-      return roundedValue;
+      return parseFloat(roundedValue.toFixed(2));
     } else {
       return;
     }
@@ -44,7 +43,7 @@ export default function TextFieldPercent({ handleAllocationAmountChange, item, a
 
   return (
     <TextField
-      label={amountDifference === 0 ? 'Split %' : `${message}%`}
+      label={amountDifference === 0 ? 'Percent' : `${message}%`}
       value={currentValue}
       onChange={(e) => handlePercentChange(e.target.value)}
       disabled={item.allocations.length === 1}

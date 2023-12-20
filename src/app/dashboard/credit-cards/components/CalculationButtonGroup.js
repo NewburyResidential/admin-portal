@@ -1,9 +1,16 @@
 import { Button, ButtonGroup } from '@mui/material';
 import React, { useState } from 'react';
+import { recalculateAmountDistribution } from 'src/utils/expense-calculations/recalculate-amount-distribution';
+import { recalculateUnitDistribution } from 'src/utils/expense-calculations/recalculate-unit-distribution';
 
-export default function CalculationButtonGroup({ calculation, setCalculation }) {
+export default function CalculationButtonGroup({ calculation, setCalculation, item, handleAllocationAmountChange }) {
   const handleCalculationChange = (method) => {
     setCalculation(method);
+    if (method === 'Amount') {
+      recalculateAmountDistribution(item, handleAllocationAmountChange);
+    } else {
+      recalculateUnitDistribution(item, handleAllocationAmountChange);
+    }
   };
 
   return (

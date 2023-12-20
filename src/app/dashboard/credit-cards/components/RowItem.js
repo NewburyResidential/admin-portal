@@ -21,9 +21,11 @@ function RowItem({
   handleAssetsChange,
   handleCheckboxToggle,
 }) {
-  const [calculation, setCalculation] = useState(null);
+  const [calculation, setCalculation] = useState('Unit');
   const sumOfAllocations = item.allocations.reduce((sum, allocation) => sum + parseFloat(allocation.amount || 0), 0);
-  const difference = item.amount - sumOfAllocations;
+
+  const difference = parseFloat((item.amount - sumOfAllocations).toFixed(2));
+
   const message =
     difference >= 0
       ? difference % 1 === 0
@@ -56,13 +58,12 @@ function RowItem({
             }}
           />
         </TableCell>
-        <TableCell align="center">{item.postedDate}</TableCell>
-        <TableCell align="center">{item.accountName}</TableCell>
-        <TableCell align="center">{titleCase(item.name)}</TableCell>
-        <TableCell align="center" >
+        <TableCell align="center">
           <DropDownVendor vendors={vendors} item={item} handleVendorChange={handleVendorChange} />
         </TableCell>
-        {/* <TableCell align="center">{item.merchant}</TableCell> */}
+        <TableCell align="center">{titleCase(item.name)}</TableCell>
+        <TableCell align="center">{item.accountName}</TableCell>
+        <TableCell align="center" >{item.postedDate}</TableCell>
         <TableCell align="center">
           <AddReceipt item={item} handleReceiptChange={handleReceiptChange} />
         </TableCell>
@@ -96,19 +97,24 @@ function RowItem({
         <TableRow sx={{ backgroundColor: index % 2 === 0 ? '#f0f0f0' : '#FAFBFC' }}>
           <TableCell colSpan={4}></TableCell>
           <TableCell align="center">
-            <CalculationButtonGroup calculation={calculation} setCalculation={setCalculation} />
+            <CalculationButtonGroup
+              calculation={calculation}
+              setCalculation={setCalculation}
+              item={item}
+              handleAllocationAmountChange={handleAllocationAmountChange}
+            />
           </TableCell>
           <TableCell align="left" autoComplete="off">
             <TextField
               value={Number((item.amount - difference).toFixed(2))}
               disabled={true}
-              label={"Total"}
+              label={'Total'}
               InputProps={{
                 style: {
                   maxHeight: '40px',
                 },
               }}
-            >      
+            >
               {item.amount}
             </TextField>
           </TableCell>
