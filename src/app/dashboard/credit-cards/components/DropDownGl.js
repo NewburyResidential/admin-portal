@@ -18,6 +18,7 @@ export default function DropDownGl({ chartOfAccounts, allocation, handleGlAccoun
       groupBy={(option) => option.category}
       getOptionLabel={(option) => option.accountName}
       renderInput={(params) => <TextField {...params} label="GL Account" error={item?.isSubmitted && isMissingValue(currentValue)} />}
+      isOptionEqualToValue={(option, value) => option.accountNumber === value.accountNumber}
       renderOption={(props, option) => {
         return (
           <li {...props} key={option.accountNumber}>

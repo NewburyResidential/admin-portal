@@ -7,7 +7,7 @@ const assetItems = [
   { category: 'Properties', label: 'Edge At 1010', id: 'P2', units: 122 },
   { category: 'Properties', label: '2100 Springport', id: 'P3', units: 25 },
   { category: 'Properties', label: 'Sycamore Place', id: 'P4', units: 50 },
-  { category: 'Home Office', label: 'Newbury Residential', id: 'H1', units: 122 },
+  { category: 'Home Office', label: 'Newbury Residential', id: 'H1', units: 0 },
 ];
 
 export default function DropDownAsset({ allocation, handleAssetsChange, handleAllocationAmountChange, item, calculation }) {
@@ -56,7 +56,7 @@ export default function DropDownAsset({ allocation, handleAssetsChange, handleAl
       renderInput={(params) => <TextField {...params} label="Location" error={item?.isSubmitted && isMissingValue(currentValue)} />}
       renderOption={(props, option) => {
         return (
-          <li {...props} key={option.accountNumber}>
+          <li {...props} key={option.id}>
             {option.label}
           </li>
         );

@@ -123,15 +123,13 @@ export default function CustomTable({ vendors, chartOfAccounts, unapprovedTransa
     );
   }, []);
 
-  const handleVendorChange = useCallback((transactionId, allocationId, newVendor) => {
+  const handleVendorChange = useCallback((transactionId, newVendor) => {
     setTransactions((prevTransactions) =>
       prevTransactions.map((transaction) =>
         transaction.id === transactionId
           ? {
               ...transaction,
-              allocations: transaction.allocations.map((allocation) =>
-                allocation.id === allocationId ? { ...allocation, vendor: newVendor } : allocation
-              ),
+              vendor: newVendor,
             }
           : transaction
       )
@@ -249,8 +247,6 @@ export default function CustomTable({ vendors, chartOfAccounts, unapprovedTransa
                   opacity: 0,
                   transition: { duration: 0.4 },
                 }}
-                //layout={true}
-                //- maybe this won't suck one day
               >
                 <RowItem
                   item={item}
