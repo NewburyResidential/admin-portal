@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { TableRow, TableCell, IconButton, TextField } from '@mui/material';
+import { TableRow, TableCell, IconButton, Box } from '@mui/material';
 import { v4 as uuidv4 } from 'uuid';
 
 import Iconify from 'src/components/iconify/iconify';
@@ -30,6 +30,7 @@ export default function RowSubItem({
   handleAssetsChange,
   isSplit,
   calculation,
+  backgroundColor,
 }) {
   const handleDeleteButton = () => {
     handleDeleteSplit(item.id, allocation.id);
@@ -37,21 +38,30 @@ export default function RowSubItem({
   };
 
   const handleAddButton = () => {
-    handleAddSplit(item.id, uuidv4())
+    handleAddSplit(item.id, uuidv4());
     if (calculation === 'Unit') recalculateUnitDistribution(item, handleAllocationAmountChange);
   };
 
   return (
-    <TableRow style={{ backgroundColor: index % 2 === 0 ? '#f0f0f0' : '#FAFBFC' }}>
-      <TableCell padding="checkbox" style={{ paddingLeft: '32px' }} >
+    <Box
+      sx={{
+        display: 'flex',
+        backgroundColor: backgroundColor,
+        pb: 2,
+        alignItems: 'center',
+        gap: 2,
+        pr: 1,
+      }}
+    >
+      <Box sx={{ flex: '0 0 auto', pr: 2, pl: 4 }}>
         <IconButton onClick={() => (allocation.id !== 'default' ? handleDeleteButton() : handleAddButton())}>
           <Iconify icon={allocation.id !== 'default' ? 'fluent:delete-12-regular' : 'material-symbols:arrow-split-rounded'} />
         </IconButton>
-      </TableCell>
-      <TableCell sx={{ width: '29%' }}  >
+      </Box>
+      <Box sx={{ flex: 3.2 }}>
         <TextFieldNote id={item.id} allocation={allocation} handleNoteChange={handleNoteChange} />
-      </TableCell>
-      <TableCell sx={{ width: '29%' }} >
+      </Box>
+      <Box sx={{ flex: 3.2 }}>
         <DropDownAsset
           item={item}
           allocation={allocation}
@@ -59,13 +69,12 @@ export default function RowSubItem({
           handleAllocationAmountChange={handleAllocationAmountChange}
           calculation={calculation}
         />
-      </TableCell>
-
-      <TableCell sx={{ width: '29%' }} >
+      </Box>
+      <Box sx={{ flex: 3.2 }}>
         <DropDownGl chartOfAccounts={chartOfAccounts} item={item} allocation={allocation} handleGlAccountChange={handleGlAccountChange} />
-      </TableCell>
+      </Box>
       {isSplit && (
-        <TableCell  >
+        <Box sx={{ flex: isSplit ? 0.92 : 1 }}>
           {calculation === 'Amount' ? (
             <TextFieldPercent
               handleAllocationAmountChange={handleAllocationAmountChange}
@@ -77,10 +86,9 @@ export default function RowSubItem({
           ) : (
             <TextFieldUnitNumber item={item} allocation={allocation} />
           )}
-        </TableCell>
+        </Box>
       )}
-
-      <TableCell  colSpan={isSplit ? 1 : 2} sx={{width: '20%'}}>
+      <Box sx={{ flex: isSplit ? 0.92 : 2 }}>
         {calculation === 'Amount' ? (
           <TextFieldAmount
             handleAllocationAmountChange={handleAllocationAmountChange}
@@ -94,7 +102,7 @@ export default function RowSubItem({
         ) : (
           <TextFieldUnitAmount item={item} allocation={allocation} />
         )}
-      </TableCell>
-    </TableRow>
+      </Box>
+    </Box>
   );
 }

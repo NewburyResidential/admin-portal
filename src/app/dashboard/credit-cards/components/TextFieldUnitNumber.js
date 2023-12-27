@@ -10,7 +10,7 @@ export default function TextFieldUnitNumber({allocation}) {
       disabled={true}
       variant="outlined"
       autoComplete="off"
-
+      fullWidth={true}
     />
   )
 }

@@ -4,15 +4,8 @@
     "browser": true,
     "es2021": true
   },
-  "plugins": [
-    "unused-imports",
-    "prettier"
-  ],
-  "extends": [
-    "airbnb",
-    "airbnb/hooks",
-    "prettier"
-  ],
+  "plugins": ["unused-imports", "prettier"],
+  "extends": ["airbnb", "airbnb/hooks", "prettier"],
   "parser": "@babel/eslint-parser",
   "parserOptions": {
     "ecmaVersion": "latest",
@@ -23,25 +16,14 @@
       "impliedStrict": true
     },
     "babelOptions": {
-      "presets": [
-        "@babel/preset-react"
-      ]
+      "presets": ["@babel/preset-react"]
     }
   },
   "settings": {
     "import/resolver": {
       "alias": {
-        "map": [
-          [
-            "src",
-            "./src"
-          ]
-        ],
-        "extensions": [
-          ".js",
-          ".jsx",
-          ".json"
-        ]
+        "map": [["src", "./src"]],
+        "extensions": [".js", ".jsx", ".json"]
       }
     }
   },
@@ -52,6 +34,7 @@
     "no-param-reassign": 0,
     "naming-convention": 0,
     "default-param-last": 0,
+    "react/prop-types": 0,
     "no-underscore-dangle": 0,
     "no-use-before-define": 0,
     "no-restricted-exports": 0,

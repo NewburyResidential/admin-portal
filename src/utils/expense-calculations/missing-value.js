@@ -28,13 +28,21 @@ export function isIncorrectAmounts(transaction) {
   }
 
   let totalAllocations = 0;
+  let firstAmountSign = null;
   for (const allocation of transaction.allocations) {
     const amount = Number(allocation.amount);
     if (isMissingValue(amount)) {
       return true;
     }
 
+    if (firstAmountSign === null) {
+      firstAmountSign = Math.sign(amount);
+    } else if (Math.sign(amount) !== firstAmountSign) {
+      return true;
+    }
+
     totalAllocations += amount;
   }
+
   return totalAllocations !== Number(transaction.amount);
 }

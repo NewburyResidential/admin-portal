@@ -1,10 +1,9 @@
 import React, { useState, useMemo } from 'react';
-import { Autocomplete, FormControl, Popper, TextField } from '@mui/material';
+import { Autocomplete, Box, FormControl, Popper, TextField } from '@mui/material';
 import { isMissingValue } from 'src/utils/expense-calculations/missing-value';
 
-export default function DropDownVendor({ vendors, handleVendorChange, item }) {
+export default function DropDownVendor({ vendors, handleVendorChange, item, isVendorRequired }) {
   const currentValue = item.vendor ? item.vendor : null;
-  console.log(currentValue)
   const [inputValue, setInputValue] = useState('');
 
   const optionsLimit = 7;
@@ -13,7 +12,7 @@ export default function DropDownVendor({ vendors, handleVendorChange, item }) {
     return vendors.filter((vendor) => vendor.name.toLowerCase().includes(inputValue.toLowerCase())).slice(0, optionsLimit);
   }, [inputValue, vendors]);
 
-  return (
+  return isVendorRequired ? (
     <FormControl fullWidth>
       <Autocomplete
         PopperComponent={({ style, ...props }) => <Popper {...props} sx={{ ...style, height: 0 }} />}
@@ -29,7 +28,14 @@ export default function DropDownVendor({ vendors, handleVendorChange, item }) {
         }}
         renderInput={(params) => {
           const { key, ...rest } = params;
-          return <TextField {...rest} label={currentValue ? 'Vendor' : `Add ${item.merchant} Vendor`} variant="filled" error={item?.isSubmitted && isMissingValue(currentValue)} />;
+          return (
+            <TextField
+              {...rest}
+              label={currentValue ? 'Vendor' : `Add ${item.merchant} Vendor`}
+              variant="filled"
+              error={item?.isSubmitted && isMissingValue(currentValue)}
+            />
+          );
         }}
         renderOption={(props, option) => {
           return (
@@ -40,5 +46,12 @@ export default function DropDownVendor({ vendors, handleVendorChange, item }) {
         }}
       />
     </FormControl>
+  ) : (
+    <Box sx={{ 
+      height: '54px', 
+      display: 'flex', 
+      alignItems: 'center', 
+      justifyContent: 'center'
+  }}>{item.merchant}</Box>
   );
 }

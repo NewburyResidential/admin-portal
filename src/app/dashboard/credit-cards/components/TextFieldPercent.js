@@ -18,8 +18,11 @@ export default function TextFieldPercent({ handleAllocationAmountChange, item, a
   const allocationAmount = parseFloat(allocation.amount);
   const itemAmount = parseFloat(item.amount);
 
+
   if (!isNaN(allocationAmount)) {
-    if (allocationAmount === 0) {
+    if (allocationAmount === NaN) {
+      currentValue = '';
+    } else if (allocationAmount === 0) {
       currentValue = '';
     } else {
       currentValue = Math.round((allocationAmount / itemAmount) * 100);
@@ -27,6 +30,8 @@ export default function TextFieldPercent({ handleAllocationAmountChange, item, a
   } else {
     currentValue = '';
   }
+  //console.log(allocationAmount)
+  //console.log(currentValue)
 
   const updatePercent = (newValue) => {
     if (newValue >= 1 && newValue <= 100) {
@@ -50,6 +55,7 @@ export default function TextFieldPercent({ handleAllocationAmountChange, item, a
       variant="outlined"
       autoComplete="off"
       error={item?.isSubmitted && isIncorrectAmounts(item)}
+      fullWidth={true}
     />
   );
 }

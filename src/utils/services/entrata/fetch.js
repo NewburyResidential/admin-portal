@@ -11,8 +11,8 @@ export default async function fetchData(endpoint, bodyMethod) {
 
     try {
         const response = await fetch(url, {
-            //cache: 'no-store', 
-            cache: 'force-cache',
+            cache: 'no-store', 
+            //cache: 'force-cache',
             method: 'POST',
             headers: {
                 'Authorization': `Basic ${basicAuth}`,

@@ -5,8 +5,10 @@ export default function AddReceiptUpload({ id, handleReceiptChange }) {
   const handleFileChange = async (event) => {
     const file = event.target.files[0];
     if (file) {
+
       const formData = new FormData();
       formData.append('file', file);
+      formData.append('name', id);
       formData.append('bucket', 'admin-portal-receipts');
 
       try {
@@ -17,8 +19,7 @@ export default function AddReceiptUpload({ id, handleReceiptChange }) {
 
         const result = await response.json();
         if (result.fileUrl) {
-          handleReceiptChange(id, result.fileUrl);
-          console.log(result.fileUrl);
+          handleReceiptChange(id, result.fileUrl, result.tempPdfUrl);
         }
       } catch (error) {
         console.error('Error uploading file:', error);
@@ -30,7 +31,7 @@ export default function AddReceiptUpload({ id, handleReceiptChange }) {
       onClick={() => {
         const input = document.createElement('input');
         input.type = 'file';
-        input.accept = 'image/png';
+        input.accept = 'image/png, image/jpeg, application/pdf';
         input.onchange = handleFileChange;
         input.click();
       }}

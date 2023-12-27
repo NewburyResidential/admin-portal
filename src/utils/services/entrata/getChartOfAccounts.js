@@ -31,6 +31,7 @@ function condenseGlAccountData(glAccountObjects) {
         .filter(account => accountToCategoryLookup[account.AccountNumber])
         .map(account => ({
             accountName: account.AccountName,
+            accountId: account["@attributes"].Id,
             accountNumber: account.AccountNumber,
             category: accountToCategoryLookup[account.AccountNumber]
         }));
