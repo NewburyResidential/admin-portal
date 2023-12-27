@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+
 import Box from '@mui/material/Box';
-import Iconify from 'src/components/iconify';
 import Dialog from '@mui/material/Dialog';
+import Iconify from 'src/components/iconify';
 import DialogTitle from '@mui/material/DialogTitle';
 
 export default function AddReceiptStorage() {

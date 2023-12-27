@@ -16,8 +16,8 @@ export function isMissingValue(value) {
   }
 
   if (typeof value === 'number') {
-    return value === 0 || isNaN(value);
-}
+    return value === 0 || Number.isNaN(value);
+  }
 
   return false;
 }

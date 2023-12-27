@@ -1,6 +1,6 @@
-import { IconButton } from '@mui/material';
 import Box from '@mui/material/Box';
 import Iconify from 'src/components/iconify';
+import IconButton from '@mui/material/IconButton';
 
 import AddReceiptUpload from './AddReceiptUpload';
 import AddReceiptStorage from './AddReceiptStorage';

@@ -12,7 +12,6 @@ export const handleError = (error, summary = '', response = true) => {
   console.error(error);
   if (response) {
     return NextResponse.json({ message, stack, summary }, { status: 500 });
-  } else {
-    return null;
-  }
+  } 
+  return null;
 };

@@ -1,5 +1,5 @@
-import { TextField } from '@mui/material';
-import { isIncorrectAmounts, isMissingValue } from 'src/utils/expense-calculations/missing-value';
+import TextField from '@mui/material/TextField';
+import { isIncorrectAmounts } from 'src/utils/expense-calculations/missing-value';
 
 export default function TextFieldPercent({ handleAllocationAmountChange, item, allocation, amountDifference }) {
   const percentDifference = Math.round((amountDifference / item.amount) * 100);

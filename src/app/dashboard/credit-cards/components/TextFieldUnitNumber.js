@@ -1,5 +1,4 @@
-import { TextField } from '@mui/material'
-import React from 'react'
+import TextField from '@mui/material/TextField';
 
 export default function TextFieldUnitNumber({allocation}) {
   const currentValue = allocation?.asset ? allocation.asset.units : 0

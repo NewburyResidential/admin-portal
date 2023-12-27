@@ -1,5 +1,6 @@
-import { Button, ButtonGroup } from '@mui/material';
-import React, { useState } from 'react';
+import Button from '@mui/material/Button';
+import ButtonGroup from '@mui/material/ButtonGroup';
+
 import { recalculateAmountDistribution } from 'src/utils/expense-calculations/recalculate-amount-distribution';
 import { recalculateUnitDistribution } from 'src/utils/expense-calculations/recalculate-unit-distribution';
 

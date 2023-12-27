@@ -1,5 +1,11 @@
-import React, { useState, useMemo } from 'react';
-import { Autocomplete, Box, FormControl, Popper, TextField } from '@mui/material';
+import { useState, useMemo } from 'react';
+
+import Box from '@mui/material/Box';
+import Popper from '@mui/material/Popper';
+import TextField from '@mui/material/TextField';
+import FormControl from '@mui/material/FormControl';
+import Autocomplete from '@mui/material/Autocomplete';
+
 import { isMissingValue } from 'src/utils/expense-calculations/missing-value';
 
 export default function DropDownVendor({ vendors, handleVendorChange, item, isVendorRequired }) {

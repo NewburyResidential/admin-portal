@@ -1,12 +1,17 @@
 'use client';
-import React, { useState, useCallback } from 'react';
-import { Table, TableBody, TableContainer, Paper, Card, Button, CardActions, Box } from '@mui/material';
+import { useState, useCallback } from 'react';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Card from '@mui/material/Card';
+import CardActions from '@mui/material/CardActions';
+import Paper from '@mui/material/Paper';
+import TableContainer from '@mui/material/TableContainer';
+
 import TablePagination from '@mui/material/TablePagination';
 
 import RowItem from './RowItem';
 import { isIncorrectAmounts, isMissingValue } from 'src/utils/expense-calculations/missing-value';
 import updateTransactions from 'src/utils/services/CCExpenses/updateTransactions';
-import { AnimatePresence, m } from 'framer-motion';
 
 export default function CustomTable({ vendors, chartOfAccounts, unapprovedTransactions }) {
   const [transactions, setTransactions] = useState(() =>
@@ -15,7 +20,7 @@ export default function CustomTable({ vendors, chartOfAccounts, unapprovedTransa
       checked: false,
     }))
   );
-  console.log(transactions)
+  console.log(transactions);
   const haveSelected = transactions.some((transaction) => transaction.checked);
   const selectedTransactions = transactions.reduce((count, transaction) => {
     return transaction.checked ? count + 1 : count;
@@ -254,47 +259,25 @@ export default function CustomTable({ vendors, chartOfAccounts, unapprovedTransa
       </CardActions>
       <TableContainer component={Paper} sx={{ maxHeight: '72vh', height: '72vh', borderRadius: '0px', overflowX: 'hidden' }}>
         <Box sx={{ maxHeight: '72vh', height: '72vh', overflowX: 'hidden', display: 'flex', flexDirection: 'column' }}>
-          <AnimatePresence>
-            {transactions.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((item, index) => (
-              <Box
-                component={m.div}
-                key={item.id}
-                initial={{ opacity: 0, scale: 0.6 }}
-                animate={{
-                  opacity: 1,
-                  scale: 1,
-                  transition: {
-                    type: 'spring',
-                    stiffness: 260,
-                    damping: 20,
-                    delay: index * 0.12,
-                  },
-                }}
-                exit={{
-                  x: [0, 700],
-                  opacity: 0,
-                  transition: { duration: 0.4 },
-                }}
-                sx={{ display: 'flex', flexDirection: 'column' }}
-              >
-                <RowItem
-                  item={item}
-                  index={index}
-                  vendors={vendors}
-                  chartOfAccounts={chartOfAccounts}
-                  handleAllocationAmountChange={handleAllocationAmountChange}
-                  handleAddSplit={handleAddSplit}
-                  handleDeleteSplit={handleDeleteSplit}
-                  handleGlAccountChange={handleGlAccountChange}
-                  handleReceiptChange={handleReceiptChange}
-                  handleNoteChange={handleNoteChange}
-                  handleVendorChange={handleVendorChange}
-                  handleAssetsChange={handleAssetsChange}
-                  handleCheckboxToggle={handleCheckboxToggle}
-                />
-              </Box>
-            ))}
-          </AnimatePresence>
+          {transactions.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((item, index) => (
+            <Box key={item.id} sx={{ display: 'flex', flexDirection: 'column' }}>
+              <RowItem
+                item={item}
+                index={index}
+                vendors={vendors}
+                chartOfAccounts={chartOfAccounts}
+                handleAllocationAmountChange={handleAllocationAmountChange}
+                handleAddSplit={handleAddSplit}
+                handleDeleteSplit={handleDeleteSplit}
+                handleGlAccountChange={handleGlAccountChange}
+                handleReceiptChange={handleReceiptChange}
+                handleNoteChange={handleNoteChange}
+                handleVendorChange={handleVendorChange}
+                handleAssetsChange={handleAssetsChange}
+                handleCheckboxToggle={handleCheckboxToggle}
+              />
+            </Box>
+          ))}
         </Box>
       </TableContainer>
     </Card>

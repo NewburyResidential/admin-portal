@@ -1,5 +1,9 @@
 'use client';
-import { Autocomplete, TextField, ListSubheader, Popper } from '@mui/material';
+import Popper from '@mui/material/Popper';
+import TextField from '@mui/material/TextField';
+import Autocomplete from '@mui/material/Autocomplete';
+import ListSubheader from '@mui/material/ListSubheader';
+
 import { isMissingValue } from 'src/utils/expense-calculations/missing-value';
 
 export default function DropDownGl({ chartOfAccounts, allocation, handleGlAccountChange, item }) {

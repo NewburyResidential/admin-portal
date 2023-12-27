@@ -3,7 +3,7 @@ import fetchData from "./fetch";
 function condenseVendorData(vendorsObject) {
     const vendorsArray = Object.values(vendorsObject);
     const vendorIdMap = new Map();
-    let nameCount = {};
+    const nameCount = {};
 
     vendorsArray.forEach(vendor => {
         const vendorId = vendor.VendorId;

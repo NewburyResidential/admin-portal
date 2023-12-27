@@ -1,23 +1,23 @@
 import React from 'react';
 
-import { TableRow, TableCell, IconButton, Box } from '@mui/material';
+import Box from '@mui/material/Box';
+import IconButton from '@mui/material/IconButton';
+
 import { v4 as uuidv4 } from 'uuid';
 
 import Iconify from 'src/components/iconify/iconify';
 
-import PercentTextField from './TextFieldPercent';
-import TextFieldAmount from './TextFieldAmount';
-import TextFieldUnitNumber from './TextFieldUnitNumber';
 import DropDownGl from './DropDownGl';
 import DropDownAsset from './DropDownAsset';
 import TextFieldNote from './TextFieldNote';
+import TextFieldAmount from './TextFieldAmount';
 import TextFieldPercent from './TextFieldPercent';
 import TextFieldUnitAmount from './TextFieldUnitAmount';
+import TextFieldUnitNumber from './TextFieldUnitNumber';
 import { recalculateUnitDistribution } from 'src/utils/expense-calculations/recalculate-unit-distribution';
 
 export default function RowSubItem({
   allocation,
-  index,
   handleAllocationAmountChange,
   chartOfAccounts,
   item,
