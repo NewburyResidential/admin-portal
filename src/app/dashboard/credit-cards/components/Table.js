@@ -1,11 +1,11 @@
 'use client';
 import { useState, useCallback } from 'react';
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import Paper from '@mui/material/Paper';
 import TableContainer from '@mui/material/TableContainer';
+import LoadingButton from '@mui/lab/LoadingButton';
 
 import TablePagination from '@mui/material/TablePagination';
 
@@ -20,13 +20,14 @@ export default function CustomTable({ vendors, chartOfAccounts, unapprovedTransa
       checked: false,
     }))
   );
-  console.log(transactions);
+
   const haveSelected = transactions.some((transaction) => transaction.checked);
   const selectedTransactions = transactions.reduce((count, transaction) => {
     return transaction.checked ? count + 1 : count;
   }, 0);
 
-  const [rowsPerPage, setRowsPerPage] = useState(25);
+  const [loading, setLoading] = useState(false);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
   const [page, setPage] = useState(0);
 
   const handleChangePage = (event, newPage) => {
@@ -213,8 +214,6 @@ export default function CustomTable({ vendors, chartOfAccounts, unapprovedTransa
           }
         });
         if (transactionValid) {
-          console.log('valid');
-          return;
           validTransactions.push({ ...transaction, status: 'reviewed' });
         } else {
           console.log(errors.join('\n'));
@@ -222,6 +221,7 @@ export default function CustomTable({ vendors, chartOfAccounts, unapprovedTransa
       }
     });
     if (validTransactions.length > 0) {
+      setLoading(true);
       try {
         const response = await updateTransactions(validTransactions);
         if (response.ids.length > 0) {
@@ -229,26 +229,29 @@ export default function CustomTable({ vendors, chartOfAccounts, unapprovedTransa
           setTransactions((prevTransactions) => prevTransactions.filter((transaction) => !updatedTransactionIds.includes(transaction.id)));
         }
       } catch (error) {
+        setLoading(false);
         console.error('Error Updating Transactions: ', error);
       }
     }
+    setLoading(false);
   };
 
   return (
     <Card sx={{ borderRadius: '10px' }}>
       <CardActions sx={{ backgroundColor: 'primary.darker' }}>
-        <Button
+        <LoadingButton
           variant="contained"
           style={{ marginLeft: '16px', width: '140px' }}
           disabled={!haveSelected}
           onClick={handleApproveTransactions}
           color="primary"
+          loading={loading}
         >
           Approve {selectedTransactions > 0 && `(${selectedTransactions})`}
-        </Button>
+        </LoadingButton>
         <TablePagination
           sx={{ color: 'white' }}
-          rowsPerPageOptions={[25, 50, 100]}
+          rowsPerPageOptions={[10, 25, 50]}
           component="div"
           count={transactions.length}
           rowsPerPage={rowsPerPage}
@@ -257,8 +260,8 @@ export default function CustomTable({ vendors, chartOfAccounts, unapprovedTransa
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </CardActions>
-      <TableContainer component={Paper} sx={{ maxHeight: '72vh', height: '72vh', borderRadius: '0px', overflowX: 'hidden' }}>
-        <Box sx={{ maxHeight: '72vh', height: '72vh', overflowX: 'hidden', display: 'flex', flexDirection: 'column' }}>
+      <TableContainer component={Paper} sx={{ borderRadius: '0px', overflowX: 'hidden' }}>
+        <Box sx={{ height: '100%', overflowX: 'hidden', display: 'flex', flexDirection: 'column' }}>
           {transactions.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((item, index) => (
             <Box key={item.id} sx={{ display: 'flex', flexDirection: 'column' }}>
               <RowItem

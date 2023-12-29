@@ -7,13 +7,62 @@ import ListSubheader from '@mui/material/ListSubheader';
 import { isMissingValue } from 'src/utils/expense-calculations/missing-value';
 
 const assetItems = [
-  { category: 'Properties', label: 'The Landing', id: 'P1', units: 172, accountingSoftware: 'wave', waveArId: "QWNjb3VudDoxOTAwNDgwNjM5NzI4MTM2NDkzO0J1c2luZXNzOmZmYjc3ZjkwLWMxMTUtNDFhOS04ZDEyLTZiZTdlMTgzOTNlNg==" },
-  { category: 'Properties', label: 'Edge At 1010', id: '1318972', units: 122, accountingSoftware: 'entrata', waveArId: "QWNjb3VudDoxODk3OTY0NzMzNTkyNTQ3NTc5O0J1c2luZXNzOmZmYjc3ZjkwLWMxMTUtNDFhOS04ZDEyLTZiZTdlMTgzOTNlNg==" },
-  { category: 'Properties', label: '2100 Springport', id: '1318973', units: 25, accountingSoftware: 'entrata', waveArId: "QWNjb3VudDoxODk3OTY0NjY2Mzk5Nzk3NDk3O0J1c2luZXNzOmZmYjc3ZjkwLWMxMTUtNDFhOS04ZDEyLTZiZTdlMTgzOTNlNg==" },
-  { category: 'Properties', label: 'Sycamore Place', id: 'P4', units: 50, accountingSoftware: 'wave', waveArId: "QWNjb3VudDoxOTAwNDg1NTc4MDAxMDAzMjU5O0J1c2luZXNzOmZmYjc3ZjkwLWMxMTUtNDFhOS04ZDEyLTZiZTdlMTgzOTNlNg==" },
-  { category: 'Home Office', label: 'Newbury Residential', id: 'H1', units: 0, accountingSoftware: 'wave', waveArId: "QWNjb3VudDoxOTAwNDg1Njk1OTYxNjA4OTU3O0J1c2luZXNzOmZmYjc3ZjkwLWMxMTUtNDFhOS04ZDEyLTZiZTdlMTgzOTNlNg==" },
-  { category: 'Home Office', label: 'Evolve Acquisitions', id: 'H2', units: 0, accountingSoftware: 'wave', waveArId: "QWNjb3VudDoxOTAwNDg1NTc4MDAxMDAzMjU5O0J1c2luZXNzOmZmYjc3ZjkwLWMxMTUtNDFhOS04ZDEyLTZiZTdlMTgzOTNlNg==" },
-
+  {
+    category: 'Properties',
+    id: '2401',
+    label: 'The Landing',
+    accountId: 'P1',
+    units: 172,
+    accountingSoftware: 'n/a',
+    waveARId: 'QWNjb3VudDoxOTAwNDgwNjM5NzI4MTM2NDkzO0J1c2luZXNzOmZmYjc3ZjkwLWMxMTUtNDFhOS04ZDEyLTZiZTdlMTgzOTNlNg==',
+  },
+  {
+    category: 'Properties',
+    id: '2301',
+    label: 'Edge At 1010',
+    accountId: '1318972',
+    units: 122,
+    accountingSoftware: 'entrata',
+    waveARId: 'QWNjb3VudDoxODk3OTY0NzMzNTkyNTQ3NTc5O0J1c2luZXNzOmZmYjc3ZjkwLWMxMTUtNDFhOS04ZDEyLTZiZTdlMTgzOTNlNg==',
+  },
+  {
+    category: 'Properties',
+    id: '2302',
+    label: '2100 Springport',
+    accountId: '1318973',
+    units: 25,
+    accountingSoftware: 'entrata',
+    waveARId: 'QWNjb3VudDoxODk3OTY0NjY2Mzk5Nzk3NDk3O0J1c2luZXNzOmZmYjc3ZjkwLWMxMTUtNDFhOS04ZDEyLTZiZTdlMTgzOTNlNg==',
+  },
+  {
+    category: 'Properties',
+    id: '2001',
+    label: 'Sycamore Place',
+    accountId: 'P4',
+    units: 50,
+    accountingSoftware: 'n/a',
+    waveARId: 'QWNjb3VudDoxOTAwNDg1NTc4MDAxMDAzMjU5O0J1c2luZXNzOmZmYjc3ZjkwLWMxMTUtNDFhOS04ZDEyLTZiZTdlMTgzOTNlNg==',
+  },
+  {
+    category: 'Home Office',
+    id: '1',
+    label: 'Newbury Residential',
+    accountId: 'QnVzaW5lc3M6ZmZiNzdmOTAtYzExNS00MWE5LThkMTItNmJlN2UxODM5M2U2',
+    units: 0,
+    accountingSoftware: 'n/a',
+    waveARId: 'QWNjb3VudDoxOTAwNDg1Njk1OTYxNjA4OTU3O0J1c2luZXNzOmZmYjc3ZjkwLWMxMTUtNDFhOS04ZDEyLTZiZTdlMTgzOTNlNg==',
+    waveCreditCard: 'QWNjb3VudDoxODk4NzI2OTE1MDY2MzQzNjAyO0J1c2luZXNzOmZmYjc3ZjkwLWMxMTUtNDFhOS04ZDEyLTZiZTdlMTgzOTNlNg=='
+  },
+  {
+    category: 'Home Office',
+    id: '2',
+    label: 'Evolve Acquisitions',
+    accountId: 'QnVzaW5lc3M6ZmZiNzdmOTAtYzExNS00MWE5LThkMTItNmJlN2UxODM5M2U2',
+    units: 0,
+    accountingSoftware: 'wave',
+    waveARId: 'QWNjb3VudDoxOTAwNDg1NTc4MDAxMDAzMjU5O0J1c2luZXNzOmZmYjc3ZjkwLWMxMTUtNDFhOS04ZDEyLTZiZTdlMTgzOTNlNg==',
+    waveCreditCard: 'QWNjb3VudDoxODk4NzI2OTE1MDY2MzQzNjAyO0J1c2luZXNzOmZmYjc3ZjkwLWMxMTUtNDFhOS04ZDEyLTZiZTdlMTgzOTNlNg=='
+  },
 ];
 
 export default function DropDownAsset({ allocation, handleAssetsChange, handleAllocationAmountChange, item, calculation }) {

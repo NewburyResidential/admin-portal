@@ -30,16 +30,19 @@ export default function RowSubItem({
   handleAssetsChange,
   isSplit,
   calculation,
+  setCalculation,
   backgroundColor,
 }) {
   const handleDeleteButton = () => {
     handleDeleteSplit(item.id, allocation.id);
     if (calculation === 'Unit' && item.allocations.length !== 2) recalculateUnitDistribution(item, handleAllocationAmountChange);
+    if (item.allocations.length === 2) setCalculation('Amount');
   };
 
   const handleAddButton = () => {
     handleAddSplit(item.id, uuidv4());
     if (calculation === 'Unit') recalculateUnitDistribution(item, handleAllocationAmountChange);
+    if (item.allocations.length === 1) setCalculation('Unit');
   };
 
   return (
