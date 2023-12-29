@@ -49,13 +49,11 @@ export function useNavData() {
       // OVERVIEW---------------------------------------------------------------
       {
         subheader: 'Overview',
-        items: [
-          { title: 'Dashboard', path: paths.dashboard.root, icon: ICONS.dashboard },
-        ],
+        items: [{ title: 'Dashboard', path: paths.dashboard.root, icon: ICONS.dashboard }],
       },
 
       // MANAGEMENT-------------------------------------------------------------
-      
+
       // {
       //   subheader: 'Utility Management',
       //   items: [
@@ -71,12 +69,16 @@ export function useNavData() {
       //   ],
       // },
       {
-        subheader: 'Expenses',
+        subheader: 'Management',
         items: [
           {
             title: 'Expenses',
-            path: paths.dashboard.creditCards,
+            path: paths.creditCards.root,
             icon: ICONS.banking,
+            children: [
+              { title: 'Transactions', path: paths.creditCards.root }, // Create Root Folder
+              { title: 'Reports', path: paths.creditCards.reports },
+            ],
           },
         ],
       },

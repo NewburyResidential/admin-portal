@@ -24,8 +24,12 @@ export const paths = {
       one: `${ROOTS.DASHBOARD}/group/one`,
       two: `${ROOTS.DASHBOARD}/group/two`,
     },
-    creditCards: `${ROOTS.DASHBOARD}/credit-cards`,
   },
+  creditCards: {
+    root: `${ROOTS.DASHBOARD}/credit-cards`,
+    transactions: `${ROOTS.DASHBOARD}/credit-cards/transactions`,
+    reports: `${ROOTS.DASHBOARD}/credit-cards/reports`,
+},
 };
 
 export const PATH_AFTER_LOGIN = paths.dashboard.root; // as '/dashboard'
