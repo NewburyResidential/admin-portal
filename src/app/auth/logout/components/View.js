@@ -1,21 +1,17 @@
 'use client';
 
 import { m } from 'framer-motion';
-// @mui
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-// layouts
 import CompactLayout from 'src/layouts/compact';
-// assets
 
 import { RouterLink } from 'src/routes/components';
 import { MotionContainer, varBounce } from 'src/components/animate';
 import SeoIllustration from 'src/assets/illustrations/seo-illustration';
 
-
 // ----------------------------------------------------------------------
 
-export default function View403() {
+export default function View() {
   return (
     <CompactLayout>
       <MotionContainer>

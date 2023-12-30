@@ -5,7 +5,7 @@ import { signIn } from 'next-auth/react';
 import { SplashScreen } from 'src/components/loading-screen';
 import { useRouter } from 'next/navigation';
 
-export default function Login({ session, params }) {
+export default function View({ session, params }) {
   const router = useRouter();
   const callbackUrl = params || '/dashboard';
   useEffect(() => {
