@@ -35,7 +35,7 @@ export default function View({user}) {
     </ListItem>
   </List>
 </Box>
-<Box sx={{ px: 3, backgroundColor: '#f9f9f9' }}>
+<Box sx={{ px: 3}}>
   <Typography variant="body2" sx={{ color: 'text.secondary' }}>
     <strong>Display Settings:</strong>
   </Typography>
