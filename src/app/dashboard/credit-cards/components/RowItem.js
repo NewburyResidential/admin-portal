@@ -8,6 +8,8 @@ import AddReceipt from './AddReceipt';
 import DropDownVendor from './DropDownVendor';
 import CalculationButtonGroup from './CalculationButtonGroup';
 
+import { useTheme } from '@mui/material/styles';
+
 function RowItem({
   item,
   index,
@@ -23,6 +25,8 @@ function RowItem({
   handleAssetsChange,
   handleCheckboxToggle,
 }) {
+  const theme = useTheme();
+  const isLight = theme.palette.mode === 'light';
   const [calculation, setCalculation] = useState('Amount');
   const sumOfAllocations = item.allocations.reduce((sum, allocation) => sum + parseFloat(allocation.amount || 0), 0);
   const difference = parseFloat((parseFloat(item.amount) - sumOfAllocations).toFixed(2)) || 0;
@@ -35,7 +39,25 @@ function RowItem({
       ? `-$${Math.abs(difference)}`
       : `-$${Math.abs(difference).toFixed(2)}`;
 
-  const backgroundColor = item.checked ? 'primary.lighter' : index % 2 !== 0 ? '#FAFBFC' : '#f0f0f0';
+  const hexToRgba = (hex, opacity) => {
+    const r = parseInt(hex.slice(1, 3), 16);
+    const g = parseInt(hex.slice(3, 5), 16);
+    const b = parseInt(hex.slice(5, 7), 16);
+    return `rgba(${r}, ${g}, ${b}, ${opacity})`;
+  };
+
+  const backgroundColor = item.checked
+    ? isLight
+      ? 'primary.lighter'
+      : hexToRgba(theme.palette.primary.dark, 0.4)
+    : index % 2 !== 0
+    ? isLight
+      ? '#FAFBFC'
+      : '#2F3944'
+    : isLight
+    ? '#f0f0f0'
+    : '#212B36';
+
   const isSplit = item.allocations.length > 1;
   const isVendorRequired = item.allocations.some((allocation) => allocation.asset && allocation.asset.accountingSoftware === 'entrata');
 
@@ -77,14 +99,7 @@ function RowItem({
       </Box>
 
       {item.allocations.map((allocation) => (
-        <Box
-          key={allocation.id}
-          sx={
-            {
-              /* Styling for allocation rows */
-            }
-          }
-        >
+        <Box key={allocation.id}>
           <React.Fragment key={allocation.id}>
             <RowSubItem
               allocation={allocation}

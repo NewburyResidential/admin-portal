@@ -8,7 +8,7 @@ import { v4 as uuidv4 } from 'uuid';
 import Iconify from 'src/components/iconify/iconify';
 
 import DropDownGl from './DropDownGl';
-import DropDownAsset from './DropDownAsset';
+import DropDownAssets from './DropDownAssets';
 import TextFieldNote from './TextFieldNote';
 import TextFieldAmount from './TextFieldAmount';
 import TextFieldPercent from './TextFieldPercent';
@@ -65,7 +65,7 @@ export default function RowSubItem({
         <TextFieldNote id={item.id} allocation={allocation} handleNoteChange={handleNoteChange} />
       </Box>
       <Box sx={{ flex: 3.2 }}>
-        <DropDownAsset
+        <DropDownAssets
           item={item}
           allocation={allocation}
           handleAssetsChange={handleAssetsChange}

@@ -13,7 +13,13 @@ import RowItem from './RowItem';
 import { isIncorrectAmounts, isMissingValue } from 'src/utils/expense-calculations/missing-value';
 import updateTransactions from 'src/utils/services/CCExpenses/updateTransactions';
 
+import { useTheme } from '@mui/material/styles';
+
 export default function CustomTable({ vendors, chartOfAccounts, unapprovedTransactions }) {
+
+  const theme = useTheme();
+  const isLight = theme.palette.mode === 'light';
+
   const [transactions, setTransactions] = useState(() =>
     unapprovedTransactions.map((transaction) => ({
       ...transaction,
@@ -238,7 +244,7 @@ export default function CustomTable({ vendors, chartOfAccounts, unapprovedTransa
 
   return (
     <Card sx={{ borderRadius: '10px' }}>
-      <CardActions sx={{ backgroundColor: 'primary.darker' }}>
+      <CardActions sx={{ backgroundColor: isLight ? "primary.darker" : theme.palette.common.black }}>
         <LoadingButton
           variant="contained"
           style={{ marginLeft: '16px', width: '140px' }}
