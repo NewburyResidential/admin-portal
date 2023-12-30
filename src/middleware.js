@@ -1,5 +1,5 @@
 export {default} from "next-auth/middleware"
 
 export const config = {
-  matcher: ['/dashboard/:path*', '/api/:path*'] // PROTECTED_ROUTES
+  matcher: ['/dashboard/:path*', '/api/:path*', '/'] // PROTECTED_ROUTES
 }

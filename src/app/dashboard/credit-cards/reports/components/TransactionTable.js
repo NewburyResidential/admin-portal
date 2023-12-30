@@ -1,6 +1,14 @@
 'use client';
-import React, { useState } from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TableSortLabel, Paper } from '@mui/material';
+import { useState } from 'react';
+
+import Table from '@mui/material/Table';
+import Paper from '@mui/material/Paper';
+import TableRow from '@mui/material/TableRow';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableHead from '@mui/material/TableHead';
+import TableContainer from '@mui/material/TableContainer';
+import TableSortLabel from '@mui/material/TableSortLabel';
 
 function descendingComparator(a, b, orderBy) {
   if (orderBy === 'postDate') {
