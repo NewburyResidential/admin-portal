@@ -6,9 +6,9 @@ import ListSubheader from '@mui/material/ListSubheader';
 
 import { isMissingValue } from 'src/utils/expense-calculations/missing-value';
 import { assetItems } from 'src/assets/data/assets';
+import AutocompleteGroup from 'src/components/form-inputs/AutocompleteGroup';
 
-
-export default function DropDownAsset({ allocation, handleAssetsChange, handleAllocationAmountChange, item, calculation }) {
+export default function DropDownAssets({ allocation, handleAssetsChange, handleAllocationAmountChange, item, calculation }) {
   const calculateTotalUnits = (newValue) => {
     let newTotalUnits = item.allocations.reduce((total, alloc) => {
       return total + (alloc.id === allocation.id ? newValue?.units || 0 : alloc.asset?.units || 0);
@@ -36,35 +36,19 @@ export default function DropDownAsset({ allocation, handleAssetsChange, handleAl
       }
     });
   };
+  const handleChange = (newValue) => {
+    handleAssetsChange(item.id, allocation.id, newValue);
+    calculateTotalUnits(newValue);
+  };
 
-  const currentValue = allocation.asset ? allocation.asset : null;
   return (
-    <Autocomplete
-      PopperComponent={({ style, ...props }) => <Popper {...props} sx={{ ...style, height: 0 }} />}
-      value={currentValue}
-      defaultValue={null}
-      onChange={(event, newValue) => {
-        handleAssetsChange(item.id, allocation.id, newValue);
-        calculateTotalUnits(newValue);
-      }}
+    <AutocompleteGroup
+      value={allocation.asset}
+      options={assetItems}
+      handleChange={handleChange}
+      label="Location"
       id="grouped-asset-accounts"
-      options={assetItems.sort((a, b) => b.category.localeCompare(a.category))}
-      groupBy={(option) => option.category}
-      getOptionLabel={(option) => option.label}
-      renderInput={(params) => <TextField {...params} label="Location" error={item?.isSubmitted && isMissingValue(currentValue)} />}
-      renderOption={(props, option) => {
-        return (
-          <li {...props} key={option.id}>
-            {option.label}
-          </li>
-        );
-      }}
-      renderGroup={(params) => (
-        <div key={params.key}>
-          <ListSubheader sx={{ fontWeight: 'bold', color: 'primary.darker' }}>{params.group}</ListSubheader>
-          {params.children}
-        </div>
-      )}
+      error={item?.isSubmitted && isMissingValue(allocation.asset)}
     />
   );
 }

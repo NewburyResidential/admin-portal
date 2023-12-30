@@ -10,6 +10,8 @@ export default function AutocompleteGroup({
   label = 'Select',
   error = false,
   id = 'grouped-auto-complete',
+  optionLabel = 'label',
+  optionId = 'id',
   sx,
 }) {
   const currentValue = value ? value : null;
@@ -25,18 +27,23 @@ export default function AutocompleteGroup({
       id={id}
       options={options.sort((a, b) => b.category.localeCompare(a.category))}
       groupBy={(option) => option.category}
-      getOptionLabel={(option) => option.label}
+      getOptionLabel={(option) => option[optionLabel]}
       renderInput={(params) => <TextField {...params} label={label} error={error} />}
+      isOptionEqualToValue={(option, value) => option[optionId] === value[optionId]}
       renderOption={(props, option) => {
         return (
-          <li {...props} key={option.id}>
-            {option.label}
+          <li {...props} key={option[optionId]}>
+            {option[optionLabel]}
           </li>
         );
       }}
       renderGroup={(params) => (
         <div key={params.key}>
-          <ListSubheader sx={{ fontWeight: 'bold', color: 'primary.darker' }}>{params.group}</ListSubheader>
+          <ListSubheader
+            sx={{ fontWeight: 'bold', color: (theme) => (theme.palette.mode === 'light' ? 'primary.darker' : theme.palette.grey[500]) }}
+          >
+            {params.group}
+          </ListSubheader>
           {params.children}
         </div>
       )}

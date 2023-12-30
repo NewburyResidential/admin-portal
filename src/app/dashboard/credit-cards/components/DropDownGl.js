@@ -1,41 +1,23 @@
-'use client';
-import Popper from '@mui/material/Popper';
-import TextField from '@mui/material/TextField';
-import Autocomplete from '@mui/material/Autocomplete';
-import ListSubheader from '@mui/material/ListSubheader';
-
 import { isMissingValue } from 'src/utils/expense-calculations/missing-value';
+import AutocompleteGroup from 'src/components/form-inputs/AutocompleteGroup';
 
 export default function DropDownGl({ chartOfAccounts, allocation, handleGlAccountChange, item }) {
   const currentValue = allocation.glAccount ? allocation.glAccount : null;
+
+  const handleChange = (newValue) => {
+    handleGlAccountChange(item.id, allocation.id, newValue);
+  };
+
   return (
-    <Autocomplete
-      PopperComponent={({ style, ...props }) => <Popper {...props} sx={{ ...style, height: 0 }} />}
+    <AutocompleteGroup
       value={currentValue}
-      defaultValue={null}
-      onChange={(event, newValue) => {
-        console.log(newValue);
-        handleGlAccountChange(item.id, allocation.id, newValue);
-      }}
+      options={chartOfAccounts}
+      handleChange={handleChange}
+      label="GL Account"
       id="grouped-gl-accounts"
-      options={chartOfAccounts.sort((a, b) => b.category.localeCompare(a.category))}
-      groupBy={(option) => option.category}
-      getOptionLabel={(option) => option.accountName}
-      renderInput={(params) => <TextField {...params} label="GL Account" error={item?.isSubmitted && isMissingValue(currentValue)} />}
-      isOptionEqualToValue={(option, value) => option.accountNumber === value.accountNumber}
-      renderOption={(props, option) => {
-        return (
-          <li {...props} key={option.accountNumber}>
-            {option.accountName}
-          </li>
-        );
-      }}
-      renderGroup={(params) => (
-        <div key={params.key}>
-          <ListSubheader sx={{ fontWeight: 'bold', color: 'primary.darker' }}>{params.group}</ListSubheader>
-          {params.children}
-        </div>
-      )}
+      optionLabel="accountName"
+      optionId="accountNumber"
+      error={item?.isSubmitted && isMissingValue(currentValue)}
     />
   );
 }
