@@ -48,7 +48,7 @@ function Searchbar() {
   }, [search]);
 
   const handleKeyDown = (event) => {
-    if (event.key === 'k' && event.metaKey) {
+    if (event.key === 'k' && event.altKey) {
       search.onToggle();
       setSearchQuery('');
     }
@@ -113,7 +113,7 @@ function Searchbar() {
         <Iconify icon="eva:search-fill" />
       </IconButton>
 
-      {lgUp && <Label sx={{ px: 0.75, fontSize: 12, color: 'text.secondary' }}>⌘K</Label>}
+      {lgUp && <Label sx={{ px: 0.75, fontSize: 12, color: 'text.secondary' }}>Alt + K</Label>}
     </Stack>
   );
 

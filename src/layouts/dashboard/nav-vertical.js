@@ -8,9 +8,7 @@ import Stack from '@mui/material/Stack';
 import Drawer from '@mui/material/Drawer';
 // hooks
 import { useResponsive } from 'src/hooks/use-responsive';
-import { useMockedUser } from 'src/hooks/use-mocked-user';
 // components
-import Logo from 'src/components/logo';
 import Scrollbar from 'src/components/scrollbar';
 import { usePathname } from 'src/routes/hooks';
 import { NavSectionVertical } from 'src/components/nav-section';
@@ -23,8 +21,6 @@ import { NavToggleButton } from '../_common';
 // ----------------------------------------------------------------------
 
 export default function NavVertical({ openNav, onCloseNav }) {
-  const { user } = useMockedUser();
-
   const pathname = usePathname();
 
   const lgUp = useResponsive('up', 'lg');
@@ -49,18 +45,15 @@ export default function NavVertical({ openNav, onCloseNav }) {
         },
       }}
     >
-   
-
       <NavSectionVertical
         data={navData}
         config={{
-          currentRole: user?.role || 'admin',
+          currentRole: 'admin',
         }}
       />
 
       <Box sx={{ flexGrow: 1 }} />
       <NewburyLogo />
-     
     </Scrollbar>
   );
 

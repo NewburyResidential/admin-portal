@@ -9,3 +9,7 @@ export function fToCamelCase(str) {
       })
       .join('');
   }
+
+export function fRemoveSpaces(str) {
+    return str.replace(/\s+/g, '');
+}

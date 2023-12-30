@@ -1,30 +1,22 @@
-// scrollbar
+
 import 'simplebar-react/dist/simplebar.min.css';
 
-// image
 import 'react-lazy-load-image-component/src/effects/blur.css';
 
-// ----------------------------------------------------------------------
-
 import PropTypes from 'prop-types';
-// theme
+
 import ThemeProvider from 'src/theme';
 import { primaryFont } from 'src/theme/typography';
-// components
+
 import ProgressBar from 'src/components/progress-bar';
 import { MotionLazy } from 'src/components/animate/motion-lazy';
 import { SettingsProvider, SettingsDrawer } from 'src/components/display-settings';
-// analytics
-import { Analytics } from '@vercel/analytics/react';
-
-
-// ----------------------------------------------------------------------
+import AuthProvider from 'src/utils/providers/AuthProvider';
 
 export const metadata = {
   title: 'Newbury Admin Portal',
-  description:
-    'Admin Portal',
-  keywords: 'react,material,application,dashboard,admin,template',
+  description: 'Admin Portal',
+  keywords: 'admin',
   themeColor: '#000000',
   manifest: '/manifest.json',
   viewport: {
@@ -61,6 +53,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className={primaryFont.className}>
       <body>
+        <AuthProvider>
           <SettingsProvider
             defaultSettings={{
               themeMode: 'light', // 'light' | 'dark'
@@ -76,10 +69,10 @@ export default function RootLayout({ children }) {
                 <SettingsDrawer />
                 <ProgressBar />
                 {children}
-                <Analytics />
               </MotionLazy>
             </ThemeProvider>
           </SettingsProvider>
+        </AuthProvider>
       </body>
     </html>
   );
