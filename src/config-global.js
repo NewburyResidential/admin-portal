@@ -1,8 +1,6 @@
 const mode = 'dev'; // dev | prod
 
 // API ----------------------------------------------------------------------
-
-
 export const ENTRATA_API = {
 baseUrl: mode === 'production' ? process.env.ENTRATA_BASEURL : process.env.ENTRATA_DEV_BASEURL,
 username: mode === 'production' ? process.env.ENTRATA_USERNAME : process.env.ENTRATA_DEV_USERNAME,

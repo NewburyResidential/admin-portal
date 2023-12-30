@@ -6,7 +6,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev -p 3034",
-    "start": "next start",
+    "start": "next start -p 3034",
     "build": "next build",
     "lint": "eslint \"src/**/*.{js,jsx}\"",
     "lint:fix": "eslint --fix \"src/**/*.{js,jsx}\"",
@@ -17,6 +17,8 @@
     "re-build-test": "rm -rf node_modules .next out dist build && npm install && npm run build"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.484.0",
+    "@aws-sdk/lib-storage": "^3.484.0",
     "@azure/ai-form-recognizer": "^5.0.0",
     "@azure/storage-blob": "^12.15.0",
     "@emotion/cache": "^11.10.5",
