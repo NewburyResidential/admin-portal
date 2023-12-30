@@ -14,11 +14,7 @@ export default function View({ session, params }) {
     } else {
       router.push(callbackUrl);
     }
-  }, [params, session]);
+  }, [params, session, callbackUrl, router]);
 
-  return (
-    <>
-      <SplashScreen />
-    </>
-  );
+  return <SplashScreen />;
 }

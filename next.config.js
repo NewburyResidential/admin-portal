@@ -1,6 +1,9 @@
 const path = require('path');
 
 module.exports = {
+  eslint: {
+    ignoreDuringBuilds: false,
+  },
   trailingSlash: true,
   modularizeImports: {
     '@mui/material': {

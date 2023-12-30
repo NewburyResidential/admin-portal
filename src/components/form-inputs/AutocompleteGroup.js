@@ -14,7 +14,8 @@ export default function AutocompleteGroup({
   optionId = 'id',
   sx,
 }) {
-  const currentValue = value ? value : null;
+  const currentValue = value || null;
+
   return (
     <Autocomplete
       sx={sx}
@@ -29,7 +30,7 @@ export default function AutocompleteGroup({
       groupBy={(option) => option.category}
       getOptionLabel={(option) => option[optionLabel]}
       renderInput={(params) => <TextField {...params} label={label} error={error} />}
-      isOptionEqualToValue={(option, value) => option[optionId] === value[optionId]}
+      isOptionEqualToValue={(option, selected) => option[optionId] === selected[optionId]}
       renderOption={(props, option) => {
         return (
           <li {...props} key={option[optionId]}>

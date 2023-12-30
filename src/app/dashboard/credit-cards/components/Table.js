@@ -1,4 +1,5 @@
 'use client';
+
 import { useState, useCallback } from 'react';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
@@ -16,7 +17,6 @@ import updateTransactions from 'src/utils/services/CCExpenses/updateTransactions
 import { useTheme } from '@mui/material/styles';
 
 export default function CustomTable({ vendors, chartOfAccounts, unapprovedTransactions }) {
-
   const theme = useTheme();
   const isLight = theme.palette.mode === 'light';
 
@@ -96,7 +96,9 @@ export default function CustomTable({ vendors, chartOfAccounts, unapprovedTransa
           if (newAllocations.length === 1) {
             newAllocations[0].amount = transaction.amount;
           } else {
-            newAllocations.forEach((allocation) => (allocation.amount = 0));
+            newAllocations.forEach((allocation) => {
+              allocation.amount = 0;
+            });
           }
 
           return {
@@ -188,7 +190,7 @@ export default function CustomTable({ vendors, chartOfAccounts, unapprovedTransa
   }
 
   const handleApproveTransactions = async () => {
-    let validTransactions = [];
+    const validTransactions = [];
     transactions.forEach((transaction) => {
       if (transaction.checked) {
         let transactionValid = true;
@@ -210,7 +212,7 @@ export default function CustomTable({ vendors, chartOfAccounts, unapprovedTransa
         }
 
         transaction.allocations.forEach((allocation) => {
-          let missingFields = [];
+          const missingFields = [];
           if (isMissingValue(allocation.asset)) missingFields.push('assets');
           if (isMissingValue(allocation.glAccount)) missingFields.push('glAccount');
 
@@ -244,7 +246,7 @@ export default function CustomTable({ vendors, chartOfAccounts, unapprovedTransa
 
   return (
     <Card sx={{ borderRadius: '10px' }}>
-      <CardActions sx={{ backgroundColor: isLight ? "primary.darker" : theme.palette.common.black }}>
+      <CardActions sx={{ backgroundColor: isLight ? 'primary.darker' : theme.palette.common.black }}>
         <LoadingButton
           variant="contained"
           style={{ marginLeft: '16px', width: '140px' }}

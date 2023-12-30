@@ -4,7 +4,7 @@
     "browser": true,
     "es2021": true
   },
-  "plugins": ["unused-imports", "prettier"],
+  "plugins": ["prettier"],
   "extends": ["airbnb", "airbnb/hooks", "prettier"],
   "parser": "@babel/eslint-parser",
   "parserOptions": {
@@ -28,6 +28,10 @@
     }
   },
   "rules": {
+    "spaced-comment": "off",
+    "arrow-body-style": "off",
+    "import/order": "off",
+    "no-nested-ternary": "off",
     "no-alert": 0,
     "camelcase": 0,
     "no-console": 0,
@@ -50,7 +54,6 @@
     "import/prefer-default-export": 0,
     "react/function-component-definition": 0,
     "jsx-a11y/control-has-associated-label": 0,
-    "spaced-comment": ["error", "always", { "markers": ["/"] }],
     "react/jsx-no-useless-fragment": [
       1,
       {
@@ -80,16 +83,6 @@
       1,
       {
         "ignoreCase": false
-      }
-    ],
-    "unused-imports/no-unused-imports": 0,
-    "unused-imports/no-unused-vars": [
-      0,
-      {
-        "vars": "all",
-        "varsIgnorePattern": "^_",
-        "args": "after-used",
-        "argsIgnorePattern": "^_"
       }
     ]
   }

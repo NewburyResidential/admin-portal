@@ -17,5 +17,6 @@ export default async function updateTransactions(transactionsToUpdate) {
     return data;
   } catch (error) {
     console.error('Error fetching data: ', error);
+    throw new Error('Failed to update transactions');
   }
 }

@@ -8,7 +8,7 @@ export const metadata = {
 export default async function Page() {
   return (
     <Container >
-    <Typography variant="h4">Welcome To Newbury's Admin Portal! </Typography>
+    <Typography variant="h4">Welcome To Newbury&apos;s Admin Portal!</Typography>
 
     {/* <Box
       sx={{

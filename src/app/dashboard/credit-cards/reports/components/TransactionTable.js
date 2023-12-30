@@ -1,4 +1,5 @@
 'use client';
+
 import { useState } from 'react';
 
 import Table from '@mui/material/Table';
@@ -15,16 +16,19 @@ function descendingComparator(a, b, orderBy) {
     const dateA = new Date(a[orderBy]);
     const dateB = new Date(b[orderBy]);
     return dateB - dateA;
-  } else if (typeof a[orderBy] === 'string') {
+  } 
+
+  if (typeof a[orderBy] === 'string') {
     return b[orderBy].toLowerCase().localeCompare(a[orderBy].toLowerCase());
-  } else {
-    if (b[orderBy] < a[orderBy]) {
-      return -1;
-    }
-    if (b[orderBy] > a[orderBy]) {
-      return 1;
-    }
   }
+
+  if (b[orderBy] < a[orderBy]) {
+    return -1;
+  }
+  if (b[orderBy] > a[orderBy]) {
+    return 1;
+  }
+
   return 0;
 }
 

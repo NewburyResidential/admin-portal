@@ -5,7 +5,7 @@ export default function TextFieldPostDate({ postDate, setPostDate }) {
     let { value } = event.target;
     value = value.replace(/[^0-9/]/g, '');
     if (value.length === 2 && !value.includes('/')) {
-      value = value + '/';
+      value += '/';
     }
     if (value.length <= 7) {
       setPostDate(value);

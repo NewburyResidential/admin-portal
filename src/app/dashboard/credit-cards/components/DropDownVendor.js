@@ -10,7 +10,7 @@ import { isMissingValue } from 'src/utils/expense-calculations/missing-value';
 
 export default function DropDownVendor({ vendors, handleVendorChange, item, isVendorRequired }) {
   const currentValue = item.vendor ? item.vendor : null;
-  const merchantName = item.merchant ? item.merchant : "*Not Provided*";
+  const merchantName = item.merchant ? item.merchant : '*Not Provided*';
   const [inputValue, setInputValue] = useState('');
 
   const optionsLimit = 7;
@@ -34,7 +34,7 @@ export default function DropDownVendor({ vendors, handleVendorChange, item, isVe
           setInputValue(newInputValue);
         }}
         renderInput={(params) => {
-          const { key, ...rest } = params;
+          const { ...rest } = params;
           return (
             <TextField
               {...rest}
@@ -54,11 +54,15 @@ export default function DropDownVendor({ vendors, handleVendorChange, item, isVe
       />
     </FormControl>
   ) : (
-    <Box sx={{ 
-      height: '54px', 
-      display: 'flex', 
-      alignItems: 'center', 
-      justifyContent: 'center'
-  }}>{merchantName}</Box>
+    <Box
+      sx={{
+        height: '54px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+    >
+      {merchantName}
+    </Box>
   );
 }

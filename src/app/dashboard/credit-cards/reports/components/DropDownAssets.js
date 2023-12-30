@@ -1,11 +1,12 @@
 'use client';
+
 import { assetItems } from 'src/assets/data/assets';
 import AutocompleteGroup from 'src/components/form-inputs/AutocompleteGroup';
 
 export default function DropDownAssets({ asset, setAsset }) {
 
-  const handleAssetChange = (asset) => {
-    setAsset(asset);
+  const handleAssetChange = (newValue) => {
+    setAsset(newValue);
   };
   
   return (

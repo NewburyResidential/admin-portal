@@ -65,18 +65,16 @@ function RowItem({
     return str
       .toLowerCase()
       .split(' ')
-      .map(function (word) {
-        return word.charAt(0).toUpperCase() + word.slice(1);
-      })
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
       .join(' ');
-  }
+  }  
 
   return (
     <>
       <Box
         sx={{
           display: 'flex',
-          backgroundColor: backgroundColor,
+          backgroundColor,
           pt: 2,
           pb: 3,
           pl: 2,
@@ -126,7 +124,7 @@ function RowItem({
       ))}
 
       {isSplit && (
-        <Box sx={{ display: 'flex', backgroundColor: backgroundColor, pb: 2, pr: 1, gap: 2 }}>
+        <Box sx={{ display: 'flex', backgroundColor, pb: 2, pr: 1, gap: 2 }}>
           <Box sx={{ flex: 16 }} />
           <Box sx={{ flex: 3.4, textAlign: 'center' }}>
             <CalculationButtonGroup
@@ -140,7 +138,7 @@ function RowItem({
             <TextField
               value={Number((item.amount - difference).toFixed(2))}
               disabled
-              label={'Total'}
+              label='Total'
               InputProps={{ style: { maxHeight: '40px' } }}
             />
           </Box>

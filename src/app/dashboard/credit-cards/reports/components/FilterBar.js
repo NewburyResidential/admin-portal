@@ -1,6 +1,9 @@
 'use client';
+
 import { useState } from 'react';
-import * as XLSX from 'xlsx';
+
+import ExcelJS from 'exceljs';
+import { saveAs } from 'file-saver';
 
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
@@ -19,8 +22,9 @@ export default function FilterBar({ setTransactions, totalAmount, transactions }
 
   const handleFilter = async () => {
     setLoading(true);
-    let [month, year] = postDate.split('/');
-    month = month.padStart(2, '0');
+    const splitDate = postDate.split('/');
+    const month = splitDate[0].padStart(2, '0');
+    const year = splitDate[1];
     const formattedPostDate = `${month}/${year}`;
     const response = await getTransactions(formattedPostDate);
     let newTransactionsArray = [];
@@ -52,48 +56,58 @@ export default function FilterBar({ setTransactions, totalAmount, transactions }
         })
         .flat();
     }
-    console.log(newTransactionsArray);
+
     setTransactions(newTransactionsArray);
     setLoading(false);
   };
+
   const exportToExcel = () => {
     const assets = asset ? asset.label : 'All Properties';
     const date = postDate.replace('/', '.');
-    const data = transactions.map((transaction) => ({
-      'Billed Property Name': transaction.billedPropertyName,
-      'Billed Property ID': transaction.billedPropertyId,
-      'Post Date': transaction.postDate,
-      'Accounting Type': transaction.AccountingType,
-      'Transaction ID': transaction.transactionId,
-      Note: transaction.note,
-      'Purchased By': transaction.purchasedBy,
-      Merchant: transaction.merchant,
-      Name: transaction.name,
-      Receipt: transaction.receipt,
-      'GL Account': transaction.gl,
-      Amount: transaction.amount,
-    }));
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet('Transactions');
 
-    data.push({
-      'Billed Property Name': '',
-      'Billed Property ID': '',
-      'Post Date': '',
-      'Accounting Type': '',
-      'Transaction ID': '',
-      Note: '',
-      'Purchased By': '',
-      Merchant: '',
-      Name: '',
-      Receipt: '',
-      'GL Account': '',
-      Amount: totalAmount.toFixed(2),
+    worksheet.columns = [
+      { header: 'Billed Property Name', key: 'billedPropertyName', width: 18 },
+      { header: 'Billed Property ID', key: 'billedPropertyId', width: 10 },
+      { header: 'Post Date', key: 'postDate', width: 15 },
+      { header: 'Accounting Type', key: 'AccountingType', width: 10 },
+      { header: 'Transaction ID', key: 'transactionId', width: 10 },
+      { header: 'Note', key: 'note', width: 20 },
+      { header: 'Purchased By', key: 'purchasedBy', width: 20 },
+      { header: 'Merchant', key: 'merchant', width: 20 },
+      { header: 'Name', key: 'name', width: 20 },
+      { header: 'Receipt', key: 'receipt', width: 20 },
+      { header: 'GL Account', key: 'gl', width: 20 },
+      { header: 'Amount', key: 'amount', width: 10, style: { numFmt: '"$"#,##0.00_);("$"#,##0.00)' } },
+    ];
+
+    transactions.forEach((transaction) => {
+      worksheet.addRow(transaction);
     });
 
-    const worksheet = XLSX.utils.json_to_sheet(data);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Transactions');
+    const totalRow = worksheet.addRow({
+      billedPropertyName: '',
+      billedPropertyId: '',
+      postDate: '',
+      AccountingType: '',
+      transactionId: '',
+      note: '',
+      purchasedBy: '',
+      merchant: '',
+      name: '',
+      receipt: '',
+      gl: '',
+      amount: totalAmount.toFixed(2),
+    });
 
-    XLSX.writeFile(workbook, `CC - ${date} ${assets}.xlsx`);
+    totalRow.eachCell({ includeEmpty: true }, (cell) => {
+      cell.font = { bold: true };
+    });
+
+    workbook.xlsx.writeBuffer().then((buffer) => {
+      saveAs(new Blob([buffer]), `CC - ${date} ${assets}.xlsx`);
+    });
   };
 
   const handleExport = () => {

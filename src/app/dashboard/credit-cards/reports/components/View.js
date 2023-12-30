@@ -1,4 +1,5 @@
 'use client';
+
 import { useState } from 'react';
 
 import FilterBar from './FilterBar';
@@ -8,9 +9,9 @@ export default function View() {
 
   const [transactions, setTransactions] = useState([]);
 
-  const calculateTotalAmount = (transactions) => {
-    return transactions.reduce((total, transaction) => {
-      return total + transaction.amount;
+  const calculateTotalAmount = () => {
+    return transactions.reduce((total, item) => {
+      return total + item.amount;
     }, 0);
   };
   const totalAmount = calculateTotalAmount(transactions);

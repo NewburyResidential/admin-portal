@@ -15,7 +15,6 @@ export default function CalculationButtonGroup({ calculation, setCalculation, it
   };
 
   return (
-    <>
       <ButtonGroup
         fullWidth
         variant="outlined"
@@ -72,6 +71,5 @@ export default function CalculationButtonGroup({ calculation, setCalculation, it
           Percent
         </Button> */}
       </ButtonGroup>
-    </>
   );
 }

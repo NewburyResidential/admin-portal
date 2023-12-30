@@ -49,7 +49,7 @@ export default function RowSubItem({
     <Box
       sx={{
         display: 'flex',
-        backgroundColor: backgroundColor,
+        backgroundColor,
         pb: 2,
         alignItems: 'center',
         gap: 2,

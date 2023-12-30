@@ -8,9 +8,5 @@ export default async function page() {
   const chartOfAccounts = await getChartOfAccounts();
   const unapprovedTransactions = await getUnapprovedTransactions();
 
-  return (
-    <>
-      <Table vendors={vendors} chartOfAccounts={chartOfAccounts} unapprovedTransactions={unapprovedTransactions} />
-    </>
-  );
+  return <Table vendors={vendors} chartOfAccounts={chartOfAccounts} unapprovedTransactions={unapprovedTransactions} />;
 }

@@ -45,10 +45,10 @@ const hasReceipt = item.receipt !== null && item.receipt !== undefined && item.r
           sx={{
             width: '2px',
           }}
-        ></Box>
+        />
        <AddReceiptUpload id={item.id} handleReceiptChange={handleReceiptChange} />
       </Box>
-      <IconButton id={`add-photo-${item.id}`} disabled={true}>
+      <IconButton id={`add-photo-${item.id}`} disabled>
         {hasReceipt ?  <Iconify icon="carbon:receipt" color="#169B62" width={25} /> : <Iconify icon="material-symbols-light:attach-file-add-rounded" color="#CD5C5C" width={25} />}
       </IconButton>
     </Box>

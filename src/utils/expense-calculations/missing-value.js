@@ -22,27 +22,31 @@ export function isMissingValue(value) {
   return false;
 }
 
+// TO DO: review
 export function isIncorrectAmounts(transaction) {
   if (!Array.isArray(transaction.allocations)) {
     return true;
   }
 
-  let totalAllocations = 0;
-  let firstAmountSign = null;
-  for (const allocation of transaction.allocations) {
+  const totalAllocations = transaction.allocations.reduce((acc, allocation, index) => {
     const amount = Number(allocation.amount);
     if (isMissingValue(amount)) {
-      return true;
+      throw new Error('Missing value');
     }
 
-    if (firstAmountSign === null) {
-      firstAmountSign = Math.sign(amount);
-    } else if (Math.sign(amount) !== firstAmountSign) {
-      return true;
+    if (index === 0) {
+      acc.firstAmountSign = Math.sign(amount);
+    } else if (Math.sign(amount) !== acc.firstAmountSign) {
+      throw new Error('Inconsistent sign');
     }
 
-    totalAllocations += amount;
+    return { total: acc.total + amount, firstAmountSign: acc.firstAmountSign };
+  }, { total: 0, firstAmountSign: null });
+
+  try {
+    return totalAllocations.total !== Number(transaction.amount);
+  } catch (error) {
+    return true;
   }
-
-  return totalAllocations !== Number(transaction.amount);
 }
+

@@ -14,8 +14,7 @@ import { useRouter } from 'src/routes/hooks';
 // components
 import { varHover } from 'src/components/animate';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
-import { signOut } from 'next-auth/react';
-import { useSession } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react'; 
 
 
 const OPTIONS = [
