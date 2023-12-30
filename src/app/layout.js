@@ -14,16 +14,15 @@ import { primaryFont } from 'src/theme/typography';
 import ProgressBar from 'src/components/progress-bar';
 import { MotionLazy } from 'src/components/animate/motion-lazy';
 import { SettingsProvider, SettingsDrawer } from 'src/components/display-settings';
+import AuthProvider from 'src/utils/providers/AuthProvider';
 // analytics
 // import { Analytics } from '@vercel/analytics/react';
-
 
 // ----------------------------------------------------------------------
 
 export const metadata = {
   title: 'Newbury Admin Portal',
-  description:
-    'Admin Portal',
+  description: 'Admin Portal',
   keywords: 'react,material,application,dashboard,admin,template',
   themeColor: '#000000',
   manifest: '/manifest.json',
@@ -61,6 +60,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className={primaryFont.className}>
       <body>
+        <AuthProvider>
           <SettingsProvider
             defaultSettings={{
               themeMode: 'light', // 'light' | 'dark'
@@ -80,6 +80,7 @@ export default function RootLayout({ children }) {
               </MotionLazy>
             </ThemeProvider>
           </SettingsProvider>
+        </AuthProvider>
       </body>
     </html>
   );

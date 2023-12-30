@@ -1,30 +1,24 @@
 'use client';
 
-import PropTypes from 'prop-types';
-
 import { useEffect } from 'react';
+import { signIn } from 'next-auth/react';
 import { SplashScreen } from 'src/components/loading-screen';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { useRouter } from 'next/navigation';
 
-export default function Login({ redirectPath, origin }) {
-  const supabase = createClientComponentClient();
+export default function Login({ session, params }) {
+  const router = useRouter();
+  const callbackUrl = params || '/dashboard';
   useEffect(() => {
-    const signInWithAzure = async () => {
-      await supabase.auth.signInWithOAuth({
-        provider: 'azure',
-        options: {
-          scopes: 'email',
-          redirectTo: `${origin}/api/auth/?redirectedFrom=${redirectPath}`,
-        },
-      });
-    };
-    signInWithAzure();
-  }, [redirectPath, supabase.auth, origin]);
+    if (!session) {
+      signIn('azure-ad', { callbackUrl });
+    } else {
+      router.push(callbackUrl);
+    }
+  }, [params, session]);
 
-  return <SplashScreen />;
+  return (
+    <>
+      <SplashScreen />
+    </>
+  );
 }
-
-Login.propTypes = {
-  redirectPath: PropTypes.string,
-  origin: PropTypes.string,
-};

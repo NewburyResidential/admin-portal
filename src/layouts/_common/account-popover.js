@@ -10,20 +10,15 @@ import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 // routes
 import { useRouter } from 'src/routes/hooks';
-// hooks
-import { useMockedUser } from 'src/hooks/use-mocked-user';
-// auth
 
 // components
 import { varHover } from 'src/components/animate';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { signOut } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 
-
-// ----------------------------------------------------------------------
 
 const OPTIONS = [
-
   {
     label: 'Profile',
     linkTo: '/#1',
@@ -34,19 +29,17 @@ const OPTIONS = [
   },
 ];
 
-// ----------------------------------------------------------------------
+
 
 export default function AccountPopover() {
-  const router = useRouter();
+  const { data: session } = useSession();
 
-  const { user } = useMockedUser();
+  const router = useRouter();
 
   const popover = usePopover();
 
-  const supabase = createClientComponentClient();
   async function handleLogout() {
-    const { error } = await supabase.auth.signOut()
-    router.push('/auth/logout')
+    signOut({ redirect: true, callbackUrl: '/auth/logout' });
   }
 
 
@@ -74,26 +67,26 @@ export default function AccountPopover() {
         }}
       >
         <Avatar
-          src={user?.photoURL}
-          alt={user?.displayName}
+          //src={session?.user?.photoURL}
+          //alt={user?.displayName}
           sx={{
             width: 36,
             height: 36,
             border: (theme) => `solid 2px ${theme.palette.background.default}`,
           }}
         >
-          {user?.displayName.charAt(0).toUpperCase()}
+          {session?.user?.name.charAt(0).toUpperCase()}
         </Avatar>
       </IconButton>
 
       <CustomPopover open={popover.open} onClose={popover.onClose} sx={{ width: 200, p: 0 }}>
         <Box sx={{ p: 2, pb: 1.5 }}>
           <Typography variant="subtitle2" noWrap>
-            {user?.displayName}
+            {session?.user?.name}
           </Typography>
 
           <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
-            {user?.email}
+            {session?.user?.email}
           </Typography>
         </Box>
 
