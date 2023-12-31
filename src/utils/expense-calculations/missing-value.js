@@ -31,13 +31,13 @@ export function isIncorrectAmounts(transaction) {
   const totalAllocations = transaction.allocations.reduce((acc, allocation, index) => {
     const amount = Number(allocation.amount);
     if (isMissingValue(amount)) {
-      throw new Error('Missing value');
+      return true;
     }
 
     if (index === 0) {
       acc.firstAmountSign = Math.sign(amount);
     } else if (Math.sign(amount) !== acc.firstAmountSign) {
-      throw new Error('Inconsistent sign');
+      return true;
     }
 
     return { total: acc.total + amount, firstAmountSign: acc.firstAmountSign };
