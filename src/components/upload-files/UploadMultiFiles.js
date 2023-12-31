@@ -94,5 +94,5 @@ export default function UploadMultiFiles({ onUpload, accept}) {
 
 UploadMultiFiles.propTypes = {
   onUpload: PropTypes.func,
-  accept: PropTypes.string
+  accept: PropTypes.object
 };

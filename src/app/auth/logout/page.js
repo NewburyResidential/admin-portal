@@ -1,8 +1,5 @@
-import React from 'react'
-import View403 from 'src/sections/error/403-view'
+import View from './components/View';
 
 export default function page() {
-  return (
-    <View403 />
-  )
+  return <View />;
 }

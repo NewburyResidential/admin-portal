@@ -177,6 +177,6 @@ Upload.propTypes = {
   onUpload: PropTypes.func,
   sx: PropTypes.object,
   thumbnail: PropTypes.bool,
-  accept: PropTypes.string,
+  accept: PropTypes.object,
   duplicateFiles: PropTypes.array,
 };

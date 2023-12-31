@@ -1,7 +1,4 @@
-// sections
-import { NotFoundView } from 'src/sections/error';
-
-// ----------------------------------------------------------------------
+import { NotFoundView } from 'src/components/error';
 
 export const metadata = {
   title: '404 Page Not Found!',
