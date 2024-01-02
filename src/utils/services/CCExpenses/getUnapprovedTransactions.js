@@ -12,12 +12,13 @@ export default async function getUnapprovedTransactions() {
   try {
     const response = await fetch(url, requestOptions);
     if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
+      console.error(`HTTP error! Status: ${response.status}`);
+      return [];
     }
     const data = await response.json();
     return data;
   } catch (error) {
     console.error('Error fetching data: ', error);
-    throw new Error('Failed to get transactions');
+    return [];
   }
 }

@@ -15,7 +15,8 @@ export default async function getTransactions(pk, sk) {
   try {
     const response = await fetch(url.toString(), requestOptions);
     if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
+      console.error(`HTTP error! Status: ${response.status}`);
+      return [];
     }
     const data = await response.json();
     return data;
