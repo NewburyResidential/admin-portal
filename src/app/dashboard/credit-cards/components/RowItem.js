@@ -27,6 +27,8 @@ function RowItem({
 }) {
   const theme = useTheme();
   const isLight = theme.palette.mode === 'light';
+
+  const formattedDate = new Date(item.transactionDate).toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' });
   const [calculation, setCalculation] = useState('Amount');
   const sumOfAllocations = item.allocations.reduce((sum, allocation) => sum + parseFloat(allocation.amount || 0), 0);
   const difference = parseFloat((parseFloat(item.amount) - sumOfAllocations).toFixed(2)) || 0;
@@ -90,7 +92,7 @@ function RowItem({
         </Box>
         <Box sx={{ flex: 1, textAlign: 'center' }}>{titleCase(item.name)}</Box>
         <Box sx={{ flex: 1, textAlign: 'center' }}>{item.accountName}</Box>
-        <Box sx={{ flex: 1, textAlign: 'center', minWidth: '10%' }}>{item.billingCycle}</Box>
+        <Box sx={{ flex: 1, textAlign: 'center', minWidth: '10%' }}>{formattedDate}</Box>
         <Box sx={{ flex: 0.5, textAlign: 'center' }}>
           <AddReceipt item={item} handleReceiptChange={handleReceiptChange} />
         </Box>
