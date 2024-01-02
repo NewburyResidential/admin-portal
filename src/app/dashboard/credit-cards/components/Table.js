@@ -16,7 +16,7 @@ import updateTransactions from 'src/utils/services/CCExpenses/updateTransactions
 
 import { useTheme } from '@mui/material/styles';
 
-export default function CustomTable({ vendors, chartOfAccounts, unapprovedTransactions }) {
+export default function CustomTable({ user, vendors, chartOfAccounts, unapprovedTransactions }) {
   const theme = useTheme();
   const isLight = theme.palette.mode === 'light';
 
@@ -215,14 +215,13 @@ export default function CustomTable({ vendors, chartOfAccounts, unapprovedTransa
           const missingFields = [];
           if (isMissingValue(allocation.asset)) missingFields.push('assets');
           if (isMissingValue(allocation.glAccount)) missingFields.push('glAccount');
-
           if (missingFields.length > 0) {
             errors.push(`Allocation ID ${allocation.id} is missing: ${missingFields.join(', ')}`);
             transactionValid = false;
           }
         });
         if (transactionValid) {
-          validTransactions.push({ ...transaction, status: 'reviewed' });
+          validTransactions.push({ ...transaction, status: 'reviewed', approvedBy: user.name });
         } else {
           console.log(errors.join('\n'));
         }
