@@ -1,8 +1,7 @@
 export default async function getUnapprovedTransactions() {
   const url = 'https://0yxexcpp8f.execute-api.us-east-1.amazonaws.com/unapprovedTransactions';
   const requestOptions = {
-    cache: 'no-store', 
-    //cache: 'force-cache',
+    next: {tags: ['transactions']},
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',

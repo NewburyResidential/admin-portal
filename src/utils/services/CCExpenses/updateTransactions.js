@@ -1,3 +1,7 @@
+'use server';
+
+import { revalidateTag } from 'next/cache';
+
 export default async function updateTransactions(transactionsToUpdate) {
   const url = 'https://0yxexcpp8f.execute-api.us-east-1.amazonaws.com/updateTransactions';
   const requestOptions = {
@@ -15,6 +19,7 @@ export default async function updateTransactions(transactionsToUpdate) {
       return null;
     }
     const data = await response.json();
+    revalidateTag('transactions');
     return data;
   } catch (error) {
     console.error('Error fetching data: ', error);

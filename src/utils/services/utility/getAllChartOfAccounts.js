@@ -8,7 +8,7 @@ export default async function getAllChartOfAccounts() {
     ])
 
     entrataChartOfAccounts.forEach(entrataAccount => {
-        const waveAccount = waveChartOfAccounts.find(waveAccount => waveAccount.displayId === entrataAccount.accountNumber);
+        const waveAccount = waveChartOfAccounts.find(account => account.displayId === entrataAccount.accountNumber);
         if (waveAccount) {
             entrataAccount.waveGlArray = waveAccount.accounts;
         }

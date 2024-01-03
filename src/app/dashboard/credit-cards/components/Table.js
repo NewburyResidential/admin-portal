@@ -1,12 +1,12 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
+
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import Paper from '@mui/material/Paper';
 import TableContainer from '@mui/material/TableContainer';
-import LoadingButton from '@mui/lab/LoadingButton';
 
 import TablePagination from '@mui/material/TablePagination';
 
@@ -15,24 +15,28 @@ import { isIncorrectAmounts, isMissingValue } from 'src/utils/expense-calculatio
 import updateTransactions from 'src/utils/services/CCExpenses/updateTransactions';
 
 import { useTheme } from '@mui/material/styles';
+import ButtonApprove from './ButtonApprove';
 
 export default function CustomTable({ user, vendors, chartOfAccounts, unapprovedTransactions }) {
   const theme = useTheme();
   const isLight = theme.palette.mode === 'light';
 
-  const [transactions, setTransactions] = useState(() =>
-    unapprovedTransactions.map((transaction) => ({
-      ...transaction,
-      checked: false,
-    }))
-  );
+  const [transactions, setTransactions] = useState([]);
+
+  useEffect(() => {
+    setTransactions(
+      unapprovedTransactions.map((transaction) => ({
+        ...transaction,
+        checked: false,
+      }))
+    );
+  }, [unapprovedTransactions]);
 
   const haveSelected = transactions.some((transaction) => transaction.checked);
   const selectedTransactions = transactions.reduce((count, transaction) => {
     return transaction.checked ? count + 1 : count;
   }, 0);
 
-  const [loading, setLoading] = useState(false);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [page, setPage] = useState(0);
 
@@ -196,7 +200,6 @@ export default function CustomTable({ user, vendors, chartOfAccounts, unapproved
         let transactionValid = true;
         const errors = [];
         setTransactionSubmitted(transaction.id);
-
         const isVendorRequired = transaction.allocations.some(
           (allocation) => allocation.asset && allocation.asset.accountingSoftware === 'entrata'
         );
@@ -228,34 +231,16 @@ export default function CustomTable({ user, vendors, chartOfAccounts, unapproved
       }
     });
     if (validTransactions.length > 0) {
-      setLoading(true);
-      try {
-        const response = await updateTransactions(validTransactions);
-        if (response.ids.length > 0) {
-          const updatedTransactionIds = response.ids;
-          setTransactions((prevTransactions) => prevTransactions.filter((transaction) => !updatedTransactionIds.includes(transaction.id)));
-        }
-      } catch (error) {
-        setLoading(false);
-        console.error('Error Updating Transactions: ', error);
-      }
+      await updateTransactions(validTransactions);
     }
-    setLoading(false);
   };
 
   return (
     <Card sx={{ borderRadius: '10px' }}>
       <CardActions sx={{ backgroundColor: isLight ? 'primary.darker' : theme.palette.common.black }}>
-        <LoadingButton
-          variant="contained"
-          style={{ marginLeft: '16px', width: '140px' }}
-          disabled={!haveSelected}
-          onClick={handleApproveTransactions}
-          color="primary"
-          loading={loading}
-        >
-          Approve {selectedTransactions > 0 && `(${selectedTransactions})`}
-        </LoadingButton>
+        <form action={handleApproveTransactions}>
+          <ButtonApprove haveSelected={haveSelected} selectedTransactions={selectedTransactions} />
+        </form>
         <TablePagination
           sx={{ color: 'white' }}
           rowsPerPageOptions={[10, 25, 50]}
