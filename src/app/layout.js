@@ -17,13 +17,13 @@ export const metadata = {
   title: 'Newbury Admin Portal',
   description: 'Admin Portal',
   keywords: 'admin',
-  themeColor: '#000000',
+  // themeColor: '#000000',
   manifest: '/manifest.json',
-  viewport: {
-    width: 'device-width',
-    initialScale: 1,
-    maximumScale: 1,
-  },
+  // viewport: {
+  //   width: 'device-width',
+  //   initialScale: 1,
+  //   maximumScale: 1,
+  // },
   icons: [
     {
       rel: 'icon',
