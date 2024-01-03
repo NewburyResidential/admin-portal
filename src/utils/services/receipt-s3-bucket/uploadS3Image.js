@@ -1,6 +1,7 @@
+'use server';
+
 import { Upload } from '@aws-sdk/lib-storage';
 import { S3Client } from '@aws-sdk/client-s3';
-import { NextResponse } from 'next/server';
 
 const s3Client = new S3Client({
   region: 'us-east-1',
@@ -10,8 +11,7 @@ const s3Client = new S3Client({
   },
 });
 
-export async function POST(req) {
-  const formData = await req.formData();
+export async function uploadS3Image(formData) {
   const Bucket = formData.get('bucket');
   const file = formData.get('file');
   const fileExtension = file.name.substring(file.name.lastIndexOf('.'));
@@ -35,10 +35,9 @@ export async function POST(req) {
     const fileUrl = `https://${Bucket}.s3.amazonaws.com/receipts/${encodeURIComponent(`${id}${fileExtension}`)}`;
     const pdfUrl = `https://${Bucket}.s3.amazonaws.com/temp-pdfs/${encodeURIComponent(`${id}.pdf`)}`;
     const tempPdfUrl = isPdf ? fileUrl : pdfUrl;
-
-    return NextResponse.json({ fileUrl, tempPdfUrl }, { status: 200 });
+    return { fileUrl, tempPdfUrl };
   } catch (error) {
     console.error('Error uploading image:', error);
-    return NextResponse.json({ error }, { status: 500 });
+    return null;
   }
 }

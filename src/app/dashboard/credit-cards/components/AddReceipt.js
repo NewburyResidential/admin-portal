@@ -1,9 +1,13 @@
+'use client';
+
+import { useState } from 'react';
 import Box from '@mui/material/Box';
 import Iconify from 'src/components/iconify';
 import IconButton from '@mui/material/IconButton';
 
 import AddReceiptUpload from './AddReceiptUpload';
 import AddReceiptStorage from './AddReceiptStorage';
+import CircularProgress  from '@mui/material/CircularProgress';
 
 const showHoverIcons = (itemId) => {
   const splitButtons = document.getElementById(`split-buttons-${itemId}`);
@@ -26,7 +30,8 @@ const hideHoverIcons = (itemId) => {
 };
 
 export default function AddReceipt({ item, handleReceiptChange }) {
-const hasReceipt = item.receipt !== null && item.receipt !== undefined && item.receiptUrl !== '';
+  const [loading, setLoading] = useState(false);
+  const hasReceipt = item.receipt !== null && item.receipt !== undefined && item.receiptUrl !== '';
 
   return (
     <Box onMouseEnter={() => showHoverIcons(item.id)} onMouseLeave={() => hideHoverIcons(item.id)}>
@@ -46,11 +51,24 @@ const hasReceipt = item.receipt !== null && item.receipt !== undefined && item.r
             width: '2px',
           }}
         />
-       <AddReceiptUpload id={item.id} handleReceiptChange={handleReceiptChange} />
+        <AddReceiptUpload
+          id={item.id}
+          handleReceiptChange={handleReceiptChange}
+          setLoading={setLoading}
+          hideHover={() => hideHoverIcons(item.id)}
+        />
       </Box>
-      <IconButton id={`add-photo-${item.id}`} disabled>
-        {hasReceipt ?  <Iconify icon="carbon:receipt" color="#169B62" width={25} /> : <Iconify icon="material-symbols-light:attach-file-add-rounded" color="#CD5C5C" width={25} />}
-      </IconButton>
+      {loading ? (
+        <CircularProgress size={20} color='primary' />
+      ) : (
+        <IconButton id={`add-photo-${item.id}`} disabled>
+          {hasReceipt ? (
+            <Iconify icon="carbon:receipt" color="#169B62" width={25} />
+          ) : (
+            <Iconify icon="material-symbols-light:attach-file-add-rounded" color="#CD5C5C" width={25} />
+          )}
+        </IconButton>
+      )}
     </Box>
   );
 }

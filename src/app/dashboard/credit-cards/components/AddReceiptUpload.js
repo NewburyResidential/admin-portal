@@ -1,30 +1,30 @@
 import Box from '@mui/material/Box';
 import Iconify from 'src/components/iconify';
 
-export default function AddReceiptUpload({ id, handleReceiptChange }) {
+import { uploadS3Image } from 'src/utils/services/receipt-s3-bucket/uploadS3Image';
+
+export default function AddReceiptUpload({ id, handleReceiptChange, setLoading, hideHover }) {
   const handleFileChange = async (event) => {
+    hideHover();
+    setLoading(true);
     const file = event.target.files[0];
     if (file) {
-
       const formData = new FormData();
       formData.append('file', file);
       formData.append('name', id);
       formData.append('bucket', 'admin-portal-receipts');
 
       try {
-        const response = await fetch('/api/aws/upload-image-s3', {
-          method: 'POST',
-          body: formData,
-        });
+        const response = await uploadS3Image(formData);
 
-        const result = await response.json();
-        if (result.fileUrl) {
-          handleReceiptChange(id, result.fileUrl, result.tempPdfUrl);
+        if (response) {
+          handleReceiptChange(id, response.fileUrl, response.tempPdfUrl);
         }
       } catch (error) {
         console.error('Error uploading file:', error);
       }
     }
+    setLoading(false);
   };
   return (
     <Box
