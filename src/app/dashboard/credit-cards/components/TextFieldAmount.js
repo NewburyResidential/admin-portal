@@ -49,7 +49,6 @@ export default function TextFieldAmount({ handleAllocationAmountChange, item, al
           onClick={(e) => {
             const updatedValue = difference + Number(currentValue);
             const roundedValue = updatedValue.toFixed(2);
-            console.log(roundedValue);
             handleAllocationAmountChange(item.id, allocation.id, roundedValue);
           }}
         >

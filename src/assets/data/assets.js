@@ -1,4 +1,62 @@
-export const assetItems = [
+// export const assetItems = [
+//     {
+//       category: 'Properties',
+//       id: '2401',
+//       label: 'The Landing',
+//       accountId: 'P1',
+//       units: 172,
+//       accountingSoftware: 'n/a',
+//       waveARId: 'QWNjb3VudDoxOTAwNDgwNjM5NzI4MTM2NDkzO0J1c2luZXNzOmZmYjc3ZjkwLWMxMTUtNDFhOS04ZDEyLTZiZTdlMTgzOTNlNg==',
+//     },
+//     {
+//       category: 'Properties',
+//       id: '2301',
+//       label: 'Edge At 1010',
+//       accountId: '1318972',
+//       units: 122,
+//       accountingSoftware: 'entrata',
+//       waveARId: 'QWNjb3VudDoxODk3OTY0NzMzNTkyNTQ3NTc5O0J1c2luZXNzOmZmYjc3ZjkwLWMxMTUtNDFhOS04ZDEyLTZiZTdlMTgzOTNlNg==',
+//     },
+//     {
+//       category: 'Properties',
+//       id: '2302',
+//       label: '2100 Springport',
+//       accountId: '1318973',
+//       units: 25,
+//       accountingSoftware: 'entrata',
+//       waveARId: 'QWNjb3VudDoxODk3OTY0NjY2Mzk5Nzk3NDk3O0J1c2luZXNzOmZmYjc3ZjkwLWMxMTUtNDFhOS04ZDEyLTZiZTdlMTgzOTNlNg==',
+//     },
+//     {
+//       category: 'Properties',
+//       id: '2001',
+//       label: 'Sycamore Place',
+//       accountId: 'P4',
+//       units: 50,
+//       accountingSoftware: 'n/a',
+//       waveARId: 'QWNjb3VudDoxOTAwNDg1NTc4MDAxMDAzMjU5O0J1c2luZXNzOmZmYjc3ZjkwLWMxMTUtNDFhOS04ZDEyLTZiZTdlMTgzOTNlNg==',
+//     },
+//     {
+//       category: 'Home Office',
+//       id: '1',
+//       label: 'Newbury Residential',
+//       accountId: 'QnVzaW5lc3M6ZmZiNzdmOTAtYzExNS00MWE5LThkMTItNmJlN2UxODM5M2U2',
+//       units: 0,
+//       accountingSoftware: 'n/a',
+//       waveARId: 'QWNjb3VudDoxOTAwNDg1Njk1OTYxNjA4OTU3O0J1c2luZXNzOmZmYjc3ZjkwLWMxMTUtNDFhOS04ZDEyLTZiZTdlMTgzOTNlNg==',
+//       waveCreditCard: 'QWNjb3VudDoxODk4NzI2OTE1MDY2MzQzNjAyO0J1c2luZXNzOmZmYjc3ZjkwLWMxMTUtNDFhOS04ZDEyLTZiZTdlMTgzOTNlNg=='
+//     },
+//     {
+//       category: 'Home Office',
+//       id: '2',
+//       label: 'Evolve Acquisitions',
+//       accountId: 'QnVzaW5lc3M6ZmZiNzdmOTAtYzExNS00MWE5LThkMTItNmJlN2UxODM5M2U2',
+//       units: 0,
+//       accountingSoftware: 'wave',
+//       waveARId: 'QWNjb3VudDoxOTAwNDg1NTc4MDAxMDAzMjU5O0J1c2luZXNzOmZmYjc3ZjkwLWMxMTUtNDFhOS04ZDEyLTZiZTdlMTgzOTNlNg==',
+//       waveCreditCard: 'QWNjb3VudDoxODk4NzI2OTE1MDY2MzQzNjAyO0J1c2luZXNzOmZmYjc3ZjkwLWMxMTUtNDFhOS04ZDEyLTZiZTdlMTgzOTNlNg=='
+//     },
+//   ];
+  export const assetItems = [
     {
       category: 'Properties',
       id: '2401',
@@ -6,7 +64,7 @@ export const assetItems = [
       accountId: 'P1',
       units: 172,
       accountingSoftware: 'n/a',
-      waveARId: 'QWNjb3VudDoxOTAwNDgwNjM5NzI4MTM2NDkzO0J1c2luZXNzOmZmYjc3ZjkwLWMxMTUtNDFhOS04ZDEyLTZiZTdlMTgzOTNlNg==',
+      waveARId: 'QWNjb3VudDoxOTA2ODM3NTM2Nzk0MjYwMjEzO0J1c2luZXNzOjc5OTg2NWE2LTlmMGEtNDgwNS1iZTg0LTJkMDgyOTE5MWVhYw==',
     },
     {
       category: 'Properties',
@@ -15,16 +73,16 @@ export const assetItems = [
       accountId: '1318972',
       units: 122,
       accountingSoftware: 'entrata',
-      waveARId: 'QWNjb3VudDoxODk3OTY0NzMzNTkyNTQ3NTc5O0J1c2luZXNzOmZmYjc3ZjkwLWMxMTUtNDFhOS04ZDEyLTZiZTdlMTgzOTNlNg==',
+      waveARId: 'QWNjb3VudDoxOTA2ODM3MDI3MDg1NjYwOTc4O0J1c2luZXNzOjc5OTg2NWE2LTlmMGEtNDgwNS1iZTg0LTJkMDgyOTE5MWVhYw==',
     },
     {
       category: 'Properties',
       id: '2302',
       label: '2100 Springport',
-      accountId: '1318973',
+      accountId: '1277165',
       units: 25,
       accountingSoftware: 'entrata',
-      waveARId: 'QWNjb3VudDoxODk3OTY0NjY2Mzk5Nzk3NDk3O0J1c2luZXNzOmZmYjc3ZjkwLWMxMTUtNDFhOS04ZDEyLTZiZTdlMTgzOTNlNg==',
+      waveARId: 'QWNjb3VudDoxOTA2ODM3NjMwMDU4ODAzOTc3O0J1c2luZXNzOjc5OTg2NWE2LTlmMGEtNDgwNS1iZTg0LTJkMDgyOTE5MWVhYw==',
     },
     {
       category: 'Properties',
@@ -33,26 +91,26 @@ export const assetItems = [
       accountId: 'P4',
       units: 50,
       accountingSoftware: 'n/a',
-      waveARId: 'QWNjb3VudDoxOTAwNDg1NTc4MDAxMDAzMjU5O0J1c2luZXNzOmZmYjc3ZjkwLWMxMTUtNDFhOS04ZDEyLTZiZTdlMTgzOTNlNg==',
+      waveARId: 'QWNjb3VudDoxOTA2ODM3NzE0MjcyMDM5NzA3O0J1c2luZXNzOjc5OTg2NWE2LTlmMGEtNDgwNS1iZTg0LTJkMDgyOTE5MWVhYw==',
     },
     {
       category: 'Home Office',
       id: '1',
       label: 'Newbury Residential',
-      accountId: 'QnVzaW5lc3M6ZmZiNzdmOTAtYzExNS00MWE5LThkMTItNmJlN2UxODM5M2U2',
+      accountId: 'QnVzaW5lc3M6Nzk5ODY1YTYtOWYwYS00ODA1LWJlODQtMmQwODI5MTkxZWFj',
       units: 0,
-      accountingSoftware: 'n/a',
-      waveARId: 'QWNjb3VudDoxOTAwNDg1Njk1OTYxNjA4OTU3O0J1c2luZXNzOmZmYjc3ZjkwLWMxMTUtNDFhOS04ZDEyLTZiZTdlMTgzOTNlNg==',
-      waveCreditCard: 'QWNjb3VudDoxODk4NzI2OTE1MDY2MzQzNjAyO0J1c2luZXNzOmZmYjc3ZjkwLWMxMTUtNDFhOS04ZDEyLTZiZTdlMTgzOTNlNg=='
+      accountingSoftware: 'wave',
+      waveARId: 'QWNjb3VudDoxOTA2ODM4MzU0OTkzOTE4ODkyO0J1c2luZXNzOjc5OTg2NWE2LTlmMGEtNDgwNS1iZTg0LTJkMDgyOTE5MWVhYw==',
+      waveCreditCard: 'QWNjb3VudDoxOTA2OTk3NTYwMjQ2MDU1Mjg3O0J1c2luZXNzOjc5OTg2NWE2LTlmMGEtNDgwNS1iZTg0LTJkMDgyOTE5MWVhYw=='
     },
     {
       category: 'Home Office',
       id: '2',
       label: 'Evolve Acquisitions',
-      accountId: 'QnVzaW5lc3M6ZmZiNzdmOTAtYzExNS00MWE5LThkMTItNmJlN2UxODM5M2U2',
+      accountId: 'QnVzaW5lc3M6MWZhZTQ1N2YtM2RiNC00Yjg5LWIwNzQtMGJmNjhjYWM1M2Iy',
       units: 0,
       accountingSoftware: 'wave',
-      waveARId: 'QWNjb3VudDoxOTAwNDg1NTc4MDAxMDAzMjU5O0J1c2luZXNzOmZmYjc3ZjkwLWMxMTUtNDFhOS04ZDEyLTZiZTdlMTgzOTNlNg==',
-      waveCreditCard: 'QWNjb3VudDoxODk4NzI2OTE1MDY2MzQzNjAyO0J1c2luZXNzOmZmYjc3ZjkwLWMxMTUtNDFhOS04ZDEyLTZiZTdlMTgzOTNlNg=='
+      waveARId: 'QWNjb3VudDoxOTA2ODM4NzYyODczMjA0Nzg0O0J1c2luZXNzOjc5OTg2NWE2LTlmMGEtNDgwNS1iZTg0LTJkMDgyOTE5MWVhYw==',
+      waveCreditCard: 'QWNjb3VudDoxOTA2OTg4MjYyMjU0MjI3NzQyO0J1c2luZXNzOjFmYWU0NTdmLTNkYjQtNGI4OS1iMDc0LTBiZjY4Y2FjNTNiMg=='
     },
   ];

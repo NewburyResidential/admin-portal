@@ -223,7 +223,7 @@ export default function CustomTable({ user, vendors, chartOfAccounts, unapproved
         if (transactionValid) {
           validTransactions.push({ ...transaction, status: 'reviewed', approvedBy: user.name });
         } else {
-          console.log(errors.join('\n'));
+          console.error(errors.join('\n'));
         }
       }
     });
