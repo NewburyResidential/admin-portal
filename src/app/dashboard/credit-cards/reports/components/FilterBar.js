@@ -13,7 +13,7 @@ import LoadingButton from '@mui/lab/LoadingButton';
 
 import DropDownAssets from './DropDownAssets';
 import TextFieldPostDate from './TextFieldPostDate';
-import getTransactions from 'src/utils/services/CCExpenses/getTransactions';
+import getTransactions from 'src/utils/services/cc-expenses/getTransactions';
 
 export default function FilterBar({ setTransactions, totalAmount, transactions }) {
   const [asset, setAsset] = useState(null);

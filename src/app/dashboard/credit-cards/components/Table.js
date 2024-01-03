@@ -12,7 +12,7 @@ import TablePagination from '@mui/material/TablePagination';
 
 import RowItem from './RowItem';
 import { isIncorrectAmounts, isMissingValue } from 'src/utils/expense-calculations/missing-value';
-import updateTransactions from 'src/utils/services/CCExpenses/updateTransactions';
+import updateTransactions from 'src/utils/services/cc-expenses/updateTransactions';
 
 import { useTheme } from '@mui/material/styles';
 import ButtonApprove from './ButtonApprove';
