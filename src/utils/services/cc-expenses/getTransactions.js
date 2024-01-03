@@ -1,3 +1,5 @@
+"use server";
+
 export default async function getTransactions(pk, sk) {
   const baseUrl = 'https://0yxexcpp8f.execute-api.us-east-1.amazonaws.com/getTransactions';
   const url = new URL(baseUrl);
