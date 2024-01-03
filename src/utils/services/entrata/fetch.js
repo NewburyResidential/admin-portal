@@ -1,6 +1,6 @@
 import { ENTRATA_API } from "src/config-global";
 
-export default async function fetchData(endpoint, bodyMethod) {
+export default async function fetchData(endpoint, bodyMethod, cacheType = 'no-store') {
     const url = `${ENTRATA_API.baseUrl}${endpoint}`;
     const basicAuth = Buffer.from(`${ENTRATA_API.username}:${ENTRATA_API.password}`).toString('base64');
     const body = {
@@ -11,7 +11,7 @@ export default async function fetchData(endpoint, bodyMethod) {
 
     try {
         const response = await fetch(url, {
-            cache: 'no-store', 
+            cache: cacheType, 
             //cache: 'force-cache',
             method: 'POST',
             headers: {
