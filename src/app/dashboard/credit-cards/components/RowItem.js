@@ -24,6 +24,7 @@ function RowItem({
   handleVendorChange,
   handleAssetsChange,
   handleCheckboxToggle,
+  handleOpenVendorDialog,
 }) {
   const theme = useTheme();
   const isLight = theme.palette.mode === 'light';
@@ -38,8 +39,8 @@ function RowItem({
         ? `+$${difference}`
         : `+$${difference.toFixed(2)}`
       : difference % 1 === 0
-      ? `-$${Math.abs(difference)}`
-      : `-$${Math.abs(difference).toFixed(2)}`;
+        ? `-$${Math.abs(difference)}`
+        : `-$${Math.abs(difference).toFixed(2)}`;
 
   const hexToRgba = (hex, opacity) => {
     const r = parseInt(hex.slice(1, 3), 16);
@@ -53,12 +54,12 @@ function RowItem({
       ? 'primary.lighter'
       : hexToRgba(theme.palette.primary.dark, 0.4)
     : index % 2 !== 0
-    ? isLight
-      ? '#FAFBFC'
-      : '#2F3944'
-    : isLight
-    ? '#f0f0f0'
-    : '#212B36';
+      ? isLight
+        ? '#FAFBFC'
+        : '#2F3944'
+      : isLight
+        ? '#f0f0f0'
+        : '#212B36';
 
   const isSplit = item.allocations.length > 1;
   const isVendorRequired = item.allocations.some((allocation) => allocation.asset && allocation.asset.accountingSoftware === 'entrata');
@@ -67,9 +68,9 @@ function RowItem({
     return str
       .toLowerCase()
       .split(' ')
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
       .join(' ');
-  }  
+  }
 
   return (
     <>
@@ -88,7 +89,7 @@ function RowItem({
           <Checkbox checked={item.checked} onChange={() => handleCheckboxToggle(item.id)} />
         </Box>
         <Box sx={{ flex: 1.349, textAlign: 'center', pl: 2 }}>
-          <DropDownVendor vendors={vendors} item={item} handleVendorChange={handleVendorChange} isVendorRequired={isVendorRequired} />
+          <DropDownVendor handleOpen={handleOpenVendorDialog} vendors={vendors} item={item} handleVendorChange={handleVendorChange} isVendorRequired={isVendorRequired} />
         </Box>
         <Box sx={{ flex: 1, textAlign: 'center' }}>{titleCase(item.name)}</Box>
         <Box sx={{ flex: 1, textAlign: 'center' }}>{item.accountName}</Box>
@@ -140,7 +141,7 @@ function RowItem({
             <TextField
               value={Number((item.amount - difference).toFixed(2))}
               disabled
-              label='Total'
+              label="Total"
               InputProps={{ style: { maxHeight: '40px' } }}
             />
           </Box>

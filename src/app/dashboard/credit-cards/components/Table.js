@@ -1,12 +1,13 @@
 'use client';
 
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import Paper from '@mui/material/Paper';
 import TableContainer from '@mui/material/TableContainer';
+import LoadingButton from '@mui/lab/LoadingButton';
 
 import TablePagination from '@mui/material/TablePagination';
 
@@ -15,22 +16,21 @@ import { isIncorrectAmounts, isMissingValue } from 'src/utils/expense-calculatio
 import updateTransactions from 'src/utils/services/cc-expenses/updateTransactions';
 
 import { useTheme } from '@mui/material/styles';
-import ButtonApprove from './ButtonApprove';
+import VendorDialog from './addVendor/Dialog';
 
 export default function CustomTable({ user, vendors, chartOfAccounts, unapprovedTransactions }) {
   const theme = useTheme();
   const isLight = theme.palette.mode === 'light';
 
-  const [transactions, setTransactions] = useState([]);
+  const [vendorDialog, setVendorDialog] = useState({ open: true, defaultValue: '' });
+  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    setTransactions(
-      unapprovedTransactions.map((transaction) => ({
-        ...transaction,
-        checked: false,
-      }))
-    );
-  }, [unapprovedTransactions]);
+  const [transactions, setTransactions] = useState(() =>
+    unapprovedTransactions.map((transaction) => ({
+      ...transaction,
+      checked: false,
+    }))
+  );
 
   const haveSelected = transactions.some((transaction) => transaction.checked);
   const selectedTransactions = transactions.reduce((count, transaction) => {
@@ -72,7 +72,7 @@ export default function CustomTable({ user, vendors, chartOfAccounts, unapproved
     );
   }, []);
 
-  const handleAddSplit = useCallback((transactionId, newAllocationId, isAmountCalculation = true) => {
+  const handleAddSplit = useCallback((transactionId, newAllocationId) => {
     setTransactions((prevTransactions) =>
       prevTransactions.map((transaction) =>
         transaction.id === transactionId
@@ -231,50 +231,76 @@ export default function CustomTable({ user, vendors, chartOfAccounts, unapproved
       }
     });
     if (validTransactions.length > 0) {
-      await updateTransactions(validTransactions);
+      setLoading(true);
+      try {
+        const response = await updateTransactions(validTransactions);
+        if (response.ids.length > 0) {
+          const updatedTransactionIds = response.ids;
+          setTransactions((prevTransactions) => prevTransactions.filter((transaction) => !updatedTransactionIds.includes(transaction.id)));
+        }
+      } catch (error) {
+        setLoading(false);
+        console.error('Error Updating Transactions: ', error);
+      }
     }
+    setLoading(false);
   };
-
   return (
-    <Card sx={{ borderRadius: '10px' }}>
-      <CardActions sx={{ backgroundColor: isLight ? 'primary.darker' : theme.palette.common.black }}>
-        <form action={handleApproveTransactions}>
-          <ButtonApprove haveSelected={haveSelected} selectedTransactions={selectedTransactions} />
-        </form>
-        <TablePagination
-          sx={{ color: 'white' }}
-          rowsPerPageOptions={[10, 25, 50]}
-          component="div"
-          count={transactions.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-        />
-      </CardActions>
-      <TableContainer component={Paper} sx={{ borderRadius: '0px', overflowX: 'hidden' }}>
-        <Box sx={{ height: '100%', overflowX: 'hidden', display: 'flex', flexDirection: 'column' }}>
-          {transactions.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((item, index) => (
-            <Box key={item.id} sx={{ display: 'flex', flexDirection: 'column' }}>
-              <RowItem
-                item={item}
-                index={index}
-                vendors={vendors}
-                chartOfAccounts={chartOfAccounts}
-                handleAllocationAmountChange={handleAllocationAmountChange}
-                handleAddSplit={handleAddSplit}
-                handleDeleteSplit={handleDeleteSplit}
-                handleGlAccountChange={handleGlAccountChange}
-                handleReceiptChange={handleReceiptChange}
-                handleNoteChange={handleNoteChange}
-                handleVendorChange={handleVendorChange}
-                handleAssetsChange={handleAssetsChange}
-                handleCheckboxToggle={handleCheckboxToggle}
-              />
-            </Box>
-          ))}
-        </Box>
-      </TableContainer>
-    </Card>
+    <>
+      <VendorDialog
+        open={vendorDialog.open}
+        defaultValue={vendorDialog?.defaultValue}
+        handleClose={() => setVendorDialog({ open: false, defaultValue: '' })}
+      />
+      <Card sx={{ borderRadius: '10px' }}>
+        <CardActions sx={{ backgroundColor: isLight ? 'primary.darker' : theme.palette.common.black }}>
+          <LoadingButton
+            variant="contained"
+            style={{ marginLeft: '16px', width: '140px' }}
+            disabled={!haveSelected}
+            type="submit"
+            color="primary"
+            loading={loading}
+            onClick={handleApproveTransactions}
+          >
+            Approve {selectedTransactions > 0 && `(${selectedTransactions})`}
+          </LoadingButton>{' '}
+          <TablePagination
+            sx={{ color: 'white' }}
+            rowsPerPageOptions={[10, 25, 50]}
+            component="div"
+            count={transactions.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
+        </CardActions>
+        <TableContainer component={Paper} sx={{ borderRadius: '0px', overflowX: 'hidden' }}>
+          <Box sx={{ height: '100%', overflowX: 'hidden', display: 'flex', flexDirection: 'column' }}>
+            {transactions.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((item, index) => (
+              <Box key={item.id} sx={{ display: 'flex', flexDirection: 'column' }}>
+                <RowItem
+                  item={item}
+                  index={index}
+                  vendors={vendors}
+                  chartOfAccounts={chartOfAccounts}
+                  handleAllocationAmountChange={handleAllocationAmountChange}
+                  handleAddSplit={handleAddSplit}
+                  handleDeleteSplit={handleDeleteSplit}
+                  handleGlAccountChange={handleGlAccountChange}
+                  handleReceiptChange={handleReceiptChange}
+                  handleNoteChange={handleNoteChange}
+                  handleVendorChange={handleVendorChange}
+                  handleAssetsChange={handleAssetsChange}
+                  handleCheckboxToggle={handleCheckboxToggle}
+                  handleOpenVendorDialog={(newValue) => setVendorDialog({ open: true, defaultValue: newValue })}
+                />
+              </Box>
+            ))}
+          </Box>
+        </TableContainer>
+      </Card>
+    </>
   );
 }
