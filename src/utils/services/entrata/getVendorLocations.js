@@ -1,5 +1,6 @@
 import { ENTRATA_API } from 'src/config-global';
 import { authorization } from './authorization';
+
 export default async function getVendorLocations() {
   const data = await fetchData();
   const vendorObjects = data.response.result.Locations.Location;
