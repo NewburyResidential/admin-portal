@@ -19,6 +19,7 @@ async function fetchData() {
 
   try {
     const response = await fetch(url, {
+      cache: 'no-store',
       next: { tags: ['vendors'] },
       method: 'POST',
       headers: {

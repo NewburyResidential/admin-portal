@@ -20,6 +20,7 @@ async function fetchData() {
 
   try {
     const response = await fetch(url, {
+      next: { revalidate: 3600 },
       method: 'POST',
       headers: {
         Authorization: authorization,
