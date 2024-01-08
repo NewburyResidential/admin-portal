@@ -3,7 +3,6 @@
 import { revalidateTag } from 'next/cache';
 
 export default async function addVendor(data) {
-    
   const upperCaseVendorValue = data.vendor
     .split(' ')
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
@@ -21,10 +20,10 @@ export default async function addVendor(data) {
 
   try {
     const response = await fetch(url, requestOptions);
-    const data = await response.json();
-    console.log(data);
-    if (data === 'Success') {
+    const status = await response.json();
+    if (status === 'Success') {
       revalidateTag('vendors');
+
       return true;
     }
     console.error('Error fetching data: ');
