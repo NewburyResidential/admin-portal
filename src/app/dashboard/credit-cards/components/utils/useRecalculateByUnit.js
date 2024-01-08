@@ -13,6 +13,11 @@ export const useRecalculateByUnit = () => {
   };
 
   const recalculateByUnit = (allocations, transactionIndex, transactionAmount) => {
+    if (allocations.length === 1) {
+      setValue(`transactions[${transactionIndex}].allocations[0].amount`, transactionAmount);
+      setValue(`transactions[${transactionIndex}].allocations[0].helper`, 0);
+      return;
+    }
     const totalUnits = calculateTotalUnits(allocations);
     const totalAmount = Number(transactionAmount) || 0;
     let sumAllocatedAmount = 0;
