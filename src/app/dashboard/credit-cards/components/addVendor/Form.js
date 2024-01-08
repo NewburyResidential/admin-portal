@@ -24,6 +24,7 @@ export default function AddVendorForm({ defaultVendorValue, handleClose }) {
   const defaultValues = {
     vendor: upperCaseDefaultVendorValue,
     entityType: '940',
+    informationReturn: false
   };
 
   const methods = useForm({
