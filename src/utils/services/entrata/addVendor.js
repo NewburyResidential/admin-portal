@@ -27,6 +27,7 @@ export default async function addVendor(data) {
       return true;
     }
     console.error('Error fetching data: ');
+    revalidateTag('vendors');
     return false;
   } catch (error) {
     console.error('Error fetching data: ', error);
