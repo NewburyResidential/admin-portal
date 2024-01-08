@@ -3,7 +3,7 @@ const path = require('path');
 module.exports = {
   headers: () => [
     {
-      source: '/dashboard/credit-cards/*',
+      source: '/dashboard/credit-cards/:path*',
       headers: [
         {
           key: 'Cache-Control',
@@ -31,7 +31,7 @@ module.exports = {
     });
 
     config.resolve.alias['@components'] = path.join(__dirname, 'src/components');
-    
+
     return config;
   },
 };
