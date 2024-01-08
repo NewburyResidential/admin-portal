@@ -9,7 +9,7 @@ export default function View() {
 
   const [transactions, setTransactions] = useState([]);
 
-  const calculateTotalAmount = (transactions) => {
+  const calculateTotalAmount = () => {
     return transactions.reduce((total, item) => {
       return total + Number(item.amount);
     }, 0);
