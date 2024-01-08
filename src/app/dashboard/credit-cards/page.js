@@ -1,4 +1,5 @@
 import { getServerSession } from 'next-auth';
+import { revalidateTag } from 'next/cache';
 
 import getVendorLocations from 'src/utils/services/entrata/getVendorLocations';
 import getAllChartOfAccounts from 'src/utils/services/utility/getAllChartOfAccounts';
@@ -13,7 +14,7 @@ export default async function page() {
     getUnapprovedTransactions(),
     getServerSession(),
   ]);
-
+  revalidateTag('transactions');
   unapprovedTransactions.sort((a, b) => {
     return new Date(a.transactionDate) - new Date(b.transactionDate);
   });
