@@ -18,5 +18,10 @@ export default async function page() {
     return new Date(a.transactionDate) - new Date(b.transactionDate);
   });
 
-  return <Table user={user} vendors={vendors} chartOfAccounts={chartOfAccounts} unapprovedTransactions={unapprovedTransactions} />;
+  const transactionsWithCheckedField = unapprovedTransactions.map((transaction) => ({
+    ...transaction,
+    checked: false,
+  }));
+
+  return <Table user={user} vendors={vendors} chartOfAccounts={chartOfAccounts} unapprovedTransactions={transactionsWithCheckedField} />;
 }
