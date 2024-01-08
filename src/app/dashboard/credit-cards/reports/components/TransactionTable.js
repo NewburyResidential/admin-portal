@@ -91,7 +91,7 @@ export default function TransactionTable({ transactions }) {
               <TableCell>{row.billedPropertyName}</TableCell>
               <TableCell>{row.purchasedBy}</TableCell>
               <TableCell>{row.name}</TableCell>
-              <TableCell>{row.amount.toFixed(2)}</TableCell>
+              <TableCell>{parseFloat(row.amount).toFixed(2)}</TableCell>
             </TableRow>
           ))}
         </TableBody>
