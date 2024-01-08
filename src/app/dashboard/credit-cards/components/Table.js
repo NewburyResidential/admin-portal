@@ -46,7 +46,7 @@ export default function CustomTable({ user, vendors, chartOfAccounts, unapproved
       .filter((transaction) => transaction.checked)
       .map((transaction) => ({
         ...transaction,
-        status: 'unapproved',
+        status: 'reviewed',
         approvedBy: user.name,
       }));
 
