@@ -4,6 +4,7 @@ export default async function updateTransactions(transactionsToUpdate) {
   const url = 'https://0yxexcpp8f.execute-api.us-east-1.amazonaws.com/updateTransactions';
   const requestOptions = {
     method: 'POST',
+    cache: 'no-store',
     headers: {
       'Content-Type': 'application/json',
     },
