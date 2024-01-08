@@ -50,17 +50,12 @@ export default function CustomTable({ user, vendors, chartOfAccounts, unapproved
         approvedBy: user.name,
       }));
 
-    const updateTransactionPromises = validTransactions.map((transaction) => updateTransactions([transaction]));
-    const responses = await Promise.all(updateTransactionPromises);
-    const updatedTransactionIds = responses.reduce((acc, response) => {
-      if (response && response.ids) {
-        acc.push(...response.ids);
-      }
-      return acc;
-    }, []);
-
-    const indicesToRemove = transactionIndexData.filter((item) => updatedTransactionIds.includes(item.id)).map((item) => item.index);
-    remove(indicesToRemove);
+    const response = await updateTransactions(validTransactions);
+    if (response && response.ids) {
+      const updatedTransactionIds = response.ids;
+      const indicesToRemove = transactionIndexData.filter((item) => updatedTransactionIds.includes(item.id)).map((item) => item.index);
+      remove(indicesToRemove);
+    }
   };
 
   return (
