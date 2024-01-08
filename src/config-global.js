@@ -1,4 +1,4 @@
-const mode = 'prod'; // dev | prod
+const mode = 'production'; // dev | prod
 
 // API ----------------------------------------------------------------------
 export const ENTRATA_API = {
