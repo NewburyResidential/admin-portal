@@ -1,17 +1,6 @@
 const path = require('path');
 
 module.exports = {
-  headers: () => [
-    {
-      source: '/dashboard/credit-cards/:path*',
-      headers: [
-        {
-          key: 'Cache-Control',
-          value: 'no-store',
-        },
-      ],
-    },
-  ],
   eslint: {
     ignoreDuringBuilds: false,
   },
