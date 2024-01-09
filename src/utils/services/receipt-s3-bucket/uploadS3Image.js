@@ -27,6 +27,8 @@ export async function uploadS3Image(formData) {
       Bucket,
       Key: key,
       Body: file.stream(),
+      ContentDisposition: 'inline',
+      ContentType: file.type,
     },
   });
 
