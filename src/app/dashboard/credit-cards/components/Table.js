@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { useForm, useFieldArray, FormProvider, useWatch } from 'react-hook-form';
 import { transactionsSchema } from './utils/transactions-schema';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -14,17 +15,22 @@ import PageChange from './PageChange';
 import RowItem from './rowItems/RowItem';
 import ButtonApprove from './ButtonApprove';
 import updateTransactions from 'src/utils/services/cc-expenses/updateTransactions';
+import getUnapprovedTransactions from 'src/utils/services/cc-expenses/getUnapprovedTransactions';
 
-export default function CustomTable({ user, vendors, chartOfAccounts, unapprovedTransactions }) {
+import { LoadingScreen } from 'src/components/loading-screen';
+
+export default function CustomTable({ user, vendors, chartOfAccounts }) {
+  const [loading, setLoading] = useState(false);
+
   const methods = useForm({
     defaultValues: {
-      transactions: unapprovedTransactions,
+      transactions: [],
       pageSettings: { page: 0, rowsPerPage: 10 },
     },
     resolver: yupResolver(transactionsSchema),
   });
 
-  const { control, handleSubmit } = methods;
+  const { control, handleSubmit, setValue } = methods;
 
   const { page, rowsPerPage } = useWatch({
     control,
@@ -35,6 +41,27 @@ export default function CustomTable({ user, vendors, chartOfAccounts, unapproved
     control,
     name: `transactions`,
   });
+
+  useEffect(() => {
+    setLoading(true);
+    const fetchTransactions = async () => {
+      const response = await getUnapprovedTransactions();
+
+      response.sort((a, b) => {
+        return new Date(a.transactionDate) - new Date(b.transactionDate);
+      });
+
+      const unapprovedTransactions = response?.map((transaction) => ({
+        ...transaction,
+        checked: false,
+      }));
+      setValue('transactions', unapprovedTransactions);
+      setLoading(false);
+    };
+
+    fetchTransactions();
+  }, [setValue]);
+
   const currentPageTransactions = transactionFields.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
   const onSubmit = async (data) => {
@@ -68,18 +95,24 @@ export default function CustomTable({ user, vendors, chartOfAccounts, unapproved
             <ButtonApprove transactions={transactionFields} />
             <PageChange transactions={transactionFields} page={page} rowsPerPage={rowsPerPage} />
           </CardActions>
-          <TableContainer component={Paper} sx={{ borderRadius: '0px', overflowX: 'hidden' }}>
-            <Box sx={{ height: '100%', overflowX: 'hidden', display: 'flex', flexDirection: 'column' }}>
-              {currentPageTransactions.map((transaction, transactionIndex) => (
-                <Box key={transaction.id} sx={{ display: 'flex', flexDirection: 'column' }}>
-                  <RowItem
-                    transaction={transaction}
-                    transactionIndex={page * rowsPerPage + transactionIndex}
-                    vendors={vendors}
-                    chartOfAccounts={chartOfAccounts}
-                  />
-                </Box>
-              ))}
+          <TableContainer component={Paper} sx={{ borderRadius: '0px', overflowX: 'hidden', maxHeight: '74vh', height: '74vh' }}>
+            <Box sx={{ height: '100%', overflowY: 'auto', display: 'flex', flexDirection: 'column' }}>
+              {loading ? (
+                <LoadingScreen />
+              ) : (
+                <>
+                  {currentPageTransactions.map((transaction, transactionIndex) => (
+                    <Box key={transaction.id} sx={{ display: 'flex', flexDirection: 'column' }}>
+                      <RowItem
+                        transaction={transaction}
+                        transactionIndex={page * rowsPerPage + transactionIndex}
+                        vendors={vendors}
+                        chartOfAccounts={chartOfAccounts}
+                      />
+                    </Box>
+                  ))}
+                </>
+              )}
             </Box>
           </TableContainer>
         </Card>

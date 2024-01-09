@@ -15,7 +15,7 @@ export default function ButtonApprove({ transactions }) {
     return currentValue ? count + 1 : count;
   }, 0);
 
-  const length = transactions.length;
+  const { length } = transactions;
 
   return (
     <LoadingButton
