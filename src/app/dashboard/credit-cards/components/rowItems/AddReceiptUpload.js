@@ -1,60 +1,107 @@
-import Box from '@mui/material/Box';
-import Iconify from 'src/components/iconify';
+import { useRef, useState } from 'react';
+
 import { useFormContext } from 'react-hook-form';
-
-
 import { uploadS3Image } from 'src/utils/services/receipt-s3-bucket/uploadS3Image';
 
-export default function AddReceiptUpload({ id, transactionIndex, setLoading, hideHover }) {
-  const {setValue} = useFormContext();
+import Box from '@mui/material/Box';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import Iconify from 'src/components/iconify';
+import IconButton from '@mui/material/IconButton';
 
-  const handleFileChange = async (event) => {
-    hideHover();
-    setLoading(true);
-    const file = event.target.files[0];
-    if (file) {
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('name', id);
-      formData.append('bucket', 'admin-portal-receipts');
+export default function AddReceiptUpload({ id, transactionIndex, setLoading, hasReceipt }) {
+  const { setValue, getValues } = useFormContext();
+  const fileInputRef = useRef(null);
+  const [dragActive, setDragActive] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
 
-      try {
-        const response = await uploadS3Image(formData);
+  const handleMenuClick = (event) => setAnchorEl(event.currentTarget);
+  const handleCloseMenu = () => setAnchorEl(null);
 
-        if (response) {
-          setValue(`transactions[${transactionIndex}].receipt`, response.fileUrl);
-          setValue(`transactions[${transactionIndex}].tempPdfReceipt`, response.tempPdfUrl);
-
-        }
-      } catch (error) {
-        console.error('Error uploading file:', error);
-      }
-    }
-    setLoading(false);
+  const handleDragEvents = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    setDragActive(event.type === 'dragenter' || event.type === 'dragover');
   };
+
+  const processFile = async (file) => {
+    setLoading(true);
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('name', id);
+    formData.append('bucket', 'admin-portal-receipts');
+
+    try {
+      const response = await uploadS3Image(formData);
+      if (response) {
+        setValue(`transactions[${transactionIndex}].receipt`, response.fileUrl);
+        setValue(`transactions[${transactionIndex}].tempPdfReceipt`, response.tempPdfUrl);
+      }
+    } catch (error) {
+      console.error('Error uploading file:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleFileChange = (event) => {
+    const files = event.target.files || event.dataTransfer.files;
+    if (files.length > 0) {
+      processFile(files[0]);
+    }
+  };
+
+  const handleDrop = (event) => {
+    handleDragEvents(event);
+    const files = event.dataTransfer.files;
+    if (files.length > 0 && ['image/png', 'image/jpeg', 'application/pdf'].includes(files[0].type)) {
+      processFile(files[0]);
+    } else {
+      console.error('File type not allowed');
+    }
+  };
+
+  const handleUpdateClick = () => {
+    fileInputRef.current?.click();
+    handleCloseMenu();
+  };
+
+  const handleViewClick = () => {
+    const url = getValues(`transactions[${transactionIndex}].receipt`);
+    window.open(url, '_blank', 'noopener,noreferrer');
+    handleCloseMenu();
+  };
+
   return (
-    <Box
-      onClick={() => {
-        const input = document.createElement('input');
-        input.type = 'file';
-        input.accept = 'image/png, image/jpeg, application/pdf';
-        input.onchange = handleFileChange;
-        input.click();
-      }}
-      sx={{
-        padding: '20px',
-        textAlign: 'center',
-        borderRadius: '0 10px 10px 0',
-        backgroundColor: '#808080',
-        color: '#fff',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        cursor: 'pointer',
-        zIndex: 1,
-      }}
-    >
-      <Iconify icon="material-symbols:upload" width={17} />
-    </Box>
+    <>
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/png, image/jpeg, application/pdf"
+        onChange={handleFileChange}
+        style={{ display: 'none' }}
+      />
+      <Box
+        onDrop={handleDrop}
+        onDragEnter={handleDragEvents}
+        onDragOver={handleDragEvents}
+        onDragLeave={handleDragEvents}
+        sx={{ border: dragActive ? '1px dashed #696969' : 'none', py: 0.6, borderRadius: '4px' }}
+      >
+        <IconButton onClick={hasReceipt ? handleMenuClick : () => fileInputRef.current?.click()}>
+          <Iconify
+            icon={hasReceipt ? 'carbon:receipt' : 'material-symbols-light:attach-file-add-rounded'}
+            color={hasReceipt ? '#169B62' : '#CD5C5C'}
+            width={25}
+          />
+        </IconButton>
+        {hasReceipt && (
+          <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleCloseMenu}>
+            <MenuItem onClick={handleUpdateClick}>Update</MenuItem>
+            <MenuItem onClick={handleViewClick}>View</MenuItem>
+          </Menu>
+        )}
+      </Box>
+    </>
   );
 }
