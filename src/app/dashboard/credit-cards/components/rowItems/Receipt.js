@@ -18,9 +18,7 @@ export default function Receipt({ id, transactionIndex }) {
       {loading ? (
         <CircularProgress size={20} color="primary" />
       ) : (
-        <>
-          <AddReceiptUpload id={id} transactionIndex={transactionIndex} setLoading={setLoading} hasReceipt={hasReceipt} />
-        </>
+        <AddReceiptUpload id={id} transactionIndex={transactionIndex} setLoading={setLoading} hasReceipt={hasReceipt} />
       )}
     </Box>
   );

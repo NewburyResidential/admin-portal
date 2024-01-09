@@ -53,7 +53,7 @@ export default function AddReceiptUpload({ id, transactionIndex, setLoading, has
 
   const handleDrop = (event) => {
     handleDragEvents(event);
-    const files = event.dataTransfer.files;
+    const { files } = event.dataTransfer;
     if (files.length > 0 && ['image/png', 'image/jpeg', 'application/pdf'].includes(files[0].type)) {
       processFile(files[0]);
     } else {
