@@ -53,7 +53,10 @@ export default function NavVertical({ openNav, onCloseNav }) {
       />
 
       <Box sx={{ flexGrow: 1 }} />
-      <NewburyLogo />
+      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mb: 4 }}>
+        <img src="/logo.png" alt="Newbury Logo" style={{ objectFit: 'contain', width: '70%' }} />
+      </Box>
+
     </Scrollbar>
   );
 
