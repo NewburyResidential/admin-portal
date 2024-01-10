@@ -8,6 +8,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import Paper from '@mui/material/Paper';
+import Typography from '@mui/material/Typography';
 import CardActions from '@mui/material/CardActions';
 import TableContainer from '@mui/material/TableContainer';
 
@@ -18,6 +19,7 @@ import updateTransactions from 'src/utils/services/cc-expenses/updateTransaction
 import getUnapprovedTransactions from 'src/utils/services/cc-expenses/getUnapprovedTransactions';
 
 import { LoadingScreen } from 'src/components/loading-screen';
+import Iconify from 'src/components/iconify';
 
 export default function CustomTable({ user, vendors, chartOfAccounts }) {
   const [loading, setLoading] = useState(false);
@@ -101,16 +103,32 @@ export default function CustomTable({ user, vendors, chartOfAccounts }) {
                 <LoadingScreen />
               ) : (
                 <>
-                  {currentPageTransactions.map((transaction, transactionIndex) => (
-                    <Box key={transaction.id} sx={{ display: 'flex', flexDirection: 'column' }}>
-                      <RowItem
-                        transaction={transaction}
-                        transactionIndex={page * rowsPerPage + transactionIndex}
-                        vendors={vendors}
-                        chartOfAccounts={chartOfAccounts}
+                  {transactionFields.length === 0 ? (
+                    <Box display="flex" flexDirection="column" justifyContent="center" alignItems="center" style={{ height: '100%' }}>
+                      <Iconify
+                        sx={{ fontSize: '70px', color: 'text.secondary' }}
+                        icon="ic:baseline-download-done"
+                        width="300"
+                        height="300"
                       />
+                      <Typography variant="h5" sx={{ color: 'text.secondary', fontWeight: 200, mt: 2 }}>
+                        No Transactions Remaining To Approve
+                      </Typography>
                     </Box>
-                  ))}
+                  ) : (
+                    <>
+                      {currentPageTransactions.map((transaction, transactionIndex) => (
+                        <Box key={transaction.id} sx={{ display: 'flex', flexDirection: 'column' }}>
+                          <RowItem
+                            transaction={transaction}
+                            transactionIndex={page * rowsPerPage + transactionIndex}
+                            vendors={vendors}
+                            chartOfAccounts={chartOfAccounts}
+                          />
+                        </Box>
+                      ))}
+                    </>
+                  )}
                 </>
               )}
             </Box>
