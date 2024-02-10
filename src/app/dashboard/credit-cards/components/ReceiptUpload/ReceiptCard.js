@@ -107,11 +107,13 @@ export default function ReceiptCards({ id, setOpen, setLoading, transactionIndex
                           {key === 'transactionDate' ? 'Transaction Date' : `${key.charAt(0).toUpperCase() + key.slice(1)}`}
                         </Box>
                         {`: ${
-                          key === 'transactionDate'
-                            ? formatDate(value.value)
-                            : Array.isArray(value.value)
-                              ? value.value.join(', ')
-                              : value.value
+                          key === null
+                            ? ''
+                            : key === 'transactionDate'
+                              ? formatDate(value.value)
+                              : Array.isArray(value.value)
+                                ? value.value.join(', ')
+                                : value.value
                         }`}
                       </Typography>
                       {value.score >= 1 ? (
