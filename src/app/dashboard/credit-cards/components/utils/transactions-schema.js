@@ -1,4 +1,5 @@
 import * as yup from 'yup';
+import Big from 'big.js';
 
 const allocationSchema = yup.object().shape({
   asset: yup.object().required('Asset is required'),
@@ -33,26 +34,27 @@ const transactionSchema = yup.object().shape({
 
       if (checked) {
         const total = allocations.reduce((acc, allocation) => {
-          const amount = parseFloat(allocation?.amount);
+          const amount = allocation?.amount;
+          try {
+            const bigAmount = new Big(amount);
 
-          if (!Number.isNaN(amount) && amount !== 0) {
-            if (acc === 0) {
-              acc = amount;
-            } else if ((acc > 0 && amount > 0) || (acc < 0 && amount < 0)) {
-              acc += amount;
+            if (acc.eq(0)) {
+              acc = bigAmount;
+            } else if ((acc.gt(0) && bigAmount.gt(0)) || (acc.lt(0) && bigAmount.lt(0))) {
+              acc = acc.plus(bigAmount);
             } else {
-              acc = NaN;
-              return acc;
+              throw new Error('Incompatible amounts');
             }
-          } else {
-            acc = NaN;
+          } catch (error) {
+            acc = new Big(NaN);
             return acc;
           }
 
           return acc;
-        }, 0);
+        }, new Big(0));
+        const totalString = total.toString();
 
-        return parseFloat(value) === total;
+        return value === totalString;
       }
 
       return true;
