@@ -74,12 +74,27 @@ export function useNavData() {
           {
             title: 'Expenses',
             path: paths.creditCards.root,
-            icon: ICONS.banking,
+            icon: ICONS.invoice,
             children: [
               { title: 'Transactions', path: paths.creditCards.root }, // Create Root Folder
               { title: 'Reports', path: paths.creditCards.reports },
             ],
           },
+          {
+            title: 'Utilities',
+            path: paths.utilities.root,
+            icon: ICONS.mail,
+            children: [
+              { title: 'Review', path: paths.utilities.root },
+              { title: 'Upload', path: paths.utilities.upload },
+            ],
+          },
+          // {
+          //   title: 'Payroll',
+          //   path: paths.payroll.root,
+          //   icon: ICONS.banking,
+          // },
+        
         ],
       },
     ],

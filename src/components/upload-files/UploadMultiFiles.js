@@ -19,7 +19,7 @@ import { Upload } from 'src/components/upload-files';
 
 export default function UploadMultiFiles({ onUpload, accept}) {
   const preview = useBoolean();
-  const [files, setFiles] = useState([]);
+  const [file, setFile] = useState(null);
   const [duplicateFiles, setDuplicateFiles] = useState([]);
 
   const handleDropMultiFile = useCallback(
@@ -63,17 +63,16 @@ export default function UploadMultiFiles({ onUpload, accept}) {
   return (
     <Card>
         <CardHeader
-          title="Upload Utility Bills"
-          action={
-            <FormControlLabel
-              control={<Switch checked={preview.value} onClick={preview.onToggle} />}
-              label="Expand Files"
-            />
-          }
+          title="Upload Payroll Import"
+          // action={
+          //   <FormControlLabel
+          //     control={<Switch checked={preview.value} onClick={preview.onToggle} />}
+          //     label="Expand Files"
+          //   />
+          // }
         />
         <CardContent>
           <Upload
-            multiple
             accept={accept}
             thumbnail={!preview.value}
             files={files}

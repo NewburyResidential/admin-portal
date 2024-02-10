@@ -29,7 +29,15 @@ export const paths = {
     root: `${ROOTS.DASHBOARD}/credit-cards`,
     transactions: `${ROOTS.DASHBOARD}/credit-cards/transactions`,
     reports: `${ROOTS.DASHBOARD}/credit-cards/reports`,
-},
+  },
+  utilities: {
+    root: `${ROOTS.DASHBOARD}/utilities`,
+    upload: `${ROOTS.DASHBOARD}/utilities/upload`,
+  },
+  payroll: {
+    root: `${ROOTS.DASHBOARD}/payroll`,
+  },
+
 };
 
 export const PATH_AFTER_LOGIN = paths.dashboard.root; // as '/dashboard'
