@@ -57,7 +57,7 @@ export default function ReceiptCards({ id, setOpen, setLoading, transactionIndex
                 flexDirection: 'column',
                 padding: 2.5,
                 border: totalScore === 3 ? '2px dashed' : '2px dashed',
-                borderColor: (theme) => (theme.palette.mode === 'light' ? (totalScore === 3 ? '#355E3B' : 'grey.400') : 'grey.700'),
+                borderColor: (theme) => (theme.palette.mode === 'light' ? (totalScore >= 3 ? '#355E3B' : 'grey.400') : 'grey.700'),
               }}
             >
               <Typography variant="body2" component="p" sx={{ marginBottom: '8px', textAlign: 'center', fontWeight: 'bold' }}>

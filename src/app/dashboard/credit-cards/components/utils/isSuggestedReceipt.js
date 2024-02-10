@@ -40,7 +40,7 @@ export const isSuggestedReceipt = (transaction, receipt) => {
     const receiptTotal = new Big(receipt.total);
 
     if (transactionAmount.eq(receiptTotal)) {
-      receiptData.total.score = 1;
+      receiptData.total.score = 1.5;
       isPossibleMatch = true;
     }
   }
