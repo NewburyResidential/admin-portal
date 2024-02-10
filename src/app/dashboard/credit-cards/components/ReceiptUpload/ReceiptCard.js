@@ -114,7 +114,7 @@ export default function ReceiptCards({ id, setOpen, setLoading, transactionIndex
                               : value.value
                         }`}
                       </Typography>
-                      {value.score === 1 ? (
+                      {value.score >= 1 ? (
                         <CheckCircleOutlineIcon sx={{ color: '#4caf50', ml: 2 }} />
                       ) : value.score === 0.5 ? (
                         <HelpOutlineIcon sx={{ color: '#E97451', ml: 2 }} />
