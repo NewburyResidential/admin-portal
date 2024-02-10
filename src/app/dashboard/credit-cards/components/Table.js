@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useForm, useFieldArray, FormProvider, useWatch } from 'react-hook-form';
 import { transactionsSchema } from './utils/transactions-schema';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { isSuggestedReceipt } from './utils/isSuggestedReceipt';
 
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
@@ -21,7 +22,7 @@ import getUnapprovedTransactions from 'src/utils/services/cc-expenses/getUnappro
 import { LoadingScreen } from 'src/components/loading-screen';
 import Iconify from 'src/components/iconify';
 
-export default function CustomTable({ user, vendors, chartOfAccounts }) {
+export default function CustomTable({ user, vendors, chartOfAccounts, suggestedReceipts }) {
   const [loading, setLoading] = useState(false);
 
   const methods = useForm({
@@ -44,11 +45,20 @@ export default function CustomTable({ user, vendors, chartOfAccounts }) {
     name: `transactions`,
   });
 
+  function matchReceipts(transaction, receipts) {
+    return receipts.reduce((acc, receipt) => {
+      const receiptData = isSuggestedReceipt(transaction, receipt);
+      if (receiptData) {
+        acc.push(receiptData);
+      }
+      return acc;
+    }, []);
+  }
+
   useEffect(() => {
     setLoading(true);
     const fetchTransactions = async () => {
       const response = await getUnapprovedTransactions();
-
       response.sort((a, b) => {
         return new Date(a.transactionDate) - new Date(b.transactionDate);
       });
@@ -56,13 +66,15 @@ export default function CustomTable({ user, vendors, chartOfAccounts }) {
       const unapprovedTransactions = response?.map((transaction) => ({
         ...transaction,
         checked: false,
+        suggestedReceipts: matchReceipts(transaction, suggestedReceipts),
       }));
+
       setValue('transactions', unapprovedTransactions);
       setLoading(false);
     };
 
     fetchTransactions();
-  }, [setValue]);
+  }, [setValue, suggestedReceipts]);
 
   const currentPageTransactions = transactionFields.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
@@ -108,8 +120,8 @@ export default function CustomTable({ user, vendors, chartOfAccounts }) {
                       <Iconify
                         sx={{ fontSize: '70px', color: 'text.secondary' }}
                         icon="ic:baseline-download-done"
-                        width="300"
-                        height="300"
+                        //width="300"
+                        //height="300"
                       />
                       <Typography variant="h5" sx={{ color: 'text.secondary', fontWeight: 200, mt: 2 }}>
                         No Transactions Remaining To Approve
@@ -124,6 +136,7 @@ export default function CustomTable({ user, vendors, chartOfAccounts }) {
                             transactionIndex={page * rowsPerPage + transactionIndex}
                             vendors={vendors}
                             chartOfAccounts={chartOfAccounts}
+                            recentReceipts={suggestedReceipts}
                           />
                         </Box>
                       ))}

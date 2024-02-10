@@ -4,10 +4,10 @@ import { useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 
 import Box from '@mui/material/Box';
-import AddReceiptUpload from './AddReceiptUpload';
+import AddReceiptUpload from '../ReceiptUpload/AddReceiptUpload';
 import CircularProgress from '@mui/material/CircularProgress';
 
-export default function Receipt({ id, transactionIndex }) {
+export default function Receipt({ transactionIndex, transaction, recentReceipts }) {
   const { getValues } = useFormContext();
   const receiptUrl = getValues(`transactions[${transactionIndex}].receipt`);
   const [loading, setLoading] = useState(false);
@@ -18,7 +18,7 @@ export default function Receipt({ id, transactionIndex }) {
       {loading ? (
         <CircularProgress size={20} color="primary" />
       ) : (
-        <AddReceiptUpload id={id} transactionIndex={transactionIndex} setLoading={setLoading} hasReceipt={hasReceipt} />
+        <AddReceiptUpload recentReceipts={recentReceipts} transaction={transaction} transactionIndex={transactionIndex} setLoading={setLoading} hasReceipt={hasReceipt} />
       )}
     </Box>
   );

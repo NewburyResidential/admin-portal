@@ -1,19 +1,21 @@
 import { useRef, useState } from 'react';
 
 import { useFormContext } from 'react-hook-form';
-import { uploadS3Image } from 'src/utils/services/receipt-s3-bucket/uploadS3Image';
+import { uploadS3Image } from 'src/utils/services/cc-expenses/uploadS3Image';
 
 import Box from '@mui/material/Box';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Iconify from 'src/components/iconify';
 import IconButton from '@mui/material/IconButton';
+import UploadDialog from './UploadDialog';
 
-export default function AddReceiptUpload({ id, transactionIndex, setLoading, hasReceipt }) {
+export default function AddReceiptUpload({ recentReceipts, transactionIndex, setLoading, hasReceipt, transaction }) {
   const { setValue, getValues } = useFormContext();
   const fileInputRef = useRef(null);
   const [dragActive, setDragActive] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
+  const [open, setOpen] = useState(false);
 
   const handleMenuClick = (event) => setAnchorEl(event.currentTarget);
   const handleCloseMenu = () => setAnchorEl(null);
@@ -28,7 +30,7 @@ export default function AddReceiptUpload({ id, transactionIndex, setLoading, has
     setLoading(true);
     const formData = new FormData();
     formData.append('file', file);
-    formData.append('name', id);
+    formData.append('name', transaction.id);
     formData.append('bucket', 'admin-portal-receipts');
 
     try {
@@ -62,7 +64,7 @@ export default function AddReceiptUpload({ id, transactionIndex, setLoading, has
   };
 
   const handleUpdateClick = () => {
-    fileInputRef.current?.click();
+    setOpen(true);
     handleCloseMenu();
   };
 
@@ -74,6 +76,14 @@ export default function AddReceiptUpload({ id, transactionIndex, setLoading, has
 
   return (
     <>
+      <UploadDialog
+        open={open}
+        setOpen={setOpen}
+        setLoading={setLoading}
+        transaction={transaction}
+        recentReceipts={recentReceipts}
+        transactionIndex={transactionIndex}
+      />
       <input
         ref={fileInputRef}
         type="file"
@@ -88,7 +98,7 @@ export default function AddReceiptUpload({ id, transactionIndex, setLoading, has
         onDragLeave={handleDragEvents}
         sx={{ border: dragActive ? '1px dashed #696969' : 'none', py: 0.6, borderRadius: '4px' }}
       >
-        <IconButton onClick={hasReceipt ? handleMenuClick : () => fileInputRef.current?.click()}>
+        <IconButton onClick={hasReceipt ? handleMenuClick : () => setOpen(true)}>
           <Iconify
             icon={hasReceipt ? 'carbon:receipt' : 'material-symbols-light:attach-file-add-rounded'}
             color={hasReceipt ? '#169B62' : '#CD5C5C'}
