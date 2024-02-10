@@ -107,7 +107,7 @@ export default function ReceiptCards({ id, setOpen, setLoading, transactionIndex
                           {key === 'transactionDate' ? 'Transaction Date' : `${key.charAt(0).toUpperCase() + key.slice(1)}`}
                         </Box>
                         {`: ${
-                          key === null
+                          value.value === null || value.value === undefined || value.value === 'null'
                             ? ''
                             : key === 'transactionDate'
                               ? formatDate(value.value)
