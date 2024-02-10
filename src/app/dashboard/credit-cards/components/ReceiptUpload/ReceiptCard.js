@@ -88,7 +88,7 @@ export default function ReceiptCards({ id, setOpen, setLoading, transactionIndex
                         overflow: 'hidden',
                         textOverflow: 'ellipsis',
                         marginBottom: '8px',
-                        backgroundColor: value.score === 1 ? '#f0f5f3' : value.score === 0.5 ? '#FFF0E1' : 'transparent',
+                        backgroundColor: value.score >= 1 ? '#f0f5f3' : value.score === 0.5 ? '#FFF0E1' : 'transparent',
                         borderRadius: '8px',
                         padding: '8px 14px',
                       }}
