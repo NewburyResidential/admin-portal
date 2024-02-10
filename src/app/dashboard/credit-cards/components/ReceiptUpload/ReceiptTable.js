@@ -18,29 +18,15 @@ export default function ReceiptTable({ setOpen, setLoading, id, recentReceipts, 
   const [filter, setFilter] = useState('');
   const { setValue } = useFormContext();
 
-  const modifiedByOptions = [...new Set(recentReceipts.map((receipt) => receipt.modifiedBy))];
-  const isValidDate = (dateString) => {
-    const regex = /^\d{2}\/\d{2}\/\d{4}$/;
-    if (!dateString.match(regex)) return false;
-    const [month, day, year] = dateString.split('/');
-    const date = new Date(year, month - 1, day);
-    return date && date.getMonth() + 1 === month && date.getDate() === Number(day) && date.getFullYear() === Number(year);
-  };
+  const modifiedByOptions = [...new Set(recentReceipts.map(receipt => receipt.modifiedBy))];
 
-  const sortedReceipts = recentReceipts.sort((a, b) => {
-    const aIsValidDate = isValidDate(a.modifiedOn);
-    const bIsValidDate = isValidDate(b.modifiedOn);
+const sortedReceipts = recentReceipts.sort((a, b) => {
+  const dateA = new Date(a.modifiedOn.split('/').reverse().join('-'));
+  const dateB = new Date(b.modifiedOn.split('/').reverse().join('-'));
+  return dateB - dateA; 
+});
 
-    if (!aIsValidDate && bIsValidDate) return 1;
-    if (aIsValidDate && !bIsValidDate) return -1;
-
-    if (!aIsValidDate && !bIsValidDate) return 0;
-
-    const dateA = new Date(a.modifiedOn);
-    const dateB = new Date(b.modifiedOn);
-    return dateB - dateA;
-  });
-  const filteredReceipts = filter ? sortedReceipts.filter((receipt) => receipt.modifiedBy === filter) : sortedReceipts;
+const filteredReceipts = filter ? sortedReceipts.filter(receipt => receipt.modifiedBy === filter) : sortedReceipts;
 
   const handleViewReceipt = (imageUrl) => {
     window.open(imageUrl, '_blank');
