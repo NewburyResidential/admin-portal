@@ -40,7 +40,7 @@ export default async function getWaveChartOfAccounts() {
         };
 
         const response = await fetch('https://gql.waveapps.com/graphql/public', {
-          cache: 'force-cache',
+          cache: 'no-store',
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
