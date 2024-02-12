@@ -85,7 +85,7 @@ export default function CustomTable({ user, vendors, chartOfAccounts, suggestedR
 
     const validTransactions = data.transactions
       .filter((transaction) => transaction.checked)
-      .map((transaction) => ({
+      .map(({ suggestedReceipts, ...transaction }) => ({
         ...transaction,
         status: 'reviewed',
         approvedBy: user.name,
