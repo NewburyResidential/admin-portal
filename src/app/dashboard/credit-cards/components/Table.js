@@ -118,10 +118,9 @@ export default function CustomTable({ user, vendors, chartOfAccounts, suggestedR
                   {transactionFields.length === 0 ? (
                     <Box display="flex" flexDirection="column" justifyContent="center" alignItems="center" style={{ height: '100%' }}>
                       <Iconify
-                        sx={{ fontSize: '70px', color: 'text.secondary' }}
+                        sx={{ color: 'text.secondary'}}
                         icon="ic:baseline-download-done"
-                        //width="300"
-                        //height="300"
+                        width={60}
                       />
                       <Typography variant="h5" sx={{ color: 'text.secondary', fontWeight: 200, mt: 2 }}>
                         No Transactions Remaining To Approve

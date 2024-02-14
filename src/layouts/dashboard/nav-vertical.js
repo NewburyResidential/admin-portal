@@ -16,6 +16,7 @@ import { NavSectionVertical } from 'src/components/nav-section';
 import { NAV } from '../config-layout';
 import { useNavData } from './config-navigation';
 import { NavToggleButton } from '../_common';
+import NewburyLogo from 'src/components/NewburyLogo';
 
 // ----------------------------------------------------------------------
 
@@ -52,10 +53,9 @@ export default function NavVertical({ openNav, onCloseNav }) {
       />
 
       <Box sx={{ flexGrow: 1 }} />
-      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mb: 4 }}>
-        <img src="/logo.png" alt="Newbury Logo" style={{ objectFit: 'contain', width: '70%' }} />
+      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mb: 2 }}>
+        <NewburyLogo />
       </Box>
-
     </Scrollbar>
   );
 

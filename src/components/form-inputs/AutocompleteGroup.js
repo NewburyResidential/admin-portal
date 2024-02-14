@@ -1,5 +1,4 @@
 import React from 'react';
-import Popper from '@mui/material/Popper';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import ListSubheader from '@mui/material/ListSubheader';
@@ -25,7 +24,6 @@ export default function AutocompleteGroup({
         <Autocomplete
           {...field}
           sx={sx}
-          PopperComponent={({ style, ...props }) => <Popper {...props} sx={{ ...style, height: 0 }} />}
           defaultValue={null}
           onChange={(event, newValue) => {
             field.onChange(newValue);
