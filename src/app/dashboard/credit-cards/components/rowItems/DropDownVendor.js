@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { useFormContext, Controller, useWatch } from 'react-hook-form';
 
 import Box from '@mui/material/Box';
-import Popper from '@mui/material/Popper';
 import TextField from '@mui/material/TextField';
 import FormControl from '@mui/material/FormControl';
 import Autocomplete from '@mui/material/Autocomplete';
@@ -49,7 +48,6 @@ export default function DropDownVendor({ transactionIndex, vendors, merchant }) 
             <Autocomplete
               {...field}
               filterOptions={filterOptions}
-              PopperComponent={({ style, ...props }) => <Popper {...props} sx={{ ...style, height: 0 }} />}
               id="vendor-autocomplete"
               options={vendors}
               getOptionLabel={(option) => option.name}
