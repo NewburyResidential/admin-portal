@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { copyS3Object } from 'src/utils/services/cc-expenses/uploadS3Image';
+import { parse, compareAsc } from 'date-fns';
 
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -18,15 +19,15 @@ export default function ReceiptTable({ setOpen, setLoading, id, recentReceipts, 
   const [filter, setFilter] = useState('');
   const { setValue } = useFormContext();
 
-  const modifiedByOptions = [...new Set(recentReceipts.map(receipt => receipt.modifiedBy))];
+  const modifiedByOptions = [...new Set(recentReceipts.map((receipt) => receipt.modifiedBy))];
 
-const sortedReceipts = recentReceipts.sort((a, b) => {
-  const dateA = new Date(a.modifiedOn.split('/').reverse().join('-'));
-  const dateB = new Date(b.modifiedOn.split('/').reverse().join('-'));
-  return dateB - dateA; 
-});
+  const sortedReceipts = recentReceipts.sort((a, b) => {
+    const dateA = parse(a.modifiedOn, 'MM/dd/yyyy', new Date());
+    const dateB = parse(b.modifiedOn, 'MM/dd/yyyy', new Date());
+    return compareAsc(dateB, dateA);
+  });
 
-const filteredReceipts = filter ? sortedReceipts.filter(receipt => receipt.modifiedBy === filter) : sortedReceipts;
+  const filteredReceipts = filter ? sortedReceipts.filter((receipt) => receipt.modifiedBy === filter) : sortedReceipts;
 
   const handleViewReceipt = (imageUrl) => {
     window.open(imageUrl, '_blank');
@@ -70,24 +71,28 @@ const filteredReceipts = filter ? sortedReceipts.filter(receipt => receipt.modif
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell align="center" style={{ width: '35%' }}>
+              <TableCell align="left" style={{ width: '36%' }}>
                 File Name
               </TableCell>
-              <TableCell align="center" style={{ width: '20%' }}>
+              <TableCell align="center" style={{ width: '16%' }}>
                 Uploaded By
               </TableCell>
-              <TableCell align="center" style={{ width: '20%' }}>
+              <TableCell align="center" style={{ width: '16%' }}>
                 Date Uploaded
               </TableCell>
-              <TableCell align="center" style={{ width: '25%', whiteSpace: 'nowrap' }} />
+              <TableCell align="center" style={{ width: '16%' }}>
+                Recognizer Amount
+              </TableCell>
+              <TableCell align="center" style={{ width: '16%', whiteSpace: 'nowrap' }} />
             </TableRow>
           </TableHead>
           <TableBody>
             {filteredReceipts.map((row) => (
               <TableRow key={row.id}>
-                <TableCell align="center">{row.fileName}</TableCell>
+                <TableCell align="left">{row.fileName}</TableCell>
                 <TableCell align="center">{row.modifiedBy}</TableCell>
                 <TableCell align="center">{row.modifiedOn}</TableCell>
+                <TableCell align="center">{row.total ? `$${row.total}` : ''}</TableCell>
                 <TableCell align="right">
                   <Box display="flex" justifyContent="flex-end">
                     <Button
