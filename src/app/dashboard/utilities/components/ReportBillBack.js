@@ -2,14 +2,14 @@
 
 import React from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
-import EditUtilityBill from './EditUtilityBill';
+import EditUtilityBill from './EditUtilityBillDialog';
 
 export default function ReportBillBack({ leases, utilityBills }) {
   const billBacks = calculateOverlaps(leases, utilityBills);
 
   return (
     <div>
-        <EditUtilityBill />
+    
       <h2>Bill Backs Report</h2>
       <TableContainer component={Paper}>
         <Table aria-label="bill backs table">

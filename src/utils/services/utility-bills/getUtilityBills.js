@@ -1,6 +1,7 @@
 export default async function getUtilityBills() {
   const url = 'https://gpxllcrxmk.execute-api.us-east-1.amazonaws.com/getutilitybills';
   const requestOptions = {
+    next: { tags: ['utilities'] },
     cache: 'no-store',
     method: 'GET',
     headers: {

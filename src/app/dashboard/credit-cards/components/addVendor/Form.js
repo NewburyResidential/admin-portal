@@ -11,7 +11,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 
 import Inputs from './Inputs';
 import Buttons from './Buttons';
-import { Alert } from '@mui/material';
+import Alert  from '@mui/material/Alert';
 
 export default function AddVendorForm({ defaultVendorValue, handleClose }) {
   const [showAlert, setShowAlert] = useState(false);
