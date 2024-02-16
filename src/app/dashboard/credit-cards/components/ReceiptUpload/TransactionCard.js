@@ -2,6 +2,7 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
+import { format } from 'date-fns';
 
 export default function TransactionCard({ transaction }) {
 
@@ -13,11 +14,12 @@ export default function TransactionCard({ transaction }) {
       .join(' ');
   }
 
-  const formattedDate = new Date(transaction.transactionDate).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-  });
+  function formatDate(dateString) {
+    const [year, month, day] = dateString.split('-').map(Number);
+    const date = new Date(year, month - 1, day);
+    const formattedDate = format(date, 'MM/dd/yyyy');
+    return formattedDate;
+  }
 
   return (
     <Card sx={{ boxShadow: 4, borderRadius: '6px', mb: 3 }}>
@@ -40,7 +42,7 @@ export default function TransactionCard({ transaction }) {
             {transaction.accountName}
           </Typography>
           <Typography variant="body1" color="black">
-            {formattedDate}
+            {formatDate(transaction.transactionDate)}
           </Typography>
           <Typography variant="body1" color="black">
             ${transaction.amount}

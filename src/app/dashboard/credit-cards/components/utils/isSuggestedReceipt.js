@@ -9,9 +9,8 @@ function searchFunction(merchantName, merchantArray) {
     const bestMatch = results[0];
 
     return bestMatch.score;
-  } 
-    return null;
-  
+  }
+  return null;
 }
 
 export const isSuggestedReceipt = (transaction, receipt) => {
@@ -83,10 +82,10 @@ export const isSuggestedReceipt = (transaction, receipt) => {
     const lowestFuzzyScore = fuzzyScores.length > 0 ? Math.min(...fuzzyScores) : null;
 
     if (merchantMatch) {
-      receiptData.merchant.score = 1;
+      receiptData.merchant.score = 1.3;
       isPossibleMatch = true;
     } else if (lowestFuzzyScore && lowestFuzzyScore < 0.2) {
-      receiptData.merchant.score = 1;
+      receiptData.merchant.score = 1.2;
       isPossibleMatch = true;
     } else if (lowestFuzzyScore && lowestFuzzyScore < 0.7) {
       receiptData.merchant.score = 0.5;
@@ -95,7 +94,6 @@ export const isSuggestedReceipt = (transaction, receipt) => {
   }
   if (isPossibleMatch) {
     return receiptData;
-  } 
-    return null;
-  
+  }
+  return null;
 };

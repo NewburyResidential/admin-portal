@@ -1,3 +1,5 @@
+"use server";
+
 export default async function getSuggestedReceipts() {
   const url = 'https://0yxexcpp8f.execute-api.us-east-1.amazonaws.com/getSuggestedReceipts';
   const requestOptions = {

@@ -2,6 +2,7 @@ import { useTheme } from '@mui/material/styles';
 import { useRecalculateByUnit } from '../utils/useRecalculateByUnit';
 import { useClearCalculations } from '../utils/useClearCalculations';
 import { useFormContext, useFieldArray, useWatch, Controller } from 'react-hook-form';
+import { format } from 'date-fns';
 
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
@@ -65,12 +66,6 @@ export default function RowItem({ transaction, transactionIndex, vendors, chartO
     }
   };
 
-  const formattedDate = new Date(transaction.transactionDate).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-  });
-
   const backgroundColor = transactionChecked
     ? isLight
       ? 'primary.lighter'
@@ -104,7 +99,7 @@ export default function RowItem({ transaction, transactionIndex, vendors, chartO
         </Box>
         <Box sx={{ flex: 1, textAlign: 'center' }}>{titleCase(transaction.name)}</Box>
         <Box sx={{ flex: 1, textAlign: 'center' }}>{transaction.accountName}</Box>
-        <Box sx={{ flex: 1, textAlign: 'center', minWidth: '10%' }}>{formattedDate}</Box>
+        <Box sx={{ flex: 1, textAlign: 'center', minWidth: '10%' }}>{formatDate(transaction.transactionDate)}</Box>
         <Box sx={{ flex: 0.5, textAlign: 'center' }}>
           <Receipt recentReceipts={recentReceipts} transaction={transaction} transactionIndex={transactionIndex} />
         </Box>
@@ -169,4 +164,11 @@ function hexToRgba(hex, opacity) {
   const g = parseInt(hex.slice(3, 5), 16);
   const b = parseInt(hex.slice(5, 7), 16);
   return `rgba(${r}, ${g}, ${b}, ${opacity})`;
+}
+
+function formatDate(dateString) {
+  const [year, month, day] = dateString.split('-').map(Number);
+  const date = new Date(year, month - 1, day);
+  const formattedDate = format(date, 'MM/dd/yyyy');
+  return formattedDate;
 }

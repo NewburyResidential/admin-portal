@@ -9,6 +9,7 @@ import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 
 import { useFormContext } from 'react-hook-form';
 import { copyS3Object } from 'src/utils/services/cc-expenses/uploadS3Image';
+import { format } from 'date-fns';
 
 export default function ReceiptCards({ id, setOpen, setLoading, transactionIndex, suggestedReceipts }) {
   const { setValue } = useFormContext();
@@ -161,8 +162,10 @@ export default function ReceiptCards({ id, setOpen, setLoading, transactionIndex
     </Grid>
   );
 }
+
 function formatDate(dateString) {
-  const date = new Date(dateString);
-  const options = { month: '2-digit', day: '2-digit', year: 'numeric' };
-  return date.toLocaleDateString('en-US', options);
+  const [year, month, day] = dateString.split('-').map(Number);
+  const date = new Date(year, month - 1, day);
+  const formattedDate = format(date, 'MM/dd/yyyy');
+  return formattedDate;
 }
