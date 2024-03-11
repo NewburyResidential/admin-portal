@@ -100,7 +100,7 @@ export default function ReceiptTable({ setOpen, setLoading, id, recentReceipts, 
             {filteredReceipts.map((row) => (
               <TableRow key={row.id}>
                 <TableCell align="center">{row.fileName}</TableCell>
-                <TableCell align="center">{row.modifiedBy}</TableCell>
+                <TableCell align="center">John Smith</TableCell>
                 <TableCell align="center">{row.modifiedOn}</TableCell>
                 <TableCell align="right">
                   <Box display="flex" justifyContent="flex-end">

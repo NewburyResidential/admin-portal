@@ -14,6 +14,9 @@ import {
   Paper,
   Box,
   Stack,
+  TextField,
+  Divider,
+  Card,
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { assetItems } from 'src/assets/data/assets';
@@ -33,37 +36,32 @@ const taxAccounts = [
 
 export default function FileInput() {
   const [accountsByProperty, setAccountsByProperty] = useState({});
+  const [totalAccounts, setTotalAccounts] = useState([]);
 
-  function processPayrollData(data) {
-    let positiveTotal = 0;
-    let negativeTotal = 0;
+  function getTotalUniqueAccounts(data) {
+    const uniqueItems = {};
 
     data.forEach((item) => {
-      const amount = parseFloat(item.Amount);
-      if (!isNaN(amount)) {
-        if (amount > 0) {
-          positiveTotal += amount;
-        } else {
-          negativeTotal += amount;
-        }
-
-        taxAccounts.forEach((account) => {
-          if (account.number === item['Account Number']) {
-            account.amount += amount;
-          }
-        });
+      if (!item['Account Number']) return;
+      const amount = new Big(item.Amount);
+      if (uniqueItems[item['Account Number']]) {
+        uniqueItems[item['Account Number']].Amount = uniqueItems[item['Account Number']].Amount.plus(amount);
+      } else {
+        uniqueItems[item['Account Number']] = {
+          'Account Number': item['Account Number'],
+          'Account Name': item['Account Name'],
+          Amount: amount,
+        };
       }
     });
 
-    positiveTotal = parseFloat(positiveTotal.toFixed(2));
-    negativeTotal = parseFloat(negativeTotal.toFixed(2));
-    taxAccounts.forEach((account) => {
-      account.amount = parseFloat(account.amount.toFixed(2));
-    });
-
-
-
-    return { positiveTotal, negativeTotal, updatedTaxAccounts: taxAccounts };
+    const accountTotals = Object.values(uniqueItems).map((item) => ({
+      accountNumber: item['Account Number'],
+      accountName: item['Account Name'],
+      amount: item.Amount.toString(),
+    }));
+    const sortedAccountsTotal = accountTotals.sort((a, b) => b.amount - a.amount);
+    return sortedAccountsTotal;
   }
 
   const handleFileChange = (event) => {
@@ -72,11 +70,10 @@ export default function FileInput() {
     Papa.parse(file, {
       header: true,
       complete: (result) => {
+        const { data } = result;
 
-        const {data} = result;
-        console.log(data);
-
-        processPayrollData(data);
+        const totalUniqueAccounts = getTotalUniqueAccounts(data);
+        setTotalAccounts(totalUniqueAccounts);
 
         function groupDataByEmployee(data) {
           return data.reduce((acc, item) => {
@@ -108,72 +105,81 @@ export default function FileInput() {
         }
 
         function calculateProportions(groupedData, assetItems) {
+          const accountsByEmployee = {};
           const accountsByProperty = {};
 
+          console.log('groupedData', groupedData);
+
           Object.keys(groupedData).forEach((key) => {
+            console.log('----------------------------');
+
+            const accumulativeAccounts = [];
             const data = groupedData[key];
+            console.log(data);
+            data.forEach((item) => {
+              accumulativeAccounts.push({ accountNumber: item.account, amount: new Big(0) });
+            });
+
             const { total, byProperty } = calculateEarnings(data);
 
-            console.log('total:', total.toString());
-            console.log('byProperty:', byProperty);
+            if (!accountsByEmployee[key]) {
+              accountsByEmployee[key] = {};
+            }
+            accountsByEmployee[key].totals = groupedData[key];
 
-            Object.keys(byProperty).forEach((property) => {
+            console.log('byProperty', byProperty);
+
+            const propertyKeys = Object.keys(byProperty);
+            propertyKeys.forEach((property, index) => {
               const percent = byProperty[property].div(total);
-              console.log(property)
-              console.log(percent.toString());
-              if (!accountsByProperty[property]) {
-                const asset = assetItems.find((asset) => asset.id === property);
-                accountsByProperty[property] = { asset, data: [], positiveTotal: new Big(0), negativeTotal: new Big(0) };
+
+              if (!accountsByEmployee[key][property]) {
+                //const asset = assetItems.find((asset) => asset.id === property);
+                accountsByEmployee[key][property] = [];
               }
 
-              let positiveRoundingError = new Big(0);
-              let negativeRoundingError = new Big(0);
               data.forEach((item) => {
                 const proportionalAmount = item.amount.times(percent).round(2);
-                if (proportionalAmount.gt(0)) {
-                  positiveRoundingError = positiveRoundingError.plus(item.amount.times(percent).minus(proportionalAmount));
-                } else {
-                  negativeRoundingError = negativeRoundingError.plus(item.amount.times(percent).minus(proportionalAmount));
+                const account = accumulativeAccounts.find((account) => account.accountNumber === item.account);
+                account.amount = account.amount.plus(proportionalAmount);
+
+                if (index === propertyKeys.length - 1) {
+                  const accumulativeAmount = account.amount
+                  const originalAmount = data.find((account) => account.account === item.account).amount;
+                  const roundingError = accumulativeAmount.minus(originalAmount);
+                  if (roundingError.gt(0)) {
+                    console.log('Rounding error', roundingError.toString());
+                    console.log(accumulativeAccounts);
+                    console.log('item', item);
+                  }
+                  //console.log('accumulativeAmount', accumulativeAmount.toString());
+                 // console.log('originalAmount', originalAmount.toString());
                 }
 
-                const existingItem = accountsByProperty[property].data.find((dataItem) => dataItem.account === item.account);
-
-                if (existingItem) {
-                  existingItem.amount = existingItem.amount.plus(proportionalAmount);
+                const existingAccount = accountsByEmployee[key][property].find((dataItem) => dataItem.account === item.account);
+                if (existingAccount) {
+                  existingAccount.amount = existingAccount.amount.plus(proportionalAmount);
                 } else {
-                  accountsByProperty[property].data.push({ ...item, amount: proportionalAmount });
+                  accountsByEmployee[key][property].push({ ...item, amount: proportionalAmount });
                 }
               });
-
-              if (!negativeRoundingError.eq(0)) {
-                adjustForNegativeRoundingError(accountsByProperty[property].data, negativeRoundingError, '222404');
-              }
-              if (!positiveRoundingError.eq(0)) {
-                adjustForPositiveRoundingError(accountsByProperty[property].data, positiveRoundingError);
-              }
-
-              accountsByProperty[property].positiveTotal = accountsByProperty[property].data.reduce((sum, item) => {
-                return item.amount.gt(0) ? sum.plus(item.amount) : sum;
-              }, new Big(0));
-
-              accountsByProperty[property].negativeTotal = accountsByProperty[property].data.reduce((sum, item) => {
-                return item.amount.lt(0) ? sum.plus(item.amount) : sum;
-              }, new Big(0));
             });
           });
 
-          return accountsByProperty;
+          console.log('accountsByEmployee', accountsByEmployee);
+          return accountsByEmployee;
         }
 
         function adjustForNegativeRoundingError(dataArray, roundingError, account) {
           const accountToAdjust = dataArray.find((item) => item.account === account);
+          console.log(roundingError.toString());
           if (accountToAdjust) {
             accountToAdjust.amount = accountToAdjust.amount.plus(roundingError).round(2);
           }
         }
         function adjustForPositiveRoundingError(dataArray, roundingError) {
           const accountToAdjust = dataArray.find((item) => item.amount.gt(0));
-
+          console.log(roundingError.toString());
           if (accountToAdjust) {
             accountToAdjust.amount = accountToAdjust.amount.plus(roundingError).round(2);
           }
@@ -184,66 +190,290 @@ export default function FileInput() {
       },
     });
   };
-  console.log('accountsByProperty:', accountsByProperty);
+
+  function sumPositiveNumbers(data) {
+    let totalPositive = Big(0);
+    data.forEach((item) => {
+      let amount = Big(item.amount);
+      if (amount.gt(0)) {
+        totalPositive = totalPositive.plus(amount);
+      }
+    });
+    return totalPositive.toString();
+  }
+  const positiveTotal = sumPositiveNumbers(totalAccounts);
+
+  const totalUniqueAccountsByProperty = getTotalUniqueAccountsByProperty(accountsByProperty);
+
+  const handleAmountChange = (propertyId, accountId, newValue) => {
+    const newAmount = new Big(newValue);
+    setAccountsByProperty((prevState) => {
+      const newState = { ...prevState };
+
+      if (newState[propertyId]) {
+        newState[propertyId].data = newState[propertyId].data.map((account) => {
+          if (account.account === accountId) {
+            return { ...account, amount: newAmount };
+          }
+          return account;
+        });
+      }
+      return newState;
+    });
+  };
+
   return (
     <div>
       <input type="file" onChange={handleFileChange} />
       {Object.keys(accountsByProperty).map((key) => {
         const label = accountsByProperty[key].asset?.label || 'No Asset';
-        const {positiveTotal} = accountsByProperty[key];
-        console.log('positivetotal:', positiveTotal.round(2).toString());
-        const {negativeTotal} = accountsByProperty[key];
-        console.log('negativeTotal:', negativeTotal.round(2).toString());
         const accounts = accountsByProperty[key].data || [];
         const sortedAccounts = accounts.sort((a, b) => b.amount - a.amount);
+        const positiveTotal = sortedAccounts.reduce((sum, item) => {
+          if (item.amount.gt(0)) {
+            return sum.plus(item.amount);
+          }
+          return sum;
+        }, new Big(0));
+
+        const negativeTotal = sortedAccounts.reduce((sum, item) => {
+          if (item.amount.lt(0)) {
+            return sum.plus(item.amount);
+          }
+          return sum;
+        }, new Big(0));
+
+        const propertyDifference = positiveTotal.plus(negativeTotal);
+        const benefitAccounts = sortedAccounts
+          .filter((account) => account.account === '222401' || account.account === '222403' || account.account === '222402')
+          .map((account) => {
+            const employeeAmount = account.amount;
+            const employeePercentage = new Big(0.4);
+            const companyPercentage = new Big(0.6);
+            const companyAmount = employeeAmount.mul(companyPercentage.div(employeePercentage));
+
+            return {
+              accountName:
+                account.account === '222401'
+                  ? 'Newbury Paid Dental Insurance'
+                  : account.account === '222403'
+                    ? 'Newbury Paid Vision Insurance'
+                    : 'Newbury Paid Health Insurance',
+              amount: companyAmount.round(2).abs(),
+            };
+          });
+
+        const bigBenefitTotal = benefitAccounts.reduce((sum, item) => {
+          return sum.plus(item.amount);
+        }, new Big(0));
 
         return (
-          <Box sx={{ mx: 3, p: 2 }}>
-            <Typography variant="h6" gutterBottom style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <span>{label}</span>
-              <span>${positiveTotal.round(2).toString()}</span>
-            </Typography>
-
-            {/* Accordion for Positive Amounts */}
-            <Accordion>
-              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography>Earnings</Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <List>
-                  {sortedAccounts
-                    .filter((account) => account.amount > 0)
-                    .map((account, index) => (
-                      <ListItem key={`${account.account  }-positive`}>
-                        <ListItemText primary={account.accountName} />
-                        <Typography style={{ marginLeft: 'auto' }}>{account.amount.toString()}</Typography>
-                      </ListItem>
-                    ))}
-                </List>
-              </AccordionDetails>
-            </Accordion>
-
-            {/* Accordion for Negative Amounts */}
-            <Accordion>
-              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography>Break Out</Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <List>
-                  {sortedAccounts
-                    .filter((account) => account.amount < 0)
-                    .map((account, index) => (
-                      <ListItem key={`${account.account  }-negative`}>
-                        <ListItemText primary={account.accountName} />
-                        <Typography style={{ marginLeft: 'auto' }}>{account.amount.toString()}</Typography>
-                      </ListItem>
-                    ))}
-                </List>
-              </AccordionDetails>
-            </Accordion>
-          </Box>
+          <>
+            <Box sx={{ mx: 1, p: 1 }}>
+              <Accordion>
+                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                  <Typography flex={1}>{label}</Typography>
+                  <Box display="flex" justifyContent="flex-end" flex={1}>
+                    <Typography sx={{ mr: 2 }}>
+                      Diff: ${propertyDifference.toString()} | Payroll: ${positiveTotal.round(2).toString()} | Benefits: $
+                      {bigBenefitTotal.toString()}
+                    </Typography>
+                  </Box>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <List>
+                    {sortedAccounts
+                      .filter((account) => account.amount > 0)
+                      .map((account, index) => (
+                        <ListItem key={`${account.account}-positive`}>
+                          <ListItemText primary={account.accountName} />
+                          <TextField
+                            variant="standard"
+                            style={{ marginLeft: 'auto' }}
+                            value={account.amount.toString()}
+                            onChange={(e) => {
+                              handleAmountChange(key, account.account, e.target.value);
+                            }}
+                          />
+                        </ListItem>
+                      ))}
+                  </List>
+                  <Divider sx={{ mt: 1, mb: 1 }} />
+                  <List>
+                    {sortedAccounts
+                      .filter((account) => account.amount < 0)
+                      .map((account, index) => (
+                        <ListItem key={`${account.account}-negative`}>
+                          <ListItemText primary={account.accountName} />
+                          <TextField
+                            variant="standard"
+                            sx={{ marginLeft: 'auto' }}
+                            value={account.amount.toString()}
+                            onChange={(e) => {
+                              handleAmountChange(key, account.account, e.target.value);
+                            }}
+                          />
+                        </ListItem>
+                      ))}
+                  </List>
+                  <List>
+                    {benefitAccounts.map((account, index) => {
+                      return (
+                        <Card sx={{ m: 2, p: 2, borderRadius: '2px' }}>
+                          <ListItem key={`${account.account}`}>
+                            <ListItemText primary={account.accountName} />
+                            <Typography sx={{ marginLeft: 'auto' }}>${account.amount.toString()}</Typography>
+                          </ListItem>
+                        </Card>
+                      );
+                    })}
+                  </List>
+                </AccordionDetails>
+              </Accordion>
+              <Divider />
+            </Box>
+          </>
         );
       })}
+      <Box sx={{ mx: 1, p: 1 }}>
+        <Accordion>
+          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+            <Typography sx={{ fontWeight: 'bold' }} flex={1}>
+              Total Amounts
+            </Typography>
+            <Box display="flex" justifyContent="flex-end" flex={1}>
+              <Typography sx={{ fontWeight: 'bold', mr: 2 }}>${positiveTotal}</Typography>
+            </Box>
+          </AccordionSummary>
+          <AccordionDetails>
+            <List>
+              <ListItem
+                key={`total`}
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                }}
+              >
+                <ListItemText />
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <Typography variant="standard" sx={{ mx: 1, width: '80px', textAlign: 'center' }}>
+                    Raw
+                  </Typography>
+                  <Divider orientation="vertical" flexItem sx={{ mx: 1 }} />
+                  <Typography variant="standard" sx={{ mx: 1, width: '80px', textAlign: 'center' }}>
+                    Calculated
+                  </Typography>
+                  <Divider orientation="vertical" flexItem sx={{ mx: 1 }} />
+                  <Typography variant="standard" sx={{ mx: 1, width: '80px', textAlign: 'center' }}>
+                    Difference
+                  </Typography>
+                </div>
+              </ListItem>
+              {totalAccounts
+                .filter((account) => account.amount > 0)
+                .map((account, index) => {
+                  const accountAmount = new Big(account.amount);
+                  const otherAmount = new Big(totalUniqueAccountsByProperty[account.accountNumber]?.amount || 0);
+                  const difference = accountAmount.minus(otherAmount);
+
+                  const displayDifference = difference.eq(0) ? '$0' : difference.toString();
+                  return (
+                    <ListItem
+                      key={`${account.accountNumber}-negative`}
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        backgroundColor: !difference.eq(0) && '#FFCCCC',
+                      }}
+                    >
+                      <ListItemText primary={account.accountName} />
+                      <div style={{ display: 'flex', alignItems: 'center' }}>
+                        <Typography variant="standard" sx={{ mx: 1, width: '80px', textAlign: 'center' }}>
+                          {account.amount.toString()}
+                        </Typography>
+                        <Divider orientation="vertical" flexItem sx={{ mx: 1 }} />
+                        <Typography variant="standard" sx={{ mx: 1, width: '80px', textAlign: 'center' }}>
+                          {totalUniqueAccountsByProperty[account.accountNumber]?.amount}
+                        </Typography>
+                        <Divider orientation="vertical" flexItem sx={{ mx: 1 }} />
+                        <Typography variant="standard" sx={{ mx: 1, width: '80px', textAlign: 'center' }}>
+                          {displayDifference}
+                        </Typography>
+                      </div>
+                    </ListItem>
+                  );
+                })}
+            </List>
+            <Divider sx={{ mt: 2, mb: 2 }} />
+            <List>
+              {totalAccounts
+                .filter((account) => account.amount < 0)
+                .map((account, index) => {
+                  const accountAmount = new Big(account.amount);
+                  const otherAmount = new Big(totalUniqueAccountsByProperty[account.accountNumber]?.amount || 0);
+                  const difference = accountAmount.minus(otherAmount);
+
+                  const displayDifference = difference.eq(0) ? '$0' : difference.toString();
+                  return (
+                    <ListItem
+                      key={`${account.accountNumber}-negative`}
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        backgroundColor: !difference.eq(0) && '#FFCCCC',
+                      }}
+                    >
+                      <ListItemText primary={account.accountName} />
+                      <div style={{ display: 'flex', alignItems: 'center' }}>
+                        <Typography variant="standard" sx={{ mx: 1, width: '80px', textAlign: 'center' }}>
+                          {account.amount.toString()}
+                        </Typography>
+                        <Divider orientation="vertical" flexItem sx={{ mx: 1 }} />
+                        <Typography variant="standard" sx={{ mx: 1, width: '80px', textAlign: 'center' }}>
+                          {totalUniqueAccountsByProperty[account.accountNumber]?.amount}
+                        </Typography>
+                        <Divider orientation="vertical" flexItem sx={{ mx: 1 }} />
+                        <Typography variant="standard" sx={{ mx: 1, width: '80px', textAlign: 'center' }}>
+                          {displayDifference}
+                        </Typography>
+                      </div>
+                    </ListItem>
+                  );
+                })}
+            </List>
+          </AccordionDetails>
+        </Accordion>
+        <Divider />
+      </Box>
     </div>
   );
+}
+
+function getTotalUniqueAccountsByProperty(input) {
+  const result = {};
+
+  Object.keys(input).forEach((key) => {
+    const entries = input[key].data;
+
+    entries.forEach((entry) => {
+      const { accountName, account, amount } = entry;
+      if (result[account]) {
+        result[account].amount = result[account].amount.plus(new Big(amount));
+      } else {
+        result[account] = {
+          accountName: accountName,
+          amount: new Big(amount),
+        };
+      }
+    });
+  });
+
+  Object.keys(result).forEach((account) => {
+    result[account].amount = result[account].amount.toString();
+  });
+
+  return result;
 }

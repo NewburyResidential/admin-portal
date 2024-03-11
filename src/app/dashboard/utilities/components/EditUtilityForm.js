@@ -7,18 +7,25 @@ import DialogTitle from '@mui/material/DialogTitle';
 import LoadingButton from '@mui/lab/LoadingButton';
 import Grid from '@mui/material/Grid';
 import Alert from '@mui/material/Alert';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
 
-import { useFormContext } from 'react-hook-form';
+import { useFormContext, useWatch, Controller } from 'react-hook-form';
 import { useFormStatus } from 'react-dom';
+import { FormHelperText } from '@mui/material';
 
 export default function EditUtilityForm({ showAlert, handleClose }) {
   const { pending } = useFormStatus();
 
   const {
     register,
+    control,
     formState: { errors },
   } = useFormContext();
-  console.log(errors);
+
+  const type = useWatch({ control, name: 'type' });
   return (
     <>
       <DialogTitle>Edit Utility Bill</DialogTitle>
@@ -26,14 +33,14 @@ export default function EditUtilityForm({ showAlert, handleClose }) {
         <DialogContentText>Update the utility bill by editing the information below and clicking save</DialogContentText>
 
         <Grid container spacing={2} mt={2}>
-          <Grid sx={{ display: 'flex' }} item xs={6} sm={6}>
+          <Grid sx={{ display: 'flex' }} item xs={3}>
             <TextField
-              {...register('accountNumber')}
-              label="Account Number"
+              {...register('invoiceNumber')}
+              label="Invoice Number"
               fullWidth
               variant="outlined"
-              error={!!errors?.accountNumber}
-              helperText={errors.accountNumber ? errors.accountNumber.message : null}
+              error={!!errors?.invoiceNumber}
+              helperText={errors.invoiceNumber ? errors.invoiceNumber.message : null}
             />
           </Grid>
           <Grid sx={{ display: 'flex' }} item xs={3} sm={3}>
@@ -46,16 +53,35 @@ export default function EditUtilityForm({ showAlert, handleClose }) {
               helperText={errors.building ? errors.building.message : null}
             />
           </Grid>
-          <Grid sx={{ display: 'flex' }} item xs={3} sm={3}>
-            <TextField
-              {...register('unit')}
-              label="Unit"
-              fullWidth
-              variant="outlined"
-              error={!!errors?.unit}
-              helperText={errors.unit ? errors.unit.message : null}
+          <Grid sx={{ display: 'flex' }} item xs={type === 'apartment' ? 3 : 6}>
+            <Controller
+              name="type"
+              control={control}
+              render={({ field }) => (
+                <FormControl fullWidth error={!!errors.type} variant="outlined">
+                  <InputLabel id="area-type-label">Area Type</InputLabel>
+                  <Select {...field} labelId="area-type-label" label="Area Type">
+                    <MenuItem value="common">Common</MenuItem>
+                    <MenuItem value="apartment">Apartment</MenuItem>
+                  </Select>
+                  {errors.type && <FormHelperText>{errors.type.message}</FormHelperText>}
+                </FormControl>
+              )}
             />
           </Grid>
+          {type === 'apartment' && (
+            <Grid sx={{ display: 'flex' }} item xs={3} sm={3}>
+              <TextField
+                {...register('unit')}
+                label="Unit"
+                fullWidth
+                variant="outlined"
+                error={!!errors?.unit}
+                helperText={errors.unit ? errors.unit.message : null}
+              />
+            </Grid>
+          )}
+
           <Grid sx={{ display: 'flex' }} item xs={3} sm={6}>
             <TextField
               {...register('startService')}
@@ -117,16 +143,24 @@ export default function EditUtilityForm({ showAlert, handleClose }) {
             />
           </Grid>
           <Grid sx={{ display: 'flex' }} item xs={3} sm={6}>
-            <TextField {...register('taxAmount')} label="Tax" fullWidth variant="outlined"
-                error={!!errors?.taxAmount}
-                helperText={errors.taxAmount ? errors.taxAmount.message : null}
-             />
+            <TextField
+              {...register('taxAmount')}
+              label="Tax"
+              fullWidth
+              variant="outlined"
+              error={!!errors?.taxAmount}
+              helperText={errors.taxAmount ? errors.taxAmount.message : null}
+            />
           </Grid>
           <Grid sx={{ display: 'flex' }} item xs={3} sm={6}>
-            <TextField {...register('totalAmount')} label="Total" fullWidth variant="outlined"
-                error={!!errors?.totalAmount}
-                helperText={errors.totalAmount ? errors.totalAmount.message : null}
-             />
+            <TextField
+              {...register('totalAmount')}
+              label="Total"
+              fullWidth
+              variant="outlined"
+              error={!!errors?.totalAmount}
+              helperText={errors.totalAmount ? errors.totalAmount.message : null}
+            />
           </Grid>
           <Grid item xs={12}>
             {showAlert && <Alert severity="error">Issue Updating Utility Bill</Alert>}

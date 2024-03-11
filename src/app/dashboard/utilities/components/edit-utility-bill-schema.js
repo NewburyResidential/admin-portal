@@ -1,29 +1,28 @@
 import * as yup from 'yup';
-
-const dateRegex = /^\d{4}\/\d{2}\/\d{2}$/;
+import { parse, isValid } from 'date-fns';
 
 const isValidDate = (value) => {
-  if (!dateRegex.test(value)) return false;
-  const date = new Date(value);
-  return date instanceof Date && !isNaN(date);
+  const dateFormat = 'MM/dd/yyyy';
+  const parsedDate = parse(value, dateFormat, new Date());
+  return isValid(parsedDate);
 };
 
 export const editUtilityBillSchema = yup.object().shape({
   pk: yup.string().required(),
   sk: yup.string().required(),
-  accountNumber: yup.string().matches(/^\d+$/, 'Must contain only numbers').required(),
+  type: yup.string().required(),
+  invoiceNumber: yup.string().matches(/^\d+$/, 'Must contain only numbers').required(),
   building: yup.string().matches(/^\d+$/, 'Must contain only numbers').required(),
-  unit: yup.string().matches(/^\d+$/, 'Must contain only numbers').required(),
-  startService: yup
+  unit: yup
     .string()
-    .required('Start service date is required')
-    .matches(dateRegex, 'Start service date must be in YYYY/MM/DD format')
-    .test('is-valid-date', 'Invalid start service date', isValidDate),
-  endService: yup
-    .string()
-    .required('End service date is required')
-    .matches(dateRegex, 'End service date must be in YYYY/MM/DD format')
-    .test('is-valid-date', 'Invalid end service date', isValidDate),
+    .matches(/^\d+$/, 'Must contain only numbers')
+    .when('type', {
+      is: (type) => type === 'apartment',
+      then: () => yup.string().required('Unit is required for apartments'),
+      otherwise: () => yup.string().notRequired(),
+    }),
+  startService: yup.string().required('Start service date is required').test('is-valid-date', 'Invalid start service date', isValidDate),
+  endService: yup.string().required('End service date is required').test('is-valid-date', 'Invalid end service date', isValidDate),
   electricAmount: yup
     .string()
     .matches(/^[-]?\d+(\.\d{1,2})?$/, 'Valid number with 2 decimal places')

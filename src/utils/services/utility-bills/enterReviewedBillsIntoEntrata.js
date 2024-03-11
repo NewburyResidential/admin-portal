@@ -1,12 +1,8 @@
 'use server';
 
-export default async function getUtilityBills(pk, sk) {
-  const encodedPk = encodeURIComponent(pk);
-  const encodedSk = encodeURIComponent(sk);
-
-  const url = `https://gpxllcrxmk.execute-api.us-east-1.amazonaws.com/getutilitybills?pk=${encodedPk}&sk=${encodedSk}`;
+export default async function enterReviewedBillsIntoEntrata() {
+  const url = 'https://gpxllcrxmk.execute-api.us-east-1.amazonaws.com/enterReviewedBillsIntoEntrata';
   const requestOptions = {
-    next: { tags: ['utilities'] },
     cache: 'no-store',
     method: 'GET',
     headers: {

@@ -84,17 +84,12 @@ export function useNavData() {
             title: 'Utilities',
             path: paths.utilities.root,
             icon: ICONS.mail,
-            children: [
-              { title: 'Review', path: paths.utilities.root },
-              { title: 'Upload', path: paths.utilities.upload },
-            ],
           },
-          // {
-          //   title: 'Payroll',
-          //   path: paths.payroll.root,
-          //   icon: ICONS.banking,
-          // },
-        
+          {
+            title: 'Payroll',
+            path: paths.payroll.root,
+            icon: ICONS.banking,
+          },
         ],
       },
     ],

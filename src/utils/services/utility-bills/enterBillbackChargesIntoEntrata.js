@@ -1,8 +1,7 @@
 'use server';
 
-export default async function updateUtilityBill(data) {
-    
-  const url = 'https://gpxllcrxmk.execute-api.us-east-1.amazonaws.com/updateutilitybill';
+export default async function enterBillBackChargesIntoEntrata(data) {
+  const url = 'https://gpxllcrxmk.execute-api.us-east-1.amazonaws.com/EnterBillbackChargesIntoEntrata';
   const requestOptions = {
     method: 'POST',
     cache: 'no-store',
@@ -14,11 +13,8 @@ export default async function updateUtilityBill(data) {
 
   try {
     const response = await fetch(url, requestOptions);
-    if (response.ok) {
-      return true;
-    } else {
-      return false;
-    }
+    const data = await response.json();
+    return data;
   } catch (error) {
     console.error('Error Updating Utility Bill', error);
     return false;

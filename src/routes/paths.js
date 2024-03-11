@@ -32,7 +32,6 @@ export const paths = {
   },
   utilities: {
     root: `${ROOTS.DASHBOARD}/utilities`,
-    upload: `${ROOTS.DASHBOARD}/utilities/upload`,
   },
   payroll: {
     root: `${ROOTS.DASHBOARD}/payroll`,

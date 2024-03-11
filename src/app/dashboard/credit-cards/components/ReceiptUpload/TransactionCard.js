@@ -37,7 +37,7 @@ export default function TransactionCard({ transaction }) {
             {titleCase(transaction.name)}
           </Typography>
           <Typography variant="body1" color="black">
-            {transaction.accountName}
+            John Smith
           </Typography>
           <Typography variant="body1" color="black">
             {formattedDate}

@@ -1,40 +1,35 @@
 import { useState } from 'react';
-import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
-import LoadingButton from '@mui/lab/LoadingButton';
 
-import { Grid } from '@mui/material';
-import Alert from '@mui/material/Alert';
+import Dialog from '@mui/material/Dialog';
 
 import { useForm, FormProvider } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import updateUtilityBill from 'src/utils/services/utility-bills/updateUtilityBill';
-import { useFormStatus } from 'react-dom';
 import EditUtilityForm from './EditUtilityForm';
 import { editUtilityBillSchema } from './edit-utility-bill-schema';
+import getUtilityBills from 'src/utils/services/utility-bills/getUtilityBills';
 
-export default function EditUtilityBillDialog({ editDialog, setEditDialog }) {
+export default function EditUtilityBillDialog({ editDialog, setEditDialog, setUtilityBills, sk, pk }) {
   const [showAlert, setShowAlert] = useState(false);
 
   const defaultValues = {
+    status: editDialog?.utilityBill?.status,
     pk: editDialog?.utilityBill?.pk,
     sk: editDialog?.utilityBill?.sk,
-    accountNumber: editDialog?.utilityBill?.accountNumber,
+    invoiceNumber: editDialog?.utilityBill?.invoiceNumber,
     building: editDialog?.utilityBill?.building,
     unit: editDialog?.utilityBill?.unit,
     startService: editDialog?.utilityBill?.startService || '',
     endService: editDialog?.utilityBill?.endService || '',
-    electricAmount: editDialog?.utilityBill?.electricAmount || 0,
-    gasAmount: editDialog?.utilityBill?.gasAmount || 0,
-    waterAmount: editDialog?.utilityBill?.waterAmount || 0,
-    miscellaneousAmount: editDialog?.utilityBill?.miscellaneousAmount || 0,
-    taxAmount: editDialog?.utilityBill?.taxAmount || 0,
-    totalAmount: editDialog?.utilityBill?.totalAmount || 0,
+    electricAmount: editDialog?.utilityBill?.electricAmount,
+    gasAmount: editDialog?.utilityBill?.gasAmount,
+    waterAmount: editDialog?.utilityBill?.waterAmount,
+    miscellaneousAmount: editDialog?.utilityBill?.miscellaneousAmount,
+    taxAmount: editDialog?.utilityBill?.taxAmount,
+    totalAmount: editDialog?.utilityBill?.totalAmount,
+    type: editDialog?.utilityBill?.type || 'common',
+    objectKey: editDialog?.utilityBill?.objectKey,
+    scrapedAmount: editDialog?.utilityBill?.scrapedAmount,
   };
 
   const methods = useForm({
@@ -46,8 +41,10 @@ export default function EditUtilityBillDialog({ editDialog, setEditDialog }) {
 
   const onSubmit = async (data) => {
     const response = await updateUtilityBill(data);
-    if (response) {
-      // handleClose();
+    const updatedData = await getUtilityBills(pk, sk);
+    setUtilityBills(updatedData);
+    if (response && updatedData) {
+      handleClose();
     } else {
       setShowAlert(true);
     }
