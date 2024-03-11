@@ -79,23 +79,27 @@ export default function CustomTable({ user, vendors, chartOfAccounts, suggestedR
   const currentPageTransactions = transactionFields.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
   const onSubmit = async (data) => {
-    const transactionIndexData = data.transactions
-      .map((transaction, index) => (transaction.checked ? { index, id: transaction.id } : null))
-      .filter((item) => item !== null);
+    try {
+      const transactionIndexData = data.transactions
+        .map((transaction, index) => (transaction.checked ? { index, id: transaction.id } : null))
+        .filter((item) => item !== null);
 
-    const validTransactions = data.transactions
-      .filter((transaction) => transaction.checked)
-      .map(({ suggestedReceipts: ignoreSuggestedReceipts, ...transaction }) => ({
-        ...transaction,
-        status: 'reviewed',
-        approvedBy: user.name,
-      }));
+      const validTransactions = data.transactions
+        .filter((transaction) => transaction.checked)
+        .map(({ suggestedReceipts: ignoreSuggestedReceipts, ...transaction }) => ({
+          ...transaction,
+          status: 'reviewed',
+          approvedBy: user.name,
+        }));
 
-    const response = await updateTransactions(validTransactions);
-    if (response && response.ids) {
-      const updatedTransactionIds = response.ids;
-      const indicesToRemove = transactionIndexData.filter((item) => updatedTransactionIds.includes(item.id)).map((item) => item.index);
-      remove(indicesToRemove);
+      const response = await updateTransactions(validTransactions);
+      if (response && response.ids) {
+        const updatedTransactionIds = response.ids;
+        const indicesToRemove = transactionIndexData.filter((item) => updatedTransactionIds.includes(item.id)).map((item) => item.index);
+        remove(indicesToRemove);
+      }
+    } catch (error) {
+      console.error('Error updating transactions:', error);
     }
   };
 
@@ -117,11 +121,7 @@ export default function CustomTable({ user, vendors, chartOfAccounts, suggestedR
                 <>
                   {transactionFields.length === 0 ? (
                     <Box display="flex" flexDirection="column" justifyContent="center" alignItems="center" style={{ height: '100%' }}>
-                      <Iconify
-                        sx={{ color: 'text.secondary'}}
-                        icon="ic:baseline-download-done"
-                        width={60}
-                      />
+                      <Iconify sx={{ color: 'text.secondary' }} icon="ic:baseline-download-done" width={60} />
                       <Typography variant="h5" sx={{ color: 'text.secondary', fontWeight: 200, mt: 2 }}>
                         No Transactions Remaining To Approve
                       </Typography>
