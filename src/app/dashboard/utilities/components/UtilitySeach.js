@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { Box, TextField, Autocomplete } from '@mui/material';
+import { Box, TextField, Autocomplete, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import { assetItems } from 'src/assets/data/assets';
 
 import getUtilityBills from 'src/utils/services/utility-bills/getUtilityBills';
@@ -14,6 +14,8 @@ export default function UtilitySeach({
   selectedProperty,
   selectedUtility,
   selectedMonth,
+  filterStatus,
+  setFilterStatus,
 }) {
   const utilityProperties = assetItems.filter((item) => item.utilities !== undefined);
 
@@ -27,7 +29,7 @@ export default function UtilitySeach({
 
   return (
     <Box sx={{ my: 4, display: 'flex', justifyContent: 'center' }}>
-      <form action={handleSubmit} style={{ display: 'flex', alignItems: 'center', gap: 20, maxWidth: '800px' }}>
+      <form action={handleSubmit} style={{ display: 'flex', alignItems: 'center', gap: 20, maxWidth: '1000px' }}>
         <TextField
           value={selectedMonth}
           onChange={(e) => {
@@ -61,6 +63,23 @@ export default function UtilitySeach({
           disabled={!selectedProperty}
           style={{ width: '250px' }}
         />
+        <FormControl style={{ width: '250px' }}>
+          <InputLabel id="status-select-label">Status</InputLabel>
+          <Select
+            labelId="status-select-label"
+            id="status-select"
+            value={filterStatus}
+            label="Status"
+            onChange={(event) => {
+              setFilterStatus(event.target.value);
+            }}
+            
+          >
+            <MenuItem value="all">All</MenuItem>
+            <MenuItem value="unapproved">Unapproved</MenuItem>
+            <MenuItem value="approved">Approved</MenuItem>
+          </Select>
+        </FormControl>
         <UtilitySearchButton />
       </form>
     </Box>

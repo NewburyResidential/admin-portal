@@ -20,6 +20,7 @@ export default function Report({ leases }) {
   const [selectedProperty, setSelectedProperty] = useState(null);
   const [selectedUtility, setSelectedUtility] = useState(null);
   const [selectedMonth, setSelectedMonth] = useState(format(new Date(), 'MM/yyyy'));
+  const [filterStatus, setFilterStatus] = useState('unapproved');
 
   const [editDialog, setEditDialog] = useState({ open: false, utilityBill: {} });
 
@@ -42,6 +43,8 @@ export default function Report({ leases }) {
         setSelectedProperty={setSelectedProperty}
         selectedMonth={selectedMonth}
         setSelectedMonth={setSelectedMonth}
+        filterStatus={filterStatus}
+        setFilterStatus={setFilterStatus}
       />
 
       <UtilitiesTable
@@ -51,6 +54,7 @@ export default function Report({ leases }) {
         setUtilityBills={setUtilityBills}
         setEditDialog={setEditDialog}
         selectedMonth={selectedMonth}
+        filterStatus={filterStatus}
       />
 
       <ReportBillBack

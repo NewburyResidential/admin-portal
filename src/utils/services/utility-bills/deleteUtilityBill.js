@@ -1,22 +1,20 @@
 'use server';
 
-export default async function updateUtilityBill(data) {
-    
-  const url = 'https://gpxllcrxmk.execute-api.us-east-1.amazonaws.com/updateutilitybill';
+export default async function deleteUtilityBill(utilityKey) {
+  const url = 'https://gpxllcrxmk.execute-api.us-east-1.amazonaws.com/deleteutilitybill';
   const requestOptions = {
     method: 'POST',
     cache: 'no-store',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(data),
+    body: JSON.stringify(utilityKey),
   };
 
   try {
     const response = await fetch(url, requestOptions);
-    console.log(response);
     if (response.ok) {
-
+      console.log('response', response);
       return true;
     } else {
       return false;

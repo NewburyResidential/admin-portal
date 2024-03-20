@@ -169,6 +169,6 @@ function calculateOverlaps(leases, utilityBills) {
       });
     }
   });
-  console.log(overlaps);
+
   return overlaps;
 }

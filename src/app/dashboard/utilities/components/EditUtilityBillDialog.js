@@ -8,9 +8,11 @@ import updateUtilityBill from 'src/utils/services/utility-bills/updateUtilityBil
 import EditUtilityForm from './EditUtilityForm';
 import { editUtilityBillSchema } from './edit-utility-bill-schema';
 import getUtilityBills from 'src/utils/services/utility-bills/getUtilityBills';
+import deleteUtilityBill from 'src/utils/services/utility-bills/deleteUtilityBill';
 
 export default function EditUtilityBillDialog({ editDialog, setEditDialog, setUtilityBills, sk, pk }) {
   const [showAlert, setShowAlert] = useState(false);
+  const [deleteLoading, setDeleteLoading] = useState(false);
 
   const defaultValues = {
     status: editDialog?.utilityBill?.status,
@@ -42,12 +44,27 @@ export default function EditUtilityBillDialog({ editDialog, setEditDialog, setUt
   const onSubmit = async (data) => {
     const response = await updateUtilityBill(data);
     const updatedData = await getUtilityBills(pk, sk);
+    console.log('updatedData', updatedData)
+    console.log('response from updated bill', response);
     setUtilityBills(updatedData);
-    if (response && updatedData) {
+    if (response) {
       handleClose();
     } else {
       setShowAlert(true);
     }
+  };
+
+  const handleDelete = async () => {
+    setDeleteLoading(true);
+    const response = await deleteUtilityBill({ pk, sk: `${editDialog?.utilityBill?.sk}` });
+    if (response) {
+      const updatedData = await getUtilityBills(pk, sk);
+      setUtilityBills(updatedData);
+      handleClose();
+    } else {
+      setShowAlert(true);
+    }
+    setDeleteLoading(false);
   };
 
   const handleClose = () => {
@@ -59,7 +76,7 @@ export default function EditUtilityBillDialog({ editDialog, setEditDialog, setUt
     <Dialog open={editDialog?.open} onClose={handleClose}>
       <FormProvider {...methods}>
         <form action={handleSubmit(onSubmit)}>
-          <EditUtilityForm showAlert={showAlert} handleClose={handleClose} />
+          <EditUtilityForm deleteLoading={deleteLoading} showAlert={showAlert} handleClose={handleClose} handleDelete={handleDelete} />
         </form>
       </FormProvider>
     </Dialog>

@@ -14,9 +14,9 @@ import MenuItem from '@mui/material/MenuItem';
 
 import { useFormContext, useWatch, Controller } from 'react-hook-form';
 import { useFormStatus } from 'react-dom';
-import { FormHelperText } from '@mui/material';
+import { Box, FormHelperText } from '@mui/material';
 
-export default function EditUtilityForm({ showAlert, handleClose }) {
+export default function EditUtilityForm({ deleteLoading, showAlert, handleClose, handleDelete }) {
   const { pending } = useFormStatus();
 
   const {
@@ -167,11 +167,17 @@ export default function EditUtilityForm({ showAlert, handleClose }) {
           </Grid>
         </Grid>
       </DialogContent>
-      <DialogActions>
-        <Button variant="outlined" onClick={handleClose}>
+      <DialogActions style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <LoadingButton loading={deleteLoading} variant="outlined" color="error" onClick={handleDelete} sx={{ px: '20px' }}>
+          Delete
+        </LoadingButton>
+
+        <Box sx={{ flex: '1 1 auto' }} />
+
+        <Button variant="outlined" onClick={handleClose} sx={{ px: '20px' }}>
           Cancel
         </Button>
-        <LoadingButton variant="contained" loading={pending} type="submit">
+        <LoadingButton variant="contained" loading={pending} type="submit" sx={{ px: '20px' }}>
           Update
         </LoadingButton>
       </DialogActions>

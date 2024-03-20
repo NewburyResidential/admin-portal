@@ -30,7 +30,15 @@ import { LoadingButton } from '@mui/lab';
 import getUtilityBills from 'src/utils/services/utility-bills/getUtilityBills';
 import enterReviewedBillsIntoEntrata from 'src/utils/services/utility-bills/enterReviewedBillsIntoEntrata';
 
-export default function UtilitiesTable({ utilityBills, setUtilityBills, setEditDialog, selectedProperty, selectedUtility, selectedMonth }) {
+export default function UtilitiesTable({
+  utilityBills,
+  setUtilityBills,
+  setEditDialog,
+  selectedProperty,
+  selectedUtility,
+  selectedMonth,
+  filterStatus,
+}) {
   const [selectedRows, setSelectedRows] = useState([]);
   const [billPending, setBillPending] = useState(false);
   const [syncPending, setSyncPending] = useState(false);
@@ -46,9 +54,10 @@ export default function UtilitiesTable({ utilityBills, setUtilityBills, setEditD
     setBillPending(true);
     for (const index of selectedRows) {
       const data = {
-        ...utilityBills[index],
+        ...rows[index],
         status: 'reviewed',
       };
+      console.log(data);
 
       try {
         const response = await updateUtilityBill(data);
@@ -73,15 +82,6 @@ export default function UtilitiesTable({ utilityBills, setUtilityBills, setEditD
   let totalUnapprovedAmount = new Big(0);
   let totalAmount = new Big(0);
 
-  utilityBills.forEach((bill) => {
-    totalElectric = totalElectric.plus(bill.electricAmount || 0);
-    totalWater = totalWater.plus(bill.waterAmount || 0);
-    totalGas = totalGas.plus(bill.gasAmount || 0);
-    totalMiscellaneous = totalMiscellaneous.plus(bill.miscellaneousAmount || 0);
-    totalTax = totalTax.plus(bill.taxAmount || 0);
-    totalAmount = totalAmount.plus(bill.totalAmount || 0);
-    totalUnapprovedAmount = totalUnapprovedAmount.plus(bill.status === 'unapproved' ? bill.totalAmount || 0 : 0);
-  });
   //console.log(totalUnapprovedAmount.toString());
 
   // const totalAmount = totalElectric.plus(totalWater).plus(totalMiscellaneous).plus(totalGas).plus(totalTax);
@@ -94,38 +94,52 @@ export default function UtilitiesTable({ utilityBills, setUtilityBills, setEditD
     }
   };
 
-  const rows = utilityBills.map((bill, index) => {
-    const electric = new Big(bill.electricAmount || 0);
-    const water = new Big(bill.waterAmount || 0);
-    const gas = new Big(bill.gasAmount || 0);
-    const miscellaneous = new Big(bill.miscellaneousAmount || 0);
-    const tax = new Big(bill.taxAmount || 0);
-    const totalAmount = new Big(bill.totalAmount || 0);
-    const individualTotal = electric.plus(water).plus(gas).plus(miscellaneous).plus(tax);
-    let equalsTotal;
+  const rows = utilityBills
+    .filter((bill) => {
+      return bill.status === filterStatus || filterStatus === 'all';
+    })
+    .map((bill, index) => {
+      const electric = new Big(bill.electricAmount || 0);
+      const water = new Big(bill.waterAmount || 0);
+      const gas = new Big(bill.gasAmount || 0);
+      const miscellaneous = new Big(bill.miscellaneousAmount || 0);
+      const tax = new Big(bill.taxAmount || 0);
+      const totalAmount = new Big(bill.totalAmount || 0);
+      const individualTotal = electric.plus(water).plus(gas).plus(miscellaneous).plus(tax);
+      let equalsTotal;
 
-    const isNonZeroNumber = !isNaN(Number(bill?.scrapedAmount)) && Number(bill?.scrapedAmount) !== 0;
+      const isNonZeroNumber = !isNaN(Number(bill?.scrapedAmount)) && Number(bill?.scrapedAmount) !== 0;
 
-    if (isNonZeroNumber) {
-      const scrapedTotal = new Big(bill?.scrapedAmount || 0);
-      equalsTotal = individualTotal.eq(scrapedTotal) && individualTotal.eq(totalAmount);
-    } else {
-      equalsTotal = individualTotal.eq(totalAmount);
-    }
+      if (isNonZeroNumber) {
+        const scrapedTotal = new Big(bill?.scrapedAmount || 0);
+        equalsTotal = individualTotal.eq(scrapedTotal) && individualTotal.eq(totalAmount);
+      } else {
+        equalsTotal = individualTotal.eq(totalAmount);
+      }
 
-    return {
-      ...bill,
-      id: index,
-      equalsTotal,
-      status: bill.status,
-      electricAmount: electric.toNumber(),
-      waterAmount: water.toNumber(),
-      gasAmount: gas.toNumber(),
-      miscellaneousAmount: miscellaneous.toNumber(),
-      taxAmount: tax.toNumber(),
-      totalAmount: totalAmount.toNumber(),
-      type: bill?.type || 'common',
-    };
+      return {
+        ...bill,
+        id: index,
+        equalsTotal,
+        status: bill.status,
+        electricAmount: electric.toNumber(),
+        waterAmount: water.toNumber(),
+        gasAmount: gas.toNumber(),
+        miscellaneousAmount: miscellaneous.toNumber(),
+        taxAmount: tax.toNumber(),
+        totalAmount: totalAmount.toNumber(),
+        type: bill?.type || 'common',
+      };
+    });
+
+  rows.forEach((bill) => {
+    totalElectric = totalElectric.plus(bill.electricAmount || 0);
+    totalWater = totalWater.plus(bill.waterAmount || 0);
+    totalGas = totalGas.plus(bill.gasAmount || 0);
+    totalMiscellaneous = totalMiscellaneous.plus(bill.miscellaneousAmount || 0);
+    totalTax = totalTax.plus(bill.taxAmount || 0);
+    totalAmount = totalAmount.plus(bill.totalAmount || 0);
+    totalUnapprovedAmount = totalUnapprovedAmount.plus(bill.status === 'unapproved' ? bill.totalAmount || 0 : 0);
   });
 
   const TotalHeader = ({ title, total }) => (

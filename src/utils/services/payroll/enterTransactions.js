@@ -1,8 +1,7 @@
 'use server';
 
-export default async function updateUtilityBill(data) {
-    
-  const url = 'https://gpxllcrxmk.execute-api.us-east-1.amazonaws.com/updateutilitybill';
+export default async function enterTransactions(data) {
+  const url = '	https://eddtuwh860.execute-api.us-east-1.amazonaws.com/enterTransactions';
   const requestOptions = {
     method: 'POST',
     cache: 'no-store',
@@ -16,13 +15,12 @@ export default async function updateUtilityBill(data) {
     const response = await fetch(url, requestOptions);
     console.log(response);
     if (response.ok) {
-
-      return true;
+      return response.json();
     } else {
-      return false;
+      return response.json()
     }
   } catch (error) {
     console.error('Error Updating Utility Bill', error);
-    return false;
+    return error;
   }
 }
