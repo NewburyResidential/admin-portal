@@ -113,4 +113,13 @@ export const assetItems = [
     waveARId: 'QWNjb3VudDoxOTA2ODM4NzYyODczMjA0Nzg0O0J1c2luZXNzOjc5OTg2NWE2LTlmMGEtNDgwNS1iZTg0LTJkMDgyOTE5MWVhYw==',
     waveCreditCard: 'QWNjb3VudDoxOTA2OTg4MjYyMjU0MjI3NzQyO0J1c2luZXNzOjFmYWU0NTdmLTNkYjQtNGI4OS1iMDc0LTBiZjY4Y2FjNTNiMg==',
   },
+  {
+    category: 'Home Office',
+    id: '3',
+    label: 'Stratton Investors',
+    accountId: 'P5',
+    units: 0,
+    accountingSoftware: 'n/a',
+    waveARId: 'QWNjb3VudDoxOTYzMjQ2NjkwOTU3ODMyNzU4O0J1c2luZXNzOjc5OTg2NWE2LTlmMGEtNDgwNS1iZTg0LTJkMDgyOTE5MWVhYw==',
+  },
 ];
