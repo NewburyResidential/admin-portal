@@ -161,12 +161,11 @@ export default function FileInput({ waveChartOfAccounts }) {
                 const proportionalAmount = item.amount.times(percent).round(2);
                 const account = accumulativeAccounts.find((account) => account.uniqueId === item.uniqueId);
                 account.amount = account.amount.plus(proportionalAmount);
-                console.log(`${item.accountName}:`, proportionalAmount.toString());
+                // console.log(`${item.accountName}:`, proportionalAmount.toString());
                 if (index === propertyKeys.length - 1) {
                   const accumulativeAmount = accumulativeAccounts.find((account) => account.uniqueId === item.uniqueId).amount;
                   const originalAmount = data.find((account) => account.uniqueId === item.uniqueId).amount;
                   const roundingError = accumulativeAmount.minus(originalAmount);
-
                   if (roundingError.gt(0)) {
                     console.log('Rounding error', roundingError.toString());
                   }
@@ -291,14 +290,14 @@ export default function FileInput({ waveChartOfAccounts }) {
     return acc;
   }, Big(0));
   const handleAmountChange = (propertyId, accountId, newValue) => {
-    const newAmount = new Big(newValue);
+
     setPayrollByProperty((prevState) => {
       const newState = { ...prevState };
 
       if (newState[propertyId]) {
         newState[propertyId].data = newState[propertyId].data.map((account) => {
-          if (account.account === accountId) {
-            return { ...account, amount: newAmount };
+          if (account.accountNumber === accountId) {
+            return { ...account, amount: newValue };
           }
           return account;
         });
@@ -329,8 +328,17 @@ export default function FileInput({ waveChartOfAccounts }) {
       benefitAccounts.forEach((account) => {
         const employeeTypeChar = account.accountNumber.slice(2, 3);
         const benefitAccountNumber = account.accountNumber.slice(-6);
+        console.log(employeeTypeChar, 'employeeTypeChar');
         const payrollAccountNumber =
-          employeeTypeChar === 'o' ? '623200' : employeeTypeChar === 's' ? '623400' : employeeTypeChar === 'm' ? '624200' : 'issue';
+          employeeTypeChar === 'o'
+            ? '623200'
+            : employeeTypeChar === 's'
+              ? '623400'
+              : employeeTypeChar === 'm'
+                ? '624200'
+                : employeeTypeChar === '-'
+                  ? '625200'
+                  : 'issue';
         if (['dental', 'vision', 'health'].includes(account.accountName)) {
           addAccountDetails(payrollAccountNumber, account.amount, benefitAccountNumber, account.accountName);
         }
@@ -410,6 +418,7 @@ export default function FileInput({ waveChartOfAccounts }) {
         const bigBenefitTotal = benefitAccounts.reduce((sum, item) => {
           return sum.plus(item.amount);
         }, new Big(0));
+        console.log(sortedAccounts);
 
         return (
           <>
@@ -436,7 +445,7 @@ export default function FileInput({ waveChartOfAccounts }) {
                             style={{ marginLeft: 'auto' }}
                             value={account.amount.toString()}
                             onChange={(e) => {
-                              handleAmountChange(key, account.account, e.target.value);
+                              handleAmountChange(key, account.accountNumber, e.target.value);
                             }}
                           />
                         </ListItem>
@@ -454,7 +463,7 @@ export default function FileInput({ waveChartOfAccounts }) {
                             sx={{ marginLeft: 'auto' }}
                             value={account.amount.toString()}
                             onChange={(e) => {
-                              handleAmountChange(key, account.account, e.target.value);
+                              handleAmountChange(key, account.accountNumber, e.target.value);
                             }}
                           />
                         </ListItem>
