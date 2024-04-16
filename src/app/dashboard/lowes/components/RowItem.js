@@ -1,12 +1,18 @@
 import { useTheme } from '@mui/material/styles';
 import { useFormContext, useFieldArray, useWatch, Controller } from 'react-hook-form';
 
-import Box from '@mui/material/Box';
-import TextField from '@mui/material/TextField';
-import CheckboxApprove from './CheckboxApprove';
 
-export default function RowItem({ itemIndex }) {
-  const { control } = useFormContext();
+import CheckboxApprove from './CheckboxApprove';
+import { Box, Card, CardContent, CardMedia, Typography } from '@mui/material';
+import DropDownGl from './DropDownGl';
+import CheckboxFixed from './CheckboxFixed';
+
+export default function RowItem({ chartOfAccounts, uncatalogedItem, itemIndex }) {
+  const { control, setValue, getValues } = useFormContext();
+
+  const toggleRowChecked = () => {
+    setValue(`uncatalogedItems[${itemIndex}].checked`, !itemsChecked);
+  };
 
   const theme = useTheme();
   const isLight = theme.palette.mode === 'light';
@@ -22,34 +28,56 @@ export default function RowItem({ itemIndex }) {
       : hexToRgba(theme.palette.primary.dark, 0.4)
     : itemIndex % 2 !== 0
       ? isLight
-        ? '#FAFBFC'
-        : '#2F3944'
+        ? 'white'
+        : '#white'
       : isLight
-        ? '#f0f0f0'
+        ? 'white'
         : '#212B36';
 
   const containerStyle = {
     display: 'flex',
     backgroundColor,
-    pt: 2,
-    pb: 3,
+    pt: 1.4,
+    pb: 1.4,
     pl: 2,
     alignItems: 'center',
     gap: 2,
+    borderBottom: '2px dashed #F6F7F8',
   };
 
   return (
-    <>
-      <Box sx={containerStyle}>
-        <Box sx={{ flex: '0 0 auto', pr: 2 }}>
-          <CheckboxApprove itemIndex={itemIndex} />
-        </Box>
-        <Box sx={{ flex: 1, textAlign: 'center' }}>1</Box>
-        <Box sx={{ flex: 1, textAlign: 'center' }}>2</Box>
-        <Box sx={{ flex: 1, textAlign: 'center' }}>3</Box>
-        <Box sx={{ flex: 1, textAlign: 'center' }}>4</Box>
+    <Box
+      sx={containerStyle}
+      onClick={() => {
+        toggleRowChecked();
+      }}
+    >
+      <Box sx={{ flex: '0 0 auto', pr: 2 }}>
+        <CheckboxApprove itemIndex={itemIndex} />
       </Box>
-    </>
+      <Box sx={{ flex: 1, textAlign: 'left' }}>
+        <DropDownGl chartOfAccounts={chartOfAccounts} itemIndex={itemIndex} />
+      </Box>
+      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', mx: 2 }}>
+        <CheckboxFixed itemIndex={itemIndex} />
+      </Box>
+      <Box sx={{ flex: 1, textAlign: 'left', marginLeft: 3 }}>{uncatalogedItem.title}</Box>
+      <Box sx={{ flex: 1, textAlign: 'center' }}>{uncatalogedItem.category}</Box>
+      <Box sx={{ flex: 1, textAlign: 'center' }}>{uncatalogedItem.price}</Box>
+      <Box sx={{ flex: 1, align: 'center', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <img
+          src={uncatalogedItem.imageUrl}
+          alt="Unavailable"
+          style={{
+            maxWidth: '70px',
+            maxHeight: '100px',
+            objectFit: 'contain',
+            margin: 0,
+            padding: 0,
+          }}
+        />
+      </Box>
+    </Box>
   );
 }
 

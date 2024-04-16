@@ -14,19 +14,25 @@ import TableContainer from '@mui/material/TableContainer';
 import PageChange from './PageChange';
 import ButtonApprove from './ButtonApprove';
 import RowItem from './RowItem';
+import ButtonApplyGl from './ButtonApplyGl';
+import DropDownGl from './DropDownGl';
+import DropDownGlHeader from './DropDownGlHeader';
+import { itemsSchema } from './utils/items-schema';
 
-export default function AllocationTable({ uncatalogedItems }) {
+export default function AllocationTable({ uncatalogedItems, chartOfAccounts }) {
   const [loading, setLoading] = useState(false);
+
+  const updatedUncatalogedItems = uncatalogedItems.map((item) => ({ ...item, checked: false }));
 
   const methods = useForm({
     defaultValues: {
-      uncatalogedItems: uncatalogedItems,
+      uncatalogedItems: updatedUncatalogedItems,
       pageSettings: { page: 0, rowsPerPage: 10 },
     },
-    // resolver: yupResolver(transactionsSchema),
+    resolver: yupResolver(itemsSchema),
   });
 
-  const { control, handleSubmit, setValue } = methods;
+  const { control, handleSubmit, setValue, formState } = methods;
 
   const { fields: uncatalogedItemFields } = useFieldArray({
     control,
@@ -39,22 +45,27 @@ export default function AllocationTable({ uncatalogedItems }) {
   });
   const currentPageUncatalogedItems = uncatalogedItemFields.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
-  console.log(uncatalogedItemFields)
-
-  const onSubmit = async (data) => {
-    console.log(data);
+  const onItemSubmit = async (data) => {
+    console.log('itemSubmit', data);
+  };
+  const onGlSubmit = async (data) => {
+    console.log('GlSubmit', data);
   };
 
-  console.log(uncatalogedItems);
+  console.log(formState);
 
   return (
     <FormProvider {...methods}>
-      <form action={handleSubmit(onSubmit)}>
+      <form>
         <Card sx={{ borderRadius: '10px' }}>
           <CardActions
             sx={{ backgroundColor: (theme) => (theme.palette.mode === 'light' ? 'primary.darker' : theme.palette.common.black) }}
           >
-            <ButtonApprove uncatalogedItems={uncatalogedItems} />
+            <ButtonApprove handleSubmit={handleSubmit(onItemSubmit)} uncatalogedItems={uncatalogedItems} />
+            <ButtonApplyGl handleSubmit={handleSubmit(onGlSubmit)} uncatalogedItems={uncatalogedItems} />
+            <Box sx={{ width: '360px', mb: 2 }}>
+              <DropDownGlHeader chartOfAccounts={chartOfAccounts} />
+            </Box>
             <PageChange uncatalogedItems={uncatalogedItemFields} page={page} rowsPerPage={rowsPerPage} />
           </CardActions>
           <TableContainer component={Paper} sx={{ borderRadius: '0px', overflowX: 'hidden', maxHeight: '74vh', height: '74vh' }}>
@@ -62,7 +73,11 @@ export default function AllocationTable({ uncatalogedItems }) {
               <>
                 {currentPageUncatalogedItems.map((uncatalogedItem, itemIndex) => (
                   <Box key={uncatalogedItem.id} sx={{ display: 'flex', flexDirection: 'column' }}>
-                    <RowItem uncatalogedItem={uncatalogedItem} itemIndex={page * rowsPerPage + itemIndex} />
+                    <RowItem
+                      chartOfAccounts={chartOfAccounts}
+                      uncatalogedItem={uncatalogedItem}
+                      itemIndex={page * rowsPerPage + itemIndex}
+                    />
                   </Box>
                 ))}
               </>

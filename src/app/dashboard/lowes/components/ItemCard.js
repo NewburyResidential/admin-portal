@@ -163,8 +163,7 @@ export default function ItemCard() {
         rowHeight={90} // Set the row height to 70 pixels
         rows={rows}
         columns={columns}
-        pageSize={5}
-        rowsPerPageOptions={[5]}
+        pagination={false}
         checkboxSelection
         sx={{
           '& .MuiDataGrid-columnHeaderTitleContainer': {

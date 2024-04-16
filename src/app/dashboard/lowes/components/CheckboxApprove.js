@@ -6,7 +6,7 @@ export default function CheckboxApprove({ itemIndex }) {
 
   return (
     <Controller
-      name={`uncatalogItems[${itemIndex}].checked`}
+      name={`uncatalogedItems[${itemIndex}].checked`}
       control={control}
       defaultValue={false}
       render={({ field }) => <Checkbox {...field} checked={field.value} />}

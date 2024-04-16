@@ -2,8 +2,7 @@ import { LoadingButton } from '@mui/lab';
 import { useFormStatus } from 'react-dom';
 import { useWatch, useFormContext } from 'react-hook-form';
 
-export default function ButtonApprove({ uncatalogedItems }) {
-  console.log(uncatalogedItems)
+export default function ButtonApprove({ uncatalogedItems, handleSubmit }) {
   const { control } = useFormContext();
   const { pending } = useFormStatus();
 
@@ -11,8 +10,6 @@ export default function ButtonApprove({ uncatalogedItems }) {
     control,
     name: uncatalogedItems.map((_, index) => `uncatalogedItems[${index}].checked`),
   });
-
-  console.log(checkedArray)
 
   const selectedItem = checkedArray.reduce((count, currentValue) => {
     return currentValue ? count + 1 : count;
@@ -22,14 +19,14 @@ export default function ButtonApprove({ uncatalogedItems }) {
 
   return (
     <LoadingButton
+      onClick={handleSubmit}
       variant="contained"
-      style={{ marginLeft: '16px', width: '140px' }}
+      style={{ marginLeft: '16px', width: '190px' }}
       disabled={selectedItem < 1 || length === 0}
-      type="submit"
       color="primary"
       loading={pending}
     >
-      Approve {length === 0 ? '' : selectedItem > 0 && `(${selectedItem})`}
+      Add Item{length === 0 ? '' : selectedItem > 1 ? `s (${selectedItem})` : selectedItem > 0 && ` (${selectedItem})`}
     </LoadingButton>
   );
 }
