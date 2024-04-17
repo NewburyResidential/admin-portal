@@ -46,6 +46,8 @@ export default function AllocationTable({ uncatalogedItems, chartOfAccounts }) {
   const currentPageUncatalogedItems = uncatalogedItemFields.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
   const onItemSubmit = async (data) => {
+    const catalogedItems = data.uncatalogedItems.filter((item) => item.checked);
+    console.log('cat', catalogedItems);
     console.log('itemSubmit', data);
   };
   const onGlSubmit = async (data) => {
