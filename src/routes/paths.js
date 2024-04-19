@@ -12,7 +12,6 @@ export const paths = {
   auth: {
     jwt: {
       login: `${ROOTS.AUTH}/microsoft/login`,
-      register: `${ROOTS.AUTH}/jwt/register`,
     },
   },
   // DASHBOARD - come back and rename

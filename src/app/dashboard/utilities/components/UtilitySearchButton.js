@@ -1,4 +1,4 @@
-import { LoadingButton } from '@mui/lab';
+import LoadingButton from '@mui/lab/LoadingButton';
 import { useFormStatus } from 'react-dom';
 
 export default function UtilitySearchButton() {

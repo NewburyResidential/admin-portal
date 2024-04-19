@@ -279,16 +279,8 @@ export default function FileInput({ waveChartOfAccounts }) {
     (acc, { accountNumber, amount }) => (['222403', '222401', '222402'].includes(accountNumber) ? acc.plus(amount) : acc),
     Big(0)
   );
-  const employeeAmount = combinedBenefitTotal;
-  const employeePercentage = new Big(0.4);
-  const companyPercentage = new Big(0.6);
-  const combinedCompanyBenefitTotal = employeeAmount.mul(companyPercentage.div(employeePercentage));
-  const combinedCompanyBenefitTotalByProperty = Object.entries(totalUniquePayrollByProperty).reduce((acc, [key, { amount }]) => {
-    if (key.startsWith('N-')) {
-      return acc.plus(new Big(amount));
-    }
-    return acc;
-  }, Big(0));
+
+
   const handleAmountChange = (propertyId, accountId, newValue) => {
 
     setPayrollByProperty((prevState) => {
@@ -649,7 +641,7 @@ export default function FileInput({ waveChartOfAccounts }) {
         </Accordion>
         <Divider />
       </Box>
-      <Button onClick={handleSubmit}>this is a test</Button>
+      <Button onClick={handleSubmit}>Submit to Wave/Entrata</Button>
     </div>
   );
 }

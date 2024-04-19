@@ -1,0 +1,1 @@
+Change the upload option to one sync button and should upload individually and errror individually

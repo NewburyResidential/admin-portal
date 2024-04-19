@@ -1,6 +1,9 @@
-import React, { useState } from 'react';
+import Box from '@mui/material/Box';
+import TextField from '@mui/material/TextField';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
+import Select from '@mui/material/MenuItem';
 
-import { Box, TextField, Autocomplete, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import { assetItems } from 'src/assets/data/assets';
 
 import getUtilityBills from 'src/utils/services/utility-bills/getUtilityBills';
@@ -73,7 +76,6 @@ export default function UtilitySeach({
             onChange={(event) => {
               setFilterStatus(event.target.value);
             }}
-            
           >
             <MenuItem value="all">All</MenuItem>
             <MenuItem value="unapproved">Unapproved</MenuItem>
