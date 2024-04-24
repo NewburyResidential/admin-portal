@@ -56,17 +56,17 @@ export default function AllocationTable({ uncatalogedItems, chartOfAccounts, set
 
   const onSubmit = async (data) => {
     setLoading(true);
-    const catalogedItems = data.uncatalogedItems.filter((item) => item.checked);
-    const batchItems = catalogedItems.map((item) => ({ pk: item.sku, ...item }));
+    const selectedItems = data.uncatalogedItems.filter((item) => item.checked);
+    const batchItems = selectedItems.map((item) => ({ pk: item.sku, ...item }));
     await batchUpdateCatalogItems(batchItems);
-    const updatedUncatalogedItems = data.uncatalogedItems.filter((item) => !item.checked);
-    if (updatedUncatalogedItems.length === 0) {
+    const remainingUncatalogedItems = data.uncatalogedItems.filter((item) => !item.checked);
+    if (remainingUncatalogedItems.length === 0) {
       const catalogedItems = await getCatalogedItems(getUniqueInvoiceItems(groupedInvoices));
       setCatalogedItems(catalogedItems);
       setCurrentStep(3);
     }
 
-    setValue('uncatalogedItems', updatedUncatalogedItems);
+    setValue('uncatalogedItems', remainingUncatalogedItems);
     setLoading(false);
   };
 

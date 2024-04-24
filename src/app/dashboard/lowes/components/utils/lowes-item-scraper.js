@@ -18,15 +18,15 @@ export default async function lowesItemScraper(items) {
   await page.click('button[data-storenumber="0146"]');
   await page.waitForTimeout(4000);
 
-  const maxRetries = 1; // Define the max number of retries
-
-  for (const item of items) {
-    let retryCount = 0; // Counter to track the number of retries
+  const maxRetries = 1;
+  let pageUrl;
+  items.forEach(async (item) => {
+    let retryCount = 0;
 
     while (retryCount <= maxRetries) {
       try {
-        const sku = item.sku;
-        const pageUrl = `https://www.lowes.com/search?searchTerm=${sku}`;
+        const { sku } = item;
+        pageUrl = `https://www.lowes.com/search?searchTerm=${sku}`;
         await page.goto(pageUrl, { waitUntil: 'load' });
         await page.waitForSelector('.js-the-game-is-up');
 
@@ -36,10 +36,10 @@ export default async function lowesItemScraper(items) {
 
         if (itemScreen) {
           await extractItemDetails(item, page, sku, results);
-          break; // If the details are extracted, exit the retry loop
+          break;
         } else if (searchScreen) {
           await navigateAndExtractFromSearchResults(item, page, sku, results);
-          break; // If the details are extracted from search results, exit the retry loop
+          break;
         } else {
           console.log('Unknown page state, could not find item or search indicators.');
           pushEmptyResult(item);
@@ -59,7 +59,7 @@ export default async function lowesItemScraper(items) {
         }
       }
     }
-  }
+  });
 
   await browser.close();
   return results;
@@ -109,7 +109,7 @@ async function extractProductDetails(page) {
 }
 
 async function safePageEval(page, selector, callback) {
-  return await page.$eval(selector, callback).catch(() => null);
+  return page.$eval(selector, callback).catch(() => null);
 }
 
 async function pushEmptyResult(item) {

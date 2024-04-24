@@ -5,10 +5,10 @@ import PropTypes from 'prop-types';
 import { useState, useCallback, useEffect } from 'react';
 // @mui
 import Card from '@mui/material/Card';
-import Switch from '@mui/material/Switch';
+//import Switch from '@mui/material/Switch';
 import CardHeader from '@mui/material/CardHeader';
 import CardContent from '@mui/material/CardContent';
-import FormControlLabel from '@mui/material/FormControlLabel';
+//import FormControlLabel from '@mui/material/FormControlLabel';
 
 import { useBoolean } from 'src/hooks/use-boolean';
 
@@ -27,7 +27,7 @@ export default function UploadMultiFiles({ onUpload, accept, onChange }) {
       onChange(files[0]);
       setFiles([]);
     }
-  }, [files]);
+  }, [files, onChange]);
 
   const handleDropMultiFile = useCallback(
     (acceptedFiles) => {

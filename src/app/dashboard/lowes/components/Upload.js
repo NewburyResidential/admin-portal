@@ -1,8 +1,9 @@
 'use client';
+
 import { useState } from 'react';
 import Papa from 'papaparse';
 
-import Box from '@mui/system/Box';
+import Box from '@mui/material/Box';
 import { LoadingScreen } from 'src/components/loading-screen';
 import UploadMultiFiles from 'src/components/upload-files/UploadMultiFiles';
 
@@ -29,7 +30,7 @@ const Upload = ({ setGroupedInvoices, setCurrentStep }) => {
               totalInvoice: curr['Total Invoice'],
               jobName: curr['PO#'],
               buyerName: curr['Buyer Name'],
-              store: curr['Store'],
+              store: curr.Store,
             };
           }
 
@@ -38,23 +39,23 @@ const Upload = ({ setGroupedInvoices, setCurrentStep }) => {
           if (curr['Total Invoice'] !== '' && curr['Total Invoice'] !== null && curr['Total Invoice'] !== ' ') {
             acc[invoiceNum].totalInvoice = curr['Total Invoice'];
           }
-          if (curr['Tax'] !== '' && curr['Total Invoice'] !== null && curr['Total Invoice'] !== ' ') {
-            acc[invoiceNum].tax = curr['Tax'];
+          if (curr.Tax !== '' && curr['Total Invoice'] !== null && curr['Total Invoice'] !== ' ') {
+            acc[invoiceNum].tax = curr.Tax;
             return acc;
-          } else if (curr['SkuDesc'] === 'DELIVERY') {
+          } if (curr.SkuDesc === 'DELIVERY') {
             acc[invoiceNum].tax = curr['Ex Price'];
             return acc;
-          } else if (curr['SKU'] === null || curr['SKU'] === '' || curr['SKU'] === ' ' || curr['SkuDesc'] === 'PROMOTIONAL DISCOUNT APPL') {
+          } if (curr.SKU === null || curr.SKU === '' || curr.SKU === ' ' || curr.SkuDesc === 'PROMOTIONAL DISCOUNT APPL') {
             return acc;
-          } else {
+          } 
             acc[invoiceNum].lineItems.push({
-              sku: curr['SKU'],
-              skuDescription: curr['SkuDesc'],
-              cost: curr['Price'],
+              sku: curr.SKU,
+              skuDescription: curr.SkuDesc,
+              cost: curr.Price,
               totalCost: curr['Ex Price'],
-              qty: curr['Quantity'],
+              qty: curr.Quantity,
             });
-          }
+          
           return acc;
         }, {});
         setGroupedInvoices(grouped);
