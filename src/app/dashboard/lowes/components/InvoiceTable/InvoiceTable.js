@@ -145,12 +145,11 @@ export default function InvoiceTable({ groupedInvoices, chartOfAccounts, catalog
       };
       console.log(itemsPurchased);
 
-      //const success = await addInvoice(invoice);
-      const success = true;
+      const success = await addInvoice(invoice);
       let updatedInvoices;
 
       if (success) {
-        //await batchUpdateCatalogPurchases(itemsPurchased);
+        await batchUpdateCatalogPurchases(itemsPurchased);
         updatedInvoices = data.invoices.filter((item) => !item.checked);
         setValue('invoices', updatedInvoices);
       }

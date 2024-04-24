@@ -37,6 +37,7 @@ export default function AllocationTable({ uncatalogedItems, chartOfAccounts, set
     defaultValues: {
       uncatalogedItems: updatedUncatalogedItems,
       pageSettings: { page: 0, rowsPerPage: 10 },
+      masterGlAccount: null,
     },
     resolver: yupResolver(itemsSchema),
   });
@@ -57,6 +58,7 @@ export default function AllocationTable({ uncatalogedItems, chartOfAccounts, set
   const onSubmit = async (data) => {
     setLoading(true);
     const selectedItems = data.uncatalogedItems.filter((item) => item.checked);
+    console.log(selectedItems);
     const batchItems = selectedItems.map((item) => ({ pk: item.sku, ...item }));
     await batchUpdateCatalogItems(batchItems);
     const remainingUncatalogedItems = data.uncatalogedItems.filter((item) => !item.checked);
@@ -86,7 +88,7 @@ export default function AllocationTable({ uncatalogedItems, chartOfAccounts, set
             />
             <Box
               sx={{
-                width: '360px',
+                width: '400px',
                 borderRadius: '8px',
               }}
             >

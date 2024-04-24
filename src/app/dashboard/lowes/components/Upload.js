@@ -42,22 +42,25 @@ const Upload = ({ setGroupedInvoices, setCurrentStep }) => {
           if (curr.Tax !== '' && curr['Total Invoice'] !== null && curr['Total Invoice'] !== ' ') {
             acc[invoiceNum].tax = curr.Tax;
             return acc;
-          } if (curr.SkuDesc === 'DELIVERY') {
-            acc[invoiceNum].tax = curr['Ex Price'];
+          }
+          if (curr.SkuDesc === 'DELIVERY FEE') {
+            acc[invoiceNum].shipping = curr['Ex Price'];
             return acc;
-          } if (curr.SKU === null || curr.SKU === '' || curr.SKU === ' ' || curr.SkuDesc === 'PROMOTIONAL DISCOUNT APPL') {
+          }
+          if (curr.SKU === null || curr.SKU === '' || curr.SKU === ' ' || curr.SkuDesc === 'PROMOTIONAL DISCOUNT APPL') {
             return acc;
-          } 
-            acc[invoiceNum].lineItems.push({
-              sku: curr.SKU,
-              skuDescription: curr.SkuDesc,
-              cost: curr.Price,
-              totalCost: curr['Ex Price'],
-              qty: curr.Quantity,
-            });
-          
+          }
+          acc[invoiceNum].lineItems.push({
+            sku: curr.SKU,
+            skuDescription: curr.SkuDesc,
+            cost: curr.Price,
+            totalCost: curr['Ex Price'],
+            qty: curr.Quantity,
+          });
+
           return acc;
         }, {});
+        console.log(grouped);
         setGroupedInvoices(grouped);
         setCurrentStep(1);
         setLoading(false);

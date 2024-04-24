@@ -30,6 +30,7 @@
   "rules": {
     "no-await-in-loop": "off",
     "no-plusplus": "off",
+    "no-restricted-syntax": "off",
     "spaced-comment": "off",
     "arrow-body-style": "off",
     "import/order": "off",
