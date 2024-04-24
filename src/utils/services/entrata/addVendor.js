@@ -11,7 +11,8 @@ export default async function addVendor(data) {
   const url = 'https://jzhfwizez8.execute-api.us-east-1.amazonaws.com';
   const requestOptions = {
     method: 'POST',
-    cache: 'no-store',
+    //cache: 'no-cache',
+    next: { revalidate: 0 },
     headers: {
       'Content-Type': 'application/json',
     },

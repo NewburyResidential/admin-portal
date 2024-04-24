@@ -4,7 +4,8 @@ export default async function addInvoice(invoice) {
   const url = 'https://dc390lb5ne.execute-api.us-east-1.amazonaws.com/addInvoices';
   const requestOptions = {
     method: 'POST',
-    cache: 'no-store',
+    //cache: 'no-cache',
+    next: { revalidate: 0 },
     headers: {
       'Content-Type': 'application/json',
     },

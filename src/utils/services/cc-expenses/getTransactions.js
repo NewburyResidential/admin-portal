@@ -1,4 +1,4 @@
-"use server";
+'use server';
 
 export default async function getTransactions(pk, sk) {
   const baseUrl = 'https://0yxexcpp8f.execute-api.us-east-1.amazonaws.com/getTransactions';
@@ -7,7 +7,8 @@ export default async function getTransactions(pk, sk) {
   if (sk) url.searchParams.append('sk', sk);
 
   const requestOptions = {
-    cache: 'no-store',
+    //cache: 'no-cache',
+    next: { revalidate: 0 },
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',

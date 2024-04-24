@@ -1,9 +1,10 @@
-"use server";
+'use server';
 
 export default async function getSuggestedReceipts() {
   const url = 'https://0yxexcpp8f.execute-api.us-east-1.amazonaws.com/getSuggestedReceipts';
   const requestOptions = {
-    cache: 'no-store',
+    //cache: 'no-cache',
+    next: { revalidate: 0 },
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',

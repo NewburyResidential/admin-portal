@@ -4,7 +4,8 @@ export default async function updateCatalogItem(item) {
   const url = 'https://gkteqh3jvj.execute-api.us-east-1.amazonaws.com/updateItem';
   const requestOptions = {
     method: 'POST',
-    cache: 'no-store',
+    //cache: 'no-cache',
+    next: { revalidate: 0 },
     headers: {
       'Content-Type': 'application/json',
     },
