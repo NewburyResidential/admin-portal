@@ -12,6 +12,7 @@ export default function AutocompleteGroup({
   id = 'grouped-auto-complete',
   optionLabel = 'label',
   optionId = 'id',
+  variant = 'outlined',
   sx,
 }) {
   const { control } = useFormContext();
@@ -28,12 +29,24 @@ export default function AutocompleteGroup({
           onChange={(event, newValue) => {
             field.onChange(newValue);
             handleChange(newValue);
+            event.stopPropagation();
           }}
           id={id}
           options={options.sort((a, b) => b.category.localeCompare(a.category))}
           groupBy={(option) => option.category}
           getOptionLabel={(option) => option[optionLabel]}
-          renderInput={(params) => <TextField {...params} label={label} error={!!error} />}
+          renderInput={(params) => (
+            <TextField
+           
+              variant={variant}
+              onClick={(event) => {
+                event.stopPropagation();
+              }}
+              {...params}
+              label={label}
+              error={!!error}
+            />
+          )}
           isOptionEqualToValue={(option, selected) => option[optionId] === selected[optionId]}
           renderOption={(props, option) => (
             <li {...props} key={option[optionId]}>

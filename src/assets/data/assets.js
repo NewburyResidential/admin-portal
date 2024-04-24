@@ -74,6 +74,7 @@ export const assetItems = [
     units: 150,
     accountingSoftware: 'entrata',
     waveARId: 'QWNjb3VudDoxOTA2ODM3MDI3MDg1NjYwOTc4O0J1c2luZXNzOjc5OTg2NWE2LTlmMGEtNDgwNS1iZTg0LTJkMDgyOTE5MWVhYw==',
+    supplyStores: { lowes: [''] },
   },
   {
     category: 'Properties',
@@ -83,6 +84,7 @@ export const assetItems = [
     units: 62,
     accountingSoftware: 'entrata',
     waveARId: 'QWNjb3VudDoxOTA2ODM3NjMwMDU4ODAzOTc3O0J1c2luZXNzOjc5OTg2NWE2LTlmMGEtNDgwNS1iZTg0LTJkMDgyOTE5MWVhYw==',
+    supplyStores: { lowes: [''] },
   },
   {
     category: 'Properties',

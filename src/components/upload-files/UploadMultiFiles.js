@@ -2,13 +2,13 @@
 
 import PropTypes from 'prop-types';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 // @mui
 import Card from '@mui/material/Card';
-import Switch from '@mui/material/Switch';
+//import Switch from '@mui/material/Switch';
 import CardHeader from '@mui/material/CardHeader';
 import CardContent from '@mui/material/CardContent';
-import FormControlLabel from '@mui/material/FormControlLabel';
+//import FormControlLabel from '@mui/material/FormControlLabel';
 
 import { useBoolean } from 'src/hooks/use-boolean';
 
@@ -17,10 +17,17 @@ import { Upload } from 'src/components/upload-files';
 
 // ----------------------------------------------------------------------
 
-export default function UploadMultiFiles({ onUpload, accept}) {
+export default function UploadMultiFiles({ onUpload, accept, onChange }) {
   const preview = useBoolean();
   const [files, setFiles] = useState([]);
   const [duplicateFiles, setDuplicateFiles] = useState([]);
+
+  useEffect(() => {
+    if (files.length !== 0) {
+      onChange(files[0]);
+      setFiles([]);
+    }
+  }, [files, onChange]);
 
   const handleDropMultiFile = useCallback(
     (acceptedFiles) => {
@@ -62,37 +69,31 @@ export default function UploadMultiFiles({ onUpload, accept}) {
 
   return (
     <Card>
-        <CardHeader
-          title="Upload Utility Bills"
-          action={
-            <FormControlLabel
-              control={<Switch checked={preview.value} onClick={preview.onToggle} />}
-              label="Expand Files"
-            />
-          }
+      <CardHeader
+        title="Upload Lowe's CSV File"
+        //action={<FormControlLabel control={<Switch checked={preview.value} onClick={preview.onToggle} />} label="Expand Files" />}
+      />
+      <CardContent>
+        <Upload
+          multiple
+          accept={accept}
+          thumbnail={!preview.value}
+          files={files}
+          onDrop={handleDropMultiFile}
+          onRemove={handleRemoveFile}
+          onRemoveAll={handleRemoveAllFiles}
+          onUpload={() => {
+            setDuplicateFiles([]);
+            onUpload(files);
+          }}
+          duplicateFiles={duplicateFiles}
         />
-        <CardContent>
-          <Upload
-            multiple
-            accept={accept}
-            thumbnail={!preview.value}
-            files={files}
-            onDrop={handleDropMultiFile}
-            onRemove={handleRemoveFile}
-            onRemoveAll={handleRemoveAllFiles}
-            onUpload={() => {
-              setDuplicateFiles([]);
-              onUpload(files);
-            }}
-            duplicateFiles={duplicateFiles}
-          />
-        </CardContent>
-      </Card>
+      </CardContent>
+    </Card>
   );
 }
 
-
 UploadMultiFiles.propTypes = {
   onUpload: PropTypes.func,
-  accept: PropTypes.object
+  accept: PropTypes.object,
 };

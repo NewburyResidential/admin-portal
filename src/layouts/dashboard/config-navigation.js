@@ -4,6 +4,8 @@ import { paths } from 'src/routes/paths';
 // components
 import SvgColor from 'src/components/svg-color';
 
+const DASHBOARD = '/dashboard';
+
 // ----------------------------------------------------------------------
 
 const icon = (name) => (
@@ -69,7 +71,7 @@ export function useNavData() {
       //   ],
       // },
       {
-        subheader: 'Management',
+        subheader: 'Accounting',
         items: [
           {
             title: 'Expenses',
@@ -79,6 +81,11 @@ export function useNavData() {
               { title: 'Transactions', path: paths.creditCards.root }, // Create Root Folder
               { title: 'Reports', path: paths.creditCards.reports },
             ],
+          },
+          {
+            title: 'Lowes',
+            path: `${DASHBOARD}/lowes`,
+            icon: ICONS.order,
           },
         ],
       },
