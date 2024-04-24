@@ -1,5 +1,4 @@
 'use server';
-export const dynamic = 'force-dynamic';
 
 import { ENTRATA_API } from 'src/config-global';
 import { authorization } from './authorization';
@@ -22,7 +21,6 @@ async function fetchData() {
 
   try {
     const response = await fetch(url, {
-      cache: 'no-store',
       next: { tags: ['vendors'] },
       method: 'POST',
       headers: {
