@@ -1,7 +1,10 @@
 'use server';
 
 import { firefox } from 'playwright';
+import { format } from 'date-fns';
 import updateCatalogItem from 'src/utils/services/supply-stores/updateCatalogItem';
+
+const todaysDate = format(new Date(), 'MM/dd/yyyy');
 
 export default async function lowesItemScraper(items) {
   const browser = await firefox.launch({ headless: false });
@@ -15,25 +18,46 @@ export default async function lowesItemScraper(items) {
   await page.click('button[data-storenumber="0146"]');
   await page.waitForTimeout(4000);
 
-  for (const item of items) {
-    try {
-      const sku = item.sku;
-      await page.goto(`https://www.lowes.com/search?searchTerm=${sku}`, { waitUntil: 'load' });
-      await page.waitForSelector('.js-the-game-is-up');
-      const bodyText = await page.evaluate(() => document.body.innerText);
-      const searchScreen = bodyText.includes('Home/Search');
-      const itemScreen = bodyText.includes('Item #');
+  const maxRetries = 1; // Define the max number of retries
 
-      if (itemScreen) {
-        await extractItemDetails(item, page, sku, results);
-      } else if (searchScreen) {
-        await navigateAndExtractFromSearchResults(item, page, sku, results);
-      } else {
-        pushEmptyResult(item);
+  for (const item of items) {
+    let retryCount = 0; // Counter to track the number of retries
+
+    while (retryCount <= maxRetries) {
+      try {
+        const sku = item.sku;
+        const pageUrl = `https://www.lowes.com/search?searchTerm=${sku}`;
+        await page.goto(pageUrl, { waitUntil: 'load' });
+        await page.waitForSelector('.js-the-game-is-up');
+
+        const bodyText = await page.evaluate(() => document.body.innerText);
+        const searchScreen = bodyText.includes('Home/Search');
+        const itemScreen = bodyText.includes('Item #');
+
+        if (itemScreen) {
+          await extractItemDetails(item, page, sku, results);
+          break; // If the details are extracted, exit the retry loop
+        } else if (searchScreen) {
+          await navigateAndExtractFromSearchResults(item, page, sku, results);
+          break; // If the details are extracted from search results, exit the retry loop
+        } else {
+          console.log('Unknown page state, could not find item or search indicators.');
+          pushEmptyResult(item);
+          break;
+        }
+      } catch (error) {
+        console.error('Error processing query:', error);
+        retryCount++;
+
+        if (retryCount > maxRetries) {
+          pushEmptyResult(item);
+        } else {
+          console.log(`Retrying... attempt number ${retryCount}`);
+          const newPage = await browser.newPage();
+          await newPage.goto(pageUrl, { waitUntil: 'load' });
+          await newPage.close();
+        }
       }
-    } catch (error) {
-      console.error('Error processing query:', error);
-      pushEmptyResult(item);
     }
   }
 
@@ -53,8 +77,18 @@ async function extractItemDetails(item, page, sku, results) {
     const { label, price, category, subCategory, imageUrl } = await extractProductDetails(page);
     console.log({ sku, skuDescription: item.skuDescription, price, category, subCategory, label, imageUrl });
     results.push({ sku, skuDescription: item.skuDescription, price, category, subCategory, label, imageUrl });
-    await updateCatalogItem({ pk: sku, skuDescription: item.skuDescription, price, category, subCategory, label, imageUrl });
+    await updateCatalogItem({
+      pk: sku,
+      skuDescription: item.skuDescription,
+      price,
+      category,
+      subCategory,
+      label,
+      imageUrl,
+      dateScraped: todaysDate,
+    });
   } else {
+    console.log('failed to find item when extracting');
     pushEmptyResult(item, { sku });
   }
 }
@@ -87,5 +121,6 @@ async function pushEmptyResult(item) {
     subCategory: null,
     label: null,
     imageUrl: null,
+    dateScraped: todaysDate,
   });
 }
