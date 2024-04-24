@@ -7,8 +7,8 @@ import updateCatalogItem from 'src/utils/services/supply-stores/updateCatalogIte
 const todaysDate = format(new Date(), 'MM/dd/yyyy');
 
 export default async function lowesItemScraper(items) {
+  const browser = await firefox.launch({ headless: false });
   try {
-    const browser = await firefox.launch({ headless: false });
     const page = await browser.newPage();
     const results = [];
 
