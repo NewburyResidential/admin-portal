@@ -1,4 +1,3 @@
-'use server';
 
 import { ENTRATA_API } from 'src/config-global';
 import { authorization } from './authorization';
@@ -21,7 +20,7 @@ async function fetchData() {
 
   try {
     const response = await fetch(url, {
-      cache: 'no-store',
+      cache: 'force-cache',
       next: { tags: ['vendors'] },
       method: 'POST',
       headers: {
