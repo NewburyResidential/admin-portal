@@ -1,3 +1,6 @@
+'use server';
+export const dynamic = 'force-dynamic';
+
 import { ENTRATA_API } from 'src/config-global';
 import { authorization } from './authorization';
 
