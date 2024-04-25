@@ -19,6 +19,7 @@ import ButtonApprove from './ButtonApprove';
 import RowItem from './RowItem';
 
 import SubRowItems from './SubRowItems';
+import parseCurrency from '../utils/parse-currency';
 import { assetItems } from 'src/assets/data/assets';
 import { invoiceSchema } from '../utils/invoice-schema';
 import addInvoice from 'src/utils/services/entrata/addInvoice';
@@ -161,16 +162,6 @@ export default function InvoiceTable({ groupedInvoices, chartOfAccounts, catalog
     setLoading(false);
   };
 
-  function parseCurrency(value) {
-    if (typeof value === 'string') {
-      value = value.replace('$', '').trim();
-    }
-    return isValidNumber(value) ? new Big(value) : Big(0);
-  }
-
-  function isValidNumber(value) {
-    return Number.isNaN(Number.parseFloat(value)) === false && Number.isFinite(value);
-  }
 
   return (
     <FormProvider {...methods}>

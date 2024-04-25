@@ -6,6 +6,7 @@ import Papa from 'papaparse';
 import Box from '@mui/material/Box';
 import { LoadingScreen } from 'src/components/loading-screen';
 import UploadMultiFiles from 'src/components/upload-files/UploadMultiFiles';
+import parseCurrency from './utils/parse-currency';
 
 const Upload = ({ setGroupedInvoices, setCurrentStep }) => {
   const [loading, setLoading] = useState(false);
@@ -35,15 +36,25 @@ const Upload = ({ setGroupedInvoices, setCurrentStep }) => {
           }
 
           //add ignore promotional
+          let paymentsApplied;
 
           if (curr['Total Invoice'] !== '' && curr['Total Invoice'] !== null && curr['Total Invoice'] !== ' ') {
-            acc[invoiceNum].totalInvoice = curr['Total Invoice'];
+            const totalInvoice = parseCurrency(curr['Total Invoice']);
+            paymentsApplied = parseCurrency(curr['Payments Applied']);
+            const updatedTotalInvoice = totalInvoice.plus(paymentsApplied);
+            acc[invoiceNum].totalInvoice = updatedTotalInvoice.toString();
           }
           if (curr.Tax !== '' && curr['Total Invoice'] !== null && curr['Total Invoice'] !== ' ') {
-            acc[invoiceNum].tax = curr.Tax;
+            const tax = parseCurrency(curr.Tax);
+            const updatedTax = tax.plus(paymentsApplied);
+            acc[invoiceNum].tax = updatedTax.toString();
             return acc;
           }
-          if (curr.SkuDesc === 'DELIVERY FEE') {
+          if (
+            curr.SkuDesc === 'DELIVERY FEE' ||
+            curr.SkuDesc === '3-7DAY GROUND SHPCHRG 301' ||
+            curr.SkuDesc === '3-7DAY GROUND SHIPCHRG 31'
+          ) {
             acc[invoiceNum].shipping = curr['Ex Price'];
             return acc;
           }
