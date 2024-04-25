@@ -110,6 +110,7 @@ export default function InvoiceTable({ groupedInvoices, chartOfAccounts, catalog
         });
         itemsPurchased.push({
           pk: uuidv4(),
+          datePurchased: formattedDate,
           store: 'Lowes',
           propertyId,
           glAccountId: accountNumber,
