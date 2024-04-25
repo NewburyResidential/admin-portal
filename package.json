@@ -5,7 +5,7 @@
   "description": "Simple Next & JavaScript",
   "private": true,
   "scripts": {
-    "postinstall": "playwright install",
+    "postinstall": "playwright install --with-deps",
     "dev": "next dev -p 3034",
     "start": "next start -p 3034",
     "build": "next build",
