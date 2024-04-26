@@ -2,7 +2,9 @@ import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
-import Select from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
+import Autocomplete from '@mui/material/Autocomplete';
+import MenuItem from '@mui/material/MenuItem';
 
 import { assetItems } from 'src/assets/data/assets';
 

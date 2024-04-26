@@ -6,7 +6,7 @@ import Big from 'big.js';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import LoadingButton from '@mui/lab/LoadingButton';
-import DataGrid from '@mui/x-data-grid/DataGrid';
+import { DataGrid } from '@mui/x-data-grid';
 import { differenceInCalendarDays, isBefore, isAfter, parse } from 'date-fns';
 
 import getUtilityBills from 'src/utils/services/utility-bills/getUtilityBills';
