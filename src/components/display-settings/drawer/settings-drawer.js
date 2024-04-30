@@ -35,12 +35,7 @@ export default function SettingsDrawer() {
   };
 
   const renderHead = (
-    <Stack
-      direction="row"
-      alignItems="center"
-      justifyContent="space-between"
-      sx={{ py: 2, pr: 1, pl: 2.5 }}
-    >
+    <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ py: 2, pr: 1, pl: 2.5 }}>
       <Typography variant="h6" sx={{ flexGrow: 1 }}>
         Display
       </Typography>
@@ -53,7 +48,7 @@ export default function SettingsDrawer() {
         </IconButton>
       </Tooltip>
 
-      <IconButton onClick={settings.onClose}>
+      <IconButton onClick={settings.onCloseDrawer}>
         <Iconify icon="mingcute:close-line" />
       </IconButton>
     </Stack>
@@ -74,7 +69,6 @@ export default function SettingsDrawer() {
     </div>
   );
 
-  
   const renderLayout = (
     <div>
       <Typography variant="caption" component="div" sx={{ ...labelStyles }}>
@@ -89,26 +83,21 @@ export default function SettingsDrawer() {
     </div>
   );
 
-
-
   const renderPresets = (
     <div>
       <Typography variant="caption" component="div" sx={{ ...labelStyles }}>
         Theme
       </Typography>
 
-      <PresetsOptions
-        value={settings.themeColorPresets}
-        onChange={(newValue) => settings.onUpdate('themeColorPresets', newValue)}
-      />
+      <PresetsOptions value={settings.themeColorPresets} onChange={(newValue) => settings.onUpdate('themeColorPresets', newValue)} />
     </div>
   );
 
   return (
     <Drawer
       anchor="right"
-      open={settings.open}
-      onClose={settings.onClose}
+      open={settings.openDrawer}
+      onClose={settings.onCloseDrawer}
       slotProps={{
         backdrop: { invisible: true },
       }}
