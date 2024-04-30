@@ -1,5 +1,6 @@
 import { getServerSession } from 'next-auth';
 import View from './components/View';
+import TabOptions from './components/TabOptions';
 
 export const metadata = {
   title: 'Dashboard',
@@ -8,5 +9,5 @@ export const metadata = {
 export default async function Page() {
   const session = await getServerSession();
 
-  return <View user={session?.user} />;
+  return <TabOptions />;
 }
