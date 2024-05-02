@@ -25,3 +25,8 @@ export function fToNow(date) {
       })
     : '';
 }
+
+export function getTodaysDate() {
+  const now = new Date();
+  return format(now, 'MM/dd/yyyy');
+}

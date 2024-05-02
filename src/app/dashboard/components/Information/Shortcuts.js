@@ -4,59 +4,52 @@ import Grid from '@mui/material/Grid';
 import ShortcutCard from './ShortcutCard';
 import ItemDialog from './addItem/Dialog';
 
-const viewMode = 'edit';
+function prioritizeItem(items, targetLabel) {
+  const targetItem = items.find((item) => item.label === targetLabel);
+  const otherItems = items.filter((item) => item.label !== targetLabel);
+  return targetItem ? [targetItem, ...otherItems] : [...otherItems];
+}
 
-const shortcuts = [
-  {
-    label: 'Create A Support Ticket',
-    description: 'Click and fill out the form to create a support ticket',
-    image: 'https://cdn.theorg.com/7b1a68d0-10e8-4719-8395-333affa9b537_medium.jpg',
-    url: 'http://localhost:3034/dashboard/',
-  },
-  {
-    label: 'example 2',
-    description: 'example 2 description',
-    image: 'https://cdn.theorg.com/7b1a68d0-10e8-4719-8395-333affa9b537_medium.jpg',
-    url: 'http://localhost:3034/dashboard/',
-  },
-  {
-    label: 'example 3',
-    description: 'example 3 description',
-    image: 'https://cdn.theorg.com/7b1a68d0-10e8-4719-8395-333affa9b537_medium.jpg',
-    url: 'http://localhost:3034/dashboard/',
-  },
-  {
-    label: 'example 4',
-    description: 'example 4 description',
-    image: 'https://cdn.theorg.com/7b1a68d0-10e8-4719-8395-333affa9b537_medium.jpg',
-    url: 'http://localhost:3034/dashboard/',
-  },
-];
+export default function Shortcuts({ editMode, shortcuts, userName }) {
+  const [dialog, setDialog] = useState({ open: false, resource: null });
 
-export default function Shortcuts({ editMode }) {
-  const [openDialog, setOpenDialog] = useState(false);
+  const prioritizedShortcuts = prioritizeItem(shortcuts, 'Create A Support Ticket');
 
-  const renderCards = shortcuts.map((shortcut, index) => (
-    <Grid item xs={12} sm={index === 0 ? 12 : 6} key={shortcut.label}>
+  const renderCards = prioritizedShortcuts.map((shortcut, index) => (
+    <Grid item xs={12} sm={index === 0 ? 12 : 6} key={shortcut.pk}>
       <ShortcutCard
         label={shortcut.label}
+        logo={
+          shortcut?.logo?.fileUrl
+            ? shortcut?.logo?.fileUrl
+            : shortcut.uploadType === 'website'
+              ? 'https://admin-portal-intranet.s3.amazonaws.com/df25043f-c9ad-4fc4-a9ef-ad8902a1abac'
+              : 'https://admin-portal-intranet.s3.amazonaws.com/ecce7443-7bfb-4b71-ab72-e40f5cc91037'
+        }
         description={shortcut.description}
-        image={shortcut.image}
-        url={shortcut.url}
+        image={shortcut?.logo?.fileUrl}
+        url={shortcut.url || shortcut?.file?.fileUrl}
         editMode={editMode}
-        openDialog={() => setOpenDialog(true)}
+        openDialog={() => setDialog({ open: true, resource: shortcut })}
+        color={index === 0 && '#FFFEE8'}
+        isSupportTicket={index === 0}
+        clearanceLevels={shortcut.clearance}
+        updatedBy={shortcut.updatedBy || null}
+        updatedOn={shortcut.updatedOn || null}
       />
     </Grid>
   ));
 
   return (
     <Container maxWidth="lg">
-      <ItemDialog open={openDialog} handleClose={() => setOpenDialog(false)} />
+      <ItemDialog open={dialog.open} resource={dialog.resource} handleClose={() => setDialog({ ...dialog, open: false })} userName={userName} />
       <Grid container spacing={2}>
         {renderCards}
         {editMode && (
           <Grid item xs={6}>
             <ShortcutCard
+              openDialog={() => setDialog({ open: true, resource: null })}
+              isAddNew={true}
               image="https://newbury-intranet.s3.amazonaws.com/zondicons--add-outline+(2).png"
               label="Add New Shortcut"
               editMode={editMode}

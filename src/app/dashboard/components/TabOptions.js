@@ -7,7 +7,9 @@ import Box from '@mui/material/Box';
 import Shortcuts from './Information/Shortcuts';
 import { useSettingsContext } from 'src/components/display-settings';
 
-export default function TabOptions() {
+export default function TabOptions({resources, user}) {
+  console.log(resources)
+  console.log(user)
   const settings = useSettingsContext();
 
   const [value, setValue] = useState(0);
@@ -25,7 +27,7 @@ export default function TabOptions() {
       </Box>
       < br />
       < br />
-      <Shortcuts editMode={settings.editMode} />
+      <Shortcuts editMode={settings.editMode} shortcuts={resources} userName={user.name} />
     </>
   );
 }
