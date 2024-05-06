@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import { m } from 'framer-motion';
 // @mui
 import Box from '@mui/material/Box';
@@ -11,19 +10,18 @@ import { useSettingsContext } from 'src/components/display-settings';
 
 // ----------------------------------------------------------------------
 
-export default function SettingsButton({ sx }) {
+export default function EditButton({ sx }) {
   const settings = useSettingsContext();
-
 
   return (
     <Badge
       color="error"
       variant="dot"
-      invisible={!settings.canReset}
+      invisible={!settings.editMode}
       sx={{
         [`& .${badgeClasses.badge}`]: {
           top: 8,
-          right: 8,
+          right: 3,
         },
         ...sx,
       }}
@@ -41,20 +39,20 @@ export default function SettingsButton({ sx }) {
           whileHover="hover"
           variants={varHover(1.05)}
           aria-label="settings"
-          onClick={settings.onToggleDrawer}
+          onClick={settings.onToggleEditMode}
           sx={{
             width: 40,
             height: 40,
             color: (theme) => theme.palette.grey[500],
           }}
         >
-          <Iconify icon="gis:color" width={30} />
+          {settings.editMode ? (
+            <Iconify icon="fluent:edit-prohibited-16-filled" width={30} />
+          ) : (
+            <Iconify icon="fluent:edit-16-filled" width={30} />
+          )}
         </IconButton>
       </Box>
     </Badge>
   );
 }
-
-SettingsButton.propTypes = {
-  sx: PropTypes.object,
-};

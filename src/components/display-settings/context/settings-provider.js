@@ -17,7 +17,12 @@ export function SettingsProvider({ children, defaultSettings }) {
   const { state, update, reset } = useLocalStorage(STORAGE_KEY, defaultSettings);
 
   const [openDrawer, setOpenDrawer] = useState(false);
+  const [editMode, setEditMode] = useState(false);
 
+  // Edit mode
+  const onToggleEditMode = useCallback(() => {
+    setEditMode((prev) => !prev);
+  }, []);
 
 
   // Drawer
@@ -38,10 +43,15 @@ export function SettingsProvider({ children, defaultSettings }) {
       // Reset
       canReset,
       onReset: reset,
+      
+      // Edit mode
+      editMode,
+      onToggleEditMode,
+
       // Drawer
-      open: openDrawer,
-      onToggle: onToggleDrawer,
-      onClose: onCloseDrawer,
+      openDrawer,
+      onToggleDrawer,
+      onCloseDrawer,
     }),
     [
       reset,
@@ -51,6 +61,8 @@ export function SettingsProvider({ children, defaultSettings }) {
       openDrawer,
       onCloseDrawer,
       onToggleDrawer,
+      onToggleEditMode,
+      editMode,
     ]
   );
 
