@@ -2,7 +2,10 @@ import { useState } from 'react';
 import { useFormStatus } from 'react-dom';
 import { useFormContext, Controller } from 'react-hook-form';
 import { clearanceOptions } from './resource-data';
+import { uploadS3Image } from 'src/utils/services/intranet/uploadS3Image';
+import { fileThumb } from 'src/components/file-thumbnail';
 
+import Grid from '@mui/material/Grid';
 import Select from '@mui/material/Select';
 import Skeleton from '@mui/material/Skeleton';
 import MenuItem from '@mui/material/MenuItem';
@@ -11,23 +14,17 @@ import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
 import CircularProgress from '@mui/material/CircularProgress';
 import FormHelperText from '@mui/material/FormHelperText';
-
-import Grid from '@mui/material/Grid';
-import { fileThumb } from 'src/components/file-thumbnail';
 import InputAdornment from '@mui/material/InputAdornment';
-
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
-import { uploadS3Image } from 'src/utils/services/intranet/uploadS3Image';
 
-export default function Inputs() {
+export default function Inputs({ resourceType, categoryOptions }) {
   const [loadingLogo, setLoadingLogo] = useState(false);
   const [loadingFile, setLoadingFile] = useState(false);
 
   const { pending } = useFormStatus();
   const { control, setValue, watch, trigger, formState } = useFormContext();
 
-  console.log('errosrs', formState.errors);
   const handleUploadType = (event, type) => {
     if (type !== null) {
       setValue('url', '');
@@ -47,7 +44,6 @@ export default function Inputs() {
       if (field === 'logo') setLoadingLogo(false);
       return;
     }
-    console.log(file);
     const formData = new FormData();
     formData.append('file', file);
     formData.append('bucket', 'admin-portal-intranet');
@@ -113,60 +109,91 @@ export default function Inputs() {
               )}
             />
           </Grid>
-          <Grid item xs={6}>
-            <Controller
-              name="logo"
-              control={control}
-              render={({ field: { onBlur, value, ref }, fieldState: { error } }) => (
-                <div>
-                  <input
-                    accept="image/*"
-                    type="file"
-                    onChange={(event) => {
-                      handleFileChange(event, 'logo');
-                    }}
-                    onBlur={onBlur}
-                    ref={ref}
-                    style={{ display: 'none' }}
-                    id="logo-file-input"
-                  />
-                  <TextField
-                   label={value && 'Logo'}
-                    fullWidth
-                    variant="outlined"
-                    margin="dense"
-                    onClick={() => document.getElementById('logo-file-input').click()}
-                    value={value ? value.fileName : ''}
-                    placeholder={loadingLogo ? '' : 'Logo'}
-                    sx={{ m: 0 }}
-                    InputProps={{
-                      readOnly: true,
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          {loadingLogo ? (
-                            <CircularProgress size={24} />
-                          ) : (
-                            value && (
-                              <img
-                                src={fileThumb(value.fileName)}
-                                alt="File Icon"
-                                style={{ marginRight: 8, width: '24px', height: '24px' }}
-                              />
-                            )
-                          )}
-                        </InputAdornment>
-                      ),
-                      inputProps: {
-                        style: { cursor: 'pointer' },
-                      },
-                    }}
-                    error={!!error}
-                    helperText={error && error.message}
-                  />
-                </div>
-              )}
-            />
-          </Grid>
+          {resourceType !== 'resources' ? (
+            <Grid item xs={6}>
+              <Controller
+                name="logo"
+                control={control}
+                render={({ field: { onBlur, value, ref }, fieldState: { error } }) => (
+                  <div>
+                    <input
+                      accept="image/*"
+                      type="file"
+                      onChange={(event) => {
+                        handleFileChange(event, 'logo');
+                      }}
+                      onBlur={onBlur}
+                      ref={ref}
+                      style={{ display: 'none' }}
+                      id="logo-file-input"
+                    />
+                    <TextField
+                      label={value && 'Logo'}
+                      fullWidth
+                      variant="outlined"
+                      margin="dense"
+                      onClick={() => document.getElementById('logo-file-input').click()}
+                      value={value ? value.fileName : ''}
+                      placeholder={loadingLogo ? '' : 'Logo'}
+                      sx={{ m: 0 }}
+                      InputProps={{
+                        readOnly: true,
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            {loadingLogo ? (
+                              <CircularProgress size={24} />
+                            ) : (
+                              value && (
+                                <img
+                                  src={fileThumb(value.fileName)}
+                                  alt="File Icon"
+                                  style={{ marginRight: 8, width: '24px', height: '24px' }}
+                                />
+                              )
+                            )}
+                          </InputAdornment>
+                        ),
+                        inputProps: {
+                          style: { cursor: 'pointer' },
+                        },
+                      }}
+                      error={!!error}
+                      helperText={error && error.message}
+                    />
+                  </div>
+                )}
+              />
+            </Grid>
+          ) : (
+            <Grid item xs={6}>
+              <Controller
+                name="category"
+                control={control}
+                render={({ field, fieldState: { error } }) => (
+                  <FormControl fullWidth error={!!error} sx={{ m: 0 }}>
+                    <InputLabel id="category-label">Category</InputLabel>
+                    <Select
+                      {...field}
+                      labelId="category-label"
+                      id="category-select"
+                      label="Category"
+                      fullWidth
+                      margin="dense"
+                      variant="outlined"
+                    >
+                      {Object.entries(categoryOptions).map(([key, label]) => (
+                        <MenuItem key={key} value={key}>
+                          {label}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                    {error && <FormHelperText>{error.message}</FormHelperText>}
+                  </FormControl>
+                )}
+              />
+            </Grid>
+          )}
+
           <Grid item xs={12}>
             <Controller
               name="description"

@@ -1,17 +1,20 @@
-import React from 'react';
+import Box from '@mui/material/Box';
+import Chip from '@mui/material/Chip';
 import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
+import EditIcon from '@mui/icons-material/Edit';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
-import EditIcon from '@mui/icons-material/Edit'; // Ensure you import EditIcon from Material-UI icons
-import Box from '@mui/material/Box';
-import Iconify from 'src/components/iconify';
-import { m } from 'framer-motion';
-import Chip from '@mui/material/Chip'; // Ensure you import Chip from Material-UI
-import { clearanceOptions } from './addItem/resource-data';
+import CardContent from '@mui/material/CardContent';
 
-export default function ShortcutCard({
+import { m } from 'framer-motion';
+import Iconify from 'src/components/iconify';
+import { clearanceOptions } from './editResource/resource-data';
+import { fileThumb } from 'src/components/file-thumbnail';
+
+export default function ResourceCard({
+  fileName,
+  uploadType,
   clearanceLevels,
   label,
   description,
@@ -22,10 +25,10 @@ export default function ShortcutCard({
   openDialog,
   isSupportTicket = false,
   isAddNew = false,
+  isResource = false,
   updatedBy,
   updatedOn,
 }) {
-  console.log(clearanceLevels);
   const handleEdit = (event) => {
     event.stopPropagation();
     openDialog();
@@ -36,7 +39,6 @@ export default function ShortcutCard({
       openDialog();
       return;
     }
-    console.log(url);
     window.open(url, '_blank', 'noopener,noreferrer');
   };
 
@@ -56,7 +58,25 @@ export default function ShortcutCard({
           }}
           onClick={handleClick}
         >
-          {!isAddNew && !isSupportTicket ? (
+          {isResource && uploadType === 'website' ? (
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Iconify
+                icon="solar:card-search-bold-duotone"
+                sx={{
+                  width: 50,
+                  ml: 3,
+                  mr: 1,
+                  height: '60%',
+                  color: '#4682B4',
+                  fontSize: '2.5rem',
+                }}
+              ></Iconify>
+            </Box>
+          ) : isResource && uploadType === 'file' ? (
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <img src={fileThumb(fileName)} alt="File Icon" style={{ marginRight: 19, width: '32px', height: '32px', marginLeft: 31 }} />
+            </Box>
+          ) : !isAddNew && !isSupportTicket ? (
             <CardMedia component="img" sx={{ width: 100, height: '100%', objectFit: 'cover' }} image={logo} alt={label} />
           ) : isSupportTicket ? (
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -74,7 +94,8 @@ export default function ShortcutCard({
             <Iconify
               icon="mdi:plus"
               sx={{
-                width: 100,
+                width: isResource ? 71 : 100,
+                ml: isResource ? 1.8 : 0,
                 height: '100%',
                 color: '#556B2F',
                 fontSize: '2.5rem',
@@ -89,7 +110,7 @@ export default function ShortcutCard({
               <Typography variant="h6" sx={{ fontSize: '15px !important' }}>
                 {label}
               </Typography>
-              <Typography variant="subtitle1" color="text.secondary" component="div" fontSize={'12px'} ml={'1.5px'}>
+              <Typography variant="subtitle1" color="text.secondary" component="div" fontSize={'12px'} ml={'1px'}>
                 {description}
               </Typography>
             </CardContent>
@@ -112,7 +133,7 @@ export default function ShortcutCard({
             }}
           >
             <Box sx={{ display: 'flex', gap: 0.5 }}>
-              {clearanceLevels.map((level) => (
+              {clearanceLevels?.map((level) => (
                 <Chip key={level} label={clearanceOptions[level]} variant="outlined" sx={{ backgroundColor: 'white' }} />
               ))}
             </Box>

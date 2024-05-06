@@ -5,12 +5,24 @@ const fileSchema = yup.object().shape({
   fileName: yup.string().required(),
 });
 
+const uuidV4Regex = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
 export const resourceSchema = yup.object().shape({
-  category: yup.string().required(),
+  resourceType: yup.string().required(),
   label: yup.string().required(),
   description: yup.string().nullable(),
   clearance: yup.array().of(yup.string()).min(1).required(),
   uploadType: yup.string().required().oneOf(['website', 'file']),
+  category: yup.string().when('resourceType', {
+    is: 'resources',
+    then: () => yup.string().required('Category is required').matches(uuidV4Regex, 'Category must be a valid UUID v4'),
+    otherwise: () => yup.string().notRequired(),
+  }),
+  group: yup.string().when('resourceType', {
+    is: 'resources',
+    then: () => yup.string().required('Group is required').matches(uuidV4Regex, 'Group must be a valid UUID v4'),
+    otherwise: () => yup.string().notRequired(),
+  }),
   logo: yup
     .mixed()
     .nullable()

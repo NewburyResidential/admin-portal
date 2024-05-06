@@ -1,8 +1,11 @@
 import { useState } from 'react';
-import Container from '@mui/material/Container';
+
 import Grid from '@mui/material/Grid';
-import ShortcutCard from './ShortcutCard';
-import ItemDialog from './addItem/Dialog';
+import ItemDialog from './editResource/Dialog';
+import Typography from '@mui/material/Typography';
+
+import ResourceCard from './ResourceCard';
+
 
 function prioritizeItem(items, targetLabel) {
   const targetItem = items.find((item) => item.label === targetLabel);
@@ -11,13 +14,13 @@ function prioritizeItem(items, targetLabel) {
 }
 
 export default function Shortcuts({ editMode, shortcuts, userName }) {
-  const [dialog, setDialog] = useState({ open: false, resource: null });
+  const [dialog, setDialog] = useState({ open: false, resource: null, resourceType: 'shortcuts' });
 
   const prioritizedShortcuts = prioritizeItem(shortcuts, 'Create A Support Ticket');
 
   const renderCards = prioritizedShortcuts.map((shortcut, index) => (
     <Grid item xs={12} sm={index === 0 ? 12 : 6} key={shortcut.pk}>
-      <ShortcutCard
+      <ResourceCard
         label={shortcut.label}
         logo={
           shortcut?.logo?.fileUrl
@@ -30,7 +33,7 @@ export default function Shortcuts({ editMode, shortcuts, userName }) {
         image={shortcut?.logo?.fileUrl}
         url={shortcut.url || shortcut?.file?.fileUrl}
         editMode={editMode}
-        openDialog={() => setDialog({ open: true, resource: shortcut })}
+        openDialog={() => setDialog({ open: true, resource: shortcut, resourceType: 'shortcuts' })}
         color={index === 0 && '#FFFEE8'}
         isSupportTicket={index === 0}
         clearanceLevels={shortcut.clearance}
@@ -41,14 +44,23 @@ export default function Shortcuts({ editMode, shortcuts, userName }) {
   ));
 
   return (
-    <Container maxWidth="lg">
-      <ItemDialog open={dialog.open} resource={dialog.resource} handleClose={() => setDialog({ ...dialog, open: false })} userName={userName} />
+    <>
+      <ItemDialog
+        open={dialog.open}
+        resource={dialog.resource}
+        resourceType={dialog.resourceType}
+        handleClose={() => setDialog({ ...dialog, open: false })}
+        userName={userName}
+      />
+      <Typography variant="h5" color="" sx={{ mb: 2 }}>
+        Shortcuts
+      </Typography>
       <Grid container spacing={2}>
         {renderCards}
         {editMode && (
           <Grid item xs={6}>
-            <ShortcutCard
-              openDialog={() => setDialog({ open: true, resource: null })}
+            <ResourceCard
+              openDialog={() => setDialog({ open: true, resource: null, resourceType: 'shortcuts' })}
               isAddNew={true}
               image="https://newbury-intranet.s3.amazonaws.com/zondicons--add-outline+(2).png"
               label="Add New Shortcut"
@@ -58,6 +70,6 @@ export default function Shortcuts({ editMode, shortcuts, userName }) {
           </Grid>
         )}
       </Grid>
-    </Container>
+    </>
   );
 }

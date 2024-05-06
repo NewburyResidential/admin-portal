@@ -1,8 +1,8 @@
-import React from 'react';
 import LoadingButton from '@mui/lab/LoadingButton';
 import DialogActions from '@mui/material/DialogActions';
+import Box from '@mui/material/Box';
+
 import { useFormStatus } from 'react-dom';
-import { Box } from '@mui/material';
 
 export default function Buttons({ handleClose, handleDelete, loadingDelete, addResource }) {
   const { pending } = useFormStatus();

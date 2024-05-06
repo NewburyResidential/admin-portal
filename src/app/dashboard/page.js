@@ -1,5 +1,4 @@
 import { getServerSession } from 'next-auth';
-import View from './components/View';
 import TabOptions from './components/TabOptions';
 import getResources from 'src/utils/services/intranet/getResources';
 
@@ -8,10 +7,17 @@ export const metadata = {
 };
 
 export default async function Page() {
-  const [resources, { user }] = await Promise.all([
-    getResources(),
-    getServerSession(),
-  ]);
+  const [rawResources, { user }] = await Promise.all([getResources(), getServerSession()]);
 
-  return <TabOptions resources={resources} user={user} />;
+  const resourcesObject = {};
+
+  rawResources.forEach((resource) => {
+    const { resourceType } = resource;
+    if (!resourcesObject[resourceType]) {
+      resourcesObject[resourceType] = [];
+    }
+    resourcesObject[resourceType].push(resource);
+  });
+
+  return <TabOptions resourcesObject={resourcesObject} user={user} />;
 }

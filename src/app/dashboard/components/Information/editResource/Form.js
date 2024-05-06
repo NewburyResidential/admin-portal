@@ -1,23 +1,25 @@
 import { useState } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 import { useForm, FormProvider } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { resourceSchema } from './resource-schema';
-import { v4 as uuidv4 } from 'uuid';
+import { getTodaysDate } from 'src/utils/format-time';
+
 
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import Alert from '@mui/material/Alert';
 
 import Inputs from './Inputs';
 import Buttons from './Buttons';
-import { Alert } from '@mui/material';
 import updateResource from 'src/utils/services/intranet/updateResource';
 import deleteResource from 'src/utils/services/intranet/deleteResource';
-import { getTodaysDate } from 'src/utils/format-time';
 
-export default function AddItemForm({ resource, handleClose, userName }) {
+export default function EditResourceForm({ resource, handleClose, userName, resourceType, groupId, categoryId, categoryOptions }) {
   const [showAlert, setShowAlert] = useState(false);
   const [loadingDelete, setLoadingDelete] = useState(false);
+  console.log('r', resourceType)
 
   const addResource = resource ? false : true;
 
@@ -30,7 +32,9 @@ export default function AddItemForm({ resource, handleClose, userName }) {
     url: '',
     file: '',
     uploadType: 'website',
-    category: 'shortcuts',
+    resourceType: resourceType,
+    group: resourceType === 'resources' ? groupId : null,
+    category: resourceType === 'resources' ? categoryId : null,
   };
 
   const methods = useForm({
@@ -68,7 +72,7 @@ export default function AddItemForm({ resource, handleClose, userName }) {
           <DialogContentText>
             {addResource ? 'Add a new Resource by filling out the information below' : 'Update the existing resource below'}
           </DialogContentText>
-          <Inputs />
+          <Inputs resourceType={resourceType} categoryOptions={categoryOptions} />
           {showAlert && <Alert severity="error">Issue {addResource ? 'Adding' : 'Updating'} Resource</Alert>}
         </DialogContent>
         <Buttons handleClose={handleClose} handleDelete={handleDelete} loadingDelete={loadingDelete} addResource={addResource} />
