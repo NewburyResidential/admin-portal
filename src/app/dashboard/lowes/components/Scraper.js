@@ -7,7 +7,7 @@ import getUniqueInvoiceItems from './utils/get-unique-invoice-items';
 import getCatalogedItems from 'src/utils/services/supply-stores/getCatalogedItems';
 import getUncatalogedItems from 'src/utils/services/supply-stores/getUncatalogedItems';
 import getMissingLowesItems from 'src/utils/services/supply-stores/getMissingLowesItems';
-import lowesItemScraper from './utils/lowes-item-scraper';
+//import lowesItemScraper from './utils/lowes-item-scraper';
 
 export default function Scraper({ groupedInvoices, setUncatalogedItems, setCurrentStep, setCatalogedItems }) {
   useEffect(() => {
@@ -16,10 +16,10 @@ export default function Scraper({ groupedInvoices, setUncatalogedItems, setCurre
         let missingLowesData = await getMissingLowesItems(items);
         console.log('missingLowesData', missingLowesData);
 
-        while (missingLowesData.length > 0) {
-          await lowesItemScraper(missingLowesData);
-          missingLowesData = await getMissingLowesItems(items);
-        }
+        // while (missingLowesData.length > 0) {
+        //  await lowesItemScraper(missingLowesData);
+        //   missingLowesData = await getMissingLowesItems(items);
+        // }
 
         const uncatalogedItems = await getUncatalogedItems(items);
         console.log('uncatalogedItems', uncatalogedItems);
