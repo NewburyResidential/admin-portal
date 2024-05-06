@@ -13,7 +13,7 @@ export default function Scraper({ groupedInvoices, setUncatalogedItems, setCurre
   useEffect(() => {
     const fetchUncatalogedItems = async (items) => {
       try {
-        let missingLowesData = await getMissingLowesItems(items);
+        const missingLowesData = await getMissingLowesItems(items);
         console.log('missingLowesData', missingLowesData);
 
         // while (missingLowesData.length > 0) {
