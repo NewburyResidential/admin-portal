@@ -49,7 +49,6 @@ export default function ResourceGroupCard({ label, icon, color = '#ffffff', isAd
           variant="h6"
           sx={{
             margin: '0 0 20px 0',
-            fontWeight: '300',
             textAlign: 'center',
             height: '130px',
             overflow: 'hidden',

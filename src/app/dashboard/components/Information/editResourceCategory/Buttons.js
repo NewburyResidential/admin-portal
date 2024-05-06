@@ -9,7 +9,6 @@ import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
-import DialogActionsMui from '@mui/material/DialogActions';
 
 export default function Buttons({ handleClose, handleDelete, loadingDelete, addCategory }) {
   const { pending } = useFormStatus();
@@ -60,14 +59,14 @@ export default function Buttons({ handleClose, handleDelete, loadingDelete, addC
             Are you sure you want to delete this category? All items under this category will be deleted
           </DialogContentText>
         </DialogContent>
-        <DialogActionsMui>
+        <DialogActions>
           <LoadingButton onClick={handleCloseConfirmDialog} color="inherit">
             Cancel
           </LoadingButton>
           <LoadingButton onClick={handleConfirmDelete} color="error" loading={loadingDelete}>
             Delete
           </LoadingButton>
-        </DialogActionsMui>
+        </DialogActions>
       </Dialog>
     </>
   );

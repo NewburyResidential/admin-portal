@@ -1,6 +1,9 @@
 'use server';
 
+/* eslint-disable */
 import { firefox } from 'playwright';
+/* eslint-disable */
+
 import { format } from 'date-fns';
 import updateCatalogItem from 'src/utils/services/supply-stores/updateCatalogItem';
 

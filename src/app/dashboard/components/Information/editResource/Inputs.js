@@ -23,7 +23,7 @@ export default function Inputs({ resourceType, categoryOptions }) {
   const [loadingFile, setLoadingFile] = useState(false);
 
   const { pending } = useFormStatus();
-  const { control, setValue, watch, trigger, formState } = useFormContext();
+  const { control, setValue, watch, trigger } = useFormContext();
 
   const handleUploadType = (event, type) => {
     if (type !== null) {
@@ -244,11 +244,13 @@ export default function Inputs({ resourceType, categoryOptions }) {
                         onChange(newValue);
                       }
                     }}
-                    renderValue={(selected) => (Array.isArray(selected) ? selected.map((value) => clearanceOptions[value]).join(', ') : '')}
+                    renderValue={(selected) =>
+                      Array.isArray(selected) ? selected.map((selectedValue) => clearanceOptions[selectedValue]).join(', ') : ''
+                    }
                   >
-                    {Object.entries(clearanceOptions).map(([key, value]) => (
+                    {Object.entries(clearanceOptions).map(([key, valueOption]) => (
                       <MenuItem key={key} value={key}>
-                        {value}
+                        {valueOption}
                       </MenuItem>
                     ))}
                   </Select>

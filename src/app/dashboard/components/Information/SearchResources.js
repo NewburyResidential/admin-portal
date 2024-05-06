@@ -57,7 +57,7 @@ export default function SearchResources({ resources }) {
         freeSolo
         id="search-resources"
         options={resources}
-        getOptionLabel={(option) => option.label + ' - ' + option.description}
+        getOptionLabel={(option) => `${option.label  } - ${  option.description}`}
         renderInput={(params) => <TextField {...params} label="Search All Resources" variant="outlined" />}
         renderOption={(props, option, { inputValue }) => <li {...props}>{renderOption(option, inputValue)}</li>}
         filterOptions={(options, { inputValue }) =>

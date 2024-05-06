@@ -19,7 +19,7 @@ export default function EditResourceGroupForm({ resourceObject, group, handleClo
   const [showAlert, setShowAlert] = useState(false);
   const [loadingDelete, setLoadingDelete] = useState(false);
 
-  const addGroup = group ? false : true;
+  const addGroup = !group;
   const uniqueId = uuidv4();
 
   const defaultValues = {
@@ -53,24 +53,21 @@ export default function EditResourceGroupForm({ resourceObject, group, handleClo
     const categoriesByGroup = resourceObject?.resourceCategories?.filter((category) => category.group === groupId);
     const resourcesByGroup = resourceObject?.resources?.filter((resource) => resource.group === groupId);
 
-    console.log(categoriesByGroup);
-    console.log(resourcesByGroup);
-
-    console.log(group);
-
     let allResourcesDeleted = true;
-    let allCategoriesDeleted = true;
+    const allCategoriesDeleted = true;
 
-    for (const resource of resourcesByGroup) {
-      const response = await deleteResource(resource.pk);
-      if (!response) {
-        allResourcesDeleted = false;
-        console.error('Failed to delete resource with pk:', resource.pk);
-        break;
+    if (resourcesByGroup) {
+      for (const resource of resourcesByGroup) {
+        const response = await deleteResource(resource.pk);
+        if (!response) {
+          allResourcesDeleted = false;
+          console.error('Failed to delete resource with pk:', resource.pk);
+          break;
+        }
       }
     }
 
-    if (allResourcesDeleted) {
+    if (allResourcesDeleted && categoriesByGroup) {
       for (const resource of categoriesByGroup) {
         const response = await deleteResource(resource.pk);
         if (!response) {

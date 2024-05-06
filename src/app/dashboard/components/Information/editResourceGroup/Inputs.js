@@ -1,6 +1,4 @@
-import { useState } from 'react';
 import { useFormStatus } from 'react-dom';
-import { fileThumb } from 'src/components/file-thumbnail';
 import { useFormContext, Controller } from 'react-hook-form';
 
 import Skeleton from '@mui/material/Skeleton';

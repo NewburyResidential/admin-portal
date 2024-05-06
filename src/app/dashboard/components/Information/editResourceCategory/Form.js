@@ -19,7 +19,7 @@ export default function EditResourceCategoryForm({ category, handleClose, userNa
   const [showAlert, setShowAlert] = useState(false);
   const [loadingDelete, setLoadingDelete] = useState(false);
 
-  const addCategory = category ? false : true;
+  const addCategory = !category;
 
   const defaultValues = {
     pk: uuidv4(),

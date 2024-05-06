@@ -11,7 +11,7 @@ export default function ResourceGroups({ editMode, userName, resourceObject }) {
 
   const resources = resourceObject.resources || [];
   const uniqueGroupIds = new Set(resources.map((resource) => resource.group));
-  let filteredGroups = editMode ? resourceGroups : resourceGroups.filter((group) => uniqueGroupIds.has(group.pk));
+  const filteredGroups = editMode ? resourceGroups : resourceGroups.filter((group) => uniqueGroupIds.has(group.pk));
 
   return (
     <>
@@ -37,14 +37,14 @@ export default function ResourceGroups({ editMode, userName, resourceObject }) {
             label={group.label}
             icon={group.icon}
             editMode={editMode}
-            openDialog={() => setDialog({ open: true, group: group })}
+            openDialog={() => setDialog({ open: true, group })}
           />
         ))}
         {editMode && (
           <ResourceGroupCard
             label="Add New Group"
             icon="mdi:plus"
-            isAddNew={true}
+            isAddNew
             color="#F0FFF0"
             openDialog={() => setDialog({ open: true, group: null })}
           />

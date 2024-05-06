@@ -21,7 +21,7 @@ export default function EditResourceForm({ resource, handleClose, userName, reso
   const [loadingDelete, setLoadingDelete] = useState(false);
   console.log('r', resourceType)
 
-  const addResource = resource ? false : true;
+  const addResource = !resource;
 
   const defaultValues = {
     pk: uuidv4(),
@@ -32,7 +32,7 @@ export default function EditResourceForm({ resource, handleClose, userName, reso
     url: '',
     file: '',
     uploadType: 'website',
-    resourceType: resourceType,
+    resourceType,
     group: resourceType === 'resources' ? groupId : null,
     category: resourceType === 'resources' ? categoryId : null,
   };

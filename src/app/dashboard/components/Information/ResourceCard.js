@@ -43,8 +43,7 @@ export default function ResourceCard({
   };
 
   return (
-    <>
-      <m.div whileHover={{ scale: 0.99, transition: { duration: 0.2 } }}>
+    <m.div whileHover={{ scale: 0.99, transition: { duration: 0.2 } }}>
         <Card
           sx={{
             display: 'flex',
@@ -70,7 +69,7 @@ export default function ResourceCard({
                   color: '#4682B4',
                   fontSize: '2.5rem',
                 }}
-              ></Iconify>
+               />
             </Box>
           ) : isResource && uploadType === 'file' ? (
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -88,7 +87,7 @@ export default function ResourceCard({
                   color: '#C5B358',
                   fontSize: '2rem',
                 }}
-              ></Iconify>
+               />
             </Box>
           ) : (
             <Iconify
@@ -103,14 +102,14 @@ export default function ResourceCard({
                 alignItems: 'center',
                 justifyContent: 'center',
               }}
-            ></Iconify>
+             />
           )}
           <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', flexGrow: 1 }}>
             <CardContent sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
               <Typography variant="h6" sx={{ fontSize: '15px !important' }}>
                 {label}
               </Typography>
-              <Typography variant="subtitle1" color="text.secondary" component="div" fontSize={'12px'} ml={'1px'}>
+              <Typography variant="subtitle1" color="text.secondary" component="div" fontSize="12px" ml="1px">
                 {description}
               </Typography>
             </CardContent>
@@ -143,6 +142,5 @@ export default function ResourceCard({
           </Box>
         )}
       </m.div>
-    </>
   );
 }

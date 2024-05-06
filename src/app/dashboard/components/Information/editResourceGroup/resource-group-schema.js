@@ -6,7 +6,7 @@ export const resourceGroupSchema = yup.object().shape({
   group: yup.string().required(),
   label: yup
     .string()
-    .matches(/^[a-zA-Z\s]+$/, 'Label should only contain letters and spaces')
+    .matches(/^[a-zA-Z,\s]+$/, 'Label should only contain letters, spaces, and commas')
     .required(),
   icon: yup
     .string()

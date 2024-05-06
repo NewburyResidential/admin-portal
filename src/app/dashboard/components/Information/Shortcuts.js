@@ -61,7 +61,7 @@ export default function Shortcuts({ editMode, shortcuts, userName }) {
           <Grid item xs={6}>
             <ResourceCard
               openDialog={() => setDialog({ open: true, resource: null, resourceType: 'shortcuts' })}
-              isAddNew={true}
+              isAddNew
               image="https://newbury-intranet.s3.amazonaws.com/zondicons--add-outline+(2).png"
               label="Add New Shortcut"
               editMode={editMode}

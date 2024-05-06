@@ -20,7 +20,7 @@ import ResourceCategoryDialog from './editResourceCategory/Dialog';
 
 export default function ResourceGroupView({ resourceGroup, user, categories, categoryOptions }) {
   const settings = useSettingsContext();
-  const editMode = settings.editMode;
+  const {editMode} = settings;
 
   const [categoryDialog, setCategoryDialog] = useState({ open: false, category: null });
   const [resourceDialog, setResourceDialog] = useState({
@@ -64,7 +64,7 @@ export default function ResourceGroupView({ resourceGroup, user, categories, cat
                 height: '100%',
                 mr: 3,
               }}
-            ></Iconify>
+             />
             <h1>{resourceGroup.label}</h1>
           </Box>
 
@@ -118,7 +118,7 @@ export default function ResourceGroupView({ resourceGroup, user, categories, cat
                 {editMode && (
                   <IconButton
                     onClick={() => {
-                      setCategoryDialog({ open: true, category: category });
+                      setCategoryDialog({ open: true, category });
                     }}
                   >
                     <EditIcon />
@@ -132,7 +132,7 @@ export default function ResourceGroupView({ resourceGroup, user, categories, cat
                       openDialog={() =>
                         setResourceDialog({
                           open: true,
-                          resource: resource,
+                          resource,
                           resourceType: 'resources',
                           categoryId: category.pk,
                         })
@@ -142,7 +142,7 @@ export default function ResourceGroupView({ resourceGroup, user, categories, cat
                       description={resource.description}
                       editMode={editMode}
                       clearanceLevels={resource.clearance}
-                      isResource={true}
+                      isResource
                       uploadType={resource.uploadType}
                       url={resource.url || resource?.file?.fileUrl}
                       fileName={resource?.file?.fileName || null}
@@ -162,8 +162,8 @@ export default function ResourceGroupView({ resourceGroup, user, categories, cat
                           categoryId: category.pk,
                         })
                       }
-                      isAddNew={true}
-                      isResource={true}
+                      isAddNew
+                      isResource
                       image="https://newbury-intranet.s3.amazonaws.com/zondicons--add-outline+(2).png"
                       label="Add New Resource"
                       editMode={editMode}
