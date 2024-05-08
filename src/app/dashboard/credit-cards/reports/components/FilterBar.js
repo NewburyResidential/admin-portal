@@ -16,7 +16,7 @@ import TextFieldPostDate from './TextFieldPostDate';
 import getTransactions from 'src/utils/services/cc-expenses/getTransactions';
 
 export default function FilterBar({ setTransactions, totalAmount, transactions }) {
-  const [asset, setAsset] = useState(null);
+  const [assets, setAssets] = useState(null);
   const [postDate, setPostDate] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -35,7 +35,7 @@ export default function FilterBar({ setTransactions, totalAmount, transactions }
         .map((transaction) => {
           return transaction.allocations
             .filter((allocation) => {
-              return asset ? allocation.asset.id === asset.id : true;
+              return (assets && Array.isArray(assets) && assets.length > 0) ? assets.some(asset => asset.id === allocation.asset.id) : true;
             })
             .map((allocation) => {
               return {
@@ -62,8 +62,10 @@ export default function FilterBar({ setTransactions, totalAmount, transactions }
   };
 
   const exportToExcel = () => {
-    const assets = asset ? asset.label : 'All Properties';
-    const date = postDate.replace('/', '.');
+    const assetLabels = assets && Array.isArray(assets) && assets.length > 0 
+    ? assets.map(asset => asset.label)
+    : ['All Properties'];
+const date = postDate.replace('/', '.');
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet('Transactions');
 
@@ -106,7 +108,7 @@ export default function FilterBar({ setTransactions, totalAmount, transactions }
     });
 
     workbook.xlsx.writeBuffer().then((buffer) => {
-      saveAs(new Blob([buffer]), `CC - ${date} ${assets}.xlsx`);
+      saveAs(new Blob([buffer]), `CC - ${date} ${assetLabels.join('_')}.xlsx`);
     });
   };
 
@@ -118,7 +120,7 @@ export default function FilterBar({ setTransactions, totalAmount, transactions }
     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2, width: '100%' }}>
       <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
         <TextFieldPostDate postDate={postDate} setPostDate={setPostDate} />
-        <DropDownAssets setAsset={setAsset} asset={asset} />
+        <DropDownAssets setAssets={setAssets} assets={assets} />
         <LoadingButton loading={loading} onClick={handleFilter} sx={{ width: '100px', height: '36px' }} variant="contained" color="primary">
           Filter
         </LoadingButton>
@@ -129,7 +131,7 @@ export default function FilterBar({ setTransactions, totalAmount, transactions }
 
       <Card sx={{ p: 2, width: '200px' }}>
         <Typography variant="body1" component="div" sx={{ display: 'flex', justifyContent: 'center' }}>
-          Total: ${totalAmount.toFixed(2)}
+          Total: ${Number(totalAmount.toFixed(2)).toLocaleString()}
         </Typography>
       </Card>
     </Box>
