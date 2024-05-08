@@ -22,9 +22,8 @@ export default async function addVendor(data) {
     if (!response.ok) {
       console.error('Error fetching data: ', response.statusText);
       return null;
-    } else {
-      return response.json();
     }
+    return response.json();
   } catch (error) {
     console.error('Error fetching data: ', error);
     return null;
