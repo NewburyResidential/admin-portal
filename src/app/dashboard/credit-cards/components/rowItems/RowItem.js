@@ -13,7 +13,7 @@ import CheckboxApprove from './CheckboxApprove';
 import RowSubItem from '../rowSubItems/RowSubItem';
 import CalculationButtonGroup from '../rowSubItems/CalculationButtonGroup';
 
-export default function RowItem({ transaction, transactionIndex, vendors, chartOfAccounts, recentReceipts }) {
+export default function RowItem({ transaction, transactionIndex, vendors, setVendors, chartOfAccounts, recentReceipts }) {
   const { control, getValues, setValue } = useFormContext();
   const recalculateByUnit = useRecalculateByUnit();
   const clearAmounts = useClearCalculations();
@@ -95,7 +95,7 @@ export default function RowItem({ transaction, transactionIndex, vendors, chartO
           <CheckboxApprove transactionIndex={transactionIndex} />
         </Box>
         <Box sx={{ flex: 1.349, textAlign: 'center', pl: 2 }}>
-          <DropDownVendor transactionIndex={transactionIndex} vendors={vendors} merchant={transaction.merchant} />
+          <DropDownVendor transactionIndex={transactionIndex} vendors={vendors} setVendors={setVendors} merchant={transaction.merchant} />
         </Box>
         <Box sx={{ flex: 1, textAlign: 'center' }}>{titleCase(transaction.name)}</Box>
         <Box sx={{ flex: 1, textAlign: 'center' }}>{transaction.accountName}</Box>

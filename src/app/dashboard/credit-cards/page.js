@@ -13,6 +13,6 @@ export default async function page() {
     getServerSession(),
   ]);
 
-  return <Table user={user} vendors={vendors} suggestedReceipts={suggestedReceipts} chartOfAccounts={chartOfAccounts}/>;
+  return <Table user={user} vendorData={vendors} suggestedReceipts={suggestedReceipts} chartOfAccounts={chartOfAccounts}/>;
   
 }

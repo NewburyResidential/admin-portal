@@ -22,8 +22,9 @@ import getUnapprovedTransactions from 'src/utils/services/cc-expenses/getUnappro
 import { LoadingScreen } from 'src/components/loading-screen';
 import Iconify from 'src/components/iconify';
 
-export default function CustomTable({ user, vendors, chartOfAccounts, suggestedReceipts }) {
+export default function CustomTable({ user, vendorData, chartOfAccounts, suggestedReceipts }) {
   const [loading, setLoading] = useState(false);
+  const [vendors, setVendors] = useState(vendorData);
 
   const methods = useForm({
     defaultValues: {
@@ -134,6 +135,7 @@ export default function CustomTable({ user, vendors, chartOfAccounts, suggestedR
                             transaction={transaction}
                             transactionIndex={page * rowsPerPage + transactionIndex}
                             vendors={vendors}
+                            setVendors={setVendors}
                             chartOfAccounts={chartOfAccounts}
                             recentReceipts={suggestedReceipts}
                           />

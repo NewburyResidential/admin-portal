@@ -24,7 +24,7 @@ export default function AddVendorForm({ defaultVendorValue, handleClose }) {
   const defaultValues = {
     vendor: upperCaseDefaultVendorValue,
     entityType: '940',
-    informationReturn: false
+    informationReturn: false,
   };
 
   const methods = useForm({
@@ -37,7 +37,7 @@ export default function AddVendorForm({ defaultVendorValue, handleClose }) {
   const onSubmit = async (data) => {
     const response = await addVendor(data);
     if (response) {
-      handleClose();
+      handleClose({vendor: response});
     } else {
       setShowAlert(true);
     }
