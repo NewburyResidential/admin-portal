@@ -11,8 +11,8 @@ import Autocomplete from '@mui/material/Autocomplete';
 import Iconify from 'src/components/iconify';
 import VendorDialog from '../addVendor/Dialog';
 
-export default function DropDownVendor({ transactionIndex, vendors, merchant }) {
-  const { control } = useFormContext();
+export default function DropDownVendor({ transactionIndex, vendors, setVendors, merchant }) {
+  const { control, setValue } = useFormContext();
   const allocations = useWatch({
     control,
     name: `transactions[${transactionIndex}].allocations`,
@@ -33,13 +33,17 @@ export default function DropDownVendor({ transactionIndex, vendors, merchant }) 
   const [inputValue, setInputValue] = useState('');
   const [vendorDialog, setVendorDialog] = useState({ open: false, defaultValue: '' });
 
+  const handleClose = ({ vendor = null }) => {
+    if (vendor) {
+      setVendors((prev) => [...prev, vendor]);
+      setValue(`transactions[${transactionIndex}].vendor`, vendor);
+    }
+    setVendorDialog({ open: false, defaultValue: '' });
+  };
+
   return isVendorRequired ? (
     <>
-      <VendorDialog
-        open={vendorDialog.open}
-        defaultValue={vendorDialog?.defaultValue}
-        handleClose={() => setVendorDialog({ open: false, defaultValue: '' })}
-      />
+      <VendorDialog open={vendorDialog.open} defaultValue={vendorDialog?.defaultValue} handleClose={handleClose} />
       <FormControl fullWidth>
         <Controller
           name={`transactions[${transactionIndex}].vendor`}

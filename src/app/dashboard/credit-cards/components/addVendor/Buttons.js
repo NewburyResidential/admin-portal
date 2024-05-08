@@ -7,7 +7,7 @@ export default function Buttons({ handleClose }) {
 
   return (
     <DialogActions>
-      <LoadingButton variant="outlined" color="inherit" onClick={handleClose} disabled={pending}>
+      <LoadingButton variant="outlined" color="inherit" onClick={() => handleClose({})} disabled={pending}>
         Cancel
       </LoadingButton>
       <LoadingButton type="submit" variant="contained" loading={pending}>

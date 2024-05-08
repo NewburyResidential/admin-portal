@@ -1,7 +1,5 @@
 'use server';
 
-import { revalidateTag } from 'next/cache';
-
 export default async function addVendor(data) {
   const upperCaseVendorValue = data.vendor
     .split(' ')
@@ -21,17 +19,14 @@ export default async function addVendor(data) {
 
   try {
     const response = await fetch(url, requestOptions);
-    const status = await response.json();
-    if (status === 'Success') {
-      revalidateTag('vendors');
-
-      return true;
+    if (!response.ok) {
+      console.error('Error fetching data: ', response.statusText);
+      return null;
+    } else {
+      return response.json();
     }
-    console.error('Error fetching data: ');
-    revalidateTag('vendors');
-    return false;
   } catch (error) {
     console.error('Error fetching data: ', error);
-    return false;
+    return null;
   }
 }
