@@ -90,9 +90,9 @@ export const assetItems = [
     category: 'Properties',
     id: '2001',
     label: 'Sycamore Place',
-    accountId: 'P4',
+    accountId: '100026145',
     units: 96,
-    accountingSoftware: 'n/a',
+    accountingSoftware: 'entrata',
     waveARId: 'QWNjb3VudDoxOTA2ODM3NzE0MjcyMDM5NzA3O0J1c2luZXNzOjc5OTg2NWE2LTlmMGEtNDgwNS1iZTg0LTJkMDgyOTE5MWVhYw==',
   },
   {
