@@ -102,6 +102,7 @@ export default function InvoiceTable({ groupedInvoices, chartOfAccounts, catalog
         const accountNumber = catalogedItems[lineItem.sku].glAccountNumber;
         const rate = parseCurrency(lineItem.totalCost);
         totalLineItemAmount = totalLineItemAmount.plus(rate);
+        if (rate.eq(0)) return;
         apDetails.push({
           propertyId,
           glAccountId: accountNumber,
