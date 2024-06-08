@@ -5,8 +5,6 @@ import { dashboardPaths, getOnboardingParameter, onboardingPaths, publicPaths } 
 import SvgColor from 'src/components/svg-color';
 import { redirect } from 'next/navigation';
 
-const DASHBOARD = '/dashboard';
-
 // ----------------------------------------------------------------------
 
 const icon = (name) => (
@@ -62,8 +60,6 @@ export const isAuthorized = (session, currentPath) => {
   }
 
   if (user?.roles.includes('admin')) return true;
-
-  const navData = useNavData();
 
   // const userHasAccess = navData.some((section) =>
   //   section.items.some(

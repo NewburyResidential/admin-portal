@@ -16,7 +16,7 @@ export default function SupportDrawer({ email, open, handleClose }) {
   const handleSend = async () => {
     if (!message) return;
     setLoading(true);
-    await sendSupportEmail({ email: email, message: message });
+    await sendSupportEmail({ email, message });
     handleClose();
     setLoading(false);
     setMessage('');

@@ -1,7 +1,7 @@
 "use server";
 
 import { SESClient, SendEmailCommand } from '@aws-sdk/client-ses';
-import  LoginEmail from 'src/utils/services/email/LoginEmail.jsx';
+import  LoginEmail from 'src/utils/services/email/LoginEmail';
 import { render } from '@react-email/render';
 
 // Initialize the SES Client using environment variables

@@ -5,7 +5,7 @@ import { dynamoUpdateItemAttributes } from '../sdk-config/aws/dynamo-db';
 
 export async function updateDocument(fileData, data) {
   const file = fileData.get('file');
-  const bucket = data.bucket;
+  const {bucket} = data;
   const key = `${data.employeePk}/${data.fileId}`;
 
   const s3Response = await s3Upload({ bucket, file, key });

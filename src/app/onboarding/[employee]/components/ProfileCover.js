@@ -86,7 +86,7 @@ export default function ProfileCover({ employee, progress }) {
                           height: { xs: 64, md: 106 },
                           border: `solid 3px ${theme.palette.common.white}`,
                         }}
-                      ></Avatar>
+                       />
                       <Box
                         sx={{
                           position: 'absolute',
@@ -164,7 +164,7 @@ export default function ProfileCover({ employee, progress }) {
                     textAlign: { xs: 'center', md: 'unset' },
                   }}
                   primary={`Welcome, ${employee.firstName}!`}
-                  secondary={'Complete Your Onboarding'}
+                  secondary="Complete Your Onboarding"
                   primaryTypographyProps={{
                     typography: 'h4',
                   }}

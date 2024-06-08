@@ -1,4 +1,4 @@
-import { Body, Button, Container, Head, Heading, Hr, Html, Img, Link, Preview, Section, Text } from '@react-email/components';
+import { Body, Button, Container, Head, Heading, Hr, Html, Img, Preview, Section, Text } from '@react-email/components';
 import React from 'react';
 
 const LoginEmail = ({ url }) => (
@@ -18,12 +18,12 @@ const LoginEmail = ({ url }) => (
         <Hr style={hr} />
         <Section style={buttonContainer}>
           <Button style={button} href={url}>
-            Login to Newbury's Portal
+            Login to Newbury&apos;s Portal
           </Button>
         </Section>
         <Text style={paragraph}>
-          You have requested access to Newbury Residential's Portal. Please use the above link to log in. Note that this link will expire in
-          24 hours.
+          You have requested access to Newbury Residential&apos;s Portal. Please use the above link to log in. Note that this link will
+          expire in 24 hours.
         </Text>
         <Section style={containerImageFooter}>
           <Img style={image} width={620} src="https://admin-portal-intranet.s3.amazonaws.com/apartment-footer.png" />
@@ -91,4 +91,3 @@ const containerImageFooter = {
 const image = {
   maxWidth: '100%',
 };
-

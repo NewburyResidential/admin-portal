@@ -8,8 +8,6 @@ export default async function page({ params, searchParams }) {
   const employee = params?.employee || '';
   
   return (
-    <>
-      <PandaDocView session={session} employee={employee} sk={sk} />
-    </>
+    <PandaDocView session={session} employee={employee} sk={sk} />
   );
 }

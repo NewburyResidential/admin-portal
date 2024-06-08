@@ -68,7 +68,7 @@ export default function BenefitsDialog({ hasApprovalRights, open, handleClose })
         ) : (
           <Typography variant="body1" sx={{ mb: 4.5, fontWeight: 600 }}>
             Begin your enrollment by following the links below. Check off each box as you go through the steps. After completing all steps,
-            click 'Finish Enrollment' and a team member will process your enrollment!
+            click &aptos;Finish Enrollment&aptos; and a team member will process your enrollment!
           </Typography>
         )}
 
@@ -76,8 +76,8 @@ export default function BenefitsDialog({ hasApprovalRights, open, handleClose })
           label="Enrollment Instruction Guide"
           description="Click to review instructions for Ease"
           url="https://newbury-intranet.s3.amazonaws.com/Health+%26+Benefits+-+Ease+Portal+Guide.pdf"
-          uploadType={'file'}
-          isResource={true}
+          uploadType="file"
+          isResource
           fileName="fjdlaskj.pdf"
         />
         <br />
@@ -87,8 +87,8 @@ export default function BenefitsDialog({ hasApprovalRights, open, handleClose })
             hasApprovalRights ? "Click to be redirected to the employee's directory in Ease" : 'Click to create an account and enroll in benefits'
           }
           url="https://newburyresidential.ease.com/?6xE4T6ICZQh0ABkhV8iIFlJVJBt3WGT4nhSajS2AWYU=_162650504e27d846eec4a4021f81b80658b291463cddb4c4514460bb68d7e1f4ec"
-          uploadType={'website'}
-          isResource={true}
+          uploadType="website"
+          isResource
         />
         {!hasApprovalRights && (
           <form>

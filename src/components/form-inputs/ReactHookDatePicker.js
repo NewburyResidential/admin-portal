@@ -26,10 +26,12 @@ export default function ReactHookDatePicker({ label = 'Date', views = ['year', '
                 label={label}
                 slotProps={{ textField: { variant: 'outlined', error: !!error } }}
                 onChange={(date) => {
-                  const isValidDate = date instanceof Date && !isNaN(date.getTime());
+                  const isValidDate = date instanceof Date && !Number.isNaN(date.getTime());
                   const formattedDate = isValidDate ? fDate(date) : date;
                   field.onChange(formattedDate);
-                  onChange && onChange(formattedDate);
+                  if (onChange) {
+                    onChange(formattedDate);
+                  }
                 }}
               />
               {error && <FormHelperText>{error.message}</FormHelperText>}

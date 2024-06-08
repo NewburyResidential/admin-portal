@@ -30,6 +30,7 @@ export const s3Upload = async ({ bucket, key, file, contentDisposition = 'inline
     return data;
   } catch (error) {
     console.error('Error uploading file: ', error);
+    return null;
   }
 };
 
@@ -47,5 +48,6 @@ export const s3GetSignedUrl = async ({ bucket, key, expiresIn = 3600 }) => {
     return signedUrl;
   } catch (error) {
     console.error('Error generating signed URL: ', error);
+    return null;
   }
 };

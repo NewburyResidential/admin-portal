@@ -19,8 +19,6 @@ const rawDashboardPaths = {
     root: `/lowes`,
     sub: {},
   },
-
-
 };
 
 export const onboardingPaths = {
@@ -42,12 +40,16 @@ function adjustPaths(paths) {
   const result = {};
 
   for (const key in paths) {
-    const { root, sub } = paths[key];
-    const fullRoot = `/dashboard${root}`;
-    result[key] = { root: fullRoot };
+    if (Object.prototype.hasOwnProperty.call(paths, key)) {
+      const { root, sub } = paths[key];
+      const fullRoot = `/dashboard${root}`;
+      result[key] = { root: fullRoot };
 
-    for (const subKey in sub) {
-      result[key][subKey] = `${fullRoot}${sub[subKey]}`;
+      for (const subKey in sub) {
+        if (Object.prototype.hasOwnProperty.call(sub, subKey)) {
+          result[key][subKey] = `${fullRoot}${sub[subKey]}`;
+        }
+      }
     }
   }
 

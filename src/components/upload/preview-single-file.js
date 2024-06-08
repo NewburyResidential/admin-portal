@@ -1,19 +1,13 @@
 import PropTypes from 'prop-types';
-import React, { useEffect, useRef } from 'react';
 
 // @mui
 import Box from '@mui/material/Box';
-import { useResponsive } from 'src/hooks/use-responsive';
 
 // ----------------------------------------------------------------------
 
 //TODO: Addjust styling
 export default function SingleFilePreview({ imgUrl = '', isPdf, previewFit }) {
-  const xs = useResponsive('up', 'xs');
-  const sm = useResponsive('up', 'sm');
-  const md = useResponsive('up', 'md');
-  const lg = useResponsive('up', 'lg');
-  const xl = useResponsive('up', 'xl');
+
 
   return (
     <Box
@@ -34,10 +28,11 @@ export default function SingleFilePreview({ imgUrl = '', isPdf, previewFit }) {
       {isPdf ? (
         <Box sx={{ width: '100%', height: { lg: '86vh', xs: '50vh' } }}>
           <iframe
+            title="file preview"
             src={imgUrl}
             width="100%"
             height="100%" // Explicitly set iframe height to 100%
-          ></iframe>
+           />
         </Box>
       ) : (
         <Box

@@ -21,9 +21,9 @@ export default async function page({ params }) {
   }
 
   // Get signed urls for all onboarding documents
-  const onboarding = employee.onboarding;
+  const { onboarding } = employee;
   const updatePromises = Object.keys(onboarding).map(async (key) => {
-    if (onboarding.hasOwnProperty(key)) {
+    if (Object.prototype.hasOwnProperty.call(onboarding, key)) {
       const document = onboarding[key];
       const signedUrl = await s3GetSignedUrl({ bucket: 'newbuy-employee-documents', key: `${employeePk}/${document.sk}` });
       document.url = signedUrl;
@@ -31,9 +31,5 @@ export default async function page({ params }) {
   });
   await Promise.all(updatePromises);
 
-  return (
-    <>
-      <OnboardingEmployeeView employee={employee} hasApprovalRights={hasApprovalRights} />
-    </>
-  );
+  return <OnboardingEmployeeView employee={employee} hasApprovalRights={hasApprovalRights} />;
 }

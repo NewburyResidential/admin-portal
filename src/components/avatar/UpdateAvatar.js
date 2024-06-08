@@ -24,8 +24,7 @@ export default function UpdateAvatar({ pk, name, avatar, open, handleClose, hand
   };
 
   return (
-    <>
-      <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title" maxWidth="lg">
+    <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title" maxWidth="lg">
         <DialogTitle id="form-dialog-title" sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <Typography variant="h5" sx={{ ml: 2 }}>
             Update Profile Avatar
@@ -84,6 +83,5 @@ export default function UpdateAvatar({ pk, name, avatar, open, handleClose, hand
           </Box>
         </DialogContent>
       </Dialog>
-    </>
   );
 }

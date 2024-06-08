@@ -29,6 +29,7 @@ export async function dynamoQuery({ tableName, pk, sk = null }) {
     return data.Items;
   } catch (error) {
     console.error('Error getting item from DynamoDB', error);
+    return null;
   }
 }
 
@@ -61,6 +62,7 @@ export async function dynamoQueryWithIndex({ tableName, index, pkName, pkValue, 
     return data.Items;
   } catch (error) {
     console.error('Error getting item from DynamoDB', error);
+    return null;
   }
 }
 
@@ -93,7 +95,7 @@ export async function dynamoUpdateItemAttributes({ tableName, pk, sk, attributes
 
   const params = {
     TableName: tableName,
-    Key: { pk: pk, sk: sk },
+    Key: { pk, sk },
     UpdateExpression: updateExpression,
     ExpressionAttributeNames: expressionAttributeNames,
     ExpressionAttributeValues: expressionAttributeValues,

@@ -1,4 +1,5 @@
 'use client';
+
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { SplashScreen } from 'src/components/loading-screen';
@@ -47,7 +48,7 @@ export default function PandaDocView({ session, employee, sk }) {
     return () => {
       window.removeEventListener('message', handleMessage);
     };
-  }, []);
+  }, [employee, pk, sk, router]);
 
   if (loading) {
     return <SplashScreen />;
@@ -56,13 +57,14 @@ export default function PandaDocView({ session, employee, sk }) {
   return (
     <div style={{ width: '100vw', height: '98%', margin: 0, padding: 0 }}>
       <iframe
+        title="PandaDoc Viewer"
         src={`https://app.pandadoc.com/s/${session}`}
         style={{
           width: '100%',
           height: '100%',
           border: 'none',
         }}
-      ></iframe>
+      />
     </div>
   );
 }

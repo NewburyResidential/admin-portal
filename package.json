@@ -38,6 +38,7 @@
     "@mui/x-data-grid": "^6.13.0",
     "@mui/x-date-pickers": "^7.6.1",
     "@react-email/components": "^0.0.17",
+    "@react-email/render": "^0.0.15",
     "@supabase/auth-helpers-nextjs": "^0.8.1",
     "@supabase/supabase-js": "^2.33.1",
     "@vercel/analytics": "^1.0.2",

@@ -37,14 +37,14 @@ export default function Step2({ activeStep, handleBack, handleNext, identificati
 
   const { control, handleSubmit, trigger, formState } = methods;
 
-  const identificationTwo = useWatch({ control: control, name: 'identificationTwo' });
-  const file = useWatch({ control: control, name: 'file' });
+  const identificationTwo = useWatch({ control, name: 'identificationTwo' });
+  const file = useWatch({ control, name: 'file' });
   const fileError = formState?.errors?.file;
   const isDirty = formState?.isDirty;
 
-  const handleDropSingleFile = useCallback((file) => {
-    methods.setValue('file', file, { shouldDirty: true });
-  }, []);
+  const handleDropSingleFile = useCallback((newFile) => {
+    methods.setValue('file', newFile, { shouldDirty: true });
+  }, [methods]);
 
   const identificationOptions = [...listAIdentifications, ...listCIdentifications];
   const identificationSelection = identificationOptions.find((item) => item.value === identificationTwo) || null;
@@ -82,7 +82,7 @@ export default function Step2({ activeStep, handleBack, handleNext, identificati
         status: '#PENDING',
         identification: data.identificationTwo,
       };
-      const response = await updateOnboardingRequirement(fileData, pk, sk, attributes);
+     await updateOnboardingRequirement(fileData, pk, sk, attributes);
     }
     handleNext();
     setLoading(false);
@@ -116,7 +116,7 @@ export default function Step2({ activeStep, handleBack, handleNext, identificati
           <Grid container spacing={3} sx={{ mb: 4.5 }}>
             <Grid item xs={12} md={12}>
               <ReactHookSelect
-                label={'Select Identification Type'}
+                label="Select Identification Type"
                 options={identificationOptions}
                 name="identificationTwo"
                 onChange={() => methods.setValue('file', null)}
@@ -126,8 +126,7 @@ export default function Step2({ activeStep, handleBack, handleNext, identificati
         </form>
       </FormProvider>
       {identificationTwo && (
-        <>
-          <Upload
+        <Upload
             title={`Upload ${identificationSelection?.label}`}
             onFileChange={handleDropSingleFile}
             file={file}
@@ -145,7 +144,6 @@ export default function Step2({ activeStep, handleBack, handleNext, identificati
               'image/tiff': ['.tiff', '.tif'],
             }}
           />
-        </>
       )}
       <StepperButtons
         activeStep={activeStep}

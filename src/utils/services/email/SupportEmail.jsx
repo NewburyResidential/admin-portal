@@ -1,4 +1,4 @@
-import { Body, Container, Head, Heading, Hr, Html, Img, Preview, Section, Text } from '@react-email/components';
+import { Body, Container, Head, Heading, Hr, Html, Img, Section, Text } from '@react-email/components';
 import React from 'react';
 
 const SupportEmail = ({ email, message }) => (
@@ -49,22 +49,6 @@ const paragraph = {
   lineHeight: '1.4',
   color: '#3c4149',
   marginTop: '10px',
-};
-
-const buttonContainer = {
-  padding: '27px 0 27px',
-};
-
-const button = {
-  backgroundColor: '#212B36',
-  borderRadius: '3px',
-  fontWeight: '600',
-  color: '#fff',
-  fontSize: '15px',
-  textDecoration: 'none',
-  textAlign: 'center',
-  display: 'block',
-  padding: '11px 23px',
 };
 
 const hr = {

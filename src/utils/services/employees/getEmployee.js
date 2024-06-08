@@ -1,6 +1,6 @@
-export const dynamic = 'force-dynamic';
-
 import { dynamoQuery } from '../sdk-config/aws/dynamo-db';
+
+export const dynamic = 'force-dynamic';
 function restructureEmployeeData(items) {
   const employeeData = {};
 
@@ -40,5 +40,6 @@ export default async function getEmployee(pk) {
     return restructuredEmployeeData;
   } catch (error) {
     console.error('Error getting item from DynamoDB', error);
+    return null;
   }
 }

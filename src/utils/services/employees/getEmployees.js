@@ -1,8 +1,8 @@
 'use server';
 
 import { dynamoQuery } from '../sdk-config/aws/dynamo-db';
-import { revalidateTag } from 'next/cache';
-import { unstable_cache } from 'next/cache';
+import { revalidateTag , unstable_cache } from 'next/cache';
+
 
 function restructureEmployeeData(items) {
   const employeeData = {};
@@ -46,5 +46,6 @@ export default async function getEmployees(pk) {
     return restructuredEmployeeData;
   } catch (error) {
     console.error('Error getting item from DynamoDB', error);
+    return null;
   }
 }

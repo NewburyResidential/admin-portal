@@ -46,18 +46,21 @@ export default function Step1({ activeStep, handleBack, handleNext, identificati
     { value: false, label: 'No' },
   ];
 
-  const hasLicense = useWatch({ control: control, name: 'hasLicense' });
-  const identificationOne = useWatch({ control: control, name: 'identificationOne' });
-  const file = useWatch({ control: control, name: 'file' });
+  const hasLicense = useWatch({ control, name: 'hasLicense' });
+  const identificationOne = useWatch({ control, name: 'identificationOne' });
+  const file = useWatch({ control, name: 'file' });
   const fileError = formState?.errors?.file;
   const isDirty = formState?.isDirty;
   const isFileDirty = formState?.dirtyFields.file || false;
   const dirtyFields = formState?.dirtyFields;
   console.log('dirtyFields', dirtyFields);
 
-  const handleDropSingleFile = useCallback((file) => {
-    methods.setValue('file', file, { shouldDirty: true });
-  }, []);
+  const handleDropSingleFile = useCallback(
+    (newFile) => {
+      methods.setValue('file', newFile, { shouldDirty: true });
+    },
+    [methods]
+  );
 
   const handleDriverLicenseChange = (event) => {
     if (event.target.value === true) {
@@ -121,7 +124,7 @@ export default function Step1({ activeStep, handleBack, handleNext, identificati
         hasLicense: data.hasLicense,
         licenseExpiration: data.licenseExpiration,
       };
-      const response = await updateOnboardingRequirement(fileData, pk, sk, attributes);
+      await updateOnboardingRequirement(fileData, pk, sk, attributes);
     }
     handleNext(data.identificationOne);
     setLoading(false);
@@ -140,9 +143,10 @@ export default function Step1({ activeStep, handleBack, handleNext, identificati
         content={
           <>
             <Typography>
-              You have indicated that you do not currently have a valid driver's license. Be aware that you will not be permitted to drive a
-              company car until a valid license is submitted. If this is correct, please proceed
+              {`You have indicated that you do not currently have a valid driver's license. Be aware that you will not be permitted to drive a
+  company car until a valid license is submitted. If this is correct, please proceed.`}
             </Typography>
+
             <br />
             <Typography sx={{ fontWeight: 600 }}>Please select an alternative form of identification from the dropdown</Typography>
           </>
@@ -197,28 +201,26 @@ export default function Step1({ activeStep, handleBack, handleNext, identificati
         </form>
       </FormProvider>
       {identificationOne && (
-        <>
-          <Upload
-            title={`Upload ${identificationSelection?.label}`}
-            onFileChange={handleDropSingleFile}
-            file={file}
-            onDelete={() => methods.setValue('file', null, { shouldDirty: true })}
-            previewFit="full"
-            error={fileError}
-            accept={{
-              'application/pdf': ['.pdf'],
-              'image/jpeg': ['.jpeg', '.jpg'],
-              'image/heic': ['.heic'],
-              'image/webp': ['.webp'],
-              'image/png': ['.png'],
-              'image/gif': ['.gif'],
-              'image/bmp': ['.bmp'],
-              'image/tiff': ['.tiff', '.tif'],
-              'application/vnd.ms-excel': ['.xls'],
-              'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'],
-            }}
-          />
-        </>
+        <Upload
+          title={`Upload ${identificationSelection?.label}`}
+          onFileChange={handleDropSingleFile}
+          file={file}
+          onDelete={() => methods.setValue('file', null, { shouldDirty: true })}
+          previewFit="full"
+          error={fileError}
+          accept={{
+            'application/pdf': ['.pdf'],
+            'image/jpeg': ['.jpeg', '.jpg'],
+            'image/heic': ['.heic'],
+            'image/webp': ['.webp'],
+            'image/png': ['.png'],
+            'image/gif': ['.gif'],
+            'image/bmp': ['.bmp'],
+            'image/tiff': ['.tiff', '.tif'],
+            'application/vnd.ms-excel': ['.xls'],
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'],
+          }}
+        />
       )}
       <StepperButtons
         activeStep={activeStep}

@@ -49,22 +49,6 @@ const paragraph = {
   marginTop: '10px',
 };
 
-const buttonContainer = {
-  padding: '27px 0 27px',
-};
-
-const button = {
-  backgroundColor: '#212B36',
-  borderRadius: '3px',
-  fontWeight: '600',
-  color: '#fff',
-  fontSize: '15px',
-  textDecoration: 'none',
-  textAlign: 'center',
-  display: 'block',
-  padding: '11px 23px',
-};
-
 const hr = {
   borderColor: '#dfe1e4',
   margin: '32px 0 26px',

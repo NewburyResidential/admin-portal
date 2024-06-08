@@ -10,7 +10,6 @@ export default function WelcomeVideo() {
           title="Welcome Video"
           controls
           style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-          key="foo"
         />
       </Box>
     </Card>

@@ -56,8 +56,8 @@ export const authOptions = {
       const email = session?.user?.email;
       const employeeData = await getAuthorizedUserByEmail(email);
       if (employeeData) {
-        const name = employeeData?.firstName + ' ' + employeeData?.lastName;
-        session.user = { ...session.user, ...employeeData, name: name };
+        const name = `${employeeData?.firstName  } ${  employeeData?.lastName}`;
+        session.user = { ...session.user, ...employeeData, name };
       }
 
       return session;

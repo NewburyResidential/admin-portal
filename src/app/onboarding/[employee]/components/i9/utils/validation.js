@@ -1,7 +1,7 @@
 import * as Yup from 'yup';
 
-Yup.addMethod(Yup.string, 'isValidDate', function (message) {
-  return this.test('isValidDate', message, function (value) {
+Yup.addMethod(Yup.string, 'isValidDate', function isValidDateMethod(message) {
+  return this.test('isValidDate', message, function isValidDateTest(value) {
     const { path, createError } = this;
     const datePattern = /^(0[1-9]|1[0-2])\/(0[1-9]|[12]\d|3[01])\/\d{4}$/;
     return value && datePattern.test(value) ? true : createError({ path, message });

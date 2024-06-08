@@ -48,9 +48,9 @@ export default function Upload({
     disabled,
     onDrop: (acceptedFiles) => {
       if (multiple) {
-        const processedFiles = acceptedFiles.map((file) => {
-          file.preview = URL.createObjectURL(file);
-          return file;
+        const processedFiles = acceptedFiles.map((processedFile) => {
+          processedFile.preview = URL.createObjectURL(processedFile);
+          return processedFile;
         });
         onFileChange(processedFiles);
       } else {

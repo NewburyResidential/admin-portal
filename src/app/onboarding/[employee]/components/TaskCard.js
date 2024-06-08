@@ -29,8 +29,7 @@ export default function TaskCard({ task, handleClick, hasApprovalRights }) {
   );
 
   return (
-    <>
-      <Stack
+    <Stack
         onClick={() => {
           if (!isFinishedView) handleClick();
         }}
@@ -62,6 +61,5 @@ export default function TaskCard({ task, handleClick, hasApprovalRights }) {
         {task.status === '#PENDING' && <Chip label="Awaiting Approval" color="warning" variant="filled" />}
         {task.status === '#INCOMPLETE' && <Chip label="Not Complete" color="error" variant="filled" />}
       </Stack>
-    </>
   );
 }
