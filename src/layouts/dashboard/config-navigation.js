@@ -44,8 +44,7 @@ const ICONS = {
 
 // ----------------------------------------------------------------------
 
-export const isAuthorized = (session, currentPath) => {
-  console.log('session:', session);
+export const isAuthorized = (session) => {
   const user = session?.user;
   if (!user) {
     redirect(publicPaths.unAuthorizedApplication('No-Session-Registed'));
@@ -103,12 +102,12 @@ export function useNavData() {
             path: dashboardPaths.lowes.root,
             icon: ICONS.order,
           },
-          {
-            title: 'Onboarding',
-            roles: ['accounting'],
-            path: onboardingPaths.root,
-            icon: ICONS.tour,
-          },
+          // {
+          //   title: 'Onboarding',
+          //   roles: ['accounting'],
+          //   path: onboardingPaths.root,
+          //   icon: ICONS.tour,
+          // },
         ],
       },
     ],

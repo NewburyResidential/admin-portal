@@ -17,7 +17,6 @@ export default async function Page({ params }) {
   if (!resourceGroupId) {
     return  <NotFoundView />;
   }
-  console.log(resourceGroup);
 
   const categories = {};
   const resourcesByGroup = {};

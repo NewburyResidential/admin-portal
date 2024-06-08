@@ -12,13 +12,11 @@ export default async function getAllEmployees() {
 
   try {
     const response = await fetch(url, requestOptions);
-   // console.log('response', response)
     if (!response.ok) {
       console.error(`HTTP error! Status: ${response.status}`);
       return null;
     }
     const data = await response.json();
-   // console.log('data', data)
     return data;
   } catch (error) {
     console.error('Error fetching data: ', error);

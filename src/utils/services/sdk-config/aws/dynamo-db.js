@@ -25,7 +25,6 @@ export async function dynamoQuery({ tableName, pk, sk = null }) {
     };
 
     const data = await dynamoDocumentClient.send(new QueryCommand(params));
-    console.log(data.Items);
     return data.Items;
   } catch (error) {
     console.error('Error getting item from DynamoDB', error);
@@ -58,7 +57,6 @@ export async function dynamoQueryWithIndex({ tableName, index, pkName, pkValue, 
     };
 
     const data = await dynamoDocumentClient.send(new QueryCommand(params));
-    console.log(data.Items);
     return data.Items;
   } catch (error) {
     console.error('Error getting item from DynamoDB', error);

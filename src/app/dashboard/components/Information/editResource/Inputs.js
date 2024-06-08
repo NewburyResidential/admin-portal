@@ -51,7 +51,6 @@ export default function Inputs({ resourceType, categoryOptions }) {
     try {
       const response = await uploadS3Image(formData);
       if (response) {
-        console.log(response);
         setValue(`${field}`, response);
       }
     } catch (error) {

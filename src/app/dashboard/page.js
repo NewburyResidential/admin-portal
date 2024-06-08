@@ -1,5 +1,5 @@
 import { getServerSession } from 'next-auth';
-import { authOptions } from '../api/auth/[...nextauth]/route';
+import { authOptions } from 'src/app/api/auth/[...nextauth]/route';
 import { isAuthorized } from 'src/layouts/dashboard/config-navigation';
 
 import TabOptions from './components/TabOptions';

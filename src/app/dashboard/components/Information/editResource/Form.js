@@ -19,7 +19,6 @@ import deleteResource from 'src/utils/services/intranet/deleteResource';
 export default function EditResourceForm({ resource, handleClose, userName, resourceType, groupId, categoryId, categoryOptions }) {
   const [showAlert, setShowAlert] = useState(false);
   const [loadingDelete, setLoadingDelete] = useState(false);
-  console.log('r', resourceType)
 
   const addResource = !resource;
 

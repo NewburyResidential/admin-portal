@@ -28,7 +28,6 @@ export default function OnboardingEmployeeView({ employee, hasApprovalRights }) 
     }, 2000);
   }, []);
 
-  console.log(employee);
   const router = useRouter();
 
   const i9Dialog = useDialog();

@@ -15,8 +15,9 @@ import SearchResources from './Information/SearchResources';
 
 export default function TabOptions({ resourcesObject, session }) {
   const settings = useSettingsContext();
+  console.log("session", session)
 
-  const [value, setValue] = useState(2);
+  const [value, setValue] = useState(0);
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };

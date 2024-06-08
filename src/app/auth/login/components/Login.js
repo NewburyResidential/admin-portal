@@ -23,7 +23,7 @@ const schema = yup.object().shape({
   email: yup.string().email('Please Enter A valid email').required('Please Enter A valid email'),
 });
 
-export default function LoginView({ session, params }) {
+export default function LoginView({ params }) {
   const [loading, setLoading] = useState(false);
   const callbackUrl = params || '/dashboard';
   const {

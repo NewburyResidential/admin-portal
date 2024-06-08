@@ -21,8 +21,7 @@ export default function ReceiptCards({ id, setOpen, setLoading, transactionIndex
   const handleChooseReceipt = async (objectKey, fileName) => {
     setLoading(true);
     setOpen(false);
-    console.log('objectKey', objectKey);
-    console.log('fileName', fileName);
+
 
     try {
       console.log('i ran');
@@ -31,7 +30,6 @@ export default function ReceiptCards({ id, setOpen, setLoading, transactionIndex
         setValue(`transactions[${transactionIndex}].receipt`, response.fileUrl);
         setValue(`transactions[${transactionIndex}].tempPdfReceipt`, response.tempPdfUrl);
       }
-      console.log('response', response);
     } catch (error) {
       console.error('Error uploading file:', error);
     } finally {

@@ -16,7 +16,6 @@ function restructureEmployeeData(items) {
   }
 
   items.forEach((item) => {
-    console.log(item);
     if (item.type === '#DOCUMENT') {
       if (item.required) {
         employeeData.requiredDocuments.push(item);
