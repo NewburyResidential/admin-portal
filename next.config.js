@@ -4,6 +4,9 @@ module.exports = {
   eslint: {
     ignoreDuringBuilds: false,
   },
+  experimental: {
+    serverComponentsExternalPackages: ['@aws-sdk'],
+  },
   trailingSlash: true,
   modularizeImports: {
     '@mui/material': {

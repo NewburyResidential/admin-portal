@@ -56,7 +56,7 @@ export const isAuthorized = (session, currentPath) => {
   }
 
   if (user.isOnboarding) {
-    redirect(`/onboarding?employee=${getOnboardingParameter(user.name, user.pk)}`);
+    redirect(`/onboarding/${getOnboardingParameter(user.name, user.pk)}`);
   }
 
   if (user?.roles.includes('admin')) return true;
