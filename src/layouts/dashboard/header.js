@@ -21,7 +21,7 @@ import EditButton from '../_common/EditButton';
 
 // ----------------------------------------------------------------------
 
-export default function Header({ onOpenNav }) {
+export default function Header({ onOpenNav, session }) {
   const theme = useTheme();
 
   const settings = useSettingsContext();
@@ -53,7 +53,7 @@ export default function Header({ onOpenNav }) {
 
         <SettingsButton />
 
-        <AccountPopover />
+        <AccountPopover session={session}/>
       </Stack>
     </>
   );

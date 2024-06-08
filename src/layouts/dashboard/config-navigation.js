@@ -1,8 +1,9 @@
 import { useMemo } from 'react';
 // routes
-import { paths } from 'src/routes/paths';
+import { dashboardPaths, getOnboardingParameter, onboardingPaths, publicPaths } from 'src/routes/paths';
 // components
 import SvgColor from 'src/components/svg-color';
+import { redirect } from 'next/navigation';
 
 const DASHBOARD = '/dashboard';
 
@@ -45,47 +46,72 @@ const ICONS = {
 
 // ----------------------------------------------------------------------
 
+export const isAuthorized = (session, currentPath) => {
+  console.log('session:', session);
+  const user = session?.user;
+  if (!user) {
+    redirect(publicPaths.unAuthorizedApplication('No-Session-Registed'));
+  }
+
+  if (user.status !== '#AUTHORIZED') {
+    redirect(publicPaths.unAuthorizedApplication(user.personalEmail));
+  }
+
+  if (user.isOnboarding) {
+    redirect(`/onboarding?employee=${getOnboardingParameter(user.name, user.pk)}`);
+  }
+
+  if (user?.roles.includes('admin')) return true;
+
+  const navData = useNavData();
+
+  // const userHasAccess = navData.some((section) =>
+  //   section.items.some(
+  //     (item) =>
+  //       (item.roles && item.roles.some((role) => user.roles.includes(role))) ||
+  //       user.applications.includes(item.title) ||
+  //       item.path === currentPath ||
+  //       (item.children &&
+  //         item.children.some(
+  //           (child) => child.path === currentPath && (user.roles.includes(child.roles) || user.applications.includes(child.title))
+  //         ))
+  //   )
+  // );
+
+  return true;
+};
 export function useNavData() {
   const data = useMemo(
     () => [
       // OVERVIEW---------------------------------------------------------------
       {
         subheader: 'Overview',
-        items: [{ title: 'Dashboard', path: paths.dashboard.root, icon: ICONS.dashboard }],
+        items: [{ title: 'Dashboard', path: dashboardPaths.dashboard.root, icon: ICONS.dashboard }],
       },
-
-      // MANAGEMENT-------------------------------------------------------------
-
-      // {
-      //   subheader: 'Utility Management',
-      //   items: [
-      //     {
-      //       title: 'Billing',
-      //       path: paths.dashboard.group.root,
-      //       icon: ICONS.user,
-      //       children: [
-      //         { title: '2138 Springport', path: paths.dashboard.group.one },
-      //         { title: '380 Union', path: paths.dashboard.group.two },
-      //       ],
-      //     },
-      //   ],
-      // },
       {
         subheader: 'Accounting',
         items: [
           {
+            roles: ['accounting'],
             title: 'Expenses',
-            path: paths.creditCards.root,
+            path: dashboardPaths.creditCards.root,
             icon: ICONS.banking,
             children: [
-              { title: 'Transactions', path: paths.creditCards.root }, // Create Root Folder
-              { title: 'Reports', path: paths.creditCards.reports },
+              { title: 'Transactions', path: dashboardPaths.creditCards.root, roles: ['accounting'] }, // Create Root Folder
+              { title: 'Reports', path: dashboardPaths.creditCards.reports, roles: ['accounting'] },
             ],
           },
           {
             title: 'Lowes',
-            path: `${DASHBOARD}/lowes`,
+            roles: ['accounting'],
+            path: dashboardPaths.lowes.root,
             icon: ICONS.order,
+          },
+          {
+            title: 'Onboarding',
+            roles: ['accounting'],
+            path: onboardingPaths.root,
+            icon: ICONS.tour,
           },
         ],
       },

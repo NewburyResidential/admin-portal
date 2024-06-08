@@ -79,7 +79,7 @@ export default function NavItem({ item, open, depth, active, config, externalLin
   );
 
   // Hidden item by role
-  if (roles && !roles.includes(`${config.currentRole}`)) {
+  if (roles && !roles.includes(config.currentRoles) && !config.currentRoles.includes('admin')) {
     return null;
   }
 

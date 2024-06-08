@@ -14,7 +14,7 @@ import { useRouter } from 'src/routes/hooks';
 // components
 import { varHover } from 'src/components/animate';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
-import { signOut, useSession } from 'next-auth/react'; 
+import { signOut } from 'next-auth/react'; 
 
 
 const OPTIONS = [
@@ -30,8 +30,7 @@ const OPTIONS = [
 
 
 
-export default function AccountPopover() {
-  const { data: session } = useSession();
+export default function AccountPopover({session}) {
 
   const router = useRouter();
 
@@ -74,7 +73,7 @@ export default function AccountPopover() {
             border: (theme) => `solid 2px ${theme.palette.background.default}`,
           }}
         >
-          {session?.user?.name.charAt(0).toUpperCase()}
+          {session?.user?.name?.charAt(0).toUpperCase()}
         </Avatar>
       </IconButton>
 

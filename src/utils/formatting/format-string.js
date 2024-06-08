@@ -13,3 +13,7 @@ export function fToCamelCase(str) {
 export function fRemoveSpaces(str) {
     return str.replace(/\s+/g, '');
 }
+
+export function fRemoveExtension(str) {
+    return str.replace(/\.[^/.]+$/, '');
+}

@@ -13,10 +13,15 @@ import NavMini from './nav-mini';
 import NavVertical from './nav-vertical';
 import NavHorizontal from './nav-horizontal';
 
+import { useSession } from 'next-auth/react';
+import { authOptions } from 'src/app/api/auth/[...nextauth]/route';
+
 // ----------------------------------------------------------------------
 
 export default function DashboardLayout({ children }) {
+  const { data: session } = useSession(authOptions);
   const settings = useSettingsContext();
+  const currentUserRoles = session?.user?.roles || [];
 
   const lgUp = useResponsive('up', 'lg');
 
@@ -26,16 +31,16 @@ export default function DashboardLayout({ children }) {
 
   const isMini = settings.themeLayout === 'mini';
 
-  const renderNavMini = <NavMini />;
+  const renderNavMini = <NavMini currentUserRoles={currentUserRoles} />;
 
-  const renderHorizontal = <NavHorizontal />;
+  const renderHorizontal = <NavHorizontal currentUserRoles={currentUserRoles} />;
 
-  const renderNavVertical = <NavVertical openNav={nav.value} onCloseNav={nav.onFalse} />;
+  const renderNavVertical = <NavVertical openNav={nav.value} onCloseNav={nav.onFalse} currentUserRoles={currentUserRoles} />;
 
   if (isHorizontal) {
     return (
       <>
-        <Header onOpenNav={nav.onTrue} />
+        <Header onOpenNav={nav.onTrue} session={session} />
 
         {lgUp ? renderHorizontal : renderNavVertical}
 
@@ -47,7 +52,7 @@ export default function DashboardLayout({ children }) {
   if (isMini) {
     return (
       <>
-        <Header onOpenNav={nav.onTrue} />
+        <Header onOpenNav={nav.onTrue} session={session} />
 
         <Box
           sx={{
@@ -66,7 +71,7 @@ export default function DashboardLayout({ children }) {
 
   return (
     <>
-      <Header onOpenNav={nav.onTrue} />
+      <Header onOpenNav={nav.onTrue} session={session} />
 
       <Box
         sx={{

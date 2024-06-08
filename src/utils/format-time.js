@@ -1,9 +1,13 @@
-import { format, getTime, formatDistanceToNow } from 'date-fns';
+import { format, getTime, formatDistanceToNow, parse } from 'date-fns';
 
 // ----------------------------------------------------------------------
 
+export function fToLocaleDate(date, existingFormat = 'MM/dd/yyyy') {
+  return parse(date, existingFormat, new Date());
+}
+
 export function fDate(date, newFormat) {
-  const fm = newFormat || 'dd MMM yyyy';
+  const fm = newFormat || 'MM/dd/yyyy';
 
   return date ? format(new Date(date), fm) : '';
 }

@@ -103,7 +103,7 @@ const NavItem = forwardRef(({ item, depth, open, active, externalLink, config, .
   );
 
   // Hidden item by role
-  if (roles && !roles.includes(`${config.currentRole}`)) {
+  if (roles && !roles.includes(config.currentRoles) && !config.currentRoles.includes('admin')) {
     return null;
   }
 

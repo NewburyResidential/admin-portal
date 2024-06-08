@@ -20,16 +20,7 @@ const NavItem = forwardRef(({ item, depth, open, active, externalLink, config, .
   const subItem = depth !== 1;
 
   const renderContent = (
-    <StyledItem
-      disableGutters
-      ref={ref}
-      open={open}
-      depth={depth}
-      active={active}
-      disabled={disabled}
-      config={config}
-      {...other}
-    >
+    <StyledItem disableGutters ref={ref} open={open} depth={depth} active={active} disabled={disabled} config={config} {...other}>
       {icon && (
         <StyledIcon
           size={config.iconSize}
@@ -74,17 +65,13 @@ const NavItem = forwardRef(({ item, depth, open, active, externalLink, config, .
       )}
 
       {!!children && (
-        <Iconify
-          icon={subItem ? 'eva:arrow-ios-forward-fill' : 'eva:arrow-ios-downward-fill'}
-          width={16}
-          sx={{ flexShrink: 0, ml: 0.5 }}
-        />
+        <Iconify icon={subItem ? 'eva:arrow-ios-forward-fill' : 'eva:arrow-ios-downward-fill'} width={16} sx={{ flexShrink: 0, ml: 0.5 }} />
       )}
     </StyledItem>
   );
 
   // Hidden item by role
-  if (roles && !roles.includes(`${config.currentRole}`)) {
+  if (roles && !roles.includes(config.currentRoles) && !config.currentRoles.includes('admin')) {
     return null;
   }
 

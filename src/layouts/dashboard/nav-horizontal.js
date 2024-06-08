@@ -14,7 +14,7 @@ import { HeaderShadow } from '../_common';
 
 // ----------------------------------------------------------------------
 
-function NavHorizontal() {
+function NavHorizontal({ currentUserRoles }) {
   const theme = useTheme();
   const navData = useNavData();
 
@@ -35,7 +35,7 @@ function NavHorizontal() {
         <NavSectionHorizontal
           data={navData}
           config={{
-            currentRole: 'admin',
+            currentRoles: currentUserRoles,
           }}
         />
       </Toolbar>

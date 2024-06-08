@@ -1,35 +1,60 @@
-// ----------------------------------------------------------------------
+//TO DO remove needing to add route
 
-const ROOTS = {
-  AUTH: '/auth',
-  DASHBOARD: '/dashboard',
-};
-
-// ----------------------------------------------------------------------
-
-export const paths = {
-  // AUTH
-  auth: {
-    jwt: {
-      login: `${ROOTS.AUTH}/microsoft/login`,
-      register: `${ROOTS.AUTH}/jwt/register`,
-    },
-  },
-  // DASHBOARD - come back and rename
+// Follow this layout to create a new path
+// Example: dashboardPaths.creditCard for root path or dashboardPaths.creditCard.transactions for sub path
+const rawDashboardPaths = {
   dashboard: {
-    root: ROOTS.DASHBOARD,
-    one: `${ROOTS.DASHBOARD}/one`,
-    group: {
-      root: `${ROOTS.DASHBOARD}/group`,
-      one: `${ROOTS.DASHBOARD}/group/one`,
-      two: `${ROOTS.DASHBOARD}/group/two`,
+    root: '/',
+  },
+
+  creditCards: {
+    root: `/credit-cards`,
+    sub: {
+      transactions: `/transactions`,
+      reports: `/reports`,
     },
   },
-  creditCards: {
-    root: `${ROOTS.DASHBOARD}/credit-cards`,
-    transactions: `${ROOTS.DASHBOARD}/credit-cards/transactions`,
-    reports: `${ROOTS.DASHBOARD}/credit-cards/reports`,
-},
+
+  lowes: {
+    root: `/lowes`,
+    sub: {},
+  },
+
+
 };
 
-export const PATH_AFTER_LOGIN = paths.dashboard.root; // as '/dashboard'
+export const onboardingPaths = {
+  root: '/onboarding',
+  employee: (name, pk) => `/${getOnboardingParameter(name, pk)}`,
+};
+
+export const publicPaths = {
+  logout: '/auth/logout',
+  login: '/auth/login',
+  loginVerify: '/auth/verify',
+  unAuthorizedLogin: (email) => `auth/unauthorized/login?email=${email}`,
+  unAuthorizedApplication: (email) => `auth/unauthorized/application/?email=${email}`,
+};
+
+export const dashboardPaths = adjustPaths(rawDashboardPaths);
+
+function adjustPaths(paths) {
+  const result = {};
+
+  for (const key in paths) {
+    const { root, sub } = paths[key];
+    const fullRoot = `/dashboard${root}`;
+    result[key] = { root: fullRoot };
+
+    for (const subKey in sub) {
+      result[key][subKey] = `${fullRoot}${sub[subKey]}`;
+    }
+  }
+
+  return result;
+}
+
+export function getOnboardingParameter(name, pk) {
+  const formattedName = name.replace(/ /g, '_').toLowerCase();
+  return `${formattedName}-${pk}`;
+}
