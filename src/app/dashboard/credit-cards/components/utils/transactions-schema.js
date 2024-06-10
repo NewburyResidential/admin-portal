@@ -13,7 +13,9 @@ const transactionSchema = yup.object().shape({
   vendor: yup.object().when(['checked', 'allocations'], {
     is: (checked, allocations) => {
       if (checked) {
-        return allocations.some((allocation) => allocation?.asset?.accountingSoftware === 'entrata');
+        return allocations.some(
+          (allocation) => allocation?.asset?.accountingSoftware === 'entrata' || allocation?.asset?.accountingSoftware === 'pre-entrata'
+        );
       }
       return false;
     },

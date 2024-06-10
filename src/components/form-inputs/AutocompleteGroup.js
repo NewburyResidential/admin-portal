@@ -32,12 +32,11 @@ export default function AutocompleteGroup({
             event.stopPropagation();
           }}
           id={id}
-          options={options.sort((a, b) => b.category.localeCompare(a.category))}
+          options={options}
           groupBy={(option) => option.category}
           getOptionLabel={(option) => option[optionLabel]}
           renderInput={(params) => (
             <TextField
-           
               variant={variant}
               onClick={(event) => {
                 event.stopPropagation();

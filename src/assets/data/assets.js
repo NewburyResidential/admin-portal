@@ -68,6 +68,15 @@ export const assetItems = [
   },
   {
     category: 'Properties',
+    id: '2801',
+    label: 'The Ridge at Lake Hamilton',
+    accountId: 'P7',
+    units: 96,
+    accountingSoftware: 'pre-entrata',
+    waveARId: 'QWNjb3VudDoyMDIyNTkwMzY1MTkzNzc3MzA0O0J1c2luZXNzOjc5OTg2NWE2LTlmMGEtNDgwNS1iZTg0LTJkMDgyOTE5MWVhYw==',
+  },
+  {
+    category: 'Properties',
     id: '2301',
     label: 'Edge At 1010',
     accountId: '1277165',
@@ -123,5 +132,14 @@ export const assetItems = [
     units: 0,
     accountingSoftware: 'n/a',
     waveARId: 'QWNjb3VudDoxOTYzMjQ2NjkwOTU3ODMyNzU4O0J1c2luZXNzOjc5OTg2NWE2LTlmMGEtNDgwNS1iZTg0LTJkMDgyOTE5MWVhYw==',
+  },
+  {
+    category: 'Other',
+    id: '4',
+    label: 'Personal (To Be Reimbursed)',
+    accountId: 'P6',
+    units: 0,
+    accountingSoftware: 'n/a',
+    waveARId: 'QWNjb3VudDoyMDE3NjEwNTE5NzAzMjM2NjU3O0J1c2luZXNzOjc5OTg2NWE2LTlmMGEtNDgwNS1iZTg0LTJkMDgyOTE5MWVhYw==',
   },
 ];
