@@ -18,7 +18,7 @@ import { step2Schema } from './utils/validation';
 
 // TO DO loading buttons and fix dialog driver's license
 
-export default function Step2({ activeStep, handleBack, handleNext, identificationTwoData, hasApprovalRights }) {
+export default function Step2({ activeStep, handleBack, handleNext, identificationTwoData, hasApprovalRights, employeePk }) {
   const identificationConfirmationDialog = useDialog();
   const [loading, setLoading] = useState(false);
 
@@ -42,9 +42,12 @@ export default function Step2({ activeStep, handleBack, handleNext, identificati
   const fileError = formState?.errors?.file;
   const isDirty = formState?.isDirty;
 
-  const handleDropSingleFile = useCallback((newFile) => {
-    methods.setValue('file', newFile, { shouldDirty: true });
-  }, [methods]);
+  const handleDropSingleFile = useCallback(
+    (newFile) => {
+      methods.setValue('file', newFile, { shouldDirty: true });
+    },
+    [methods]
+  );
 
   const identificationOptions = [...listAIdentifications, ...listCIdentifications];
   const identificationSelection = identificationOptions.find((item) => item.value === identificationTwo) || null;
@@ -74,7 +77,7 @@ export default function Step2({ activeStep, handleBack, handleNext, identificati
       const fileData = new FormData();
       fileData.append('file', data.file);
       fileData.append('bucket', 'newbuy-employee-documents');
-      const pk = '18';
+      const pk = employeePk;
       const sk = '#ONBOARDING#IDENTIFICATIONTWO';
       const attributes = {
         updatedBy: 'mike',
@@ -82,7 +85,7 @@ export default function Step2({ activeStep, handleBack, handleNext, identificati
         status: '#PENDING',
         identification: data.identificationTwo,
       };
-     await updateOnboardingRequirement(fileData, pk, sk, attributes);
+      await updateOnboardingRequirement(fileData, pk, sk, attributes);
     }
     handleNext();
     setLoading(false);
@@ -127,23 +130,23 @@ export default function Step2({ activeStep, handleBack, handleNext, identificati
       </FormProvider>
       {identificationTwo && (
         <Upload
-            title={`Upload ${identificationSelection?.label}`}
-            onFileChange={handleDropSingleFile}
-            file={file}
-            onDelete={() => methods.setValue('file', null, { shouldDirty: true })}
-            previewFit="full"
-            error={fileError}
-            accept={{
-              'application/pdf': ['.pdf'],
-              'image/jpeg': ['.jpeg', '.jpg'],
-              'image/heic': ['.heic'],
-              'image/webp': ['.webp'],
-              'image/png': ['.png'],
-              'image/gif': ['.gif'],
-              'image/bmp': ['.bmp'],
-              'image/tiff': ['.tiff', '.tif'],
-            }}
-          />
+          title={`Upload ${identificationSelection?.label}`}
+          onFileChange={handleDropSingleFile}
+          file={file}
+          onDelete={() => methods.setValue('file', null, { shouldDirty: true })}
+          previewFit="full"
+          error={fileError}
+          accept={{
+            'application/pdf': ['.pdf'],
+            'image/jpeg': ['.jpeg', '.jpg'],
+            'image/heic': ['.heic'],
+            'image/webp': ['.webp'],
+            'image/png': ['.png'],
+            'image/gif': ['.gif'],
+            'image/bmp': ['.bmp'],
+            'image/tiff': ['.tiff', '.tif'],
+          }}
+        />
       )}
       <StepperButtons
         activeStep={activeStep}

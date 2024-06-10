@@ -19,7 +19,7 @@ import { step1Schema } from './utils/validation';
 import { getTodaysDate } from 'src/utils/format-time';
 import { yupResolver } from '@hookform/resolvers/yup';
 
-export default function Step1({ activeStep, handleBack, handleNext, identificationOneData, hasApprovalRights }) {
+export default function Step1({ activeStep, handleBack, handleNext, identificationOneData, hasApprovalRights, employeePk }) {
   const driversLicenseConfirmationDialog = useDialog();
   const identificationConfirmationDialog = useDialog();
   const [loading, setLoading] = useState(false);
@@ -114,7 +114,7 @@ export default function Step1({ activeStep, handleBack, handleNext, identificati
         fileData.append('file', data.file);
         fileData.append('bucket', 'newbuy-employee-documents');
       }
-      const pk = '18';
+      const pk = employeePk;
       const sk = '#ONBOARDING#IDENTIFICATIONONE';
       const attributes = {
         updatedBy: 'mike',

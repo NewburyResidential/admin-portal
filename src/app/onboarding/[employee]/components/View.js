@@ -84,6 +84,7 @@ export default function OnboardingEmployeeView({ employee, hasApprovalRights }) 
     <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <SupportDrawer open={supportDrawer.open} handleClose={supportDrawer.handleClose} email={employee.personalEmail} />
       <I9StepperDialog
+        employeePk={employee.pk}
         openPandaSession={() => openPandaSession(i9Task)}
         employee={employee}
         hasApprovalRights={hasApprovalRights}
@@ -93,6 +94,7 @@ export default function OnboardingEmployeeView({ employee, hasApprovalRights }) 
         }}
       />
       <BenefitsDialog
+        employeePk={employee.pk}
         hasApprovalRights={hasApprovalRights}
         open={benefitsDialog.open}
         handleClose={() => {

@@ -14,7 +14,7 @@ import ResourceCard from 'src/app/dashboard/components/Information/ResourceCard'
 import { updateOnboardingRequirement } from 'src/utils/services/employees/updateOnboaring';
 import { getTodaysDate } from 'src/utils/format-time';
 
-export default function BenefitsDialog({ hasApprovalRights, open, handleClose }) {
+export default function BenefitsDialog({ hasApprovalRights, open, handleClose, employeePk }) {
   const [loading, setLoading] = useState(false);
   const { control, watch, reset } = useForm({
     defaultValues: {
@@ -28,7 +28,7 @@ export default function BenefitsDialog({ hasApprovalRights, open, handleClose })
   const allChecked = watchAllFields.checkbox1 && watchAllFields.checkbox2 && watchAllFields.checkbox3;
   const handleSubmit = async () => {
     setLoading(true);
-    const pk = '18';
+    const pk = employeePk;
     const sk = '#ONBOARDING#BENEFITSENROLLMENT';
     if (hasApprovalRights) {
       await updateOnboardingRequirement(null, pk, sk, { status: '#COMPLETE', updatedOn: getTodaysDate(), updatedBy: 'admin' });
@@ -84,7 +84,9 @@ export default function BenefitsDialog({ hasApprovalRights, open, handleClose })
         <ResourceCard
           label={hasApprovalRights ? 'Review Enrollment' : 'Start Enrollment'}
           description={
-            hasApprovalRights ? "Click to be redirected to the employee's directory in Ease" : 'Click to create an account and enroll in benefits'
+            hasApprovalRights
+              ? "Click to be redirected to the employee's directory in Ease"
+              : 'Click to create an account and enroll in benefits'
           }
           url="https://newburyresidential.ease.com/?6xE4T6ICZQh0ABkhV8iIFlJVJBt3WGT4nhSajS2AWYU=_162650504e27d846eec4a4021f81b80658b291463cddb4c4514460bb68d7e1f4ec"
           uploadType="website"

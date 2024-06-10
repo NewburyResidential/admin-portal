@@ -14,7 +14,7 @@ import { Dialog } from '@mui/material';
 
 // ----------------------------------------------------------------------
 
-export default function I9StepperDialog({ employee, open, handleClose, hasApprovalRights, openPandaSession }) {
+export default function I9StepperDialog({ employee, open, handleClose, hasApprovalRights, openPandaSession, employeePk }) {
   const steps = hasApprovalRights
     ? ['Approve 1st Identification', 'Approve 2nd Identification', 'Complete I-9 Form']
     : ['Upload 1st Identification', 'Upload 2nd Identification', 'Fill Out I-9 Form'];
@@ -56,6 +56,7 @@ export default function I9StepperDialog({ employee, open, handleClose, hasApprov
         <>
           {activeStep === 0 && (
             <Step1
+              employeePk={employeePk}
               activeStep={activeStep}
               handleBack={handleClose}
               handleNext={handleNext}
@@ -65,6 +66,7 @@ export default function I9StepperDialog({ employee, open, handleClose, hasApprov
           )}
           {activeStep === 1 && (
             <Step2
+              employeePk={employeePk}
               activeStep={activeStep}
               handleBack={handleBack}
               handleNext={handleNext}
