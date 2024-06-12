@@ -14,7 +14,7 @@ export default function DropDownAssets({ assets, setAssets }) {
       disableCloseOnSelect
       multiple
       value={currentValue}
-      sx={{ width: 200 }}
+      sx={{ width: 300 }}
       PopperComponent={({ style, ...props }) => <Popper {...props} sx={{ ...style, height: 0 }} />}
       onChange={(event, newValue) => {
         setAssets(newValue);

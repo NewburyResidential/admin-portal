@@ -104,6 +104,18 @@ export const assetItems = [
     accountingSoftware: 'entrata',
     waveARId: 'QWNjb3VudDoxOTA2ODM3NzE0MjcyMDM5NzA3O0J1c2luZXNzOjc5OTg2NWE2LTlmMGEtNDgwNS1iZTg0LTJkMDgyOTE5MWVhYw==',
   },
+
+  // Corporate
+  {
+    category: 'Home Office',
+    id: '5',
+    label: 'Evolve Asset Management',
+    accountId: 'QnVzaW5lc3M6NWFmOWJkYWYtNmUwNy00MGZkLTg2ZWYtYTQzODM5ZDM1ZGVh',
+    units: 0,
+    accountingSoftware: 'wave',
+    waveARId: 'QWNjb3VudDoyMDI0MjE5NzU3OTc2MjY5MzY3O0J1c2luZXNzOjc5OTg2NWE2LTlmMGEtNDgwNS1iZTg0LTJkMDgyOTE5MWVhYw==',
+    waveCreditCard: 'QWNjb3VudDoyMDI0MjE4MTc1NTQwODY3MzQ1O0J1c2luZXNzOjVhZjliZGFmLTZlMDctNDBmZC04NmVmLWE0MzgzOWQzNWRlYQ==',
+  },
   {
     category: 'Home Office',
     id: '1',
@@ -117,7 +129,7 @@ export const assetItems = [
   {
     category: 'Home Office',
     id: '2',
-    label: 'Evolve Acquisitions',
+    label: 'Evolve Property Investors',
     accountId: 'QnVzaW5lc3M6MWZhZTQ1N2YtM2RiNC00Yjg5LWIwNzQtMGJmNjhjYWM1M2Iy',
     units: 0,
     accountingSoftware: 'wave',

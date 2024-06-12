@@ -35,14 +35,14 @@ export default function FilterBar({ setTransactions, totalAmount, transactions }
         .map((transaction) => {
           return transaction.allocations
             .filter((allocation) => {
-              return (assets && Array.isArray(assets) && assets.length > 0) ? assets.some(asset => asset.id === allocation.asset.id) : true;
+              return assets && Array.isArray(assets) && assets.length > 0 ? assets.some((asset) => asset.id === allocation.asset.id) : true;
             })
             .map((allocation) => {
               return {
                 billedPropertyName: allocation.asset ? allocation.asset.label : '',
                 billedPropertyId: allocation.asset ? allocation.asset.id : '',
                 postDate: transaction.postedDate,
-                AccountingType: allocation.asset ? allocation.asset.accountingSoftware : '',
+                accountingType: allocation.asset ? allocation.asset.accountingSoftware : '',
                 transactionId: transaction.id,
                 note: allocation.note,
                 purchasedBy: transaction.accountName,
@@ -62,10 +62,8 @@ export default function FilterBar({ setTransactions, totalAmount, transactions }
   };
 
   const exportToExcel = () => {
-    const assetLabels = assets && Array.isArray(assets) && assets.length > 0 
-    ? assets.map(asset => asset.label)
-    : ['All Properties'];
-const date = postDate.replace('/', '.');
+    const assetLabels = assets && Array.isArray(assets) && assets.length > 0 ? assets.map((asset) => asset.label) : ['All Properties'];
+    const date = postDate.replace('/', '.');
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet('Transactions');
 
@@ -73,7 +71,7 @@ const date = postDate.replace('/', '.');
       { header: 'Billed Property Name', key: 'billedPropertyName', width: 18 },
       { header: 'Billed Property ID', key: 'billedPropertyId', width: 10 },
       { header: 'Post Date', key: 'postDate', width: 15 },
-      { header: 'Accounting Type', key: 'AccountingType', width: 10 },
+      { header: 'Accounting Type', key: 'accountingType', width: 10 },
       { header: 'Transaction ID', key: 'transactionId', width: 10 },
       { header: 'Note', key: 'note', width: 20 },
       { header: 'Purchased By', key: 'purchasedBy', width: 20 },
