@@ -70,9 +70,9 @@ export const assetItems = [
     category: 'Properties',
     id: '2801',
     label: 'The Ridge at Lake Hamilton',
-    accountId: 'P7',
+    accountId: '100025932',
     units: 96,
-    accountingSoftware: 'pre-entrata',
+    accountingSoftware: 'entrata',
     waveARId: 'QWNjb3VudDoyMDIyNTkwMzY1MTkzNzc3MzA0O0J1c2luZXNzOjc5OTg2NWE2LTlmMGEtNDgwNS1iZTg0LTJkMDgyOTE5MWVhYw==',
   },
   {
