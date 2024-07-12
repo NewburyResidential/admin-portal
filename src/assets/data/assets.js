@@ -67,6 +67,15 @@ export const assetItems = [
     waveARId: 'QWNjb3VudDoxOTA2ODM3NTM2Nzk0MjYwMjEzO0J1c2luZXNzOjc5OTg2NWE2LTlmMGEtNDgwNS1iZTg0LTJkMDgyOTE5MWVhYw==',
   },
   {
+    pk: "2002",
+    accountId: "111112",
+    accountingSoftware: "pre-entrata",
+    category: "Properties",
+    label: "Hallmark At Columbia",
+    units: 64,
+    waveARId: "QWNjb3VudDoyMDQ1NzUzMjg5NjU1NDk3NDcyO0J1c2luZXNzOjc5OTg2NWE2LTlmMGEtNDgwNS1iZTg0LTJkMDgyOTE5MWVhYw=="
+   },
+  {
     category: 'Properties',
     id: '2801',
     label: 'The Ridge at Lake Hamilton',
