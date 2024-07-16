@@ -1,7 +1,7 @@
 'use client';
 
 import PropTypes from 'prop-types';
-// import { SnackbarProvider } from 'src/utils/providers/SnackbarProvider';
+ import { SnackbarProvider } from 'src/utils/providers/SnackbarProvider';
 
 // components
 import DashboardLayout from 'src/layouts/dashboard';
@@ -10,9 +10,9 @@ import DashboardLayout from 'src/layouts/dashboard';
 
 export default function Layout({ children }) {
   return (
-    // <SnackbarProvider>
+     <SnackbarProvider>
       <DashboardLayout>{children}</DashboardLayout>
-    // </SnackbarProvider>
+     </SnackbarProvider>
   );
 }
 

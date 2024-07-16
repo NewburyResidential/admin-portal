@@ -15,6 +15,10 @@ const rawDashboardPaths = {
     },
   },
 
+  employees: {
+    root: `/employees`,
+  },
+
   lowes: {
     root: `/lowes`,
     sub: {},

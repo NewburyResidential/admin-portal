@@ -24,7 +24,6 @@ export default function ReceiptCards({ id, setOpen, setLoading, transactionIndex
 
 
     try {
-      console.log('i ran');
       const response = await copyS3Object('admin-portal-suggested-receipts', 'admin-portal-receipts', objectKey, id, fileName);
       if (response) {
         setValue(`transactions[${transactionIndex}].receipt`, response.fileUrl);

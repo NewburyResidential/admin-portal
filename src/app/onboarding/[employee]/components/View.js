@@ -76,9 +76,9 @@ export default function OnboardingEmployeeView({ employee, hasApprovalRights }) 
     return <SplashScreen />;
   }
 
-  if (tasksComplete) {
-    return <PendingApproval />;
-  }
+  // if (tasksComplete) {
+  //   return <PendingApproval />;
+  // }
 
   return (
     <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>

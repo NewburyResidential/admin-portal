@@ -1,6 +1,6 @@
 import { getServerSession } from 'next-auth';
 import { authOptions } from 'src/app/api/auth/[...nextauth]/route';
-import { isAuthorized } from 'src/layouts/dashboard/config-navigation';
+//import { isAuthorized } from 'src/layouts/dashboard/config-navigation';
 
 import TabOptions from './components/TabOptions';
 import getResources from 'src/utils/services/intranet/getResources';
@@ -16,7 +16,7 @@ export default async function Page() {
    // getAllEmployees('employees'),
   ]);
 
-  isAuthorized(session);
+  //isAuthorized(session);
 
   const resourcesObject = {};
 

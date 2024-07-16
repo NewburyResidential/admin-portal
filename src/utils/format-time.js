@@ -1,4 +1,4 @@
-import { format, getTime, formatDistanceToNow, parse } from 'date-fns';
+import { format, getTime, formatDistanceToNow, parse, differenceInYears, differenceInMonths } from 'date-fns';
 
 // ----------------------------------------------------------------------
 
@@ -33,4 +33,17 @@ export function fToNow(date) {
 export function getTodaysDate() {
   const now = new Date();
   return format(now, 'MM/dd/yyyy');
+}
+
+export function calculateAgeInYears(startDate) {
+  const parsedDate = parse(startDate, 'MM/dd/yyyy', new Date());
+  const today = new Date();
+  return differenceInYears(today, parsedDate);
+}
+
+export function calculateAgeInMonths(startDate) {
+  const parsedDate = parse(startDate, 'MM/dd/yyyy', new Date());
+  const today = new Date();
+  const totalMonths = differenceInMonths(today, parsedDate);
+  return totalMonths % 12;
 }

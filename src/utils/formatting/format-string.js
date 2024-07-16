@@ -17,3 +17,10 @@ export function fRemoveSpaces(str) {
 export function fRemoveExtension(str) {
     return str.replace(/\.[^/.]+$/, '');
 }
+
+export function fToTitleCase(str) {
+    return str
+      .split(' ')
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(' ');
+}

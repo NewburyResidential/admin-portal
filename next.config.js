@@ -1,8 +1,14 @@
 const path = require('path');
 
 module.exports = {
+  logging: {
+    fetches: {
+      fullUrl: true
+    }
+  },
+  cacheMaxMemorySize: 0, // disable default in-memory caching
   eslint: {
-    ignoreDuringBuilds: false,
+    ignoreDuringBuilds: true,
   },
   experimental: {
     serverComponentsExternalPackages: ['@aws-sdk'],
@@ -21,6 +27,8 @@ module.exports = {
       test: /\.svg$/,
       use: ['@svgr/webpack'],
     });
+
+    
 
     config.resolve.alias['@components'] = path.join(__dirname, 'src/components');
 

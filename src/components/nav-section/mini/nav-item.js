@@ -56,7 +56,7 @@ const NavItem = forwardRef(({ item, depth, open, active, externalLink, config, .
           primary={title}
           primaryTypographyProps={{
             noWrap: true,
-            fontSize: 10,
+            fontSize: 11,
             lineHeight: '16px',
             textAlign: 'center',
             textTransform: 'capitalize',

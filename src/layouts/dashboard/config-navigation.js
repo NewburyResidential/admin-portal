@@ -4,42 +4,23 @@ import { dashboardPaths, getOnboardingParameter, onboardingPaths, publicPaths } 
 // components
 import SvgColor from 'src/components/svg-color';
 import { redirect } from 'next/navigation';
+import Iconify from 'src/components/iconify';
 
 // ----------------------------------------------------------------------
 
-const icon = (name) => (
-  <SvgColor src={`/assets/icons/navbar/${name}.svg`} sx={{ width: 1, height: 1 }} />
+const icon = (icon) => (
+  // <SvgColor src={`/assets/icons/navbar/${name}.svg`} sx={{ width: 1, height: 1 }} />
   // OR
-  // <Iconify icon="fluent:mail-24-filled" />
+  <Iconify icon={icon} sx={{ width: 1, height: 1 }} />
   // https://icon-sets.iconify.design/solar/
   // https://www.streamlinehq.com/icons
 );
 
 const ICONS = {
-  job: icon('ic_job'),
-  blog: icon('ic_blog'),
-  chat: icon('ic_chat'),
-  mail: icon('ic_mail'),
-  user: icon('ic_user'),
-  file: icon('ic_file'),
-  lock: icon('ic_lock'),
-  tour: icon('ic_tour'),
-  order: icon('ic_order'),
-  label: icon('ic_label'),
-  blank: icon('ic_blank'),
-  kanban: icon('ic_kanban'),
-  folder: icon('ic_folder'),
-  banking: icon('ic_banking'),
-  booking: icon('ic_booking'),
-  invoice: icon('ic_invoice'),
-  product: icon('ic_product'),
-  calendar: icon('ic_calendar'),
-  disabled: icon('ic_disabled'),
-  external: icon('ic_external'),
-  menuItem: icon('ic_menu_item'),
-  ecommerce: icon('ic_ecommerce'),
-  analytics: icon('ic_analytics'),
-  dashboard: icon('ic_dashboard'),
+  dashboard: icon('material-symbols:dashboard'),
+  employees: icon('clarity:employee-solid'),
+  creditCard: icon('bi:credit-card-fill'),
+  lowes: icon('bi:cart-fill'),
 };
 
 // ----------------------------------------------------------------------
@@ -47,7 +28,7 @@ const ICONS = {
 export const isAuthorized = (session) => {
   const user = session?.user;
   if (!user) {
-    redirect(publicPaths.unAuthorizedApplication('No-Session-Registed'));
+    redirect(publicPaths.login);
   }
 
   if (user.status !== '#AUTHORIZED') {
@@ -55,7 +36,7 @@ export const isAuthorized = (session) => {
   }
 
   if (user.isOnboarding) {
-    redirect(`/onboarding/${getOnboardingParameter(user.name, user.pk)}`);
+    //  redirect(`/onboarding/${getOnboardingParameter(user.name, user.pk)}`);
   }
 
   if (user?.roles.includes('admin')) return true;
@@ -75,6 +56,13 @@ export const isAuthorized = (session) => {
 
   return true;
 };
+
+export const roleOptions = [
+  { value: 'admin', label: 'Admin' },
+  { value: 'accounting', label: 'Accounting' },
+  { value: 'hr', label: 'HR' },
+  { value: 'manager', label: 'Manager' },
+];
 export function useNavData() {
   const data = useMemo(
     () => [
@@ -84,13 +72,17 @@ export function useNavData() {
         items: [{ title: 'Dashboard', path: dashboardPaths.dashboard.root, icon: ICONS.dashboard }],
       },
       {
+        subheader: 'Human Resource',
+        items: [{ title: 'Employees', path: dashboardPaths.employees.root, icon: ICONS.employees }],
+      },
+      {
         subheader: 'Accounting',
         items: [
           {
             roles: ['accounting'],
             title: 'Expenses',
             path: dashboardPaths.creditCards.root,
-            icon: ICONS.banking,
+            icon: ICONS.creditCard,
             children: [
               { title: 'Transactions', path: dashboardPaths.creditCards.root, roles: ['accounting'] }, // Create Root Folder
               { title: 'Reports', path: dashboardPaths.creditCards.reports, roles: ['accounting'] },
@@ -100,7 +92,7 @@ export function useNavData() {
             title: 'Lowes',
             roles: ['accounting'],
             path: dashboardPaths.lowes.root,
-            icon: ICONS.order,
+            icon: ICONS.lowes,
           },
           // {
           //   title: 'Onboarding',

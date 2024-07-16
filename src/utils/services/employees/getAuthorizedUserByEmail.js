@@ -1,3 +1,5 @@
+"use server";
+
 import { dynamoQueryWithIndex } from '../sdk-config/aws/dynamo-db';
 
 export async function getAuthorizedUserByEmail(email) {

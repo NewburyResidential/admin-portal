@@ -30,15 +30,15 @@ function restructureEmployeeData(items) {
   return employeeData;
 }
 
-const getCachedEmployee = unstable_cache(async (pk) => dynamoQuery({ tableName: 'newbury_employees', pk }), ['my-app-user'], {
-  revalidate: false,
-  tags: ['employee'],
+// const getCachedEmployee = unstable_cache(async (pk) => dynamoQuery({ tableName: 'newbury_employees', pk }), ['my-app-user'], {
+//   revalidate: false,
+//   tags: ['employee'],
 
-});
+// });
 
 export default async function getEmployees(pk) {
   try {
-    const data = await getCachedEmployee(pk);
+    const data = await dynamoQuery({ tableName: 'newbury_employees', pk })
     const restructuredEmployeeData = restructureEmployeeData(data);
       revalidateTag('employee'); // TODO revalidate correctly
 

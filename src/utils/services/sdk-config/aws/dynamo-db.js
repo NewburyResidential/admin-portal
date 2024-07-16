@@ -102,7 +102,7 @@ export async function dynamoUpdateItemAttributes({ tableName, pk, sk, attributes
 
   try {
     const response = await dynamoDocumentClient.send(new UpdateCommand(params));
-    console.log('Update operation successful:', response);
+    //console.log('Update operation successful:', response);
     return response;
   } catch (error) {
     console.error('Error updating item in DynamoDB:', error);

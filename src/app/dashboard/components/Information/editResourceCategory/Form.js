@@ -37,7 +37,7 @@ export default function EditResourceCategoryForm({ category, handleClose, userNa
 
   const onSubmit = async (data) => {
     const { resources, ...rest } = data;
-    console.log('resources', resources)
+
     const response = await updateResource({ ...rest, updatedBy: userName, updatedOn: getTodaysDate() });
     if (response) {
       handleClose();
