@@ -16,6 +16,13 @@ export default function AutocompleteGroup({
   sx,
 }) {
   const { control } = useFormContext();
+  console.log(options)
+
+  const sortedOptions = options.sort((a, b) => {
+    if (a.category < b.category) return -1;
+    if (a.category > b.category) return 1;
+    return 0;
+  });
 
   return (
     <Controller
@@ -32,7 +39,7 @@ export default function AutocompleteGroup({
             event.stopPropagation();
           }}
           id={id}
-          options={options}
+          options={sortedOptions}
           groupBy={(option) => option.category}
           getOptionLabel={(option) => option[optionLabel]}
           renderInput={(params) => (

@@ -14,6 +14,9 @@ export const chartOfAccounts = {
     'Office': [
       '621100', '621200', '622100', '632500'
     ],
+    'Utilities': [
+      '640300', '640201', '640200', '640101', '640100'
+    ],
   };
 
   export const chartOfAccountsNumberArray = Object.values(chartOfAccounts).flat();
