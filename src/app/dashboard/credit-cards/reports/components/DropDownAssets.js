@@ -38,9 +38,9 @@ export default function DropDownAssets({ assets, setAssets }) {
           }}
         />
       )}
-      isOptionEqualToValue={(option, selected) => option.id === selected.id}
+      isOptionEqualToValue={(option, selected) => option.accountId === selected.accountId}
       renderOption={(props, option, { selected }) => (
-        <li {...props} key={option.id}>
+        <li {...props} key={option.accountId}>
           <Checkbox style={{ marginRight: 8 }} checked={selected} />
           <ListItemText primary={option.label} />
         </li>

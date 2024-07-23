@@ -14,6 +14,7 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import DropDownAssets from './DropDownAssets';
 import TextFieldPostDate from './TextFieldPostDate';
 import getTransactions from 'src/utils/services/cc-expenses/getTransactions';
+import { uploadPreEntrataTransactions } from 'src/utils/services/cc-expenses/uploadPreEntrataTransactions';
 
 export default function FilterBar({ setTransactions, totalAmount, transactions }) {
   const [assets, setAssets] = useState(null);
@@ -37,7 +38,11 @@ export default function FilterBar({ setTransactions, totalAmount, transactions }
             .filter((allocation) => {
               return assets && Array.isArray(assets) && assets.length > 0 ? assets.some((asset) => asset.id === allocation.asset.id) : true;
             })
+
             .map((allocation) => {
+              console.log(allocation);
+              console.log(transaction);
+              console.log('------------------------');
               return {
                 billedPropertyName: allocation.asset ? allocation.asset.label : '',
                 billedPropertyId: allocation.asset ? allocation.asset.id : '',
@@ -46,11 +51,19 @@ export default function FilterBar({ setTransactions, totalAmount, transactions }
                 transactionId: transaction.id,
                 note: allocation.note,
                 purchasedBy: transaction.accountName,
+                approvedBy: transaction.approvedBy,
                 merchant: transaction.merchant,
                 name: transaction.name,
+                tempPdfReceipt: transaction.tempPdfReceipt || '',
                 receipt: transaction.receipt || '',
                 gl: allocation.glAccount ? allocation.glAccount.accountName : '',
                 amount: allocation.amount,
+                glAccountId: allocation.glAccount ? allocation.glAccount.accountId : '',
+                apPayeeId: transaction.vendor ? transaction.vendor.vendorId : '',
+                apPayeeLocationId: transaction.vendor ? transaction.vendor.id : '',
+                id: transaction.id,
+                billingCycle: transaction.billingCycle,
+                preEntrataEntered: transaction.preEntrataEntered || false,
               };
             });
         })
@@ -114,6 +127,30 @@ export default function FilterBar({ setTransactions, totalAmount, transactions }
     exportToExcel();
   };
 
+  const enterPreEntrata = async () => {
+    console.log('Enter Pre Entrata');
+
+    //console.log(transactions);
+    for (let i = 0; i < transactions.length; i++) {
+      try {
+        const transaction = transactions[i];
+        console.log('--------------------------------');
+        console.log('Transaction:', transaction);
+        if (!transaction.preEntrataEntered && transaction.accountingType === 'pre-entrata' && assets.length < 2) {
+          console.log('Entering...');
+          const assetId = assets[0].accountId;
+          const response = await uploadPreEntrataTransactions(transaction, assetId);
+          console.log('response', response);
+          console.log('Entrata:', response?.response?.result?.apBatch?.apHeaders?.apHeader[0]?.message);
+        } else {
+          console.log('Transaction already entered');
+        }
+      } catch (error) {
+        console.log('Error entering Pre Entrata:', error);
+      }
+    }
+  };
+
   return (
     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2, width: '100%' }}>
       <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
@@ -124,6 +161,9 @@ export default function FilterBar({ setTransactions, totalAmount, transactions }
         </LoadingButton>
         <Button onClick={handleExport} sx={{ width: '100px', height: '36px', ml: -1 }} variant="outlined" color="primary">
           Export
+        </Button>
+        <Button onClick={enterPreEntrata} sx={{ width: '100px', height: '36px', ml: -1 }} variant="outlined" color="primary">
+          Create
         </Button>
       </Box>
 
