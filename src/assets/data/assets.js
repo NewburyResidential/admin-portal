@@ -78,7 +78,7 @@ export const assetItems = [
   {
     pk: '2003',
     accountId: '100044750',
-    accountingSoftware: 'pre-entrata',
+    accountingSoftware: 'entrata',
     category: 'Properties',
     label: 'Doe Ridge Aparments',
     units: 64,
