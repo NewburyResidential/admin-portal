@@ -67,7 +67,7 @@ export const assetItems = [
     waveARId: 'QWNjb3VudDoxOTA2ODM3NTM2Nzk0MjYwMjEzO0J1c2luZXNzOjc5OTg2NWE2LTlmMGEtNDgwNS1iZTg0LTJkMDgyOTE5MWVhYw==',
   },
   {
-    pk: '2002',
+    id: '2002',
     accountId: '100040530',
     accountingSoftware: 'entrata',
     category: 'Properties',
@@ -76,7 +76,7 @@ export const assetItems = [
     waveARId: 'QWNjb3VudDoyMDQ1NzUzMjg5NjU1NDk3NDcyO0J1c2luZXNzOjc5OTg2NWE2LTlmMGEtNDgwNS1iZTg0LTJkMDgyOTE5MWVhYw==',
   },
   {
-    pk: '2003',
+    id: '2003',
     accountId: '100044750',
     accountingSoftware: 'entrata',
     category: 'Properties',
