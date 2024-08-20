@@ -29,7 +29,7 @@ import { applyFilter, groupedData, getAllItems } from './utils';
 
 // ----------------------------------------------------------------------
 
-function Searchbar() {
+function Searchbar({session}) {
   const theme = useTheme();
 
   const router = useRouter();
@@ -41,6 +41,8 @@ function Searchbar() {
   const [searchQuery, setSearchQuery] = useState('');
 
   const navData = useNavData();
+
+  const roles = session?.user?.roles || [];
 
   const handleClose = useCallback(() => {
     search.onFalse();
@@ -73,7 +75,7 @@ function Searchbar() {
   }, []);
 
   const dataFiltered = applyFilter({
-    inputData: getAllItems({ data: navData }),
+    inputData: getAllItems({ data: navData, roles }),
     query: searchQuery,
   });
 

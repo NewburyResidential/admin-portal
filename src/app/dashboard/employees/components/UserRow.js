@@ -24,7 +24,6 @@ import { ConfirmDialog } from 'src/components/custom-dialog';
 export default function UserTableRow({ row, onSelectRow }) {
   const { firstName, lastName, avatar, hireDate, role, employeeStatus, personalEmail, workEmail, mobilePhone } = row;
   const fullName = `${firstName} ${lastName}`;
-  console.log('row', row);
   return (
     <>
       <TableRow hover onClick={onSelectRow}>

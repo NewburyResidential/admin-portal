@@ -46,7 +46,6 @@ const DocumentCard = ({ document, setEditDialog }) => {
       setLoading(true);
       const fileData = new FormData();
       const file = event.target.files[0];
-      console.log(file);
 
       fileData.append('file', file);
       const response = await updateDocument(fileData, {

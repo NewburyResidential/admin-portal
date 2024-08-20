@@ -29,7 +29,6 @@ export const isAuthorized = (session, currentPath) => {
   //  redirect(publicPaths.unAuthorizedApplication(user.personalEmail));
 
   const requiredRoles = getRolesForPath(navData, currentPath);
-  console.log('requiredRoles', requiredRoles);
 
   if (requiredRoles.some((role) => user.roles.includes(role))) {
     console.log('authorized!!');
