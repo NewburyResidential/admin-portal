@@ -1,37 +1,18 @@
-import React, { useEffect } from 'react';
-import { useForm, Controller, FormProvider } from 'react-hook-form';
-import Box from '@mui/material/Box';
+import React, { useEffect, useMemo } from 'react';
+import { useForm, FormProvider } from 'react-hook-form';
 import Card from '@mui/material/Card';
 import Grid from '@mui/material/Unstable_Grid2';
-import Select from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import InputLabel from '@mui/material/InputLabel';
-import OutlinedInput from '@mui/material/OutlinedInput';
 import Chip from '@mui/material/Chip';
-import TextField from '@mui/material/TextField';
 import ReactHookSelect from 'src/components/form-inputs/ReactHookSelect';
 import ReactHookTextField from 'src/components/form-inputs/ReactHookTextField';
-import { useNavData } from 'src/layouts/dashboard/config-navigation';
-import ListSubheader from '@mui/material/ListSubheader';
+
 import ReactHookSelectRoles from 'src/components/form-inputs/common/ReactHookSelectRoles';
-import { Divider } from '@mui/material';
-import ReactHookAutocomplete from 'src/components/form-inputs/ReactHookAutocomplete';
-import { LoadingButton } from '@mui/lab';
 import updateEmployee from 'src/utils/services/employees/update-employee';
 import ReactHookSubmitButton from 'src/components/form-inputs/ReactHookSubmitButton';
 import { useSnackbar } from 'src/utils/providers/SnackbarProvider';
-import { roleOptions } from 'src/layouts/dashboard/roleOptions';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { settingsSchema } from './settings-schema';
 
-const ApplicationOptions = [
-  { value: 'Application 1', label: 'Application 1' },
-  { value: 'Application 2', label: 'Application 2' },
-  { value: 'Application 3', label: 'Application 3' },
-  { value: 'Application 4', label: 'Application 4' },
-  { value: 'Application 5', label: 'Application 5' },
-];
 const portalAccessOptions = [
   { value: '#AUTHORIZED', label: 'Authorized' },
   { value: '#UNAUTHORIZED', label: 'Unauthorized' },
@@ -47,30 +28,30 @@ const yesNoOptions = [
 
 export default function Settings({ employee, user }) {
   const { showResponseSnackbar } = useSnackbar();
-  const defaultValues = {
+
+  const defaultValues = useMemo(() => ({
     status: employee.status || '',
     roles: employee.roles || [],
-    hasAzureAccount: employee.hasAzureAccount ? true : false,
-    hasCreditCard: employee.hasCreditCard ? true : false,
+    hasAzureAccount: !!employee.hasAzureAccount,
+    hasCreditCard: !!employee.hasCreditCard,
     creditCardDigits: employee.creditCardDigits || '',
-    isOnboarding: employee.isOnboarding ? true : false,
+    isOnboarding: !!employee.isOnboarding,
     workEmail: employee.workEmail || '',
-  };
+  }), [employee]);
 
   useEffect(() => {
     reset(defaultValues);
-  }, [employee]);
+  }, [defaultValues, reset]);
 
   const methods = useForm({
-    defaultValues: defaultValues,
+    defaultValues,
     resolver: yupResolver(settingsSchema),
   });
   const {
     handleSubmit,
     watch,
     setValue,
-    formState: { isDirty, errors },
-    formState,
+    formState: { isDirty },
     reset,
   } = methods;
 

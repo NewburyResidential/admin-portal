@@ -1,4 +1,4 @@
-import { Box, Card, Divider, Grid, Stack } from '@mui/material';
+import { Box, Card, Grid, Stack } from '@mui/material';
 import Iconify from 'src/components/iconify';
 import { calculateAgeInMonths, calculateAgeInYears } from 'src/utils/format-time';
 import { fToTitleCase } from 'src/utils/formatting/format-string';

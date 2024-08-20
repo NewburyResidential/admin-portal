@@ -9,25 +9,17 @@ import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 import Card from '@mui/material/Card';
 import Table from '@mui/material/Table';
-import Button from '@mui/material/Button';
-import Tooltip from '@mui/material/Tooltip';
 import Container from '@mui/material/Container';
 import TableBody from '@mui/material/TableBody';
-import IconButton from '@mui/material/IconButton';
 import TableContainer from '@mui/material/TableContainer';
 // routes
 import { useRouter } from 'src/routes/hooks';
-import { RouterLink } from 'src/routes/components';
 // _mock
-import { _userList } from 'src/_mock';
 // hooks
-import { useBoolean } from 'src/hooks/use-boolean';
 // components
 import Label from 'src/components/label';
-import Iconify from 'src/components/iconify';
 import Scrollbar from 'src/components/scrollbar';
-import { ConfirmDialog } from 'src/components/custom-dialog';
-import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
+
 
 import {
   useTable,
@@ -36,7 +28,6 @@ import {
   TableNoData,
   TableEmptyRows,
   TableHeadCustom,
-  TableSelectedAction,
   TablePaginationCustom,
 } from 'src/components/table';
 //
@@ -79,19 +70,18 @@ export default function UserList({ employees }) {
 
   const router = useRouter();
 
-  const confirm = useBoolean();
 
-  const [tableData, setTableData] = useState(employees);
+  const tableData = employees
 
   const [filters, setFilters] = useState(defaultFilters);
 
   const dataFiltered = applyFilter({
     inputData: tableData,
     comparator: getComparator(table.order, table.orderBy),
-    filters,
+    dataFilters: filters,
   });
 
-  const dataInPage = dataFiltered.slice(table.page * table.rowsPerPage, table.page * table.rowsPerPage + table.rowsPerPage);
+  //const dataInPage = dataFiltered.slice(table.page * table.rowsPerPage, table.page * table.rowsPerPage + table.rowsPerPage);
 
   const denseHeight = 72;
 
@@ -114,8 +104,8 @@ export default function UserList({ employees }) {
 
   // ----------------------------------------------------------------------
 
-  function applyFilter({ inputData, comparator, filters }) {
-    const { name, status, role } = filters;
+  function applyFilter({ inputData, comparator, dataFilters }) {
+    const { name, status, role } = dataFilters;
 
     const stabilizedThis = inputData.map((el, index) => [el, index]);
 

@@ -8,19 +8,23 @@ import Grid from '@mui/material/Grid';
 import DocumentCard from './DocumentCard';
 import EditFileDialog from 'src/app/dashboard/employees/[...employee]/components/profile/editFile/Dialog';
 
-const handleFileChange = (event) => {
-  if (event.target.files.length > 0) {
-    setEditDialog({ open: true, documentData: { file: event.target.files[0], employeePk: employee.pk } });
-  }
-};
 
-const handleButtonClick = () => {
-  fileInputRef.current.click();
-};
 
 export default function Documents({ employee, user }) {
   const [editDialog, setEditDialog] = useState({ open: false });
   const fileInputRef = useRef(null);
+
+  const handleFileChange = (event) => {
+    if (event.target.files.length > 0) {
+      setEditDialog({ open: true, documentData: { file: event.target.files[0], employeePk: employee.pk } });
+    }
+  };
+  
+  const handleButtonClick = () => {
+    fileInputRef.current.click();
+  };
+
+
 
   return (
     <>

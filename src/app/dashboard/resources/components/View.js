@@ -20,7 +20,7 @@ export default function View({ resourcesObject, session }) {
   );
 }
 
-{
+
   /* <Box sx={{ display: 'flex', justifyContent: 'center' }}>
         <Tabs value={value} onChange={handleChange}>
           <Tab label="Resources" sx={{ fontSize: '16px' }} />
@@ -28,4 +28,4 @@ export default function View({ resourcesObject, session }) {
           <Tab label="Employees" sx={{ fontSize: '16px' }} />
         </Tabs>
       </Box> */
-}
+

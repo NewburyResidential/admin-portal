@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useCallback } from 'react';
+import { createContext, useContext, useState, useCallback, useMemo } from 'react';
 import ResponseSnackbar from 'src/components/response-snackbar/Snackbar';
 
 const SnackbarContext = createContext();
@@ -37,8 +37,10 @@ export const SnackbarProvider = ({ session, children }) => {
     [isAdmin]
   );
 
+  const value = useMemo(() => ({ showResponseSnackbar }), [showResponseSnackbar]);
+
   return (
-    <SnackbarContext.Provider value={{ showResponseSnackbar }}>
+    <SnackbarContext.Provider value={value}>
       {children}
       <ResponseSnackbar snackbarConfig={snackbarConfig} setSnackbarConfig={setSnackbarConfig} />
     </SnackbarContext.Provider>

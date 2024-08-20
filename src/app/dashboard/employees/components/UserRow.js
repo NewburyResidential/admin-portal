@@ -1,28 +1,18 @@
-import PropTypes from 'prop-types';
-// @mui
-import Button from '@mui/material/Button';
 import Avatar from '@mui/material/Avatar';
-import Tooltip from '@mui/material/Tooltip';
-import MenuItem from '@mui/material/MenuItem';
 import TableRow from '@mui/material/TableRow';
-import Checkbox from '@mui/material/Checkbox';
 import TableCell from '@mui/material/TableCell';
-import IconButton from '@mui/material/IconButton';
 import ListItemText from '@mui/material/ListItemText';
 // hooks
-import { useBoolean } from 'src/hooks/use-boolean';
 // components
 import Label from 'src/components/label';
-import Iconify from 'src/components/iconify';
-import CustomPopover, { usePopover } from 'src/components/custom-popover';
-import { ConfirmDialog } from 'src/components/custom-dialog';
+
 //
 //import UserQuickEditForm from './user-quick-edit-form';
 
 // ----------------------------------------------------------------------
 
 export default function UserTableRow({ row, onSelectRow }) {
-  const { firstName, lastName, avatar, hireDate, role, employeeStatus, personalEmail, workEmail, mobilePhone } = row;
+  const { firstName, lastName, avatar, employeeStatus, personalEmail, mobilePhone } = row;
   const fullName = `${firstName} ${lastName}`;
   return (
     <>
@@ -74,10 +64,4 @@ export default function UserTableRow({ row, onSelectRow }) {
   );
 }
 
-UserTableRow.propTypes = {
-  onDeleteRow: PropTypes.func,
-  onEditRow: PropTypes.func,
-  onSelectRow: PropTypes.func,
-  row: PropTypes.object,
-  selected: PropTypes.bool,
-};
+

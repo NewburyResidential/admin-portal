@@ -1,4 +1,3 @@
-import Box from '@mui/material/Box';
 import Iconify from 'src/components/iconify';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';

@@ -5,8 +5,7 @@ import Typography from '@mui/material/Typography';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import SeverErrorIllustration from 'src/assets/illustrations/sever-error-illustration';
-import MaintenanceIllustration from 'src/assets/illustrations/maintenance-illustration';
+
 
 export default function InfoDialog({ open, onClose, infoDialog, message, severity, isAdmin }) {
   return (
@@ -44,12 +43,10 @@ export default function InfoDialog({ open, onClose, infoDialog, message, severit
             </Box>
           </>
         ) : (
-          <>
-            <Typography variant="h6" color="error.dark" mb={3}>
+          <Typography variant="h6" color="error.dark" mb={3}>
               An Error occured with your request. An IT team member has been notified and is working to fix the issue. Please submit a
               support ticket if you need immediate assistance.
             </Typography>
-          </>
         )}
       </DialogContent>
       <DialogActions>

@@ -7,6 +7,6 @@ export default function snackbarSuccessResponse( response, successTitle, data ) 
     infoDialog: {
       stack: JSON.stringify(response, null, 2),
     },
-    data: data,
+    data,
   };
 }

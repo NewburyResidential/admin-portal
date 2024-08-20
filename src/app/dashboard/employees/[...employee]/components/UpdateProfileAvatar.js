@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button, IconButton, Typography } from '@mui/material';
+import { Dialog, DialogContent, DialogTitle, IconButton, Typography } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import { alpha } from '@mui/material/styles';
 import { m } from 'framer-motion';
@@ -8,19 +7,14 @@ import CloseIcon from '@mui/icons-material/Close'; // Import Close icon
 import Box from '@mui/material/Box';
 
 export default function UpdateProfileAvatar({ name, avatarUrl, open, setOpen }) {
-  const [selectedAvatar, setSelectedAvatar] = useState(null);
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
 
   const handleClose = () => {
     setOpen(false);
   };
 
   return (
-    <>
-      <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title" maxWidth="lg">
+    <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title" maxWidth="lg">
         <DialogTitle id="form-dialog-title" sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <Typography variant="h5" sx={{ ml: 2 }}>
             Update Profile Avatar
@@ -74,6 +68,5 @@ export default function UpdateProfileAvatar({ name, avatarUrl, open, setOpen }) 
           </Box>
         </DialogContent>
       </Dialog>
-    </>
   );
 }

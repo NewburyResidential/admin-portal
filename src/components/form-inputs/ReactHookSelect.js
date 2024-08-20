@@ -4,7 +4,6 @@ import FormHelperText from '@mui/material/FormHelperText';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
-import { Checkbox, ListItemText } from '@mui/material';
 
 export default function ReactHookSelect({ label, options, name, disabled = false, onChange, ...other }) {
   const { control } = useFormContext();

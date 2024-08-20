@@ -1,12 +1,9 @@
 import { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { useForm, FormProvider } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { resourceSchema } from './resource-schema';
 import { getTodaysDate } from 'src/utils/format-time';
 
 import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Alert from '@mui/material/Alert';
 
@@ -22,7 +19,7 @@ export default function EditFileForm({ documentData, handleClose, userName }) {
   const [showAlert, setShowAlert] = useState(false);
   const [loadingDelete, setLoadingDelete] = useState(false);
 
-  const newDocument = documentData?.file ? true : false;
+  const newDocument = !!documentData?.file;
 
   const methods = useForm({
     defaultValues: newDocument

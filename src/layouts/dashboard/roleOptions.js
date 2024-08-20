@@ -33,10 +33,10 @@ export const isAuthorized = (session, currentPath) => {
   if (requiredRoles.some((role) => user.roles.includes(role))) {
     console.log('authorized!!');
     return true;
-  } else {
+  } 
     console.log('not authorized!!');
     //redirect(publicPaths.unAuthorizedApplication(user.personalEmail));
-  }
+  return false;
 };
 
 function getRolesForPath(navData, currentPath) {
@@ -104,7 +104,7 @@ export const useRoleOptionsLookup = () => {
       acc[role.value] = role.label;
       return acc;
     }, {});
-  }, [roleOptions]);
+  }, []);
 
   return roleOptionsLookup;
 };

@@ -12,7 +12,6 @@ import { useResponsive } from 'src/hooks/use-responsive';
 import { m } from 'framer-motion';
 import Iconify from 'src/components/iconify';
 import { fileThumb } from 'src/components/file-thumbnail';
-import { useTheme } from '@emotion/react';
 
 export default function ResourceCard({
   fileName,
@@ -31,7 +30,6 @@ export default function ResourceCard({
   updatedOn,
   color = null,
 }) {
-  const theme = useTheme();
   const isLaptop = useResponsive('up', 'lg');
 
   const roleOptionsLookup = useRoleOptionsLookup();

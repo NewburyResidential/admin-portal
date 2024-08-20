@@ -1,6 +1,5 @@
 import Dialog from '@mui/material/Dialog';
 import EditFileForm from './Form';
-import { stubFalse } from 'lodash';
 
 export default function EditFileDialog({
   open,

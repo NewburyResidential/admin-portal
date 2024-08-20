@@ -1,22 +1,16 @@
-import PropTypes from 'prop-types';
-import { useState, useCallback, useRef } from 'react';
+import { useState, useRef } from 'react';
 // @mui
-import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
-import Avatar from '@mui/material/Avatar';
 import Divider from '@mui/material/Divider';
 import MenuItem from '@mui/material/MenuItem';
-import Checkbox from '@mui/material/Checkbox';
 import IconButton from '@mui/material/IconButton';
 import ListItemText from '@mui/material/ListItemText';
 import Stack from '@mui/material/Stack';
-import Typography from '@mui/material/Typography';
 
 // components
 import Iconify from 'src/components/iconify';
 import FileThumbnail from 'src/components/file-thumbnail';
-import { Chip, CircularProgress, Icon } from '@mui/material';
-import EditFileDialog from './editFile/Dialog';
+import { Chip, CircularProgress } from '@mui/material';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
 import { deleteDocument, updateDocument } from 'src/utils/services/employees/updateDocument';
 import { useSnackbar } from 'src/utils/providers/SnackbarProvider';
@@ -48,7 +42,7 @@ const DocumentCard = ({ document, setEditDialog }) => {
       const file = event.target.files[0];
 
       fileData.append('file', file);
-      const response = await updateDocument(fileData, {
+      await updateDocument(fileData, {
         employeePk: document.pk,
         fileId: document.sk,
         bucket: 'newbuy-employee-documents',

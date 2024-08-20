@@ -2,37 +2,30 @@ import { m } from 'framer-motion';
 // @mui
 import { alpha } from '@mui/material/styles';
 import Box from '@mui/material/Box';
-import Stack from '@mui/material/Stack';
 import Avatar from '@mui/material/Avatar';
-import Divider from '@mui/material/Divider';
 import MenuItem from '@mui/material/MenuItem';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
-// routes
-import { useRouter } from 'src/routes/hooks';
 
-// components
 import { varHover } from 'src/components/animate';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
 import { signOut } from 'next-auth/react'; 
 
 
-const OPTIONS = [
-  {
-    label: 'Profile',
-    linkTo: '/#1',
-  },
-  {
-    label: 'Settings',
-    linkTo: '/#2',
-  },
-];
+// const OPTIONS = [
+//   {
+//     label: 'Profile',
+//     linkTo: '/#1',
+//   },
+//   {
+//     label: 'Settings',
+//     linkTo: '/#2',
+//   },
+// ];
 
 
 
 export default function AccountPopover({session}) {
-
-  const router = useRouter();
 
   const popover = usePopover();
 
@@ -40,11 +33,6 @@ export default function AccountPopover({session}) {
     signOut({ redirect: true, callbackUrl: '/auth/logout' });
   }
 
-
-  const handleClickItem = (path) => {
-    popover.onClose();
-    router.push(path);
-  };
 
   return (
     <>

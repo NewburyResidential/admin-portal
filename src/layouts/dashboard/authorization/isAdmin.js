@@ -5,7 +5,6 @@ export default function isAdmin(session) {
     if (currentSessionRoles.includes('admin')) {
       return true;
     }
-  } else {
-    return false;
-  }
+  } 
+  return false;
 }

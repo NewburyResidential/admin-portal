@@ -1,12 +1,11 @@
 'use client';
 
-import { useState, useCallback, useRef, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 // @mui
 import Tab from '@mui/material/Tab';
 import Card from '@mui/material/Card';
 import Container from '@mui/material/Container';
 import Tabs, { tabsClasses } from '@mui/material/Tabs';
-import Button from '@mui/material/Button';
 // routes
 
 // components
@@ -49,7 +48,7 @@ export default function EmployeeTabs({ employee, user }) {
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <CustomBreadcrumbs
         heading="Profile"
-        links={[{ name: 'Employees', href: '/dashboard/employees' }, { name: employee.firstName + ' ' + employee.lastName }]}
+        links={[{ name: 'Employees', href: '/dashboard/employees' }, { name: `${employee.firstName  } ${  employee.lastName}` }]}
         sx={{
           mb: { xs: 3, md: 5 },
         }}
@@ -62,8 +61,8 @@ export default function EmployeeTabs({ employee, user }) {
         }}
       >
         <ProfileCover
-          role={'Foreman'}
-          name={employee?.firstName + ' ' + employee?.lastName}
+          jobRole="Foreman"
+          name={`${employee?.firstName} ${employee?.lastName}`}
           avatarUrl={employee?.avatar ? _mock.image.avatar(11) : null}
           coverUrl={_mock.image.cover(3)}
         />

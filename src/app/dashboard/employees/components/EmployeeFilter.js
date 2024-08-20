@@ -6,15 +6,13 @@ import MenuItem from '@mui/material/MenuItem';
 import Checkbox from '@mui/material/Checkbox';
 import TextField from '@mui/material/TextField';
 import InputLabel from '@mui/material/InputLabel';
-import IconButton from '@mui/material/IconButton';
 import FormControl from '@mui/material/FormControl';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputAdornment from '@mui/material/InputAdornment';
 import Select from '@mui/material/Select';
 // components
 import Iconify from 'src/components/iconify';
-import CustomPopover, { usePopover } from 'src/components/custom-popover';
-import { fToCamelCase, fToTitleCase } from 'src/utils/formatting/format-string';
+import { fToTitleCase } from 'src/utils/formatting/format-string';
 
 // ----------------------------------------------------------------------
 
@@ -34,8 +32,7 @@ export default function EmployeeFilter({ filters, onFilters, roleOptions }) {
   );
 
   return (
-    <>
-      <Stack
+    <Stack
         spacing={2}
         alignItems={{ xs: 'flex-end', md: 'center' }}
         direction={{
@@ -92,7 +89,6 @@ export default function EmployeeFilter({ filters, onFilters, roleOptions }) {
           />
         </Stack>
       </Stack>
-    </>
   );
 }
 

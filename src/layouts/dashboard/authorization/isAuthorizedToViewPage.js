@@ -1,4 +1,4 @@
-import { publicPaths, dashboardPaths } from 'src/routes/paths';
+import { publicPaths } from 'src/routes/paths';
 import { redirect } from 'next/navigation';
 import { navConfiguration } from '../navConfiguration';
 
@@ -26,12 +26,12 @@ export default function isAuthorizedToViewPage(session, currentPath) {
 
   if (requiredRoles.some((role) => user.roles.includes(role))) {
     return true;
-  } else {
-    redirect(publicPaths.unAuthorizedApplication(user.personalEmail));
   }
+  redirect(publicPaths.unAuthorizedApplication(user.personalEmail));
+  return false;
 }
 
-function getRolesForPath(navConfiguration, currentPath) {
+function getRolesForPath(currentPath) {
   let roles = [];
 
   const traverse = (items) => {

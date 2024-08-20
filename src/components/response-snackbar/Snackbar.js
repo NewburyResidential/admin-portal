@@ -6,7 +6,7 @@ import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 import InfoDialog from './InfoDialog';
 
-const Alert = forwardRef(function Alert(props, ref) {
+const Alert = forwardRef((props, ref) => {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 

@@ -1,36 +1,17 @@
-import { useState } from 'react';
 import { useFormStatus } from 'react-dom';
-import { useFormContext, Controller, useWatch } from 'react-hook-form';
-import { uploadS3Image } from 'src/utils/services/intranet/uploadS3Image';
+import { useFormContext, Controller } from 'react-hook-form';
 import { fileThumb } from 'src/components/file-thumbnail';
 
 import Grid from '@mui/material/Grid';
-import Select from '@mui/material/Select';
 import Skeleton from '@mui/material/Skeleton';
-import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
-import InputLabel from '@mui/material/InputLabel';
-import FormControl from '@mui/material/FormControl';
-import CircularProgress from '@mui/material/CircularProgress';
-import FormHelperText from '@mui/material/FormHelperText';
+
 import InputAdornment from '@mui/material/InputAdornment';
-import ToggleButton from '@mui/material/ToggleButton';
-import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
-import { fRemoveExtension } from 'src/utils/formatting/format-string';
 
 export default function Inputs() {
-  const [loadingFile, setLoadingFile] = useState(false);
 
   const { pending } = useFormStatus();
-  const { control, setValue, watch, trigger } = useFormContext();
-  const file = watch('file');
-
-  const handleUploadType = (event, type) => {
-    if (type !== null) {
-      setValue('url', '');
-      setValue('file', '');
-    }
-  };
+  const { control, setValue,  } = useFormContext();
 
   const handleFileChange = async (event, field) => {
     const file = event.target.files[0];
@@ -96,7 +77,7 @@ export default function Inputs() {
                       margin="dense"
                       onClick={() => document.getElementById('file-input').click()}
                       value={value ? value.name : ''}
-                      placeholder={'Select A File'}
+                      placeholder="Select A File"
                       sx={{ m: 0 }}
                       InputProps={{
                         readOnly: true,
