@@ -10,7 +10,7 @@ import Checkbox from '@mui/material/Checkbox';
 import Dialog from '@mui/material/Dialog';
 import { LoadingButton } from '@mui/lab';
 
-import ResourceCard from 'src/app/dashboard/components/Information/ResourceCard';
+import ResourceCard from 'src/app/dashboard/resources/components/ResourceCard';
 import { updateOnboardingRequirement } from 'src/utils/services/employees/updateOnboaring';
 import { getTodaysDate } from 'src/utils/format-time';
 

@@ -15,6 +15,7 @@ export const StyledItem = styled(ListItemButton, {
 
   const activeStyles = {
     root: {
+      
       color:
         theme.palette.mode === 'light' ? theme.palette.primary.main : theme.palette.primary.light,
       backgroundColor: alpha(theme.palette.primary.main, 0.08),
@@ -23,6 +24,7 @@ export const StyledItem = styled(ListItemButton, {
       },
     },
     sub: {
+     
       color: theme.palette.text.primary,
       backgroundColor: 'transparent',
       '&:hover': {
@@ -46,6 +48,7 @@ export const StyledItem = styled(ListItemButton, {
 
     // Sub item
     ...(subItem && {
+      
       minHeight: config.itemSubHeight,
       // Active sub item
       ...(active && {

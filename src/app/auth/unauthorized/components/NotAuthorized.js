@@ -10,8 +10,10 @@ import CardContent from '@mui/material/CardContent';
 import { LoadingButton } from '@mui/lab';
 
 import { sendRequestAccess } from 'src/utils/services/login/send-request-access';
+import { useResponsive } from 'src/hooks/use-responsive';
 
 export default function NotAuthorizedView({ setScreen, type }) {
+  const isLaptop = useResponsive('up', 'lg');
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -24,7 +26,7 @@ export default function NotAuthorizedView({ setScreen, type }) {
     setScreen('request-access');
   };
   return (
-    <Card sx={{ maxWidth: 500, width: '100%', p: 3 }}>
+    <Card sx={{ maxWidth: 500, width: isLaptop ? '100%' : '91%', p: isLaptop ? 3 : 1 }}>
       <CardContent>
         <Typography variant="h4" align="center" gutterBottom>
           Not Authorized

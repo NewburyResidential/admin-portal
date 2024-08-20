@@ -15,6 +15,10 @@ const rawDashboardPaths = {
     },
   },
 
+  resources: {
+    root: `/resources`,
+  },
+
   employees: {
     root: `/employees`,
   },
@@ -34,8 +38,8 @@ export const publicPaths = {
   logout: '/auth/logout',
   login: '/auth/login',
   loginVerify: '/auth/verify',
-  unAuthorizedLogin: (email) => `auth/unauthorized/login?email=${email}`,
-  unAuthorizedApplication: (email) => `auth/unauthorized/application/?email=${email}`,
+  unAuthorizedLogin: (email) => `/auth/unauthorized/login?email=${email}`,
+  unAuthorizedApplication: (email) => `/auth/unauthorized/application/?email=${email}`,
 };
 
 export const dashboardPaths = adjustPaths(rawDashboardPaths);

@@ -6,6 +6,7 @@ import { DynamoDB } from '@aws-sdk/client-dynamodb';
 import { DynamoDBDocument } from '@aws-sdk/lib-dynamodb';
 import { DynamoDBAdapter } from '@auth/dynamodb-adapter';
 import { getAuthorizedUserByEmail } from 'src/utils/services/employees/getAuthorizedUserByEmail';
+import * as Sentry from '@sentry/nextjs';
 
 const config = {
   region: 'us-east-1',
@@ -58,6 +59,15 @@ export const authOptions = {
       if (employeeData) {
         const name = `${employeeData?.firstName} ${employeeData?.lastName}`;
         session.user = { ...session.user, ...employeeData, name };
+       Sentry.getGlobalScope().setUser({
+        name: session.user.name,
+        status: session.user.status,
+        id: session.user.pk,
+        email: session.user.workEmail || session.user.personalEmail,
+        roles: JSON.stringify(session.user.roles),  // Stringify roles array
+        ip_address: "{{auto}}"
+      });
+
       }
 
       return session;

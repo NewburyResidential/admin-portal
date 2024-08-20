@@ -12,12 +12,12 @@ import NavItem from './nav-item';
 
 // ----------------------------------------------------------------------
 
-export default function NavList({ data, depth, hasChild, config }) {
+export default function NavList({ data, depth, hasChild, forceDeepActive, config }) {
   const navRef = useRef(null);
 
   const pathname = usePathname();
 
-  const active = useActiveLink(data.path, hasChild);
+  const active = useActiveLink(data.path, hasChild || forceDeepActive || false);
 
   const externalLink = data.path.includes('http');
 
@@ -115,13 +115,7 @@ function NavSubList({ data, depth, config }) {
   return (
     <Stack spacing={0.5}>
       {data.map((list) => (
-        <NavList
-          key={list.title + list.path}
-          data={list}
-          depth={depth + 1}
-          hasChild={!!list.children}
-          config={config}
-        />
+        <NavList key={list.title + list.path} data={list} depth={depth + 1} hasChild={!!list.children} config={config} />
       ))}
     </Stack>
   );

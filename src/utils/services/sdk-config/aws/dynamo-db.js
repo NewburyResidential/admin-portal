@@ -1,9 +1,31 @@
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
-import { DynamoDBDocumentClient, QueryCommand, UpdateCommand } from '@aws-sdk/lib-dynamodb';
+import { DynamoDBDocumentClient, QueryCommand, UpdateCommand, DeleteCommand, ScanCommand } from '@aws-sdk/lib-dynamodb';
 import { AWS_CONFIG } from 'src/config-global';
+import * as Sentry from '@sentry/nextjs';
 
 const dynamoClient = new DynamoDBClient(AWS_CONFIG);
 export const dynamoDocumentClient = DynamoDBDocumentClient.from(dynamoClient);
+
+export async function dynamoScan({ tableName }) {
+  try {
+    const params = {
+      TableName: tableName,
+    };
+
+    const response = await dynamoDocumentClient.send(new ScanCommand(params));
+    Sentry.addBreadcrumb({
+      category: 'response',
+      message: 'Dynamo scan operation successful:',
+      level: 'info',
+      data: response,
+    });
+    return response;
+  } catch (error) {
+    error.message = `(Error scanning items from DynamoDB) ${error.message}`;
+    Sentry.captureException(error);
+    throw error;
+  }
+}
 
 // GET ITEM FORM DYNAMODB
 
@@ -24,11 +46,17 @@ export async function dynamoQuery({ tableName, pk, sk = null }) {
         : { ':pk': pk },
     };
 
-    const data = await dynamoDocumentClient.send(new QueryCommand(params));
-    return data.Items;
+    const response = await dynamoDocumentClient.send(new QueryCommand(params));
+    Sentry.addBreadcrumb({
+      category: 'response',
+      message: 'Dynamo query operation successful:',
+      level: 'info',
+      data: response,
+    });
+    return response.Items;
   } catch (error) {
-    console.error('Error getting item from DynamoDB', error);
-    return null;
+    error.message = `(Error querying item from DynamoDB) ${error.message}`;
+    throw error;
   }
 }
 
@@ -56,11 +84,18 @@ export async function dynamoQueryWithIndex({ tableName, index, pkName, pkValue, 
       ExpressionAttributeValues: expressionAttributeValues,
     };
 
-    const data = await dynamoDocumentClient.send(new QueryCommand(params));
-    return data.Items;
+    const response = await dynamoDocumentClient.send(new QueryCommand(params));
+    Sentry.addBreadcrumb({
+      category: 'response',
+      message: 'Dynamo query index operation successful:',
+      level: 'info',
+      data: response,
+    });
+
+    return response.Items;
   } catch (error) {
-    console.error('Error getting item from DynamoDB', error);
-    return null;
+    error.message = `(Error querying item with index from DynamoDB) ${error.message}`;
+    throw error;
   }
 }
 
@@ -69,7 +104,7 @@ export async function dynamoQueryWithIndex({ tableName, index, pkName, pkValue, 
 // tableName: table name
 // pk: partition key
 // sk: sort key (optional)
-// attributes: object with data to update or add
+// attributes: object with response to update or add
 
 //TO DO handle undefined values
 
@@ -102,10 +137,36 @@ export async function dynamoUpdateItemAttributes({ tableName, pk, sk, attributes
 
   try {
     const response = await dynamoDocumentClient.send(new UpdateCommand(params));
-    //console.log('Update operation successful:', response);
+    Sentry.addBreadcrumb({
+      category: 'response',
+      message: 'Dynamo update operation successful:',
+      level: 'info',
+      data: response,
+    });
     return response;
   } catch (error) {
-    console.error('Error updating item in DynamoDB:', error);
-    throw error; // Propagate errors for proper handling.
+    error.message = `(Error updating item in DynamoDB) ${error.message}`;
+    throw error;
+  }
+}
+
+export async function dynamoDeleteItem({ tableName, pk, sk }) {
+  const params = {
+    TableName: tableName,
+    Key: { pk, sk },
+  };
+
+  try {
+    const response = await dynamoDocumentClient.send(new DeleteCommand(params));
+    Sentry.addBreadcrumb({
+      category: 'response',
+      message: 'Dynamo delete operation successful:',
+      level: 'info',
+      data: response,
+    });
+    return response;
+  } catch (error) {
+    error.message = `(Error deleting item from DynamoDB) ${error.message}`;
+    throw error;
   }
 }

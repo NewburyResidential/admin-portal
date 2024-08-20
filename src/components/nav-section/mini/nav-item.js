@@ -11,6 +11,7 @@ import { RouterLink } from 'src/routes/components';
 import Iconify from '../../iconify';
 //
 import { StyledItem, StyledIcon } from './styles';
+import isAuthorizedToViewContent from 'src/layouts/dashboard/authorization/isAuthorizedToViewContent';
 
 // ----------------------------------------------------------------------
 
@@ -103,7 +104,7 @@ const NavItem = forwardRef(({ item, depth, open, active, externalLink, config, .
   );
 
   // Hidden item by role
-  if (roles && !roles.includes(config.currentRoles) && !config.currentRoles.includes('admin')) {
+  if (!isAuthorizedToViewContent(roles, config.currentRoles)) {
     return null;
   }
 

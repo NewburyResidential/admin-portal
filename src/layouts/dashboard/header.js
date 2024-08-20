@@ -18,6 +18,7 @@ import { useSettingsContext } from 'src/components/display-settings';
 import { HEADER, NAV } from '../config-layout';
 import { Searchbar, AccountPopover, SettingsButton } from '../_common';
 import EditButton from '../_common/EditButton';
+import isAdmin from './authorization/isAdmin';
 
 // ----------------------------------------------------------------------
 
@@ -49,11 +50,11 @@ export default function Header({ onOpenNav, session }) {
       <Searchbar />
 
       <Stack flexGrow={1} direction="row" alignItems="center" justifyContent="flex-end" spacing={{ xs: 0.5, sm: 1 }}>
-        <EditButton />
+        {isAdmin(session) && <EditButton />}
 
         <SettingsButton />
 
-        <AccountPopover session={session}/>
+        <AccountPopover session={session} />
       </Stack>
     </>
   );

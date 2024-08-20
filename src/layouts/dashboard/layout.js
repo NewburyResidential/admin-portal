@@ -13,13 +13,9 @@ import NavMini from './nav-mini';
 import NavVertical from './nav-vertical';
 import NavHorizontal from './nav-horizontal';
 
-import { useSession } from 'next-auth/react';
-import { authOptions } from 'src/app/api/auth/[...nextauth]/route';
-
 // ----------------------------------------------------------------------
 
-export default function DashboardLayout({ children }) {
-  const { data: session } = useSession(authOptions);
+export default function DashboardLayout({ session, children }) {
   const settings = useSettingsContext();
   const currentUserRoles = session?.user?.roles || [];
 

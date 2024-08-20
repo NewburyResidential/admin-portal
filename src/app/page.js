@@ -2,5 +2,5 @@ import { redirect } from 'next/navigation';
 import { dashboardPaths } from 'src/routes/paths';
 
 export default async function HomePage() {
-  redirect(dashboardPaths.dashboard.root);
+  redirect(dashboardPaths.resources.root);
 }

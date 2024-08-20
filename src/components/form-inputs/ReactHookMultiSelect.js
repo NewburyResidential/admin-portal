@@ -9,13 +9,14 @@ import { Checkbox, ListItemText } from '@mui/material';
 export default function ReactHookMultiSelect({ label, options, name, disabled = false, onChange, ...other }) {
   const { control } = useFormContext();
 
-  // No manual mode: Use onChange to handle changes or reversions
-
   return (
     <Controller
       name={name}
       control={control}
+      defaultValue={['public']} // Default value set here
       render={({ field, fieldState: { error } }) => {
+        // Check if field.value is empty or undefined and default to 'public'
+        const selectedValues = field.value.length > 0 ? field.value : ['public'];
         return (
           <FormControl error={!!error} fullWidth variant="outlined">
             <InputLabel disabled={disabled} id={`${name}-label`}>
@@ -29,19 +30,24 @@ export default function ReactHookMultiSelect({ label, options, name, disabled = 
               disabled={disabled}
               multiple
               onChange={(event) => {
-                field.onChange(event);
+                field.onChange(event); // update the form context
                 if (onChange) {
-                  onChange(event, field.value);
+                  onChange(event, selectedValues);
                 }
               }}
-              renderValue={(selected) => selected.map((value) => options.find((option) => option.value === value)?.label).join(', ')}
+              renderValue={(selected) => {
+                return selected.map((value) => options.find((option) => option.value === value)?.label).join(', ');
+              }}
             >
-              {options.map((option) => (
-                <MenuItem key={option.value} value={option.value}>
-                  <Checkbox checked={field.value.includes(option.value)} />
-                  {option.label}
-                </MenuItem>
-              ))}
+              {options.map(
+                (option) =>
+                  option.value !== 'public' && (
+                    <MenuItem key={option.value} value={option.value}>
+                      <Checkbox checked={selectedValues.includes(option.value)} />
+                      <ListItemText primary={option.label} />
+                    </MenuItem>
+                  )
+              )}
             </Select>
             {error && <FormHelperText>{error.message}</FormHelperText>}
           </FormControl>

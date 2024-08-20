@@ -1,32 +1,39 @@
 import { getServerSession } from 'next-auth';
-import getResources from 'src/utils/services/intranet/getResources';
-import ResourceGroupView from '../../components/Information/ResourceGroupView';
+import { authOptions } from 'src/app/api/auth/[...nextauth]/route';
 import { NotFoundView } from 'src/components/error';
+import View from './components/View';
+import isAuthorizedToViewContent from 'src/layouts/dashboard/authorization/isAuthorizedToViewContent';
+import getResources from 'src/utils/services/intranet/get-resources';
 
 export const metadata = {
   title: 'Newbury Resources',
 };
 
 export default async function Page({ params }) {
-  const [rawResources, { user }] = await Promise.all([getResources(), getServerSession()]);
+  const [rawResourcesResponse, session] = await Promise.all([getResources(), getServerSession(authOptions)]);
+  const rawResources = rawResourcesResponse.data || [];
   const resourceLabel = params?.resourceGroup[0] || null;
   const decodedLabel = decodeURIComponent(resourceLabel);
   const formattedLabel = decodedLabel.replace(/_/g, ' ').toLowerCase();
-  const resourceGroup = rawResources.find((resource) => resource.label.toLowerCase() === formattedLabel);
+  const resourceGroup = rawResources.find((resource) => resource?.label?.toLowerCase() === formattedLabel);
   const resourceGroupId = resourceGroup?.pk || null;
   if (!resourceGroupId) {
-    return  <NotFoundView />;
+    return <NotFoundView />;
   }
 
   const categories = {};
   const resourcesByGroup = {};
+  const currentSessionRoles = session?.user?.roles || [];
 
   rawResources.forEach((resource) => {
-    if (resource.group === resourceGroupId) {
-      if (resource.resourceType === 'resourceCategories') {
-        categories[resource.pk] = { ...resource, resources: [] };
-      } else if (resource.resourceType === 'resources') {
-        (resourcesByGroup[resource.category] ||= []).push(resource);
+    console.log('resource', resource.roles);
+    if (isAuthorizedToViewContent(resource.roles, currentSessionRoles)) {
+      if (resource.group === resourceGroupId) {
+        if (resource.resourceType === 'resourceCategories') {
+          categories[resource.pk] = { ...resource, resources: [] };
+        } else if (resource.resourceType === 'resources') {
+          (resourcesByGroup[resource.category] ||= []).push(resource);
+        }
       }
     }
   });
@@ -42,6 +49,6 @@ export default async function Page({ params }) {
   }, {});
 
   return (
-    <ResourceGroupView categories={Object.values(categories)} user={user} resourceGroup={resourceGroup} categoryOptions={categoryOptions} />
+    <View categories={Object.values(categories)} user={session?.user} resourceGroup={resourceGroup} categoryOptions={categoryOptions} />
   );
 }

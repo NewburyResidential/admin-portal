@@ -88,7 +88,7 @@ export default function AccountPopover({session}) {
           </Typography>
         </Box>
 
-        <Divider sx={{ borderStyle: 'dashed' }} />
+        {/* <Divider sx={{ borderStyle: 'dashed' }} />
 
         <Stack sx={{ p: 1 }}>
           {OPTIONS.map((option) => (
@@ -98,7 +98,7 @@ export default function AccountPopover({session}) {
           ))}
         </Stack>
 
-        <Divider sx={{ borderStyle: 'dashed' }} />
+        <Divider sx={{ borderStyle: 'dashed' }} /> */}
 
         <MenuItem
           onClick={() => {handleLogout()}}

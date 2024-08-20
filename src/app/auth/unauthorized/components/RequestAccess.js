@@ -6,8 +6,10 @@ import SeoIllustration from 'src/assets/illustrations/seo-illustration';
 import Button from '@mui/material/Button';
 
 import { useRouter } from 'next/navigation';
+import { useResponsive } from 'src/hooks/use-responsive';
 
 export default function RequestAccessView({ type }) {
+  const isLaptop = useResponsive('up', 'lg');
   const router = useRouter();
   return (
     <Box
@@ -19,7 +21,7 @@ export default function RequestAccessView({ type }) {
         height: '100vh',
       }}
     >
-      <Card sx={{ maxWidth: 500, width: '100%', p: 3 }}>
+      <Card sx={{ maxWidth: 500, width: isLaptop ? '100%' : '91%', p: 3 }}>
         <CardContent>
           <Typography variant="h4" align="center" gutterBottom>
             Access Requested

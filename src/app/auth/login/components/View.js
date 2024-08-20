@@ -1,3 +1,5 @@
+'use client';
+
 import Stack from '@mui/material/Stack';
 import LoginView from './Login';
 
@@ -11,7 +13,7 @@ export default function View() {
       sx={{
         height: '100vh',
         width: '100%',
-        backgroundColor: '#F5F5F5',
+        backgroundColor:(theme) => theme.palette.mode === 'light' ? '#F5F5F5' : 'grey.900',
       }}
     >
       <LoginView />

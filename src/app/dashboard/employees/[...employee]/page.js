@@ -1,22 +1,10 @@
-import getEmployee from 'src/utils/services/employees/getEmployee';
-import UserPage from '../../components/Employees/employee/Profile';
 import getEmployees from 'src/utils/services/employees/getEmployees';
-
-export const revalidate = 0;
-
-const url = 'https://0yxexcpp8f.execute-api.us-east-1.amazonaws.com/unapprovedTransactions';
-const requestOptions = {
-  //cache: 'no-cache',
-  next: { revalidate: 0 },
-  method: 'GET',
-  headers: {
-    'Content-Type': 'application/json',
-  },
-};
+import { getServerSession } from 'next-auth';
+import { authOptions } from 'src/app/api/auth/[...nextauth]/route';
+import EmployeeTabs from './components/EmployeeTabs';
 
 export default async function page() {
-  const employee = await getEmployees('18');
+  const [employee, session] = await Promise.all([getEmployees('18'), getServerSession(authOptions)]);
 
-
-  return <UserPage employee={employee} />;
+  return <EmployeeTabs employee={employee} user={session?.user} />;
 }

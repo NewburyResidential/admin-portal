@@ -23,6 +23,7 @@ export default function ReactHookTextField({ label, name, type = 'text', disable
                 label={label}
                 variant="outlined"
                 fullWidth
+                error={!!error}
                 disabled={disabled}
                 onChange={(event) => {
                   field.onChange(event);

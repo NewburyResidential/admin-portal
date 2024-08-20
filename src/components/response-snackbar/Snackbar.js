@@ -4,54 +4,65 @@ import { useRouter } from 'next/navigation';
 import Button from '@mui/material/Button';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
-import ErrorDialog from './ErrorDialog';
-
-//TODO monitor re-renders
+import InfoDialog from './InfoDialog';
 
 const Alert = forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
 export default function ResponseSnackbar({ snackbarConfig, setSnackbarConfig }) {
-  const router = useRouter()
+  const router = useRouter();
 
- const {show, type, message, error, modalLink} = snackbarConfig
-  const [showError, setShowError] = useState(false);
+  const { open, isAdmin, severity, message, infoDialog, modalLink } = snackbarConfig;
+
+  const [showInfoDialog, setShowInfoDialog] = useState(false);
 
   const handleCloseSnackbar = (event, reason) => {
     if (reason === 'clickaway') {
       return;
     }
-    setSnackbarConfig((prevConfig) => ({ ...prevConfig, show: false }));
+    setSnackbarConfig((prevConfig) => ({ ...prevConfig, open: false }));
   };
-  const toggleError = () => {
-    setShowError(prev => !prev)
-  }
+  const toggleInfoDialog = () => {
+    setShowInfoDialog((prev) => !prev);
+  };
 
   const handleAction = () => {
-    if (error) {
-      toggleError()
+    if (infoDialog) {
+      toggleInfoDialog();
     } else if (modalLink) {
-      router.push(modalLink)
+      router.push(modalLink);
     }
-  }
+  };
+
+  const showInfoDialogButton = (!!infoDialog && severity === 'error') || (isAdmin && !!infoDialog);
 
   return (
     <>
-      <ErrorDialog open={showError} onClose={toggleError} error={error} />
-      <Snackbar open={show} autoHideDuration={5000} onClose={handleCloseSnackbar}>
+      <InfoDialog
+        open={showInfoDialog}
+        onClose={toggleInfoDialog}
+        infoDialog={infoDialog}
+        severity={severity}
+        message={message}
+        isAdmin={isAdmin}
+      />
+      <Snackbar
+        open={open}
+        autoHideDuration={4000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+      >
         <Alert
           action={
-            modalLink || error ? <Button
-              color="inherit"
-              size="small"
-              onClick={handleAction}
-              sx={{ fontWeight: '700' }}
-            >
-              Show
-            </Button> : null}
+            showInfoDialogButton ? (
+              <Button color="inherit" size="small" onClick={handleAction} sx={{ fontWeight: '700' }}>
+                Show
+              </Button>
+            ) : null
+          }
           onClose={handleCloseSnackbar}
-          severity={type}
+          severity={severity}
           sx={{ width: '100%' }}
         >
           {message}

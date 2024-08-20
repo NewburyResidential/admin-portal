@@ -11,17 +11,31 @@ export const useSnackbar = () => {
   return context;
 };
 
-export const SnackbarProvider = ({ children }) => {
+export const SnackbarProvider = ({ session, children }) => {
+  const isAdmin = session?.user?.roles?.includes('admin') || false;
   const [snackbarConfig, setSnackbarConfig] = useState({
-    show: false,
-    type: 'info',
+    isAdmin,
+    severity: 'info',
     message: 'issue showing response',
-    error: null,
+    infoDialog: null,
+    modalLink: null,
+    open: false,
   });
 
-  const showResponseSnackbar = useCallback(({ type, message = '', error = null, modalLink = null }) => {
-    setSnackbarConfig({ show: true, type, message, error, modalLink });
-  }, []);
+  const showResponseSnackbar = useCallback(
+    ({ severity, message = '', infoDialog = null, modalLink = null }) => {
+      setSnackbarConfig((prevConfig) => ({
+        ...prevConfig,
+        severity,
+        message,
+        infoDialog,
+        modalLink,
+        isAdmin,
+        open: true,
+      }));
+    },
+    [isAdmin]
+  );
 
   return (
     <SnackbarContext.Provider value={{ showResponseSnackbar }}>

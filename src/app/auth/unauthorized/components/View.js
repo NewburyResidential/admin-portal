@@ -19,7 +19,8 @@ export default function UnauthorizedView({ type }) {
       sx={{
         height: '100vh',
         width: '100%',
-        background: 'radial-gradient(circle, rgba(255, 255, 255, 0.92), rgba(235, 235, 235, 0.9))',
+        backgroundColor:(theme) => theme.palette.mode === 'light' ? '#F5F5F5' : 'grey.900',
+       
       }}
     >
       {screen === 'not-authorized' && <NotAuthorizedView setScreen={setScreen} type={type} />}

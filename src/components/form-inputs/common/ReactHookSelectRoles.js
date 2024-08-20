@@ -1,4 +1,4 @@
-import { roleOptions } from 'src/layouts/dashboard/config-navigation';
+import { roleOptions } from 'src/layouts/dashboard/roleOptions';
 import { useFormContext } from 'react-hook-form';
 import ReactHookMultiSelect from '../ReactHookMultiSelect';
 
@@ -12,8 +12,11 @@ export default function ReactHookSelectRoles() {
     } else if (oldRoles.includes('admin') && newRoles.some((val) => val !== 'admin')) {
       const updatedRoles = newRoles.filter((val) => val !== 'admin');
       setValue('roles', updatedRoles);
+    } else if (newRoles.length === 0) {
+      setValue('roles', ['public']);
     } else {
-      setValue('roles', newRoles);
+      const updatedRoles = newRoles.filter((val) => val !== 'public');
+      setValue('roles', updatedRoles);
     }
   };
 

@@ -18,12 +18,14 @@ import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { LoadingButton } from '@mui/lab';
 import { getAuthorizedUserByEmail } from 'src/utils/services/employees/getAuthorizedUserByEmail';
+import { useResponsive } from 'src/hooks/use-responsive';
 
 const schema = yup.object().shape({
   email: yup.string().email('Please Enter A valid email').required('Please Enter A valid email'),
 });
 
 export default function LoginView({ params }) {
+  const isLaptop = useResponsive('up', 'lg');
   const [loading, setLoading] = useState(false);
   const callbackUrl = params || '/dashboard';
   const {
@@ -31,6 +33,9 @@ export default function LoginView({ params }) {
     handleSubmit,
     formState: { errors },
   } = useForm({
+    defaultValues: {
+      email: '',
+    },
     resolver: yupResolver(schema),
   });
 
@@ -56,13 +61,13 @@ export default function LoginView({ params }) {
   };
 
   return (
-    <Card sx={{ maxWidth: 500, width: '100%', p: 3 }}>
+    <Card sx={{ maxWidth: 500, width: isLaptop ? '100%' : '91%', p: isLaptop ? 3 : 1 }}>
       <CardContent>
         <Typography variant="h4" align="center" gutterBottom>
           {" Newbury Residential's Portal"}
         </Typography>
         <Typography variant="body1" align="center" gutterBottom sx={{ mt: 3 }}>
-          Log in with Microsoft if you have a work email; use your personal email registered with ADP for guest access{' '}
+          Log in with Microsoft if you have a work email or use your personal email registered with Paylocity{' '}
         </Typography>
         <Box
           component="form"
@@ -80,7 +85,7 @@ export default function LoginView({ params }) {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              backgroundColor: '#fff',
+              backgroundColor: (theme) => theme.palette.mode === 'light' ? '#fff' : '#333',
               border: '1px solid #ccc',
               borderRadius: '6px',
               padding: '8px 16px',
@@ -104,7 +109,7 @@ export default function LoginView({ params }) {
                 fontWeight: 600,
               }}
             >
-              Sign in with Microsoft
+              {isLaptop ? 'Sign in with Microsoft' : 'Office Sign In'}
             </Typography>
           </Button>
 

@@ -54,7 +54,9 @@ export default function NavVertical({ openNav, onCloseNav, currentUserRoles }) {
 
       <Box sx={{ flexGrow: 1 }} />
       <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mb: 2 }}>
+        {lgUp && (
         <NewburyLogo />
+        )}
       </Box>
     </Scrollbar>
   );
