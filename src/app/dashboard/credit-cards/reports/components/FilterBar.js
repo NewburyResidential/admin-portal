@@ -14,6 +14,7 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import DropDownAssets from './DropDownAssets';
 import TextFieldPostDate from './TextFieldPostDate';
 import getTransactions from 'src/utils/services/cc-expenses/getTransactions';
+import { uploadPreEntrataTransactions } from 'src/utils/services/cc-expenses/uploadPreEntrataTransactions';
 
 export default function FilterBar({ setTransactions, totalAmount, transactions }) {
   const [assets, setAssets] = useState(null);
@@ -35,22 +36,34 @@ export default function FilterBar({ setTransactions, totalAmount, transactions }
         .map((transaction) => {
           return transaction.allocations
             .filter((allocation) => {
-              return (assets && Array.isArray(assets) && assets.length > 0) ? assets.some(asset => asset.id === allocation.asset.id) : true;
+              return assets && Array.isArray(assets) && assets.length > 0 ? assets.some((asset) => asset.label === allocation.asset.label) : true;
             })
+
             .map((allocation) => {
+              console.log(allocation);
+              console.log(transaction);
+              console.log('------------------------');
               return {
                 billedPropertyName: allocation.asset ? allocation.asset.label : '',
                 billedPropertyId: allocation.asset ? allocation.asset.id : '',
                 postDate: transaction.postedDate,
-                AccountingType: allocation.asset ? allocation.asset.accountingSoftware : '',
+                accountingType: allocation.asset ? allocation.asset.accountingSoftware : '',
                 transactionId: transaction.id,
                 note: allocation.note,
                 purchasedBy: transaction.accountName,
+                approvedBy: transaction.approvedBy,
                 merchant: transaction.merchant,
                 name: transaction.name,
+                tempPdfReceipt: transaction.tempPdfReceipt || '',
                 receipt: transaction.receipt || '',
                 gl: allocation.glAccount ? allocation.glAccount.accountName : '',
                 amount: allocation.amount,
+                glAccountId: allocation.glAccount ? allocation.glAccount.accountId : '',
+                apPayeeId: transaction.vendor ? transaction.vendor.vendorId : '',
+                apPayeeLocationId: transaction.vendor ? transaction.vendor.id : '',
+                id: transaction.id,
+                billingCycle: transaction.billingCycle,
+                preEntrataEntered: transaction.preEntrataEntered || false,
               };
             });
         })
@@ -62,10 +75,8 @@ export default function FilterBar({ setTransactions, totalAmount, transactions }
   };
 
   const exportToExcel = () => {
-    const assetLabels = assets && Array.isArray(assets) && assets.length > 0 
-    ? assets.map(asset => asset.label)
-    : ['All Properties'];
-const date = postDate.replace('/', '.');
+    const assetLabels = assets && Array.isArray(assets) && assets.length > 0 ? assets.map((asset) => asset.label) : ['All Properties'];
+    const date = postDate.replace('/', '.');
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet('Transactions');
 
@@ -73,7 +84,7 @@ const date = postDate.replace('/', '.');
       { header: 'Billed Property Name', key: 'billedPropertyName', width: 18 },
       { header: 'Billed Property ID', key: 'billedPropertyId', width: 10 },
       { header: 'Post Date', key: 'postDate', width: 15 },
-      { header: 'Accounting Type', key: 'AccountingType', width: 10 },
+      { header: 'Accounting Type', key: 'accountingType', width: 10 },
       { header: 'Transaction ID', key: 'transactionId', width: 10 },
       { header: 'Note', key: 'note', width: 20 },
       { header: 'Purchased By', key: 'purchasedBy', width: 20 },
@@ -116,6 +127,30 @@ const date = postDate.replace('/', '.');
     exportToExcel();
   };
 
+  const enterPreEntrata = async () => {
+    console.log('Enter Pre Entrata');
+
+    //console.log(transactions);
+    for (let i = 0; i < transactions.length; i++) {
+      try {
+        const transaction = transactions[i];
+        console.log('--------------------------------');
+        console.log('Transaction:', transaction);
+        if (!transaction.preEntrataEntered && transaction.accountingType === 'pre-entrata' && assets.length < 2) {
+          console.log('Entering...');
+          const assetId = assets[0].accountId;
+          const response = await uploadPreEntrataTransactions(transaction, assetId);
+          console.log('response', response);
+          console.log('Entrata:', response?.response?.result?.apBatch?.apHeaders?.apHeader[0]?.message);
+        } else {
+          console.log('Transaction already entered');
+        }
+      } catch (error) {
+        console.log('Error entering Pre Entrata:', error);
+      }
+    }
+  };
+
   return (
     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2, width: '100%' }}>
       <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
@@ -126,6 +161,9 @@ const date = postDate.replace('/', '.');
         </LoadingButton>
         <Button onClick={handleExport} sx={{ width: '100px', height: '36px', ml: -1 }} variant="outlined" color="primary">
           Export
+        </Button>
+        <Button onClick={enterPreEntrata} sx={{ width: '100px', height: '36px', ml: -1 }} variant="outlined" color="primary">
+          Create
         </Button>
       </Box>
 

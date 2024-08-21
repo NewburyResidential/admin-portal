@@ -29,7 +29,7 @@ export default function CustomTable({ user, vendorData, chartOfAccounts, suggest
   const methods = useForm({
     defaultValues: {
       transactions: [],
-      pageSettings: { page: 0, rowsPerPage: 10 },
+      pageSettings: { page: 0, rowsPerPage: 50 },
     },
     resolver: yupResolver(transactionsSchema),
   });

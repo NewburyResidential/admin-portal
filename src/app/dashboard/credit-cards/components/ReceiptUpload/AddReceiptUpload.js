@@ -73,6 +73,11 @@ export default function AddReceiptUpload({ recentReceipts, transactionIndex, set
     window.open(url, '_blank', 'noopener,noreferrer');
     handleCloseMenu();
   };
+  const handleDeleteReceipt = () => {
+    setValue(`transactions[${transactionIndex}].receipt`, null);
+    setValue(`transactions[${transactionIndex}].tempPdfReceipt`, null);
+    handleCloseMenu();
+  };
 
   return (
     <>
@@ -109,6 +114,7 @@ export default function AddReceiptUpload({ recentReceipts, transactionIndex, set
           <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleCloseMenu}>
             <MenuItem onClick={handleUpdateClick}>Update</MenuItem>
             <MenuItem onClick={handleViewClick}>View</MenuItem>
+            <MenuItem onClick={handleDeleteReceipt}>Delete</MenuItem>
           </Menu>
         )}
       </Box>

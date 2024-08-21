@@ -18,7 +18,11 @@ export default function DropDownVendor({ transactionIndex, vendors, setVendors, 
     name: `transactions[${transactionIndex}].allocations`,
   });
 
-  const isVendorRequired = allocations.some((allocation) => allocation.asset && allocation.asset.accountingSoftware === 'entrata');
+  const isVendorRequired = allocations.some(
+    (allocation) =>
+      (allocation.asset && allocation.asset.accountingSoftware === 'entrata') ||
+      (allocation.asset && allocation.asset.accountingSoftware === 'pre-entrata')
+  );
 
   const merchantName = merchant || '*Not Provided*';
   const optionsLimit = 7;
