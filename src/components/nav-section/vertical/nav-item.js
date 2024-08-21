@@ -10,10 +10,12 @@ import { RouterLink } from 'src/routes/components';
 import Iconify from '../../iconify';
 //
 import { StyledItem, StyledIcon, StyledDotIcon } from './styles';
+import isAuthorizedToViewContent from 'src/layouts/dashboard/authorization/isAuthorizedToViewContent';
 
 // ----------------------------------------------------------------------
 
 export default function NavItem({ item, open, depth, active, config, externalLink, ...other }) {
+  
   const { title, path, icon, info, children, disabled, caption, roles } = item;
 
   const subItem = depth !== 1;
@@ -64,7 +66,7 @@ export default function NavItem({ item, open, depth, active, config, externalLin
 
       {info && (
         <Box component="span" sx={{ ml: 1, lineHeight: 0 }}>
-          {info}
+          {info} 
         </Box>
       )}
 
@@ -79,7 +81,7 @@ export default function NavItem({ item, open, depth, active, config, externalLin
   );
 
   // Hidden item by role
-  if (roles && !roles.includes(`${config.currentRole}`)) {
+  if (!isAuthorizedToViewContent(roles, config.currentRoles)) {
     return null;
   }
 

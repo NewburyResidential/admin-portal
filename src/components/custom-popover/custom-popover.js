@@ -7,14 +7,7 @@ import { StyledArrow } from './styles';
 
 // ----------------------------------------------------------------------
 
-export default function CustomPopover({
-  open,
-  children,
-  arrow = 'top-right',
-  hiddenArrow,
-  sx,
-  ...other
-}) {
+export default function CustomPopover({ open, children, arrow = 'top-right', hiddenArrow, sx, ...other }) {
   const { style, anchorOrigin, transformOrigin } = getPosition(arrow);
 
   return (

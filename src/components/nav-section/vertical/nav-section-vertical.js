@@ -9,19 +9,27 @@ import { navVerticalConfig } from '../config';
 import { StyledSubheader } from './styles';
 
 import NavList from './nav-list';
+import isAuthorizedToViewContent from 'src/layouts/dashboard/authorization/isAuthorizedToViewContent';
 
 // ----------------------------------------------------------------------
+
+const hasRequiredRoles = (items, roles) => {
+  return items.some((item) => {
+    if (isAuthorizedToViewContent(item.roles, roles)) {
+      return true;
+    }
+    if (item.children) {
+      return hasRequiredRoles(item.children, roles);
+    }
+    return false;
+  });
+};
 
 function NavSectionVertical({ data, config, sx, ...other }) {
   return (
     <Stack sx={sx} {...other}>
       {data.map((group, index) => (
-        <Group
-          key={group.subheader || index}
-          subheader={group.subheader}
-          items={group.items}
-          config={navVerticalConfig(config)}
-        />
+        <Group key={group.subheader || index} subheader={group.subheader} items={group.items} config={navVerticalConfig(config)} />
       ))}
     </Stack>
   );
@@ -45,14 +53,12 @@ function Group({ subheader, items, config }) {
   }, []);
 
   const renderContent = items.map((list) => (
-    <NavList
-      key={list.title + list.path}
-      data={list}
-      depth={1}
-      hasChild={!!list.children}
-      config={config}
-    />
+    <NavList key={list.title + list.path} data={list} depth={1} forceDeepActive={list.forceDeepActive || false} hasChild={!!list.children} config={config} />
   ));
+
+  if (!hasRequiredRoles(items, config.currentRoles)) {
+    return null;
+  }
 
   return (
     <List disablePadding sx={{ px: 2 }}>

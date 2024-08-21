@@ -1,62 +1,73 @@
-// import { useState, forwardRef } from 'react';
-// import { useRouter } from 'next/navigation';
+import { useState, forwardRef } from 'react';
+import { useRouter } from 'next/navigation';
 
-// import Button from '@mui/material/Button';
-// import Snackbar from '@mui/material/Snackbar';
-// import MuiAlert from '@mui/material/Alert';
-// import ErrorDialog from './ErrorDialog';
+import Button from '@mui/material/Button';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
+import InfoDialog from './InfoDialog';
 
-// //TODO monitor re-renders
+const Alert = forwardRef((props, ref) => {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
-// const Alert = forwardRef(function Alert(props, ref) {
-//   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
-// });
+export default function ResponseSnackbar({ snackbarConfig, setSnackbarConfig }) {
+  const router = useRouter();
 
-// export default function ResponseSnackbar({ snackbarConfig, setSnackbarConfig }) {
-//   const router = useRouter()
+  const { open, isAdmin, severity, message, infoDialog, modalLink } = snackbarConfig;
 
-//  const {show, type, message, error, modalLink} = snackbarConfig
-//   const [showError, setShowError] = useState(false);
+  const [showInfoDialog, setShowInfoDialog] = useState(false);
 
-//   const handleCloseSnackbar = (event, reason) => {
-//     if (reason === 'clickaway') {
-//       return;
-//     }
-//     setSnackbarConfig((prevConfig) => ({ ...prevConfig, show: false }));
-//   };
-//   const toggleError = () => {
-//     setShowError(prev => !prev)
-//   }
+  const handleCloseSnackbar = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setSnackbarConfig((prevConfig) => ({ ...prevConfig, open: false }));
+  };
+  const toggleInfoDialog = () => {
+    setShowInfoDialog((prev) => !prev);
+  };
 
-//   const handleAction = () => {
-//     if (error) {
-//       toggleError()
-//     } else if (modalLink) {
-//       router.push(modalLink)
-//     }
-//   }
+  const handleAction = () => {
+    if (infoDialog) {
+      toggleInfoDialog();
+    } else if (modalLink) {
+      router.push(modalLink);
+    }
+  };
 
-//   return (
-//     <>
-//       <ErrorDialog open={showError} onClose={toggleError} error={error} />
-//       <Snackbar open={show} autoHideDuration={5000} onClose={handleCloseSnackbar}>
-//         <Alert
-//           action={
-//             modalLink || error ? <Button
-//               color="inherit"
-//               size="small"
-//               onClick={handleAction}
-//               sx={{ fontWeight: '700' }}
-//             >
-//               Show
-//             </Button> : null}
-//           onClose={handleCloseSnackbar}
-//           severity={type}
-//           sx={{ width: '100%' }}
-//         >
-//           {message}
-//         </Alert>
-//       </Snackbar>
-//     </>
-//   );
-// }
+  const showInfoDialogButton = (!!infoDialog && severity === 'error') || (isAdmin && !!infoDialog);
+
+  return (
+    <>
+      <InfoDialog
+        open={showInfoDialog}
+        onClose={toggleInfoDialog}
+        infoDialog={infoDialog}
+        severity={severity}
+        message={message}
+        isAdmin={isAdmin}
+      />
+      <Snackbar
+        open={open}
+        autoHideDuration={4000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+      >
+        <Alert
+          action={
+            showInfoDialogButton ? (
+              <Button color="inherit" size="small" onClick={handleAction} sx={{ fontWeight: '700' }}>
+                Show
+              </Button>
+            ) : null
+          }
+          onClose={handleCloseSnackbar}
+          severity={severity}
+          sx={{ width: '100%' }}
+        >
+          {message}
+        </Alert>
+      </Snackbar>
+    </>
+  );
+}

@@ -11,6 +11,7 @@ import { RouterLink } from 'src/routes/components';
 import Iconify from '../../iconify';
 //
 import { StyledItem, StyledIcon } from './styles';
+import isAuthorizedToViewContent from 'src/layouts/dashboard/authorization/isAuthorizedToViewContent';
 
 // ----------------------------------------------------------------------
 
@@ -56,7 +57,7 @@ const NavItem = forwardRef(({ item, depth, open, active, externalLink, config, .
           primary={title}
           primaryTypographyProps={{
             noWrap: true,
-            fontSize: 10,
+            fontSize: 11,
             lineHeight: '16px',
             textAlign: 'center',
             textTransform: 'capitalize',
@@ -103,7 +104,7 @@ const NavItem = forwardRef(({ item, depth, open, active, externalLink, config, .
   );
 
   // Hidden item by role
-  if (roles && !roles.includes(`${config.currentRole}`)) {
+  if (!isAuthorizedToViewContent(roles, config.currentRoles)) {
     return null;
   }
 

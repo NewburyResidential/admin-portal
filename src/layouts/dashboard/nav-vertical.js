@@ -20,7 +20,7 @@ import NewburyLogo from 'src/components/NewburyLogo';
 
 // ----------------------------------------------------------------------
 
-export default function NavVertical({ openNav, onCloseNav }) {
+export default function NavVertical({ openNav, onCloseNav, currentUserRoles }) {
   const pathname = usePathname();
 
   const lgUp = useResponsive('up', 'lg');
@@ -48,13 +48,15 @@ export default function NavVertical({ openNav, onCloseNav }) {
       <NavSectionVertical
         data={navData}
         config={{
-          currentRole: 'admin',
+          currentRoles: currentUserRoles
         }}
       />
 
       <Box sx={{ flexGrow: 1 }} />
       <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mb: 2 }}>
+        {lgUp && (
         <NewburyLogo />
+        )}
       </Box>
     </Scrollbar>
   );

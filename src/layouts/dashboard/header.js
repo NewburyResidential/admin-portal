@@ -18,10 +18,11 @@ import { useSettingsContext } from 'src/components/display-settings';
 import { HEADER, NAV } from '../config-layout';
 import { Searchbar, AccountPopover, SettingsButton } from '../_common';
 import EditButton from '../_common/EditButton';
+import isAdmin from './authorization/isAdmin';
 
 // ----------------------------------------------------------------------
 
-export default function Header({ onOpenNav }) {
+export default function Header({ onOpenNav, session }) {
   const theme = useTheme();
 
   const settings = useSettingsContext();
@@ -46,14 +47,14 @@ export default function Header({ onOpenNav }) {
         </IconButton>
       )}
 
-      <Searchbar />
+      <Searchbar session={session} />
 
       <Stack flexGrow={1} direction="row" alignItems="center" justifyContent="flex-end" spacing={{ xs: 0.5, sm: 1 }}>
-        <EditButton />
+        {isAdmin(session) && <EditButton />}
 
         <SettingsButton />
 
-        <AccountPopover />
+        <AccountPopover session={session} />
       </Stack>
     </>
   );

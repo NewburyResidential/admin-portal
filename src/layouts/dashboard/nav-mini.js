@@ -13,7 +13,7 @@ import { NavToggleButton } from '../_common';
 
 // ----------------------------------------------------------------------
 
-export default function NavMini() {
+export default function NavMini({currentUserRoles}) {
 
   const navData = useNavData();
 
@@ -47,7 +47,7 @@ export default function NavMini() {
         <NavSectionMini
           data={navData}
           config={{
-            currentRole: 'admin',
+            currentRoles: currentUserRoles
           }}
         />
       </Stack>

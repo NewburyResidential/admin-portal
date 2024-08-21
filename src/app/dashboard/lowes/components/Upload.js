@@ -71,7 +71,6 @@ const Upload = ({ setGroupedInvoices, setCurrentStep }) => {
 
           return acc;
         }, {});
-        console.log(grouped);
         setGroupedInvoices(grouped);
         setCurrentStep(1);
         setLoading(false);

@@ -51,6 +51,7 @@ function Group({ items, config }) {
           data={list}
           depth={1}
           hasChild={!!list.children}
+          forceDeepActive={list.forceDeepActive}
           config={config}
         />
       ))}

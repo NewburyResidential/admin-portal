@@ -1,20 +1,22 @@
 'use client';
 
-import { useEffect } from 'react';
-import { signIn } from 'next-auth/react';
-import { SplashScreen } from 'src/components/loading-screen';
-import { useRouter } from 'next/navigation';
+import Stack from '@mui/material/Stack';
+import LoginView from './Login';
 
-export default function View({ session, params }) {
-  const router = useRouter();
-  const callbackUrl = params || '/dashboard';
-  useEffect(() => {
-    if (!session) {
-      signIn('azure-ad', { callbackUrl });
-    } else {
-      router.push(callbackUrl);
-    }
-  }, [params, session, callbackUrl, router]);
-
-  return <SplashScreen />;
+export default function View() {
+  return (
+    <Stack
+      flexGrow={1}
+      spacing={10}
+      alignItems="center"
+      justifyContent="center"
+      sx={{
+        height: '100vh',
+        width: '100%',
+        backgroundColor:(theme) => theme.palette.mode === 'light' ? '#F5F5F5' : 'grey.900',
+      }}
+    >
+      <LoginView />
+    </Stack>
+  );
 }

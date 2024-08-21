@@ -10,10 +10,9 @@ import NavItem from './nav-item';
 
 // ----------------------------------------------------------------------
 
-export default function NavList({ data, depth, hasChild, config }) {
+export default function NavList({ data, depth, hasChild, forceDeepActive, config }) {
   const pathname = usePathname();
-
-  const active = useActiveLink(data.path, hasChild);
+  const active = useActiveLink(data.path, hasChild || (forceDeepActive || false));
 
   const externalLink = data.path.includes('http');
 
@@ -36,15 +35,7 @@ export default function NavList({ data, depth, hasChild, config }) {
 
   return (
     <>
-      <NavItem
-        item={data}
-        depth={depth}
-        open={open}
-        active={active}
-        externalLink={externalLink}
-        onClick={handleToggle}
-        config={config}
-      />
+      <NavItem item={data} depth={depth} open={open} active={active} externalLink={externalLink} onClick={handleToggle} config={config} />
 
       {hasChild && (
         <Collapse in={open} unmountOnExit>
@@ -68,13 +59,7 @@ function NavSubList({ data, depth, config }) {
   return (
     <>
       {data.map((list) => (
-        <NavList
-          key={list.title + list.path}
-          data={list}
-          depth={depth + 1}
-          hasChild={!!list.children}
-          config={config}
-        />
+        <NavList key={list.title + list.path} data={list} depth={depth + 1} hasChild={!!list.children} config={config} />
       ))}
     </>
   );
