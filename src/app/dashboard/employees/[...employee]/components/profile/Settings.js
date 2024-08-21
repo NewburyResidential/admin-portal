@@ -39,9 +39,6 @@ export default function Settings({ employee, user }) {
     workEmail: employee.workEmail || '',
   }), [employee]);
 
-  useEffect(() => {
-    reset(defaultValues);
-  }, [defaultValues, reset]);
 
   const methods = useForm({
     defaultValues,
@@ -54,6 +51,11 @@ export default function Settings({ employee, user }) {
     formState: { isDirty },
     reset,
   } = methods;
+
+  useEffect(() => {
+    reset(defaultValues);
+  }, [defaultValues, reset]);
+
 
   const onSubmit = async (data) => {
     const response = await updateEmployee({ pk: employee.pk, attributes: data });
