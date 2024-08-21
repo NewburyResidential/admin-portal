@@ -14,11 +14,11 @@ import Box from '@mui/material/Box';
 
 export default function View() {
   return (
-    <Box sx={{ p: 2 }}>
+    <Box sx={{ p: 0 }}>
       <CompactLayout>
         <MotionContainer>
           <m.div variants={varBounce().in}>
-            <Typography variant="h3" sx={{ mb: 2 }}>
+            <Typography variant="h4" sx={{ mb: 2 }}>
               Log Out Successful
             </Typography>
           </m.div>
@@ -31,7 +31,7 @@ export default function View() {
           </m.div>
 
           <m.div variants={varBounce().in}>
-            <SeoIllustration sx={{ height: 260, my: { xs: 5, sm: 10 } }} />
+            <SeoIllustration sx={{ height: 220, my: { xs: 5, sm: 10 } }} />
           </m.div>
 
           <Button sx={{ width: '120px' }} component={RouterLink} href="/auth/login" size="large" variant="contained">
