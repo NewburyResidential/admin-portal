@@ -18,7 +18,9 @@ export default function isAuthorizedToViewPage(session, currentPath) {
 
   if (user?.roles.includes('admin')) return true;
 
-  const requiredRoles = getRolesForPath(navConfiguration, currentPath);
+  const requiredRoles = getRolesForPath(currentPath);
+  console.log('requiredRoles', requiredRoles);
+  console.log(currentPath);
 
   if (requiredRoles.length === 0) {
     return true;

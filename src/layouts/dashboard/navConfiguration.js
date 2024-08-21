@@ -34,7 +34,7 @@ export const navConfiguration = [
       },
       {
         title: 'Lowes',
-        roles: ['accounting'],
+        roles: ['admin'],
         path: dashboardPaths.lowes.root,
         icon: ICONS.lowes,
       },

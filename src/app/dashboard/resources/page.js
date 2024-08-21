@@ -5,7 +5,6 @@ import { dashboardPaths } from 'src/routes/paths';
 import isAuthorizedToViewPage from 'src/layouts/dashboard/authorization/isAuthorizedToViewPage';
 import isAuthorizedToViewContent from 'src/layouts/dashboard/authorization/isAuthorizedToViewContent';
 import getResources from 'src/utils/services/intranet/get-resources';
-//import { isAuthorized } from 'src/layouts/dashboard/config-navigation';
 
 export const metadata = {
   title: 'Resources',
