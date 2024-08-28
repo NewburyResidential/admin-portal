@@ -13,8 +13,8 @@ import { SettingsProvider, SettingsDrawer } from 'src/components/display-setting
 import AuthProvider from 'src/utils/providers/AuthProvider';
 
 export const metadata = {
-  title: 'Newbury Admin Portal',
-  description: 'Admin Portal',
+  title: 'Newbury Residential',
+  description: 'Newbury Residential Portal',
   keywords: 'admin',
   // themeColor: '#000000',
   manifest: '/manifest.json',

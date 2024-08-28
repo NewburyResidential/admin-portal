@@ -1,10 +1,10 @@
 {
-  "name": "Minimal UI",
-  "short_name": "Minimal UI",
+  "name": "Newbury Residential",
+  "short_name": "Newbury Residential",
   "display": "standalone",
   "start_url": "/",
   "theme_color": "#000000",
-  "background_color": "#ffffff",
+  "background_color": "#000000",
   "icons": [
     {
       "src": "favicon/android-chrome-192x192.png",
