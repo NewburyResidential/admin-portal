@@ -113,6 +113,7 @@ export const assetItems = [
     waveARId: 'QWNjb3VudDoxOTA2ODM3NjMwMDU4ODAzOTc3O0J1c2luZXNzOjc5OTg2NWE2LTlmMGEtNDgwNS1iZTg0LTJkMDgyOTE5MWVhYw==',
     supplyStores: { lowes: [''] },
   },
+
   {
     category: 'Properties',
     id: '2001',
@@ -121,6 +122,24 @@ export const assetItems = [
     units: 96,
     accountingSoftware: 'entrata',
     waveARId: 'QWNjb3VudDoxOTA2ODM3NzE0MjcyMDM5NzA3O0J1c2luZXNzOjc5OTg2NWE2LTlmMGEtNDgwNS1iZTg0LTJkMDgyOTE5MWVhYw==',
+  },
+  {
+    category: 'Properties',
+    id: '2004',
+    label: 'Meadows of Lebanon',
+    accountId: '4352365345',
+    units: 72,
+    accountingSoftware: 'pre-entrata',
+    waveARId: 'QWNjb3VudDoyMDkwMDQwNjM5MzA2NjQxOTY2O0J1c2luZXNzOjc5OTg2NWE2LTlmMGEtNDgwNS1iZTg0LTJkMDgyOTE5MWVhYw==',
+  },
+  {
+    category: 'Properties',
+    id: '2402',
+    label: 'Briarwood Estates',
+    accountId: '0983470987235',
+    units: 40,
+    accountingSoftware: 'n/a',
+    waveARId: 'QWNjb3VudDoyMDkwMDM3MTE1NzY0MTI1NzMxO0J1c2luZXNzOjc5OTg2NWE2LTlmMGEtNDgwNS1iZTg0LTJkMDgyOTE5MWVhYw==',
   },
 
   // Corporate

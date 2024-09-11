@@ -48,7 +48,7 @@ export default function FilterBar({ setTransactions, totalAmount, transactions }
                 billedPropertyId: allocation.asset ? allocation.asset.id : '',
                 postDate: transaction.postedDate,
                 accountingType: allocation.asset ? allocation.asset.accountingSoftware : '',
-                transactionId: transaction.id,
+                transactionId: transaction.sk,
                 note: allocation.note,
                 purchasedBy: transaction.accountName,
                 approvedBy: transaction.approvedBy,
@@ -61,7 +61,7 @@ export default function FilterBar({ setTransactions, totalAmount, transactions }
                 glAccountId: allocation.glAccount ? allocation.glAccount.accountId : '',
                 apPayeeId: transaction.vendor ? transaction.vendor.vendorId : '',
                 apPayeeLocationId: transaction.vendor ? transaction.vendor.id : '',
-                id: transaction.id,
+                id: transaction.sk,
                 billingCycle: transaction.billingCycle,
                 preEntrataEntered: transaction.preEntrataEntered || false,
               };
