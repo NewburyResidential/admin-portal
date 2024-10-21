@@ -129,7 +129,7 @@ export const assetItems = [
     label: 'Meadows of Lebanon',
     accountId: '100055054',
     units: 72,
-    accountingSoftware: 'pre-entrata',
+    accountingSoftware: 'entrata',
     waveARId: 'QWNjb3VudDoyMDkwMDQwNjM5MzA2NjQxOTY2O0J1c2luZXNzOjc5OTg2NWE2LTlmMGEtNDgwNS1iZTg0LTJkMDgyOTE5MWVhYw==',
   },
   {
