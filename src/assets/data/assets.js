@@ -127,7 +127,7 @@ export const assetItems = [
     category: 'Properties',
     id: '2004',
     label: 'Meadows of Lebanon',
-    accountId: '4352365345',
+    accountId: '100055054',
     units: 72,
     accountingSoftware: 'pre-entrata',
     waveARId: 'QWNjb3VudDoyMDkwMDQwNjM5MzA2NjQxOTY2O0J1c2luZXNzOjc5OTg2NWE2LTlmMGEtNDgwNS1iZTg0LTJkMDgyOTE5MWVhYw==',
