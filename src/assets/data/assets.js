@@ -126,7 +126,7 @@ export const assetItems = [
   {
     category: 'Properties',
     id: '2004',
-    label: 'Meadows of Lebanon',
+    label: 'Meadows of Lebanon Apartments',
     accountId: '100055054',
     units: 72,
     accountingSoftware: 'entrata',
