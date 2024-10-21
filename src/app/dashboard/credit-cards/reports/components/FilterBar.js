@@ -36,7 +36,7 @@ export default function FilterBar({ setTransactions, totalAmount, transactions }
         .map((transaction) => {
           return transaction.allocations
             .filter((allocation) => {
-              return assets && Array.isArray(assets) && assets.length > 0 ? assets.some((asset) => asset.label === allocation.asset.label) : true;
+              return assets && Array.isArray(assets) && assets.length > 0 ? assets.some((asset) => asset.waveARId === allocation.asset.waveARId) : true;
             })
 
             .map((allocation) => {
