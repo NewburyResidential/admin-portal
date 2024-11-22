@@ -1,5 +1,6 @@
 import Fuse from 'fuse.js';
 import Big from 'big.js';
+import { fConvertFromEuropeDate } from 'src/utils/format-time';
 
 function searchFunction(merchantName, merchantArray) {
   const fuse = new Fuse(merchantArray, { keys: ['name'], threshold: 0.5, minMatchCharLength: 3, includeScore: true });
@@ -25,11 +26,22 @@ export const isSuggestedReceipt = (transaction, receipt) => {
     transactionDate: { value: receipt.transactionDate, score: 0 },
     merchant: { value: receipt.merchantArray, score: 0 },
     total: { value: receipt.total, score: 0 },
+    scoreTotal: 0,
   };
-
   if (transaction.transactionDate && receipt.transactionDate) {
-    if (transaction.transactionDate === receipt.transactionDate) {
+    const convertedTransactionDate = fConvertFromEuropeDate(transaction.transactionDate);
+    const convertedReceiptDate = fConvertFromEuropeDate(receipt.transactionDate);
+
+    const transactionDate = new Date(convertedTransactionDate);
+    const receiptDate = new Date(convertedReceiptDate);
+    const timeDiff = Math.abs(transactionDate - receiptDate);
+    const daysDiff = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+
+    if (transactionDate.toDateString() === receiptDate.toDateString()) {
       receiptData.transactionDate.score = 1;
+      isPossibleMatch = true;
+    } else if (daysDiff === 1) {
+      receiptData.transactionDate.score = 0.5;
       isPossibleMatch = true;
     }
   }
@@ -93,6 +105,7 @@ export const isSuggestedReceipt = (transaction, receipt) => {
     }
   }
   if (isPossibleMatch) {
+    receiptData.scoreTotal = receiptData.transactionDate.score + receiptData.merchant.score + receiptData.total.score;
     return receiptData;
   }
   return null;

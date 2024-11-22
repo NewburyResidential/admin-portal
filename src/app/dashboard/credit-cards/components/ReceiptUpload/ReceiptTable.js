@@ -15,7 +15,7 @@ import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 
-export default function ReceiptTable({ setOpen, setLoading, id, recentReceipts, transactionIndex }) {
+export default function ReceiptTable({ setOpen, setLoading, id, recentReceipts }) {
   const [filter, setFilter] = useState('');
   const { setValue } = useFormContext();
 
@@ -39,8 +39,8 @@ export default function ReceiptTable({ setOpen, setLoading, id, recentReceipts, 
     try {
       const response = await copyS3Object('admin-portal-suggested-receipts', 'admin-portal-receipts', objectKey, id, fileName);
       if (response) {
-        setValue(`transactions[${transactionIndex}].receipt`, response.fileUrl);
-        setValue(`transactions[${transactionIndex}].tempPdfReceipt`, response.tempPdfUrl);
+        setValue(`receipt`, response.fileUrl);
+        setValue(`tempPdfReceipt`, response.tempPdfUrl);
       }
     } catch (error) {
       console.error('Error uploading file:', error);

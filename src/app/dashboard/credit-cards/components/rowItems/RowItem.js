@@ -1,30 +1,49 @@
 import { useTheme } from '@mui/material/styles';
-import { useRecalculateByUnit } from '../utils/useRecalculateByUnit';
-import { useClearCalculations } from '../utils/useClearCalculations';
-import { useFormContext, useFieldArray, useWatch, Controller } from 'react-hook-form';
-import { format } from 'date-fns';
+import React, { useEffect, useState, useCallback } from 'react';
+import { useDropzone } from 'react-dropzone';
 
 import Box from '@mui/material/Box';
-import TextField from '@mui/material/TextField';
 
 import Receipt from './Receipt';
 import DropDownVendor from './DropDownVendor';
-import CheckboxApprove from './CheckboxApprove';
 import RowSubItem from '../rowSubItems/RowSubItem';
-import CalculationButtonGroup from '../rowSubItems/CalculationButtonGroup';
+import { useForm, useFieldArray, FormProvider } from 'react-hook-form';
+import SplitButtons from './SplitButtons';
+import { LoadingButton } from '@mui/lab';
+import { fConvertFromEuropeDate } from 'src/utils/format-time';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { transactionsSchema } from '../utils/transactions-schema';
+import updateTransaction from 'src/utils/services/cc-expenses/updateTransaction';
+import { useSnackbar } from 'src/utils/providers/SnackbarProvider';
+import { uploadS3Image } from 'src/utils/services/cc-expenses/uploadS3Image';
 
-export default function RowItem({ transaction, transactionIndex, vendors, setVendors, chartOfAccounts, recentReceipts }) {
-  const { control, getValues, setValue } = useFormContext();
-  const recalculateByUnit = useRecalculateByUnit();
-  const clearAmounts = useClearCalculations();
+export default function RowItem({
+  transaction,
+  transactionIndex,
+  vendors,
+  setVendors,
+  chartOfAccounts,
+  recentReceipts,
+  user,
+  handleRemoveTransaction,
+}) {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [receiptIsLoading, setReceiptIsLoading] = useState(false);
+  const { showResponseSnackbar } = useSnackbar();
+
+  const methods = useForm({
+    defaultValues: transaction,
+    resolver: yupResolver(transactionsSchema),
+  });
+
+  const { control, handleSubmit, reset, setValue } = methods;
+
+  useEffect(() => {
+    reset(transaction);
+  }, [transaction, reset]);
 
   const theme = useTheme();
   const isLight = theme.palette.mode === 'light';
-
-  const transactionChecked = useWatch({
-    control,
-    name: `transactions[${transactionIndex}].checked`,
-  });
 
   const {
     fields: allocationFields,
@@ -32,51 +51,48 @@ export default function RowItem({ transaction, transactionIndex, vendors, setVen
     remove,
   } = useFieldArray({
     control,
-    name: `transactions[${transactionIndex}].allocations`,
+    name: `allocations`,
   });
 
   const isSplit = allocationFields.length > 1;
 
-  const handleTransactionSplit = (allocationIndex) => {
-    const calculationMethod = getValues(`transactions[${transactionIndex}].calculationMethod`);
-    const { length } = allocationFields;
+  const onDrop = useCallback(
+    async (acceptedFiles) => {
+      if (acceptedFiles.length > 0) {
+        setReceiptIsLoading(true);
 
-    if (allocationIndex === 0) {
-      append({ default: false, note: '', asset: null, glAccount: null, amount: '', helper: '' });
-      if (calculationMethod === 'amount') {
-        const updatedAllocations = getValues(`transactions[${transactionIndex}].allocations`);
-        clearAmounts(updatedAllocations, transactionIndex);
-      } else {
-        const updatedAllocations = getValues(`transactions[${transactionIndex}].allocations`);
-        recalculateByUnit(updatedAllocations, transactionIndex, transaction.amount);
-      }
-    } else {
-      if (length === 2) {
-        setValue(`transactions[${transactionIndex}].allocations[0].amount`, transaction.amount);
-        setValue(`transactions[${transactionIndex}].allocations[0].helper`, 100);
-      } else if (calculationMethod === 'amount') {
-        const updatedAllocations = getValues(`transactions[${transactionIndex}].allocations`);
-        clearAmounts(updatedAllocations, transactionIndex);
-      }
-      remove(allocationIndex);
-      if (calculationMethod === 'unit') {
-        const updatedAllocations = getValues(`transactions[${transactionIndex}].allocations`);
-        recalculateByUnit(updatedAllocations, transactionIndex, transaction.amount, allocationIndex);
-      }
-    }
-  };
+        const file = acceptedFiles[0];
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('name', transaction.id);
+        formData.append('bucket', 'admin-portal-receipts');
 
-  const backgroundColor = transactionChecked
-    ? isLight
-      ? 'primary.lighter'
-      : hexToRgba(theme.palette.primary.dark, 0.4)
-    : transactionIndex % 2 !== 0
-      ? isLight
-        ? '#FAFBFC'
-        : '#2F3944'
-      : isLight
-        ? '#f0f0f0'
-        : '#212B36';
+        try {
+          const response = await uploadS3Image(formData);
+          console.log('response', response);
+          if (response) {
+            setValue('receipt', response.fileUrl);
+            setValue('tempPdfReceipt', response.tempPdfUrl);
+          }
+        } catch (error) {
+          console.log('error', error);
+          console.error('Error uploading file:', error);
+        } finally {
+          setReceiptIsLoading(false);
+        }
+      }
+    },
+    [transaction.id, setValue, setReceiptIsLoading]
+  );
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    accept: 'image/png, image/jpeg, application/pdf',
+    noDrag: false,
+    noClick: false,
+  });
+
+  const backgroundColor = transactionIndex % 2 !== 0 ? (isLight ? '#FAFBFC' : '#2F3944') : isLight ? '#f0f0f0' : '#212B36';
 
   const containerStyle = {
     display: 'flex',
@@ -86,68 +102,90 @@ export default function RowItem({ transaction, transactionIndex, vendors, setVen
     pl: 2,
     alignItems: 'center',
     gap: 2,
+    transition: 'all 0.2s ease',
+  };
+
+  const onSubmit = async (data) => {
+    setIsSubmitting(true);
+    const attributesToUpdate = {
+      allocations: data.allocations,
+      vendor: data.vendor,
+      receipt: data.receipt,
+      tempPdfReceipt: data.tempPdfReceipt,
+      calculationMethod: data.calculationMethod,
+      status: user.roles?.includes('admin') ? 'reviewed' : 'categorized',
+      ...(data.status === 'unapproved' && { categorizedBy: user.fullName }),
+      ...(user.roles?.includes('admin') && { approvedBy: user.fullName }),
+    };
+    console.log('attributesToUpdate', attributesToUpdate);
+    try {
+      const response = await updateTransaction(data.pk, data.sk, attributesToUpdate);
+      showResponseSnackbar(response);
+      if (response.severity === 'success') {
+        handleRemoveTransaction(data.sk);
+      }
+    } catch (error) {
+      console.error('Error updating transactions:', error);
+    }
+    setIsSubmitting(false);
   };
 
   return (
-    <>
-      <Box sx={containerStyle}>
-        <Box sx={{ flex: '0 0 auto', pr: 2 }}>
-          <CheckboxApprove transactionIndex={transactionIndex} />
+    <FormProvider {...methods}>
+      <Box
+        {...getRootProps({
+          onClick: (e) => e.stopPropagation(),
+        })}
+        sx={containerStyle}
+      >
+        <input {...getInputProps()} />
+        <Box sx={{ flex: '0 0 auto', pr: 0, pl: 0, width: '70px', textAlign: 'center' }}>
+          <Receipt
+            receiptIsLoading={receiptIsLoading}
+            setReceiptIsLoading={setReceiptIsLoading}
+            recentReceipts={recentReceipts}
+            transaction={transaction}
+            onClick={(e) => e.stopPropagation()}
+            isDragActive={isDragActive}
+          />
         </Box>
-        <Box sx={{ flex: 1.349, textAlign: 'center', pl: 2 }}>
-          <DropDownVendor transactionIndex={transactionIndex} vendors={vendors} setVendors={setVendors} merchant={transaction.merchant} />
+        <Box sx={{ flex: 1.5, textAlign: 'center' }}>
+          <DropDownVendor vendors={vendors} setVendors={setVendors} merchant={transaction.merchant} />
         </Box>
         <Box sx={{ flex: 1, textAlign: 'center' }}>{titleCase(transaction.name)}</Box>
-        <Box sx={{ flex: 1, textAlign: 'center' }}>{transaction.accountName}</Box>
-        <Box sx={{ flex: 1, textAlign: 'center', minWidth: '10%' }}>{formatDate(transaction.transactionDate)}</Box>
-        <Box sx={{ flex: 0.5, textAlign: 'center' }}>
-          <Receipt recentReceipts={recentReceipts} transaction={transaction} transactionIndex={transactionIndex} />
+        <Box sx={{ flex: 1, textAlign: 'center' }}>{transaction.accountName}</Box>{' '}
+        <Box sx={{ flex: 1, textAlign: 'center', minWidth: '10%' }}>{fConvertFromEuropeDate(transaction.transactionDate)}</Box>
+        <Box sx={{ flex: 0.88, textAlign: 'center', pr: 1 }}>
+          <LoadingButton
+            sx={{ width: '100px' }}
+            variant={transaction.status === 'categorized' ? 'contained' : 'outlined'}
+            onClick={handleSubmit(onSubmit)}
+            loading={isSubmitting}
+            color={transaction.status === 'categorized' ? 'success' : 'inherit'}
+          >
+            {transaction.status === 'categorized' ? 'Approve' : 'Submit'}
+          </LoadingButton>
         </Box>
       </Box>
 
       {allocationFields.map((allocation, allocationIndex) => (
         <Box key={allocation.id}>
           <RowSubItem
-            handleTransactionSplit={() => handleTransactionSplit(allocationIndex)}
             allocationFields={allocationFields}
-            transactionIndex={transactionIndex}
             allocationIndex={allocationIndex}
             chartOfAccounts={chartOfAccounts}
             backgroundColor={backgroundColor}
             totalAmount={transaction.amount}
             isSplit={isSplit}
+            append={append}
+            remove={remove}
           />
         </Box>
       ))}
       {isSplit && (
-        <Box sx={{ display: 'flex', backgroundColor, pb: 2, pr: 1, gap: 2 }}>
-          <Box sx={{ flex: 16 }} />
-          <Box sx={{ flex: 3.4, textAlign: 'center' }}>
-            <CalculationButtonGroup transactionIndex={transactionIndex} totalAmount={transaction.amount} />
-          </Box>
-          <Box sx={{ flex: 1.52, textAlign: 'left' }}>
-            <Controller
-              name={`transactions[${transactionIndex}].amount`} // Replace with the appropriate field name
-              control={control}
-              render={({ field, fieldState: { error } }) => (
-                <Box sx={{ flex: 1.52, textAlign: 'left' }}>
-                  <TextField
-                    {...field}
-                    error={!!error}
-                    label="Total"
-                    InputProps={{ style: { maxHeight: '40px', color: error ? '#FB6241' : '#919EAB' } }}
-                    InputLabelProps={{ style: { color: error ? '#FB6241' : '#919EAB' } }}
-                    onChange={() => {
-                      return null;
-                    }}
-                  />
-                </Box>
-              )}
-            />
-          </Box>
-        </Box>
+        <SplitButtons totalAmount={transaction.amount} control={control} transaction={transaction} backgroundColor={backgroundColor} />
       )}
-    </>
+    </FormProvider>
   );
 }
 
@@ -157,18 +195,4 @@ function titleCase(str) {
     .split(' ')
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(' ');
-}
-
-function hexToRgba(hex, opacity) {
-  const r = parseInt(hex.slice(1, 3), 16);
-  const g = parseInt(hex.slice(3, 5), 16);
-  const b = parseInt(hex.slice(5, 7), 16);
-  return `rgba(${r}, ${g}, ${b}, ${opacity})`;
-}
-
-function formatDate(dateString) {
-  const [year, month, day] = dateString.split('-').map(Number);
-  const date = new Date(year, month - 1, day);
-  const formattedDate = format(date, 'MM/dd/yyyy');
-  return formattedDate;
 }

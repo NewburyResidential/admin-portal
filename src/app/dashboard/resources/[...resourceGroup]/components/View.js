@@ -43,7 +43,7 @@ export default function View({ resourceGroup, user, categories, categoryOptions 
         resource={resourceDialog.resource}
         resourceType={resourceDialog.resourceType}
         handleClose={() => setResourceDialog({ ...resourceDialog, open: false })}
-        userName={user.name}
+        userName={user.fullName}
         categoryId={resourceDialog.categoryId}
         groupId={resourceGroup.pk}
         categoryOptions={categoryOptions}
@@ -52,7 +52,7 @@ export default function View({ resourceGroup, user, categories, categoryOptions 
         open={categoryDialog.open}
         category={categoryDialog.category}
         handleClose={() => setCategoryDialog({ ...categoryDialog, open: false })}
-        userName={user.name}
+        userName={user.fullName}
         groupId={resourceGroup.pk}
       />
       <Container maxWidth="xl">

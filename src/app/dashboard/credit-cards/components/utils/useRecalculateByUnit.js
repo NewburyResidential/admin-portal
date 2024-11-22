@@ -2,7 +2,6 @@ import { useFormContext } from 'react-hook-form';
 
 export const useRecalculateByUnit = () => {
   const { setValue } = useFormContext();
-
   const calculateTotalUnits = (allocations) => {
     const totalNumberOfUnits = allocations.reduce((total, allocation) => {
       const units = Number(allocation.asset?.units) || 0;
@@ -12,13 +11,15 @@ export const useRecalculateByUnit = () => {
     return totalNumberOfUnits;
   };
 
-  const recalculateByUnit = (allocations, transactionIndex, transactionAmount) => {
+  const recalculateByUnit = (allocations, transactionAmount) => {
     if (allocations.length === 1) {
-      setValue(`transactions[${transactionIndex}].allocations[0].amount`, transactionAmount);
-      setValue(`transactions[${transactionIndex}].allocations[0].helper`, 0);
+      setValue(`allocations[0].amount`, transactionAmount);
+      setValue(`allocations[0].helper`, 0);
       return;
     }
     const totalUnits = calculateTotalUnits(allocations);
+    console.log('totalUnits', totalUnits);
+    console.log('allocations', allocations);
     const totalAmount = Number(transactionAmount) || 0;
     let sumAllocatedAmount = 0;
 
@@ -43,8 +44,8 @@ export const useRecalculateByUnit = () => {
         }
       }
 
-      setValue(`transactions[${transactionIndex}].allocations[${index}].amount`, updatedAmount);
-      setValue(`transactions[${transactionIndex}].allocations[${index}].helper`, unitsToUse);
+      setValue(`allocations[${index}].amount`, updatedAmount);
+      setValue(`allocations[${index}].helper`, unitsToUse);
     });
   };
 

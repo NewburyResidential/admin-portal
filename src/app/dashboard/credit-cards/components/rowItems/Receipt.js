@@ -1,30 +1,28 @@
 'use client';
 
-import { useState } from 'react';
 import { useWatch } from 'react-hook-form';
 
 import Box from '@mui/material/Box';
 import AddReceiptUpload from '../ReceiptUpload/AddReceiptUpload';
 import CircularProgress from '@mui/material/CircularProgress';
 
-export default function Receipt({ transactionIndex, transaction, recentReceipts }) {
+export default function Receipt({ receiptIsLoading, setReceiptIsLoading, transaction, recentReceipts, isDragActive }) {
   const receiptUrl = useWatch({
-    name: `transactions[${transactionIndex}].receipt`,
+    name: `receipt`,
   });
-  const [loading, setLoading] = useState(false);
   const hasReceipt = !!receiptUrl;
 
   return (
     <Box>
-      {loading ? (
+      {receiptIsLoading ? (
         <CircularProgress size={20} color="primary" />
       ) : (
         <AddReceiptUpload
           recentReceipts={recentReceipts}
           transaction={transaction}
-          transactionIndex={transactionIndex}
-          setLoading={setLoading}
+          setLoading={setReceiptIsLoading}
           hasReceipt={hasReceipt}
+          isDragActive={isDragActive}
         />
       )}
     </Box>

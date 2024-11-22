@@ -1,24 +1,19 @@
-export default async function getUnapprovedTransactions() {
-  const url = 'https://0yxexcpp8f.execute-api.us-east-1.amazonaws.com/unapprovedTransactions';
-  const requestOptions = {
-    //cache: 'no-cache',
-    next: { revalidate: 0 },
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  };
+import { dynamoQueryWithIndex } from '../sdk-config/aws/dynamo-db';
 
-  try {
-    const response = await fetch(url, requestOptions);
-    if (!response.ok) {
-      console.error(`HTTP error! Status: ${response.status}`);
-      return [];
-    }
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error('Error fetching data: ', error);
-    return [];
-  }
+export default async function getUnapprovedTransactions() {
+  const unCategorizedResponse = await dynamoQueryWithIndex({
+    tableName: 'admin_portal_expenses',
+    index: 'status-index',
+    pkName: 'status',
+    pkValue: 'unapproved',
+  });
+
+  const categorizedResponse = await dynamoQueryWithIndex({
+    tableName: 'admin_portal_expenses',
+    index: 'status-index',
+    pkName: 'status',
+    pkValue: 'categorized',
+  });
+
+  return [...unCategorizedResponse, ...categorizedResponse];
 }

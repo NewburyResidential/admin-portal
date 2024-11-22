@@ -5,7 +5,7 @@ export default async function getCatalogedItems(items) {
   const url = 'https://gkteqh3jvj.execute-api.us-east-1.amazonaws.com/getCatalogedItems';
   const requestOptions = {
     method: 'POST',
-    //cache: 'no-cache',
+   // cache: 'no-cache',
     next: { revalidate: 0 },
     headers: {
       'Content-Type': 'application/json',

@@ -13,9 +13,9 @@ export default function View({ resourcesObject, session }) {
 
   return (
     <Container maxWidth="xl" sx={{ mt: 3 }}>
-      <Shortcuts editMode={settings.editMode} shortcuts={resourcesObject.shortcuts || []} userName={session.user.name} />
+      <Shortcuts editMode={settings.editMode} shortcuts={resourcesObject.shortcuts || []} userName={session.user.fullName} />
       <SearchResources resources={resourcesObject.resources} />
-      <ResourceGroups editMode={settings.editMode} userName={session.user.name} resourceObject={resourcesObject} />
+      <ResourceGroups editMode={settings.editMode} userName={session.user.fullName} resourceObject={resourcesObject} />
     </Container>
   );
 }

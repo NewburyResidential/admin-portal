@@ -17,10 +17,10 @@ const portalAccessOptions = [
   { value: '#AUTHORIZED', label: 'Authorized' },
   { value: '#UNAUTHORIZED', label: 'Unauthorized' },
 ];
-const onboardingOptions = [
-  { value: true, label: 'Complete' },
-  { value: false, label: 'Not Complete' },
-];
+// const onboardingOptions = [
+//   { value: true, label: 'Complete' },
+//   { value: false, label: 'Not Complete' },
+// ];
 const yesNoOptions = [
   { value: true, label: 'Yes' },
   { value: false, label: 'No' },
@@ -62,7 +62,7 @@ export default function Settings({ employee, user }) {
     showResponseSnackbar(response);
   };
 
-  const hasAzureAccount = watch('hasAzureAccount');
+  // const hasAzureAccount = watch('hasAzureAccount');
   const hasCreditCard = watch('hasCreditCard');
 
   return (
@@ -83,9 +83,9 @@ export default function Settings({ employee, user }) {
                 )}
               />
             </Grid>
-            <Grid xs={6}>
+            {/* <Grid xs={6}>
               <ReactHookSelect label="Onboarding Status" name="isOnboarding" options={onboardingOptions} />
-            </Grid>
+            </Grid> */}
             {/* <Grid xs={6}>
               <ReactHookAutocomplete label="Assigned Credit Card" name="creditCardId" options={ApplicationOptions} />
             </Grid> */}
@@ -107,29 +107,11 @@ export default function Settings({ employee, user }) {
               </Grid>
             )}
 
-            <Grid xs={6}>
-              <ReactHookSelect
-                label="Microsoft Account"
-                name="hasAzureAccount"
-                options={yesNoOptions}
-                onChange={(event) => {
-                  if (event.target.value === false) {
-                    setValue('workEmail', '');
-                    setValue('roles', ['public']);
-                  }
-                }}
-              />
-            </Grid>
-            {hasAzureAccount && (
-              <>
-                <Grid xs={6}>
-                  <ReactHookTextField label="Work Email" name="workEmail" />
-                </Grid>
+       
+           
                 <Grid xs={6}>
                   <ReactHookSelectRoles />
                 </Grid>
-              </>
-            )}
             <Grid xs={12} sx={{ display: 'flex', justifyContent: 'end' }}>
               <ReactHookSubmitButton label="Save Changes" disabled={!isDirty} />
             </Grid>

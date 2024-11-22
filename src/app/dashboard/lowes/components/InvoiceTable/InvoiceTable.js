@@ -13,6 +13,8 @@ import Card from '@mui/material/Card';
 import Paper from '@mui/material/Paper';
 import CardActions from '@mui/material/CardActions';
 import TableContainer from '@mui/material/TableContainer';
+import { CardContent } from '@mui/material';
+import Typography from '@mui/material/Typography';
 
 import PageChange from './PageChange';
 import ButtonApprove from './ButtonApprove';
@@ -20,12 +22,11 @@ import RowItem from './RowItem';
 
 import SubRowItems from './SubRowItems';
 import parseCurrency from '../utils/parse-currency';
-import { assetItems } from 'src/assets/data/assets';
 import { invoiceSchema } from '../utils/invoice-schema';
 import addInvoice from 'src/utils/services/entrata/addInvoice';
-import batchUpdateCatalogPurchases from 'src/utils/services/supply-stores/batchUpdateCatalogPurchases';
 
-export default function InvoiceTable({ groupedInvoices, chartOfAccounts, catalogedItems, setCurrentStep }) {
+export default function InvoiceTable({ groupedInvoices, chartOfAccounts, catalogedItems, setCurrentStep, property }) {
+  console.log('groupedInvoices', groupedInvoices);
   const [loading, setLoading] = useState(false);
   const [expandedStates, setExpandedStates] = useState({});
 
@@ -37,14 +38,12 @@ export default function InvoiceTable({ groupedInvoices, chartOfAccounts, catalog
   };
 
   const updatedGroupedInvoices = Object.entries(groupedInvoices).map(([invoiceNumber, item]) => {
-    const lowesNumber = item.store;
-    const matchingAsset = assetItems.find((asset) => asset?.supplyStores?.lowes.includes(lowesNumber));
 
     return {
       ...item,
       invoiceNumber,
       checked: false,
-      property: matchingAsset || null,
+      property: property || null,
     };
   });
 
@@ -57,7 +56,7 @@ export default function InvoiceTable({ groupedInvoices, chartOfAccounts, catalog
   const methods = useForm({
     defaultValues: {
       invoices: updatedGroupedInvoices,
-      pageSettings: { page: 0, rowsPerPage: 10 },
+      pageSettings: { page: 0, rowsPerPage: 50 },
     },
     resolver: yupResolver(invoiceSchema),
   });
@@ -76,7 +75,7 @@ export default function InvoiceTable({ groupedInvoices, chartOfAccounts, catalog
   const currentPageInvoices = invoiceFields.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
   const onSubmit = async (data) => {
-    console.log(data.invoices);
+    console.log('group', data.invoices);
     setLoading(true);
     const selectedItems = data.invoices.filter((item) => item.checked);
     const today = new Date();
@@ -93,11 +92,13 @@ export default function InvoiceTable({ groupedInvoices, chartOfAccounts, catalog
     selectedItems.forEach((item) => {
       const propertyId = item.property.accountId;
       noteArray.push(item.invoiceNumber);
+      console.log();
       totalTax = totalTax.plus(parseCurrency(item.tax));
       totalShipping = totalShipping.plus(parseCurrency(item.shipping));
       totalAmount = totalAmount.plus(parseCurrency(item.totalInvoice));
 
       item.lineItems.forEach((lineItem) => {
+        console.log('totallineitem', totalLineItemAmount.toString());
         const itemLabel = catalogedItems[lineItem?.sku]?.label ? catalogedItems[lineItem?.sku]?.label : lineItem.skuDescription;
         const accountNumber = catalogedItems[lineItem.sku].glAccountNumber;
         const rate = parseCurrency(lineItem.totalCost);
@@ -109,25 +110,29 @@ export default function InvoiceTable({ groupedInvoices, chartOfAccounts, catalog
           description: itemLabel,
           rate: rate.toString(),
         });
-        itemsPurchased.push({
-          pk: uuidv4(),
-          datePurchased: formattedDate,
-          store: 'Lowes',
-          propertyId,
-          glAccountId: accountNumber,
-          glAccountName: catalogedItems[lineItem.sku].glAccountName,
-          category: catalogedItems[lineItem.sku]?.category || null,
-          subCategory: catalogedItems[lineItem.sku]?.subCategory || null,
-          label: catalogedItems[lineItem.sku]?.label || null,
-          imageUrl: catalogedItems[lineItem.sku]?.imageUrl || null,
-          sku: lineItem.sku,
-          skuDescription: lineItem.skuDescription,
-          qty: lineItem.qty,
-          cost: parseCurrency(lineItem.cost).toString(),
-          totalCost: rate.toString(),
-        });
+        // itemsPurchased.push({
+        //   pk: uuidv4(),
+        //   datePurchased: formattedDate,
+        //   store: 'Lowes',
+        //   propertyId,
+        //   glAccountId: accountNumber,
+        //   glAccountName: catalogedItems[lineItem.sku].glAccountName,
+        //   category: catalogedItems[lineItem.sku]?.category || null,
+        //   subCategory: catalogedItems[lineItem.sku]?.subCategory || null,
+        //   label: catalogedItems[lineItem.sku]?.label || null,
+        //   imageUrl: catalogedItems[lineItem.sku]?.imageUrl || null,
+        //   sku: lineItem.sku,
+        //   skuDescription: lineItem.skuDescription,
+        //   qty: lineItem.qty,
+        //   cost: parseCurrency(lineItem.cost).toString(),
+        //   totalCost: rate.toString(),
+        // });
       });
     });
+    console.log('totalAmount', totalAmount.toString());
+    console.log('totalLineItemAmount', totalLineItemAmount.toString());
+    console.log('totalTax', totalTax.toString());
+    console.log('totalShipping', totalShipping.toString());
 
     if (totalAmount.eq(totalLineItemAmount.plus(totalTax).plus(totalShipping))) {
       const invoice = {
@@ -152,7 +157,7 @@ export default function InvoiceTable({ groupedInvoices, chartOfAccounts, catalog
       let updatedInvoices;
 
       if (success) {
-        await batchUpdateCatalogPurchases(itemsPurchased);
+        //  await batchUpdateCatalogPurchases(itemsPurchased);
         updatedInvoices = data.invoices.filter((item) => !item.checked);
         setValue('invoices', updatedInvoices);
       }
@@ -164,6 +169,18 @@ export default function InvoiceTable({ groupedInvoices, chartOfAccounts, catalog
     setLoading(false);
   };
 
+  // Watch all 'checked' states for dynamic updates
+  const watchedInvoices = useWatch({
+    control,
+    name: `invoices`, // Watch all invoices
+  });
+  // return the total sum amount of all the selected invoices
+  const totalSelectedAmount = watchedInvoices.reduce((acc, curr) => {
+    if (curr.checked) {
+      return acc.plus(parseCurrency(curr.totalInvoice));
+    }
+    return acc;
+  }, Big(0));
 
   return (
     <FormProvider {...methods}>
@@ -211,10 +228,22 @@ export default function InvoiceTable({ groupedInvoices, chartOfAccounts, catalog
                     </Box>
                   );
                 })}
+           
               </>
             </Box>
           </TableContainer>
         </Card>
+        <br /> 
+                <Card sx={{ mt: 10, mb: 2, width: '100%', maxWidth: 400, margin: '0 auto' }}>
+                  <CardContent>
+                    <Typography variant="h6" align="center" color="inherit">
+                      Total Selected Amount
+                    </Typography>
+                    <Typography variant="h4" align="center" color="textPrimary">
+                      {totalSelectedAmount.toString()}
+                    </Typography>
+                  </CardContent>
+                </Card>
       </form>
     </FormProvider>
   );

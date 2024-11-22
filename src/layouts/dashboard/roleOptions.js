@@ -8,7 +8,9 @@ export const roleOptions = [
   { value: 'admin', label: 'Admin' },
   { value: 'accounting', label: 'Accounting' },
   { value: 'hr', label: 'HR' },
-  { value: 'manager', label: 'Manager' },
+  // { value: 'manager', label: 'Manager' },
+  { value: 'credit-card-assigner', label: 'Credit Card Assigner' },
+  //Access to the credit card transactions
 ];
 
 export const isAuthorized = (session, currentPath) => {
@@ -22,7 +24,7 @@ export const isAuthorized = (session, currentPath) => {
   }
 
   // if (user.isOnboarding) {
-  //  redirect(`/onboarding/${getOnboardingParameter(user.name, user.pk)}`);
+  //  redirect(`/onboarding/${getOnboardingParameter(user.fullName, user.pk)}`);
   // }
 
   if (user?.roles.includes('admin')) return true;
@@ -33,9 +35,9 @@ export const isAuthorized = (session, currentPath) => {
   if (requiredRoles.some((role) => user.roles.includes(role))) {
     console.log('authorized!!');
     return true;
-  } 
-    console.log('not authorized!!');
-    //redirect(publicPaths.unAuthorizedApplication(user.personalEmail));
+  }
+  console.log('not authorized!!');
+  //redirect(publicPaths.unAuthorizedApplication(user.personalEmail));
   return false;
 };
 

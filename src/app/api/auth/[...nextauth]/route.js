@@ -57,17 +57,15 @@ export const authOptions = {
       const email = session?.user?.email;
       const employeeData = await getAuthorizedUserByEmail(email);
       if (employeeData) {
-        const name = `${employeeData?.firstName} ${employeeData?.lastName}`;
-        session.user = { ...session.user, ...employeeData, name };
-       Sentry.getGlobalScope().setUser({
-        name: session.user.name,
-        status: session.user.status,
-        id: session.user.pk,
-        email: session.user.workEmail || session.user.personalEmail,
-        roles: JSON.stringify(session.user.roles),  // Stringify roles array
-        ip_address: "{{auto}}"
-      });
-
+        session.user = { ...session.user, ...employeeData };
+        Sentry.getGlobalScope().setUser({
+          name: session.user.fullName,
+          status: session.user.status,
+          id: session.user.pk,
+          email: session.user.workEmail || session.user.personalEmail,
+          roles: JSON.stringify(session.user.roles), // Stringify roles array
+          ip_address: '{{auto}}',
+        });
       }
 
       return session;

@@ -1,4 +1,3 @@
-import React from 'react';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import ListSubheader from '@mui/material/ListSubheader';
@@ -16,7 +15,6 @@ export default function AutocompleteGroup({
   sx,
 }) {
   const { control } = useFormContext();
-  console.log(options)
 
   const sortedOptions = options.sort((a, b) => {
     if (a.category < b.category) return -1;
@@ -44,6 +42,7 @@ export default function AutocompleteGroup({
           getOptionLabel={(option) => option[optionLabel]}
           renderInput={(params) => (
             <TextField
+       
               variant={variant}
               onClick={(event) => {
                 event.stopPropagation();

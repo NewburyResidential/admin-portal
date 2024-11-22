@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import {  useState } from 'react';
 import AllocationTable from './GlTable/AllocationTable';
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
@@ -9,12 +9,22 @@ import Box from '@mui/material/Box';
 import InvoiceTable from './InvoiceTable/InvoiceTable';
 import Scraper from './Scraper';
 import Upload from './Upload';
+import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
+import { assetItems } from 'src/assets/data/assets';
 
 export default function Steps({ chartOfAccounts }) {
+  const assets = assetItems.filter((item) => item.accountingSoftware === 'entrata');
+
+
   const [groupedInvoices, setGroupedInvoices] = useState({});
   const [uncatalogedItems, setUncatalogedItems] = useState([]);
   const [catalogedItems, setCatalogedItems] = useState({});
   const [currentStep, setCurrentStep] = useState(0);
+  const [property, setProperty] = useState('');
+
+  const handleChange = (event) => {
+    setProperty(event.target.value);
+  };
 
   const steps = ['Upload CSV', 'Scrape Items', 'Assign GL Codes', 'Pay Invoices'];
   return (
@@ -29,7 +39,23 @@ export default function Steps({ chartOfAccounts }) {
         </Stepper>
       </Box>
 
-      {currentStep === 0 && <Upload setGroupedInvoices={setGroupedInvoices} setCurrentStep={setCurrentStep} />}
+      {currentStep === 0 && (
+        <>
+          <Box sx={{ mt: 8, mx: 12 }}>
+            <FormControl fullWidth>
+              <InputLabel id="account-select-label">Select Property</InputLabel>
+              <Select labelId="account-select-label" id="account-select" value={property} onChange={handleChange} label="Select Property">
+                {assets.map((account) => (
+                  <MenuItem key={account.id} value={account}>
+                    {account.label}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Box>
+          <Upload setGroupedInvoices={setGroupedInvoices} setCurrentStep={setCurrentStep} />
+        </>
+      )}
       {currentStep === 1 && (
         <Scraper
           groupedInvoices={groupedInvoices}
@@ -49,7 +75,12 @@ export default function Steps({ chartOfAccounts }) {
         />
       )}
       {currentStep === 3 && (
-        <InvoiceTable groupedInvoices={groupedInvoices} catalogedItems={catalogedItems} setCurrentStep={setCurrentStep} />
+        <InvoiceTable
+          groupedInvoices={groupedInvoices}
+          catalogedItems={catalogedItems}
+          setCurrentStep={setCurrentStep}
+          property={property}
+        />
       )}
     </div>
   );

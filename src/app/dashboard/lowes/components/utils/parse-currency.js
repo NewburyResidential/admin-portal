@@ -4,6 +4,7 @@ export default function parseCurrency(value) {
   if (typeof value === 'string') {
     value = value
       .replace('$', '')
+      .replace(',', '')  // Remove commas
       .replace(/\(([^)]+)\)/, '-$1')
       .trim();
   }

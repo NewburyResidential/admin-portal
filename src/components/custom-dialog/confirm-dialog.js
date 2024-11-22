@@ -5,6 +5,7 @@ import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
+import LoadingButton from '@mui/lab/LoadingButton';
 
 // ----------------------------------------------------------------------
 
@@ -17,6 +18,7 @@ export default function ConfirmDialog({
   handleClose,
   handleConfirm,
   handleCancel,
+  confirmButtonIsLoading = false,
   ...other
 }) {
   return (
@@ -39,9 +41,9 @@ export default function ConfirmDialog({
         >
           {cancel}
         </Button>
-        <Button variant="contained" color="inherit" onClick={handleConfirm}>
+        <LoadingButton loading={confirmButtonIsLoading} variant="contained" color="inherit" onClick={handleConfirm}>
           {confirm}
-        </Button>
+        </LoadingButton>
       </DialogActions>
     </Dialog>
   );

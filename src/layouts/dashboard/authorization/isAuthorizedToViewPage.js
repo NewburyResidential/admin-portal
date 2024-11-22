@@ -13,7 +13,7 @@ export default function isAuthorizedToViewPage(session, currentPath) {
   }
 
   // if (user.isOnboarding) {
-  //  redirect(`/onboarding/${getOnboardingParameter(user.name, user.pk)}`);
+  //  redirect(`/onboarding/${getOnboardingParameter(user.fullName, user.pk)}`);
   // }
 
   if (user?.roles.includes('admin')) return true;

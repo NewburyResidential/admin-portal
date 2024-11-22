@@ -31,7 +31,7 @@ export default function Documents({ employee, user }) {
       <EditFileDialog
         open={editDialog.open}
         documentData={editDialog.documentData}
-        userName={user.name}
+        userName={user.fullName}
         handleClose={() => {
           setEditDialog({ ...editDialog, open: false });
           fileInputRef.current.value = '';

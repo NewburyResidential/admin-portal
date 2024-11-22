@@ -11,7 +11,7 @@ import { useFormContext } from 'react-hook-form';
 import { copyS3Object } from 'src/utils/services/cc-expenses/uploadS3Image';
 import { format } from 'date-fns';
 
-export default function ReceiptCards({ id, setOpen, setLoading, transactionIndex, suggestedReceipts }) {
+export default function ReceiptCards({ id, setOpen, setLoading, suggestedReceipts }) {
   const { setValue } = useFormContext();
 
   const handleViewReceipt = (imageUrl) => {
@@ -26,8 +26,8 @@ export default function ReceiptCards({ id, setOpen, setLoading, transactionIndex
     try {
       const response = await copyS3Object('admin-portal-suggested-receipts', 'admin-portal-receipts', objectKey, id, fileName);
       if (response) {
-        setValue(`transactions[${transactionIndex}].receipt`, response.fileUrl);
-        setValue(`transactions[${transactionIndex}].tempPdfReceipt`, response.tempPdfUrl);
+        setValue(`receipt`, response.fileUrl);
+        setValue(`tempPdfReceipt`, response.tempPdfUrl);
       }
     } catch (error) {
       console.error('Error uploading file:', error);
@@ -74,7 +74,8 @@ export default function ReceiptCards({ id, setOpen, setLoading, transactionIndex
                       key !== 'modifiedBy' &&
                       key !== 'fileName' &&
                       key !== 'objectKey' &&
-                      key !== 'expire'
+                      key !== 'expire' &&
+                      key !== 'scoreTotal'
                   )
                   .map(([key, value], index, array) => (
                     <Box

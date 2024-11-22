@@ -17,7 +17,7 @@ const Transition = React.forwardRef((props, ref) => {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-export default function UploadDialog({ open, setOpen, setLoading, transactionIndex, transaction, recentReceipts }) {
+export default function UploadDialog({ open, setOpen, setLoading, transaction, recentReceipts }) {
   const handleClose = () => {
     setOpen(false);
   };
@@ -42,18 +42,18 @@ export default function UploadDialog({ open, setOpen, setLoading, transactionInd
         </AppBar>
         <Box sx={{ margin: 3 }}>
           <TransactionCard transaction={transaction} />
-          {transaction.suggestedReceipts.length > 0 && (
+          {transaction.suggestedReceipts?.length > 0 && (
             <>
               <Typography variant="h5" component="p" sx={{ fontStyle: 'italic', marginBottom: '20px', fontWeight: 200, mt: 4 }}>
                 Suggested Receipts
               </Typography>
-              <ReceiptCard setOpen={setOpen} setLoading={setLoading} transactionIndex={transactionIndex} id={transaction.id} suggestedReceipts={transaction.suggestedReceipts} />
+              <ReceiptCard setOpen={setOpen} setLoading={setLoading}  id={transaction.id} suggestedReceipts={transaction.suggestedReceipts} />
             </>
           )}
           <Typography variant="h5" component="p" sx={{ fontStyle: 'italic', marginTop: '50px', fontWeight: 200, mt: 4 }}>
             Recent Files
           </Typography>
-          <ReceiptTable setOpen={setOpen} setLoading={setLoading} transactionIndex={transactionIndex} id={transaction.id} recentReceipts={recentReceipts} />
+          <ReceiptTable setOpen={setOpen} setLoading={setLoading}  id={transaction.id} recentReceipts={recentReceipts} />
         </Box>
       </Dialog>
   );

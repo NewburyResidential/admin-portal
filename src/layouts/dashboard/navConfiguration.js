@@ -8,12 +8,11 @@ export const ICONS = {
   resources: 'bi:file-earmark-text-fill',
 };
 
-
 // roles should be included in main group if different roles are required for children
 export const navConfiguration = [
   {
     subheader: 'Overview',
-    items: [{ title: 'Resources', path: dashboardPaths.resources.root, icon: ICONS.resources, forceDeepActive: true}],
+    items: [{ title: 'Resources', path: dashboardPaths.resources.root, icon: ICONS.resources, forceDeepActive: true }],
   },
   {
     subheader: 'Human Resource',
@@ -23,13 +22,13 @@ export const navConfiguration = [
     subheader: 'Accounting',
     items: [
       {
-        roles: ['accounting'],
+        roles: ['accounting', 'credit-card-assigner'],
         title: 'Expenses',
         path: dashboardPaths.creditCards.root,
         icon: ICONS.creditCard,
         children: [
-          { title: 'Transactions', path: dashboardPaths.creditCards.root, roles: ['accounting'] }, // Create Root Folder
-          { title: 'Reports', path: dashboardPaths.creditCards.reports, roles: ['accounting']}
+          { title: 'Transactions', path: dashboardPaths.creditCards.root, roles: ['credit-card-assigner'] }, // Create Root Folder
+          { title: 'Reports', path: dashboardPaths.creditCards.reports, roles: ['accounting'] },
         ],
       },
       {

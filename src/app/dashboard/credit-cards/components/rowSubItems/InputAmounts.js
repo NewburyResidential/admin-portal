@@ -5,15 +5,16 @@ import TextField from '@mui/material/TextField';
 import IconButton from '@mui/material/IconButton';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 
-export default function InputAmounts({ allocationFields, isSplit, baseFieldName, transactionIndex, allocationIndex, totalAmount }) {
+export default function InputAmounts({ allocationFields, isSplit, baseFieldName, allocationIndex, totalAmount }) {
   const { control, getValues, setValue } = useFormContext();
+
   const percent = useWatch({
     control,
-    name: allocationFields.map((_, index) => `transactions[${transactionIndex}].allocations[${index}].helper`),
+    name: allocationFields.map((_, index) => `allocations[${index}].helper`),
   });
 
-  const calculationMethod = getValues(`transactions[${transactionIndex}].calculationMethod`);
-  const amount = getValues(`transactions[${transactionIndex}].allocations.${allocationIndex}.amount`);
+  const calculationMethod = getValues(`calculationMethod`);
+  const amount = getValues(`allocations.${allocationIndex}.amount`);
 
   const formatMessage = (value, isPercent) => {
     const absValue = Math.abs(value);
@@ -35,7 +36,7 @@ export default function InputAmounts({ allocationFields, isSplit, baseFieldName,
   let percentMessage;
 
   if (calculationMethod === 'amount') {
-    allocations = getValues(`transactions[${transactionIndex}].allocations`);
+    allocations = getValues(`allocations`);
     sumOfAllocations = allocations.reduce((sum, allocation) => sum + parseFloat(allocation.amount || 0), 0);
     amountDifference = parseFloat((parseFloat(totalAmount) - sumOfAllocations).toFixed(2)) || 0;
     percentDifference = Math.round((amountDifference / totalAmount) * 100);
@@ -154,7 +155,15 @@ export default function InputAmounts({ allocationFields, isSplit, baseFieldName,
             )}
           />
         ) : (
-          <TextField value={amount} label="Amount" disabled variant="outlined" autoComplete="off" fullWidth />
+          <TextField
+            InputProps={{ startAdornment: <span>$</span> }}
+            value={amount}
+            label="Amount"
+            disabled
+            variant="outlined"
+            autoComplete="off"
+            fullWidth
+          />
         )}
       </Box>
     </>

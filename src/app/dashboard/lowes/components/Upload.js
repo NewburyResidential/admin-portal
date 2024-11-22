@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Papa from 'papaparse';
+import Big from 'big.js';
 
 import Box from '@mui/material/Box';
 import { LoadingScreen } from 'src/components/loading-screen';
@@ -40,13 +41,26 @@ const Upload = ({ setGroupedInvoices, setCurrentStep }) => {
 
           if (curr['Total Invoice'] !== '' && curr['Total Invoice'] !== null && curr['Total Invoice'] !== ' ') {
             const totalInvoice = parseCurrency(curr['Total Invoice']);
+
             paymentsApplied = parseCurrency(curr['Payments Applied']);
             const updatedTotalInvoice = totalInvoice.plus(paymentsApplied);
             acc[invoiceNum].totalInvoice = updatedTotalInvoice.toString();
           }
           if (curr.Tax !== '' && curr['Total Invoice'] !== null && curr['Total Invoice'] !== ' ') {
             const tax = parseCurrency(curr.Tax);
-            const updatedTax = tax.plus(paymentsApplied);
+            let updatedTax = Big(0);
+            // check if tax is big number
+
+            if (tax instanceof Big && !Number.isNaN(paymentsApplied)) {
+              try {
+                updatedTax = tax.plus(paymentsApplied);
+              } catch (error) {
+                console.error('Error adding tax and paymentsApplied:', error);
+              }
+            }
+            if (tax instanceof Big && Number.isNaN(paymentsApplied)) {
+              updatedTax = tax;
+            }
             acc[invoiceNum].tax = updatedTax.toString();
             return acc;
           }
@@ -55,7 +69,12 @@ const Upload = ({ setGroupedInvoices, setCurrentStep }) => {
             curr.SkuDesc === '3-7DAY GROUND SHPCHRG 301' ||
             curr.SkuDesc === '3-7DAY GROUND SHIPCHRG 31'
           ) {
-            acc[invoiceNum].shipping = curr['Ex Price'];
+            const exPrice = parseCurrency(curr['Ex Price']);
+
+            acc[invoiceNum].shipping = acc[invoiceNum].shipping
+              ? parseCurrency(acc[invoiceNum].shipping).plus(exPrice).toString()
+              : exPrice.toString();
+
             return acc;
           }
           if (curr.SKU === null || curr.SKU === '' || curr.SKU === ' ' || curr.SkuDesc === 'PROMOTIONAL DISCOUNT APPL') {

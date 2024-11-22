@@ -12,14 +12,13 @@ import Label from 'src/components/label';
 // ----------------------------------------------------------------------
 
 export default function UserTableRow({ row, onSelectRow }) {
-  const { firstName, lastName, avatar, employeeStatus, personalEmail, mobilePhone } = row;
-  const fullName = `${firstName} ${lastName}`;
+  const { fullName, avatar, employeeStatus, personalEmail, mobilePhone } = row;
   return (
     <>
       <TableRow hover onClick={onSelectRow}>
         <TableCell sx={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
           <Avatar src={avatar} sx={{ mr: 2, ml: 2 }}>
-            {firstName.charAt(0).toUpperCase()}
+            {fullName?.charAt(0).toUpperCase()}
           </Avatar>
 
           <ListItemText

@@ -11,11 +11,11 @@ import Autocomplete from '@mui/material/Autocomplete';
 import Iconify from 'src/components/iconify';
 import VendorDialog from '../addVendor/Dialog';
 
-export default function DropDownVendor({ transactionIndex, vendors, setVendors, merchant }) {
+export default function DropDownVendor({ vendors, setVendors, merchant }) {
   const { control, setValue } = useFormContext();
   const allocations = useWatch({
     control,
-    name: `transactions[${transactionIndex}].allocations`,
+    name: `allocations`,
   });
 
   const isVendorRequired = allocations.some(
@@ -40,7 +40,7 @@ export default function DropDownVendor({ transactionIndex, vendors, setVendors, 
   const handleClose = ({ vendor = null }) => {
     if (vendor) {
       setVendors((prev) => [...prev, vendor]);
-      setValue(`transactions[${transactionIndex}].vendor`, vendor);
+      setValue(`vendor`, vendor);
     }
     setVendorDialog({ open: false, defaultValue: '' });
   };
@@ -50,7 +50,7 @@ export default function DropDownVendor({ transactionIndex, vendors, setVendors, 
       <VendorDialog open={vendorDialog.open} defaultValue={vendorDialog?.defaultValue} handleClose={handleClose} />
       <FormControl fullWidth>
         <Controller
-          name={`transactions[${transactionIndex}].vendor`}
+          name="vendor"
           control={control}
           render={({ field, fieldState: { error } }) => (
             <Autocomplete
@@ -71,7 +71,13 @@ export default function DropDownVendor({ transactionIndex, vendors, setVendors, 
                 }
               }}
               renderInput={(params) => (
-                <TextField {...params} label={field.value ? 'Vendor' : `Add ${merchantName} Vendor`} variant="filled" error={!!error} />
+                <TextField
+                  {...params}
+                  sx={{ '& .MuiInputBase-root': { height: '54px' } }}
+                  label={field.value ? 'Vendor' : `Add ${merchantName} Vendor`}
+                  variant="filled" 
+                  error={!!error}
+                />
               )}
               renderOption={(props, option) => {
                 if (option.id === 'add-vendor') {

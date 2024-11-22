@@ -18,9 +18,9 @@ import RowItem from './RowItem';
 import ButtonApplyGl from './ButtonApplyGl';
 import DropDownGlHeader from './DropDownGlHeader';
 
-import batchUpdateCatalogItems from 'src/utils/services/supply-stores/batchUpdateCatalogItems';
 import getCatalogedItems from 'src/utils/services/supply-stores/getCatalogedItems';
 import getUniqueInvoiceItems from '../utils/get-unique-invoice-items';
+import updateItemsWithGl from 'src/utils/services/supply-stores/updateItemsWithGl';
 
 export default function AllocationTable({ uncatalogedItems, chartOfAccounts, setCatalogedItems, setCurrentStep, groupedInvoices }) {
   const [loading, setLoading] = useState(false);
@@ -36,7 +36,7 @@ export default function AllocationTable({ uncatalogedItems, chartOfAccounts, set
   const methods = useForm({
     defaultValues: {
       uncatalogedItems: updatedUncatalogedItems,
-      pageSettings: { page: 0, rowsPerPage: 10 },
+      pageSettings: { page: 0, rowsPerPage: 50 },
       masterGlAccount: null,
     },
     resolver: yupResolver(itemsSchema),
@@ -59,8 +59,13 @@ export default function AllocationTable({ uncatalogedItems, chartOfAccounts, set
     setLoading(true);
     const selectedItems = data.uncatalogedItems.filter((item) => item.checked);
     console.log(selectedItems);
-    const batchItems = selectedItems.map((item) => ({ pk: item.sku, ...item }));
-    await batchUpdateCatalogItems(batchItems);
+
+    for (const item of selectedItems) {
+      const updatedAttributes = { fixed: item.fixed, glAccountName: item.glAccount.accountName, glAccountNumber: item.glAccount.accountId };
+      await updateItemsWithGl(item.sku, updatedAttributes);
+    }
+    //const batchItems = selectedItems.map((item) => ({ pk: item.sku, ...item }));
+    //await batchUpdateCatalogItems(batchItems);
     const remainingUncatalogedItems = data.uncatalogedItems.filter((item) => !item.checked);
     if (remainingUncatalogedItems.length === 0) {
       const catalogedItems = await getCatalogedItems(getUniqueInvoiceItems(groupedInvoices));

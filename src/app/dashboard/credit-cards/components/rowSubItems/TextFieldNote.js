@@ -10,13 +10,7 @@ export default function TextFieldNote({ baseFieldName }) {
       name={fieldName}
       control={control}
       render={({ field }) => (
-        <TextField 
-          {...field} 
-          autoComplete="off" 
-          fullWidth 
-          label="Notes" 
-          variant="outlined" 
-        />
+        <TextField {...field} autoComplete="off" fullWidth label="Notes" variant="outlined" />
       )}
     />
   );

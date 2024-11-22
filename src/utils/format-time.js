@@ -6,6 +6,11 @@ export function fToLocaleDate(date, existingFormat = 'MM/dd/yyyy') {
   return parse(date, existingFormat, new Date());
 }
 
+export function fConvertFromEuropeDate(date) {
+  const parsedDate = parse(date, 'yyyy-MM-dd', new Date());
+  return format(parsedDate, 'MM/dd/yyyy');
+}
+
 export function fDate(date, newFormat) {
   const fm = newFormat || 'MM/dd/yyyy';
 

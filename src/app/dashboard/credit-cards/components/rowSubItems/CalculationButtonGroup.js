@@ -5,25 +5,25 @@ import { useFormContext, useWatch } from 'react-hook-form';
 import { useRecalculateByUnit } from '../utils/useRecalculateByUnit';
 import { useClearCalculations } from '../utils/useClearCalculations';
 
-export default function CalculationButtonGroup({ transactionIndex, totalAmount }) {
+export default function CalculationButtonGroup({ totalAmount }) {
   const { setValue, getValues, control } = useFormContext();
   const recalculateByUnit = useRecalculateByUnit();
   const clearCalculations = useClearCalculations();
 
   const calculationMethod = useWatch({
     control,
-    name: `transactions[${transactionIndex}].calculationMethod`,
+    name: `calculationMethod`,
   });
 
   const handleCalculationChange = (method) => {
     if (method === 'amount') {
-      setValue(`transactions[${transactionIndex}].calculationMethod`, 'amount');
-      const allocations = getValues(`transactions[${transactionIndex}].allocations`);
-      clearCalculations(allocations, transactionIndex);
+      setValue(`calculationMethod`, 'amount');
+      const allocations = getValues(`allocations`);
+      clearCalculations(allocations);
     } else {
-      setValue(`transactions[${transactionIndex}].calculationMethod`, 'unit');
-      const allocations = getValues(`transactions[${transactionIndex}].allocations`);
-      recalculateByUnit(allocations, transactionIndex, totalAmount);
+      setValue(`calculationMethod`, 'unit');
+      const allocations = getValues(`allocations`);
+      recalculateByUnit(allocations, totalAmount);
     }
   };
 

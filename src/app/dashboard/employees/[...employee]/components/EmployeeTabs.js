@@ -48,7 +48,7 @@ export default function EmployeeTabs({ employee, user }) {
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <CustomBreadcrumbs
         heading="Profile"
-        links={[{ name: 'Employees', href: '/dashboard/employees' }, { name: `${employee.firstName  } ${  employee.lastName}` }]}
+        links={[{ name: 'Employees', href: '/dashboard/employees' }, { name: `${employee.firstName} ${employee.lastName}` }]}
         sx={{
           mb: { xs: 3, md: 5 },
         }}
@@ -62,9 +62,10 @@ export default function EmployeeTabs({ employee, user }) {
       >
         <ProfileCover
           jobRole="Foreman"
-          name={`${employee?.firstName} ${employee?.lastName}`}
+          name={`${employee?.fullName}`}
           avatarUrl={employee?.avatar ? _mock.image.avatar(11) : null}
           coverUrl={_mock.image.cover(3)}
+          employeeStatus={employee?.employeeStatus}
         />
 
         <Tabs
@@ -91,12 +92,10 @@ export default function EmployeeTabs({ employee, user }) {
         </Tabs>
       </Card>
 
-
       {currentTab === 'profile' && <ProfileView employee={employee} user={user} />}
       {currentTab === 'performance' && <>Coming Soon!</>}
 
-
-      {/* <RequiredDocuments userName={user.name} fileInputRef={fileInputRef} employee={employee} setEditDialog={setEditDialog} /> */}
+      {/* <RequiredDocuments userName={user.fullName} fileInputRef={fileInputRef} employee={employee} setEditDialog={setEditDialog} /> */}
 
       {/* <OtherDocuments
         fileInputRef={fileInputRef}

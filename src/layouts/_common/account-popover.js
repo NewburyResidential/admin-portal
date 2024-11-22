@@ -61,14 +61,14 @@ export default function AccountPopover({session}) {
             border: (theme) => `solid 2px ${theme.palette.background.default}`,
           }}
         >
-          {session?.user?.name?.charAt(0).toUpperCase()}
+          {session?.user?.fullName?.charAt(0).toUpperCase()}
         </Avatar>
       </IconButton>
 
       <CustomPopover open={popover.open} onClose={popover.onClose} sx={{ width: 200, p: 0 }}>
         <Box sx={{ p: 2, pb: 1.5 }}>
           <Typography variant="subtitle2" noWrap>
-            {session?.user?.name}
+            {session?.user?.fullName}
           </Typography>
 
           <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
