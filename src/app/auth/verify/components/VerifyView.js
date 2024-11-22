@@ -27,7 +27,7 @@ export default function VerifyView() {
             Check Your Email
           </Typography>
           <Typography variant="body1" align="center" gutterBottom sx={{ mt: 3 }}>
-            We&aptos;ve sent a login link to your email. Please follow the email link to access this protal. You may close this window
+            We sent a login link to your email. Please follow the email link to access this protal. You may close this window
           </Typography>
         </CardContent>
         <Button
