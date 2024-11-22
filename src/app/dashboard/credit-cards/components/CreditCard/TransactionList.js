@@ -84,7 +84,11 @@ export default function TransactionList({
 
   // Memoize the transaction processing logic
   const processedTransactions = useMemo(() => {
-    return unapprovedTransactions.map((transaction) => {
+    const filteredTransactions = user.roles.includes('admin')
+      ? unapprovedTransactions
+      : unapprovedTransactions.filter(transaction => transaction.status === 'unapproved');
+
+    return filteredTransactions.map((transaction) => {
       const receipts = matchReceipts(transaction, suggestedReceipts);
       const bestMatch =
         receipts.length > 0
@@ -100,22 +104,18 @@ export default function TransactionList({
         reviewers: creditCardAccountsWithEmployees.find((account) => account.pk === transaction.accountName)?.reviewers || [],
       };
     });
-  }, [unapprovedTransactions, suggestedReceipts, creditCardAccountsWithEmployees]);
+  }, [unapprovedTransactions, suggestedReceipts, creditCardAccountsWithEmployees, user.roles]);
 
-  // Memoize unique owners
-  const uniqueOwners = useMemo(() => {
-    const ownerSet = new Set(processedTransactions.map((transaction) => transaction.owner).filter(Boolean));
-    return Array.from(ownerSet);
-  }, [processedTransactions]);
-
-  // Memoize filtered authorized employees
   const authorizedEmployeesAndAvailable = useMemo(() => {
-    return employees.filter(
-      (employee) =>
-        (user.roles.includes('admin') && uniqueOwners.includes(employee.pk)) ||
-        (employee.creditCardAccountsToReview?.includes(user.pk) && uniqueOwners.includes(employee.pk))
+    const ownerSet = new Set(
+      processedTransactions
+        .filter((transaction) => user.roles.includes('admin') || transaction.reviewers?.includes(user.pk))
+        .map((transaction) => transaction.owner)
+        .filter(Boolean)
     );
-  }, [employees, user.roles, user.pk, uniqueOwners]);
+    const uniqueOwners = Array.from(ownerSet);
+    return employees.filter((employee) => uniqueOwners.includes(employee.pk));
+  }, [processedTransactions, user.roles, user.pk, employees]);
 
   // Update displayed transactions with processed data
   useEffect(() => {
