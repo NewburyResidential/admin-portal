@@ -35,7 +35,7 @@ export async function uploadPreEntrataTransactions(transaction, assetId) {
       const dynamoResponse = await dynamoUpdateItemAttributes({
         tableName: 'admin_portal_expenses',
         pk: transaction.billingCycle,
-        sk: transaction.id,
+        sk: transaction.sk,
         attributes: { preEntrataEntered: true },
       });
       console.log('DynamoDB response:', dynamoResponse);

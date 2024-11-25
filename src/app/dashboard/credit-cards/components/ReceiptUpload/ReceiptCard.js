@@ -26,6 +26,9 @@ export default function ReceiptCards({ id, setOpen, setLoading, suggestedReceipt
     try {
       const response = await copyS3Object('admin-portal-suggested-receipts', 'admin-portal-receipts', objectKey, id, fileName);
       if (response) {
+        console.log('objectKey:', objectKey);
+        console.log('id:', id);
+        console.log('fileName:', fileName);
         setValue(`receipt`, response.fileUrl);
         setValue(`tempPdfReceipt`, response.tempPdfUrl);
       }

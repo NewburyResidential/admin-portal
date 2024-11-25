@@ -29,10 +29,14 @@ export default function AddReceiptUpload({ recentReceipts, setLoading, hasReceip
     setLoading(true);
     const formData = new FormData();
     formData.append('file', file);
-    formData.append('name', transaction.id);
+    formData.append('name', transaction.sk);
     formData.append('bucket', 'admin-portal-receipts');
 
+   
+
     try {
+      console.log('transaction:', transaction);
+
       const response = await uploadS3Image(formData);
       if (response) {
         setValue(`receipt`, response.fileUrl);
@@ -70,7 +74,7 @@ export default function AddReceiptUpload({ recentReceipts, setLoading, hasReceip
   const handleMatchedReceiptUpload = async (objectKey, fileName) => {
     setLoading(true);
     try {
-      const response = await copyS3Object('admin-portal-suggested-receipts', 'admin-portal-receipts', objectKey, transaction.id, fileName);
+      const response = await copyS3Object('admin-portal-suggested-receipts', 'admin-portal-receipts', objectKey, transaction.sk, fileName);
       if (response) {
         setValue('receipt', response.fileUrl);
         setValue('tempPdfReceipt', response.tempPdfUrl);

@@ -302,7 +302,7 @@ export default function TransactionList({
                 <TableBody>
                   {dataInPage.map((transaction, index) => (
                     <RowItem
-                      key={transaction.id}
+                      key={transaction.sk}
                       transaction={transaction}
                       transactionIndex={table.page * table.rowsPerPage + index}
                       vendors={vendors}

@@ -47,13 +47,13 @@ export default function UploadDialog({ open, setOpen, setLoading, transaction, r
               <Typography variant="h5" component="p" sx={{ fontStyle: 'italic', marginBottom: '20px', fontWeight: 200, mt: 4 }}>
                 Suggested Receipts
               </Typography>
-              <ReceiptCard setOpen={setOpen} setLoading={setLoading}  id={transaction.id} suggestedReceipts={transaction.suggestedReceipts} />
+              <ReceiptCard setOpen={setOpen} setLoading={setLoading}  id={transaction.sk} suggestedReceipts={transaction.suggestedReceipts} />
             </>
           )}
           <Typography variant="h5" component="p" sx={{ fontStyle: 'italic', marginTop: '50px', fontWeight: 200, mt: 4 }}>
             Recent Files
           </Typography>
-          <ReceiptTable setOpen={setOpen} setLoading={setLoading}  id={transaction.id} recentReceipts={recentReceipts} />
+          <ReceiptTable setOpen={setOpen} setLoading={setLoading}  id={transaction.sk} recentReceipts={recentReceipts} />
         </Box>
       </Dialog>
   );

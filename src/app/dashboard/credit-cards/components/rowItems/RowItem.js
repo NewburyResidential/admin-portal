@@ -64,7 +64,7 @@ export default function RowItem({
         const file = acceptedFiles[0];
         const formData = new FormData();
         formData.append('file', file);
-        formData.append('name', transaction.id);
+        formData.append('name', transaction.sk);
         formData.append('bucket', 'admin-portal-receipts');
 
         try {
@@ -82,7 +82,7 @@ export default function RowItem({
         }
       }
     },
-    [transaction.id, setValue, setReceiptIsLoading]
+    [transaction.sk, setValue, setReceiptIsLoading]
   );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({

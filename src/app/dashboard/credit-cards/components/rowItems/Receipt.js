@@ -12,6 +12,8 @@ export default function Receipt({ receiptIsLoading, setReceiptIsLoading, transac
   });
   const hasReceipt = !!receiptUrl;
 
+  console.log('receiptUrl:', receiptUrl);
+
   return (
     <Box>
       {receiptIsLoading ? (
