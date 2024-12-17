@@ -40,7 +40,9 @@ export default function ReceiptCards({ id, setOpen, setLoading, suggestedReceipt
   };
 
   const calculateTotalScore = (receipt) => Object.values(receipt).reduce((acc, item) => acc + (item.score || 0), 0);
-  const sortedSuggestedReceipts = suggestedReceipts.sort((a, b) => calculateTotalScore(b) - calculateTotalScore(a));
+  const sortedSuggestedReceipts = suggestedReceipts
+    .sort((a, b) => calculateTotalScore(b) - calculateTotalScore(a))
+    .slice(0, 3);
 
   return (
     <Grid container spacing={2}>

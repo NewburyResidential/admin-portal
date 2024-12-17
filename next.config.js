@@ -8,7 +8,7 @@ module.exports = {
   },
   cacheMaxMemorySize: 0, // disable default in-memory caching
   eslint: {
-    ignoreDuringBuilds: true,
+    ignoreDuringBuilds: false,
   },
   experimental: {
     serverComponentsExternalPackages: ['@aws-sdk'],

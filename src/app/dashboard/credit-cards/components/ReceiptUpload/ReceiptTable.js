@@ -19,7 +19,7 @@ export default function ReceiptTable({ setOpen, setLoading, id, recentReceipts }
   const [filter, setFilter] = useState('');
   const { setValue } = useFormContext();
 
-  const modifiedByOptions = [...new Set(recentReceipts.map((receipt) => receipt.modifiedBy))];
+  const modifiedByOptions = [...new Set(recentReceipts.map((receipt) => receipt.modifiedBy).filter(Boolean))];
 
   const sortedReceipts = recentReceipts.sort((a, b) => {
     const dateA = parse(a.modifiedOn, 'MM/dd/yyyy', new Date());
@@ -48,7 +48,6 @@ export default function ReceiptTable({ setOpen, setLoading, id, recentReceipts }
       setLoading(false);
     }
   };
-
   return (
     <>
       <Autocomplete

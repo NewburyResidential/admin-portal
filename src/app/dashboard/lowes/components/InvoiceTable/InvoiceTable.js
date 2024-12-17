@@ -26,7 +26,7 @@ import { invoiceSchema } from '../utils/invoice-schema';
 import addInvoice from 'src/utils/services/entrata/addInvoice';
 
 export default function InvoiceTable({ groupedInvoices, chartOfAccounts, catalogedItems, setCurrentStep, property }) {
-  console.log('groupedInvoices', groupedInvoices);
+  //console.log('groupedInvoices', groupedInvoices);
   const [loading, setLoading] = useState(false);
   const [expandedStates, setExpandedStates] = useState({});
 
@@ -42,7 +42,7 @@ export default function InvoiceTable({ groupedInvoices, chartOfAccounts, catalog
     return {
       ...item,
       invoiceNumber,
-      checked: false,
+      checked: true,
       property: property || null,
     };
   });
@@ -92,47 +92,63 @@ export default function InvoiceTable({ groupedInvoices, chartOfAccounts, catalog
     selectedItems.forEach((item) => {
       const propertyId = item.property.accountId;
       noteArray.push(item.invoiceNumber);
-      console.log();
-      totalTax = totalTax.plus(parseCurrency(item.tax));
-      totalShipping = totalShipping.plus(parseCurrency(item.shipping));
-      totalAmount = totalAmount.plus(parseCurrency(item.totalInvoice));
+      
+      const itemTax = parseCurrency(item.tax);
+      const itemShipping = parseCurrency(item.shipping);
+      const itemTotalInvoice = parseCurrency(item.totalInvoice);
+      let itemLineItemTotal = Big(0);
+
+      totalTax = totalTax.plus(itemTax);
+      totalShipping = totalShipping.plus(itemShipping);
+      totalAmount = totalAmount.plus(itemTotalInvoice);
 
       item.lineItems.forEach((lineItem) => {
-        console.log('totallineitem', totalLineItemAmount.toString());
+        const rate = parseCurrency(lineItem.totalCost);
+        itemLineItemTotal = itemLineItemTotal.plus(rate);
+        totalLineItemAmount = totalLineItemAmount.plus(rate);
+        
+        if (rate.eq(0)) return;
+        
         const itemLabel = catalogedItems[lineItem?.sku]?.label ? catalogedItems[lineItem?.sku]?.label : lineItem.skuDescription;
         const accountNumber = catalogedItems[lineItem.sku].glAccountNumber;
-        const rate = parseCurrency(lineItem.totalCost);
-        totalLineItemAmount = totalLineItemAmount.plus(rate);
-        if (rate.eq(0)) return;
+        
         apDetails.push({
           propertyId,
           glAccountId: accountNumber,
           description: itemLabel,
           rate: rate.toString(),
         });
-        // itemsPurchased.push({
-        //   pk: uuidv4(),
-        //   datePurchased: formattedDate,
-        //   store: 'Lowes',
-        //   propertyId,
-        //   glAccountId: accountNumber,
-        //   glAccountName: catalogedItems[lineItem.sku].glAccountName,
-        //   category: catalogedItems[lineItem.sku]?.category || null,
-        //   subCategory: catalogedItems[lineItem.sku]?.subCategory || null,
-        //   label: catalogedItems[lineItem.sku]?.label || null,
-        //   imageUrl: catalogedItems[lineItem.sku]?.imageUrl || null,
-        //   sku: lineItem.sku,
-        //   skuDescription: lineItem.skuDescription,
-        //   qty: lineItem.qty,
-        //   cost: parseCurrency(lineItem.cost).toString(),
-        //   totalCost: rate.toString(),
-        // });
       });
+
+      // Calculate expected total for this invoice
+      const expectedTotal = itemLineItemTotal.plus(itemTax).plus(itemShipping);
+      
+      // Compare with actual invoice total
+      if (!expectedTotal.eq(itemTotalInvoice)) {
+        console.log(`Mismatch found in invoice ${item.invoiceNumber}:`);
+        console.log(`Expected total: ${expectedTotal.toString()}`);
+        console.log(`Actual total: ${itemTotalInvoice.toString()}`);
+        console.log(`Difference: ${expectedTotal.minus(itemTotalInvoice).toString()}`);
+        console.log(`Line items total: ${itemLineItemTotal.toString()}`);
+        console.log(`Tax: ${itemTax.toString()}`);
+        console.log(`Shipping: ${itemShipping.toString()}`);
+        console.log('-------------------');
+      }
     });
-    console.log('totalAmount', totalAmount.toString());
-    console.log('totalLineItemAmount', totalLineItemAmount.toString());
-    console.log('totalTax', totalTax.toString());
-    console.log('totalShipping', totalShipping.toString());
+
+    console.log('Final Totals:');
+    console.log('Total Amount:', totalAmount.toString());
+    console.log('Total Line Items:', totalLineItemAmount.toString());
+    console.log('Total Tax:', totalTax.toString());
+    console.log('Total Shipping:', totalShipping.toString());
+
+    const expectedGrandTotal = totalLineItemAmount.plus(totalTax).plus(totalShipping);
+    if (!expectedGrandTotal.eq(totalAmount)) {
+      console.log('WARNING: Grand total mismatch!');
+      console.log(`Expected grand total: ${expectedGrandTotal.toString()}`);
+      console.log(`Actual grand total: ${totalAmount.toString()}`);
+      console.log(`Difference: ${expectedGrandTotal.minus(totalAmount).toString()}`);
+    }
 
     if (totalAmount.eq(totalLineItemAmount.plus(totalTax).plus(totalShipping))) {
       const invoice = {
@@ -150,7 +166,7 @@ export default function InvoiceTable({ groupedInvoices, chartOfAccounts, catalog
         apDetails: {
           apDetail: apDetails,
         },
-      };
+      } 
       console.log(itemsPurchased);
 
       const success = await addInvoice(invoice);
