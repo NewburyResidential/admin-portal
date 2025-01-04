@@ -27,6 +27,7 @@ export default function RowItem({
   user,
   handleRemoveTransaction,
 }) {
+  console.log(chartOfAccounts);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [receiptIsLoading, setReceiptIsLoading] = useState(false);
   const { showResponseSnackbar } = useSnackbar();
