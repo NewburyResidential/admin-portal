@@ -150,16 +150,20 @@ const PayrollFileUpload = ({
                 depositEntriesByAsset[entry.propertyId].push(entry);
               }
             });
-            const depositDistribution = Object.entries(depositEntriesByAsset).reduce((acc, [key, entries]) => {
-              const totalAmount = entries.reduce((sum, entry) => {
-                return sum.plus(new Big(entry.amount));
-              }, new Big(0));
+            const depositDistribution = withdrawalEntries.reduce((acc, entry) => {
+              const propertyId = entry.propertyId;
+              const amount = new Big(entry.rate);
 
-              return {
-                ...acc,
-                [key]: { amount: totalAmount },
-              };
+              if (!acc[propertyId]) {
+                acc[propertyId] = { amount: new Big(0) };
+              }
+
+              acc[propertyId].amount = acc[propertyId].amount.plus(amount);
+
+              return acc;
             }, {});
+
+            console.log('depositDistribution', depositDistribution);
             setPayrollDistribution(depositDistribution);
             setView('payrollAmounts');
             const fileName = uploadedFile.name;
