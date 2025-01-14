@@ -1,5 +1,5 @@
 import React from 'react';
-import Upload from './Upload';
+import Upload from './Uploa';
 
 const UploadSingleFile = ({ accept, file, onFileChange }) => {
   const handleDrop = (acceptedFiles) => {
