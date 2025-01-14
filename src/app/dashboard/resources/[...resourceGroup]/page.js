@@ -26,7 +26,6 @@ export default async function Page({ params }) {
   const currentSessionRoles = session?.user?.roles || [];
 
   rawResources.forEach((resource) => {
-    console.log('resource', resource.roles);
     if (isAuthorizedToViewContent(resource.roles, currentSessionRoles)) {
       if (resource.group === resourceGroupId) {
         if (resource.resourceType === 'resourceCategories') {

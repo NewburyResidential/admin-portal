@@ -18,7 +18,7 @@
     "email": "email dev --dir src/utils/services/email"
   },
   "dependencies": {
-    "@auth/dynamodb-adapter": "^2.0.0",
+    "@auth/dynamodb-adapter": "^2.7.4",
     "@aws-sdk/client-dynamodb": "^3.574.0",
     "@aws-sdk/client-s3": "^3.484.0",
     "@aws-sdk/client-ses": "^3.572.0",
@@ -79,7 +79,6 @@
     "react-lazy-load-image-component": "^1.6.0",
     "react-plaid-link": "^3.5.1",
     "react-slick": "^0.29.0",
-    "request": "^2.88.2",
     "selenium-webdriver": "^4.24.0",
     "simplebar-react": "^3.2.4",
     "slick-carousel": "^1.8.1",

@@ -23,11 +23,12 @@
     "import/resolver": {
       "alias": {
         "map": [["src", "./src"]],
-        "extensions": [".js", ".jsx", ".json"]
+        "extensions": [".js", ".jsx", ".json", ".ts", ".tsx"]
       }
     }
   },
   "rules": {
+ 
     "jsx-a11y/media-has-caption": "off",
     "no-await-in-loop": "off",
     "no-plusplus": "off",

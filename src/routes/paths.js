@@ -25,7 +25,10 @@ const rawDashboardPaths = {
 
   lowes: {
     root: `/lowes`,
-    sub: {},
+  },
+
+  payroll: {
+    root: `/payroll`,
   },
 };
 

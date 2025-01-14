@@ -157,7 +157,7 @@ export default function Upload({
 
       {helperText && helperText}
 
-      <RejectionFiles fileRejections={[...duplicateFiles, ...fileRejections]} />
+      <RejectionFiles fileRejections={[...(duplicateFiles || []), ...fileRejections]} />
 
       {renderMultiPreview}
     </Box>

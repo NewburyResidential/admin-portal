@@ -15,21 +15,22 @@ export const SnackbarProvider = ({ session, children }) => {
   const isAdmin = session?.user?.roles?.includes('admin') || false;
   const [snackbarConfig, setSnackbarConfig] = useState({
     isAdmin,
-    severity: 'info',
-    message: 'issue showing response',
-    infoDialog: null,
-    modalLink: null,
+    errors: [],
     open: false,
   });
 
   const showResponseSnackbar = useCallback(
-    ({ severity, message = '', infoDialog = null, modalLink = null }) => {
+    (data) => {
+      let errors = [];
+      if (!Array.isArray(data)) {
+        errors = [data];
+      } else {
+        errors = data;
+      }
+
       setSnackbarConfig((prevConfig) => ({
         ...prevConfig,
-        severity,
-        message,
-        infoDialog,
-        modalLink,
+        errors,
         isAdmin,
         open: true,
       }));

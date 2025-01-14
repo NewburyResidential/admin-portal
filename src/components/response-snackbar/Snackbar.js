@@ -1,5 +1,4 @@
 import { useState, forwardRef } from 'react';
-import { useRouter } from 'next/navigation';
 
 import Button from '@mui/material/Button';
 import Snackbar from '@mui/material/Snackbar';
@@ -11,9 +10,19 @@ const Alert = forwardRef((props, ref) => {
 });
 
 export default function ResponseSnackbar({ snackbarConfig, setSnackbarConfig }) {
-  const router = useRouter();
+  const { open, isAdmin, errors } = snackbarConfig;
 
-  const { open, isAdmin, severity, message, infoDialog, modalLink } = snackbarConfig;
+  const infoDialogExists = errors.some((error) => error.infoDialog);
+  const groupedSeverity = errors.every((error) => error.severity === 'success') ? 'success' : 'error';
+
+  const moreThanOneError = errors.length > 1;
+
+  const snackBarMessage = moreThanOneError
+    ? groupedSeverity === 'success'
+      ? 'All Items succeeded'
+      : 'An Error Occured'
+    : errors[0]?.message || 'No message available';
+  const snackBarSeverity = moreThanOneError ? groupedSeverity : errors[0]?.severity;
 
   const [showInfoDialog, setShowInfoDialog] = useState(false);
 
@@ -28,25 +37,16 @@ export default function ResponseSnackbar({ snackbarConfig, setSnackbarConfig }) 
   };
 
   const handleAction = () => {
-    if (infoDialog) {
+    if (infoDialogExists) {
       toggleInfoDialog();
-    } else if (modalLink) {
-      router.push(modalLink);
     }
   };
 
-  const showInfoDialogButton = (!!infoDialog && severity === 'error') || (isAdmin && !!infoDialog);
+  const showInfoDialogButton = (!!infoDialogExists && groupedSeverity === 'error') || (isAdmin && !!infoDialogExists);
 
   return (
     <>
-      <InfoDialog
-        open={showInfoDialog}
-        onClose={toggleInfoDialog}
-        infoDialog={infoDialog}
-        severity={severity}
-        message={message}
-        isAdmin={isAdmin}
-      />
+      <InfoDialog open={showInfoDialog} onClose={toggleInfoDialog} errors={errors} isAdmin={isAdmin} />
       <Snackbar
         open={open}
         autoHideDuration={4000}
@@ -62,10 +62,10 @@ export default function ResponseSnackbar({ snackbarConfig, setSnackbarConfig }) 
             ) : null
           }
           onClose={handleCloseSnackbar}
-          severity={severity}
+          severity={snackBarSeverity}
           sx={{ width: '100%' }}
         >
-          {message}
+          {snackBarMessage}
         </Alert>
       </Snackbar>
     </>

@@ -6,6 +6,7 @@ export const ICONS = {
   creditCard: 'bi:credit-card-fill',
   lowes: 'bi:cart-fill',
   resources: 'bi:file-earmark-text-fill',
+  payroll: 'material-symbols:payments-outline',
 };
 
 // roles should be included in main group if different roles are required for children
@@ -36,6 +37,12 @@ export const navConfiguration = [
         roles: ['admin'],
         path: dashboardPaths.lowes.root,
         icon: ICONS.lowes,
+      },
+      {
+        title: 'Payroll',
+        roles: ['admin'],
+        path: dashboardPaths.payroll.root,
+        icon: ICONS.payroll,
       },
     ],
   },

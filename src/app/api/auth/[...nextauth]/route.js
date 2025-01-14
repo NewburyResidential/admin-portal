@@ -4,7 +4,7 @@ import { sendVerificationRequest } from '../../../../utils/services/login/send-v
 
 import { DynamoDB } from '@aws-sdk/client-dynamodb';
 import { DynamoDBDocument } from '@aws-sdk/lib-dynamodb';
-import { DynamoDBAdapter } from '@auth/dynamodb-adapter';
+import { DynamoDBAdapter } from "@auth/dynamodb-adapter";
 import { getAuthorizedUserByEmail } from 'src/utils/services/employees/getAuthorizedUserByEmail';
 import * as Sentry from '@sentry/nextjs';
 
