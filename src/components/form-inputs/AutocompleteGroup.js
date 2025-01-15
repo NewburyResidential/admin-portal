@@ -13,6 +13,7 @@ export default function AutocompleteGroup({
   optionId = 'id',
   variant = 'outlined',
   sx,
+  disabled = false,
 }) {
   const { control } = useFormContext();
 
@@ -40,9 +41,9 @@ export default function AutocompleteGroup({
           options={sortedOptions}
           groupBy={(option) => option.category}
           getOptionLabel={(option) => option[optionLabel]}
+          disabled={disabled}
           renderInput={(params) => (
             <TextField
-       
               variant={variant}
               onClick={(event) => {
                 event.stopPropagation();

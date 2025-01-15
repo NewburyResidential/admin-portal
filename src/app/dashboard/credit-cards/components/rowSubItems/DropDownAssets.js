@@ -11,6 +11,16 @@ export default function DropDownAssets({ baseFieldName, allocationIndex }) {
   const recalculateByUnit = useRecalculateByUnit();
 
   const handleChange = (newValue) => {
+
+    if (newValue?.id === '4') {
+      setValue(`${baseFieldName}.glAccount`, {
+        accountId: '231353244',
+        accountName: 'Reimbursement',
+        accountNumber: '231353244',
+      });
+    } else {
+      setValue(`${baseFieldName}.glAccount`, null);
+    }
     const calculationMethod = getValues(`calculationMethod`);
 
     if (calculationMethod === 'unit') {
