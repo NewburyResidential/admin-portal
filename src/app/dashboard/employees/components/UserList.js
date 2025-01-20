@@ -215,7 +215,7 @@ export default function UserList({ employees }) {
                     key={row.pk}
                     row={row}
                     onSelectRow={() => {
-                      router.push(`${row.firstName}_${row.lastName}-${row.pk}`);
+                      router.push(`${row.fullName.replace(/ /g, '_')}-${row.pk}`);
                     }}
                   />
                 ))}
