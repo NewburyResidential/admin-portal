@@ -48,7 +48,7 @@ export default function EmployeeTabs({ employee, user }) {
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <CustomBreadcrumbs
         heading="Profile"
-        links={[{ name: 'Employees', href: '/dashboard/employees' }, { name: `${employee.firstName} ${employee.lastName}` }]}
+        links={[{ name: 'Employees', href: '/dashboard/employees' }, { name: employee?.fullName }]}
         sx={{
           mb: { xs: 3, md: 5 },
         }}

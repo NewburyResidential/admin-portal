@@ -20,7 +20,6 @@ import { useRouter } from 'src/routes/hooks';
 import Label from 'src/components/label';
 import Scrollbar from 'src/components/scrollbar';
 
-
 import {
   useTable,
   getComparator,
@@ -66,12 +65,11 @@ const defaultFilters = {
 // ----------------------------------------------------------------------
 
 export default function UserList({ employees }) {
-  const table = useTable();
+  const table = useTable({ defaultRowsPerPage: 50 });
 
   const router = useRouter();
 
-
-  const tableData = employees
+  const tableData = employees;
 
   const [filters, setFilters] = useState(defaultFilters);
 
@@ -119,7 +117,7 @@ export default function UserList({ employees }) {
 
     if (name) {
       inputData = inputData.filter((user) => {
-        const userName = `${user.firstName} ${user.lastName}`;
+        const userName = user.fullName;
         return userName.toLowerCase().indexOf(name.toLowerCase()) !== -1;
       });
     }
@@ -238,6 +236,7 @@ export default function UserList({ employees }) {
           onRowsPerPageChange={table.onChangeRowsPerPage}
           dense={false}
           onChangeDense={false}
+          rowsPerPageOptions={[25, 50, 75]}
         />
       </Card>
     </Container>

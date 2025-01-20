@@ -21,24 +21,22 @@ const portalAccessOptions = [
 //   { value: true, label: 'Complete' },
 //   { value: false, label: 'Not Complete' },
 // ];
-const yesNoOptions = [
-  { value: true, label: 'Yes' },
-  { value: false, label: 'No' },
-];
+// const yesNoOptions = [
+//   { value: true, label: 'Yes' },
+//   { value: false, label: 'No' },
+// ];
 
 export default function Settings({ employee, user }) {
   const { showResponseSnackbar } = useSnackbar();
 
-  const defaultValues = useMemo(() => ({
-    status: employee.status || '',
-    roles: employee.roles || [],
-    hasAzureAccount: !!employee.hasAzureAccount,
-    hasCreditCard: !!employee.hasCreditCard,
-    creditCardDigits: employee.creditCardDigits || '',
-    isOnboarding: !!employee.isOnboarding,
-    workEmail: employee.workEmail || '',
-  }), [employee]);
-
+  const defaultValues = useMemo(
+    () => ({
+      status: employee.status || '',
+      roles: employee.roles || [],
+      workEmail: employee.workEmail || '',
+    }),
+    [employee]
+  );
 
   const methods = useForm({
     defaultValues,
@@ -55,7 +53,6 @@ export default function Settings({ employee, user }) {
   useEffect(() => {
     reset(defaultValues);
   }, [defaultValues, reset]);
-
 
   const onSubmit = async (data) => {
     const response = await updateEmployee({ pk: employee.pk, attributes: data });
@@ -89,7 +86,7 @@ export default function Settings({ employee, user }) {
             {/* <Grid xs={6}>
               <ReactHookAutocomplete label="Assigned Credit Card" name="creditCardId" options={ApplicationOptions} />
             </Grid> */}
-            <Grid xs={6}>
+            {/* <Grid xs={6}>
               <ReactHookSelect
                 label="Has Credit Card"
                 name="hasCreditCard"
@@ -105,13 +102,11 @@ export default function Settings({ employee, user }) {
               <Grid xs={6}>
                 <ReactHookTextField label="Last 4 of Credit Card" name="creditCardDigits" />
               </Grid>
-            )}
+            )} */}
 
-       
-           
-                <Grid xs={6}>
-                  <ReactHookSelectRoles />
-                </Grid>
+            <Grid xs={6}>
+              <ReactHookSelectRoles />
+            </Grid>
             <Grid xs={12} sx={{ display: 'flex', justifyContent: 'end' }}>
               <ReactHookSubmitButton label="Save Changes" disabled={!isDirty} />
             </Grid>

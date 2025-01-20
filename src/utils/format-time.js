@@ -2,6 +2,11 @@ import { format, getTime, formatDistanceToNow, parse, differenceInYears, differe
 
 // ----------------------------------------------------------------------
 
+export const formatDateFromISO = (dateString) => {
+  const date = new Date(dateString);
+  return date.toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' });
+};
+
 export function fToLocaleDate(date, existingFormat = 'MM/dd/yyyy') {
   return parse(date, existingFormat, new Date());
 }
@@ -41,7 +46,7 @@ export function getTodaysDate() {
 }
 
 export function calculateAgeInYears(startDate) {
-  const parsedDate = parse(startDate, 'MM/dd/yyyy', new Date());
+  const parsedDate = new Date(startDate);
   const today = new Date();
   return differenceInYears(today, parsedDate);
 }

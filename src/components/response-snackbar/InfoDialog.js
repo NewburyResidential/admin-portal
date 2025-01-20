@@ -58,9 +58,9 @@ export default function InfoDialog({ open, onClose, errors = [], isAdmin }) {
       <DialogContent>
         {isAdmin ? (
           <>
-            {errors[activeTab].infoDialog?.summary && (
+            {errors[activeTab]?.infoDialog?.summary && (
               <Typography variant="h6" color={(theme) => `${theme.palette[errors[activeTab].severity].dark}`} mb={3}>
-                {errors[activeTab].infoDialog.summary}
+                {errors[activeTab]?.infoDialog?.summary}
               </Typography>
             )}
 
