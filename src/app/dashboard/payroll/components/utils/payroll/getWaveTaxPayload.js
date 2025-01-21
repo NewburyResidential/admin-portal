@@ -60,7 +60,7 @@ export function getWaveTaxPayload(results, normalDate, weirdDate, fileName) {
     variables: {
       input: {
         businessId: waveNewburyBusinessId,
-        externalId: `Paylocity Tax Withdrawal - ${fileName}`,
+        externalId: `Paylocity Tax Withdrawal - ${normalDate} ${fileName}`,
         date: weirdDate,
         description: `Paylocity Tax Withdrawal - ${normalDate}`,
         anchor: {

@@ -2,7 +2,7 @@ import React from 'react';
 import { Card, CardContent, Typography, List, ListItem, IconButton, Box, Tooltip } from '@mui/material';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 
-const AmountByPropertyList = ({ distributionData, view, assetObject }) => {
+const AmountByPropertyList = ({ distributionData, view, assetObject, normalDate }) => {
   // Transform assetObject to use property ID as key
   const assetObjectById = Object.entries(assetObject).reduce((acc, [_, asset]) => {
     acc[asset.id] = asset;
@@ -29,25 +29,20 @@ const AmountByPropertyList = ({ distributionData, view, assetObject }) => {
     : [];
 
   const getTitle = () => {
-    return view === 'payrollAmounts'
-      ? 'Payroll Amounts by Property'
-      : view === 'trakpayAmounts'
-        ? 'Trakpay Amounts by Property'
-        : 'Manual Amounts by Property';
+    return view === 'payrollAmounts' ? 'Payroll by Property' : view === 'trakpayAmounts' ? 'Trakpay by Property' : 'Manual by Property';
   };
 
   // Calculate total amount
-  const totalAmount = propertyAmounts.reduce(
-    (sum, item) => sum + Number(Number(item.amount).toFixed(2)),
-    0
-  );
+  const totalAmount = propertyAmounts.reduce((sum, item) => sum + Number(Number(item.amount).toFixed(2)), 0);
 
   return (
     <Card elevation={3}>
       <CardContent>
-        <Typography variant="h6" gutterBottom>
-          {getTitle()}
-        </Typography>
+        <Box onClick={() => navigator.clipboard.writeText(`${getTitle()} - ${normalDate}`)} sx={{ cursor: 'pointer' }}>
+          <Typography variant="h6" gutterBottom>
+            {getTitle()} - {normalDate}
+          </Typography>
+        </Box>
         <List>
           {propertyAmounts.map((item, index) => (
             <ListItem
@@ -94,7 +89,7 @@ const AmountByPropertyList = ({ distributionData, view, assetObject }) => {
               </Box>
             </ListItem>
           ))}
-          
+
           {/* Total row */}
           <ListItem
             sx={{
@@ -125,7 +120,10 @@ const AmountByPropertyList = ({ distributionData, view, assetObject }) => {
                   fontWeight: 'bold',
                 }}
               >
-                ${Number(totalAmount).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                $
+                {Number(totalAmount)
+                  .toFixed(2)
+                  .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
               </Typography>
               <Tooltip title="Copy amount">
                 <IconButton size="small" onClick={() => handleCopyClick(totalAmount, 'total')} sx={{ ml: -0.5 }}>

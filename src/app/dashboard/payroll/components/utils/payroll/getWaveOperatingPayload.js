@@ -35,7 +35,7 @@ export function getWaveOperatingPayload(entries, normalDate, weirdDate, fileName
     variables: {
       input: {
         businessId: waveNewburyBusinessId,
-        externalId: `Paylocity Home Office Withdrawal - ${fileName}`,
+        externalId: `Paylocity Home Office Withdrawal - ${normalDate} ${fileName}`,
         date: weirdDate,
         description: `Paylocity Home Office Withdrawal - ${normalDate}`,
         anchor: {

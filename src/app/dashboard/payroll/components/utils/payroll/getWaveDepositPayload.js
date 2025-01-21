@@ -58,7 +58,7 @@ export function getWaveDepositPayloads(entriesByAsset, normalDate, weirdDate, pr
       variables: {
         input: {
           businessId: waveNewburyBusinessId,
-          externalId: `Paylocity Deposit - ${fileName} - ${entries[0]?.label}`,
+          externalId: `Paylocity Deposit - ${normalDate} ${fileName} - ${entries[0]?.label}`,
           date: weirdDate,
           description: `Paylocity Deposit - ${normalDate} - ${entries[0]?.label}`,
           anchor: {

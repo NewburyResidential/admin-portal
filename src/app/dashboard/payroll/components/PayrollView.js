@@ -106,6 +106,7 @@ const PayrollView = ({ assets }) => {
         view !== null && (
           <Grid item xs={12}>
             <AmountByPropertyList
+              normalDate={normalDate}
               distributionData={
                 view === 'payrollAmounts' ? payrollDistribution : view === 'trakpayAmounts' ? trakpayDistribution : manualDistribution
               }

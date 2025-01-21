@@ -150,7 +150,16 @@ const PayrollFileUpload = ({
                 depositEntriesByAsset[entry.propertyId].push(entry);
               }
             });
-            const depositDistribution = withdrawalEntries.reduce((acc, entry) => {
+            const operatingTransferAmount = operatingEntries.reduce((acc, entry) => {
+              const propertyId = entry.propertyId;
+              if (!acc[propertyId]) {
+                acc[propertyId] = { amount: new Big(0) };
+              }
+              acc[propertyId].amount = acc[propertyId].amount.plus(entry.amount);
+              return acc;
+            }, {});
+
+            const transferAmounts = withdrawalEntries.reduce((acc, entry) => {
               const propertyId = entry.propertyId;
               const amount = new Big(entry.rate);
 
@@ -163,10 +172,18 @@ const PayrollFileUpload = ({
               return acc;
             }, {});
 
-            console.log('depositDistribution', depositDistribution);
-            setPayrollDistribution(depositDistribution);
+            // Add operatingTransferAmount to transferAmounts
+            Object.entries(operatingTransferAmount).forEach(([propertyId, { amount }]) => {
+              if (!transferAmounts[propertyId]) {
+                transferAmounts[propertyId] = { amount: new Big(0) };
+              }
+              transferAmounts[propertyId].amount = transferAmounts[propertyId].amount.plus(amount);
+            });
+
+            setPayrollDistribution(transferAmounts);
             setView('payrollAmounts');
             const fileName = uploadedFile.name;
+            console.log(getWaveDepositPayloads(depositEntriesByAsset, normalDate, weirdDate, propertyAmounts, fileName));
             setPayloads({
               waveTax: getWaveTaxPayload(results.data, normalDate, weirdDate, fileName),
               waveOperating: getWaveOperatingPayload(operatingEntries, normalDate, weirdDate, fileName),
