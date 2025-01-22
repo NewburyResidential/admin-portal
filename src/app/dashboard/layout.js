@@ -15,7 +15,9 @@ export default function Layout({ children }) {
   const { data: session } = useSession(authOptions);
 
   if (session) {
-    Sentry.setUser({ email: 'john.doe@example.com', roles: ['user', 'other'] });
+    const email = session?.user?.workEmail || session?.user?.personalEmail || 'No email found';
+    const roles = session?.user?.roles || ['no roles found'];
+    Sentry.setUser({ email, roles });
   }
 
   return (

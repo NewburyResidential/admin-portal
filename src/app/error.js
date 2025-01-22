@@ -3,9 +3,12 @@
 import React from 'react';
 import { Card, CardContent, Typography, Button } from '@mui/material';
 import { useRouter } from 'next/navigation';
+import * as Sentry from '@sentry/nextjs';
 
-export default function Error() {
+export default function Error({ error }) {
   const router = useRouter();
+
+  Sentry.captureException(error);
 
   return (
     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh' }}>
@@ -15,13 +18,9 @@ export default function Error() {
             An Unexpected Error Occurred
           </Typography>
           <Typography variant="body1" color="text.secondary" paragraph>
-            The error has been recorded and we will work to resolve this. If you need urgent access, 
-            please reach out to Mike Axiotakis.
+            The error has been recorded and we will work to resolve this. If you need urgent access, please reach out to Mike Axiotakis.
           </Typography>
-          <Button 
-            variant="contained" 
-            onClick={() => router.push('/')}
-          >
+          <Button variant="contained" onClick={() => router.push('/')}>
             Return to Home
           </Button>
         </CardContent>
