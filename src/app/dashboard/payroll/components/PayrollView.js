@@ -8,7 +8,6 @@ import ManualAmountInput from './ManualAmountInput';
 import AmountByPropertyList from './AmountByPropertyList';
 
 const PayrollView = ({ assets }) => {
-  console.log(assets.money.money);
   const normalDate = getNormalDate();
   const weirdDate = getWeirdDate();
 
