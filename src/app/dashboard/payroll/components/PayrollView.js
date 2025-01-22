@@ -6,6 +6,7 @@ import PayrollFileUpload from './PayrollFileUpload';
 import TrakpayFileUpload from './TrakpayFileUpload';
 import ManualAmountInput from './ManualAmountInput';
 import AmountByPropertyList from './AmountByPropertyList';
+import { throwError } from 'src/utils/services/throw-error';
 
 const PayrollView = ({ assets }) => {
   const normalDate = getNormalDate();
@@ -45,6 +46,11 @@ const PayrollView = ({ assets }) => {
   };
 
   const showTrakpay = payrollFile && propertyPercentages;
+
+  const handleThrowError = async () => {
+    const error = await throwError();
+    console.log(error);
+  };
 
   return (
     <Grid container spacing={3}>
@@ -118,7 +124,7 @@ const PayrollView = ({ assets }) => {
       <button
         type="button"
         onClick={() => {
-          throw new Error('Error Testing');
+          handleThrowError();
         }}
       >
         Testing Error Handling
