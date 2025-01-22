@@ -6,9 +6,9 @@ import PayrollFileUpload from './PayrollFileUpload';
 import TrakpayFileUpload from './TrakpayFileUpload';
 import ManualAmountInput from './ManualAmountInput';
 import AmountByPropertyList from './AmountByPropertyList';
-import { throwError } from 'src/utils/services/throw-error';
 
 const PayrollView = ({ assets }) => {
+  console.log(assets.money.money);
   const normalDate = getNormalDate();
   const weirdDate = getWeirdDate();
 
@@ -32,7 +32,6 @@ const PayrollView = ({ assets }) => {
   const [payrollDistribution, setPayrollDistribution] = useState({});
   const [trakpayDistribution, setTrakpayDistribution] = useState({});
   const [propertiesByEmployee, setPropertiesByEmployee] = useState({});
-  const [error, setError] = useState(null);
 
   const handlePropertyPercentages = (percentages) => {
     setPropertyPercentages(percentages);
@@ -47,10 +46,6 @@ const PayrollView = ({ assets }) => {
   };
 
   const showTrakpay = payrollFile && propertyPercentages;
-
-  const handleThrowError = () => {
-    throw new Error('This is a test error');
-  };
 
   return (
     <Grid container spacing={3}>
@@ -121,12 +116,6 @@ const PayrollView = ({ assets }) => {
             />
           </Grid>
         )}
-      <button
-        type="button"
-        onClick={handleThrowError}
-      >
-        Testing Error Handling
-      </button>
     </Grid>
   );
 };
