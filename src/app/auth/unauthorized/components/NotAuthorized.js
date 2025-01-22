@@ -19,10 +19,12 @@ export default function NotAuthorizedView({ setScreen, type }) {
   const searchParams = useSearchParams();
   const email = searchParams.get('email');
   const decodedEmail = decodeURIComponent(email);
+  const currentPath = searchParams.get('currentPath') || 'no path specified';
+  const decodedCurrentPath = decodeURIComponent(currentPath);
 
   const handleRequestAccess = async () => {
     setLoading(true);
-    await sendRequestAccess({ email: decodedEmail });
+    await sendRequestAccess({ email: decodedEmail, currentPath: decodedCurrentPath, type });
     setScreen('request-access');
   };
   return (

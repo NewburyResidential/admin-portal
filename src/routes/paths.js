@@ -42,7 +42,13 @@ export const publicPaths = {
   login: '/auth/login',
   loginVerify: '/auth/verify',
   unAuthorizedLogin: (email) => `/auth/unauthorized/login?email=${email}`,
-  unAuthorizedApplication: (email) => `/auth/unauthorized/application/?email=${email}`,
+  unAuthorizedApplication: (email, currentPath) => {
+    let url = `/auth/unauthorized/application/?email=${email}`;
+    if (currentPath) {
+      url += `&currentPath=${currentPath}`;
+    }
+    return url;
+  },
 };
 
 export const dashboardPaths = adjustPaths(rawDashboardPaths);

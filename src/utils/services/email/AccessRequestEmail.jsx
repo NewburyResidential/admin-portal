@@ -1,16 +1,25 @@
 import { Body, Container, Head, Heading, Hr, Html, Img, Preview, Section, Text } from '@react-email/components';
 import React from 'react';
 
-const AccessRequestEmail = ({ email }) => (
+const AccessRequestEmail = ({ email, currentPath, type }) => (
   <Html>
     <Head />
     <Preview>Access Request</Preview>
     <Body style={main}>
       <Container style={container}>
-        <Heading style={heading}>Requesting Access</Heading>
+        {type === 'login' ? (
+          <Heading style={heading}>Requesting Login Access</Heading>
+        ) : (
+          <Heading style={heading}>Requesting Page Access</Heading>
+        )}
         <Hr style={hr} />
-
-        <Text style={paragraph}>{email} has requested access to login. Please verify the email address and grant access.</Text>
+        {type === 'login' ? (
+          <Text style={paragraph}>{email} has requested access to login. Please verify the email address and grant access.</Text>
+        ) : (
+          <Text style={paragraph}>
+            {email} has requested access to {currentPath}. Please verify the email address and grant access if applicable.
+          </Text>
+        )}
         <Section style={containerImageFooter}>
           <Img style={image} width={620} src="https://admin-portal-intranet.s3.amazonaws.com/apartment-footer.png" />
         </Section>
