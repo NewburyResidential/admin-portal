@@ -115,6 +115,14 @@ const PayrollView = ({ assets }) => {
             />
           </Grid>
         )}
+      <button
+        type="button"
+        onClick={() => {
+          throw new Error('Error Testing');
+        }}
+      >
+        Testing Error Handling
+      </button>
     </Grid>
   );
 };
