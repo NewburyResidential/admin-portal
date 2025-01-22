@@ -32,6 +32,7 @@ const PayrollView = ({ assets }) => {
   const [payrollDistribution, setPayrollDistribution] = useState({});
   const [trakpayDistribution, setTrakpayDistribution] = useState({});
   const [propertiesByEmployee, setPropertiesByEmployee] = useState({});
+  const [error, setError] = useState(null);
 
   const handlePropertyPercentages = (percentages) => {
     setPropertyPercentages(percentages);
@@ -48,8 +49,12 @@ const PayrollView = ({ assets }) => {
   const showTrakpay = payrollFile && propertyPercentages;
 
   const handleThrowError = async () => {
-    const error = await throwError();
-    console.log(error);
+    try {
+      const thrownError = await throwError();
+      console.log(thrownError);
+    } catch (err) {
+      setError(err);
+    }
   };
 
   return (
