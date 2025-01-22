@@ -29,7 +29,7 @@ export default function isAuthorizedToViewPage(session, currentPath) {
   if (requiredRoles.some((role) => user.roles.includes(role))) {
     return true;
   }
-  redirect(publicPaths.unAuthorizedApplication(user.personalEmail));
+  redirect(publicPaths.unAuthorizedApplication(user.personalEmail, currentPath));
   return false;
 }
 

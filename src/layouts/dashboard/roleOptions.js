@@ -20,7 +20,7 @@ export const isAuthorized = (session, currentPath) => {
   }
 
   if (user.status !== '#AUTHORIZED') {
-    redirect(publicPaths.unAuthorizedApplication(user.personalEmail));
+    redirect(publicPaths.unAuthorizedApplication(user.personalEmail, currentPath));
   }
 
   // if (user.isOnboarding) {

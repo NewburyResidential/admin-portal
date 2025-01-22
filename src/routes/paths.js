@@ -45,7 +45,7 @@ export const publicPaths = {
   unAuthorizedApplication: (email, currentPath) => {
     let url = `/auth/unauthorized/application/?email=${email}`;
     if (currentPath) {
-      url += `&currentPath=${currentPath}`;
+      url += `&currentPath=${encodeURIComponent(currentPath)}`;
     }
     return url;
   },
