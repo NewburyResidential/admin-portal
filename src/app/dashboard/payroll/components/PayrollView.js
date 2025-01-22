@@ -48,13 +48,8 @@ const PayrollView = ({ assets }) => {
 
   const showTrakpay = payrollFile && propertyPercentages;
 
-  const handleThrowError = async () => {
-    try {
-      const thrownError = await throwError();
-      console.log(thrownError);
-    } catch (err) {
-      setError(err);
-    }
+  const handleThrowError = () => {
+    throw new Error('This is a test error');
   };
 
   return (
@@ -128,9 +123,7 @@ const PayrollView = ({ assets }) => {
         )}
       <button
         type="button"
-        onClick={() => {
-          handleThrowError();
-        }}
+        onClick={handleThrowError}
       >
         Testing Error Handling
       </button>
