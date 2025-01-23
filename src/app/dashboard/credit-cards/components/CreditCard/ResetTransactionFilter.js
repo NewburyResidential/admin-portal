@@ -20,7 +20,6 @@ export default function ResetTransactionFilter({ employees, filters, onFilters, 
   };
 
   const handleRemoveEmployee = () => {
-    console.log('removing employee');
     onFilters('employeeOptions', []);
   };
 

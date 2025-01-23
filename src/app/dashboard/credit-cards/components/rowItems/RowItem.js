@@ -27,7 +27,6 @@ export default function RowItem({
   user,
   handleRemoveTransaction,
 }) {
-  console.log(chartOfAccounts);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [receiptIsLoading, setReceiptIsLoading] = useState(false);
   const { showResponseSnackbar } = useSnackbar();
@@ -70,13 +69,11 @@ export default function RowItem({
 
         try {
           const response = await uploadS3Image(formData);
-          console.log('response', response);
           if (response) {
             setValue('receipt', response.fileUrl);
             setValue('tempPdfReceipt', response.tempPdfUrl);
           }
         } catch (error) {
-          console.log('error', error);
           console.error('Error uploading file:', error);
         } finally {
           setReceiptIsLoading(false);
@@ -118,7 +115,6 @@ export default function RowItem({
       ...(data.status === 'unapproved' && { categorizedBy: user.fullName }),
       ...(user.roles?.includes('admin') && { approvedBy: user.fullName }),
     };
-    console.log('attributesToUpdate', attributesToUpdate);
     try {
       const response = await updateTransaction(data.pk, data.sk, attributesToUpdate);
       showResponseSnackbar(response);

@@ -40,9 +40,7 @@ export default function FilterBar({ setTransactions, totalAmount, transactions }
             })
 
             .map((allocation) => {
-              console.log(allocation);
-              console.log(transaction);
-              console.log('------------------------');
+
               return {
                 billedPropertyName: allocation.asset ? allocation.asset.label : '',
                 billedPropertyId: allocation.asset ? allocation.asset.id : '',
@@ -128,14 +126,10 @@ export default function FilterBar({ setTransactions, totalAmount, transactions }
   };
 
   const enterPreEntrata = async () => {
-    console.log('Enter Pre Entrata');
-
-    //console.log(transactions);
     for (let i = 0; i < transactions.length; i++) {
       try {
         const transaction = transactions[i];
-        console.log('--------------------------------');
-        console.log('Transaction:', transaction);
+
         if (!transaction.preEntrataEntered && transaction.accountingType === 'pre-entrata' && assets.length < 2) {
           console.log('Entering...');
           const assetId = assets[0].accountId;

@@ -62,7 +62,6 @@ export default function TransactionList({
   vendorData,
   suggestedReceipts,
 }) {
-  console.log('user', user);
   const STATUS_OPTIONS = [
     { value: 'all', label: 'All' },
     { value: 'personal', label: 'Personal' },

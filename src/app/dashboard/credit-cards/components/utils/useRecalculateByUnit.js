@@ -18,8 +18,7 @@ export const useRecalculateByUnit = () => {
       return;
     }
     const totalUnits = calculateTotalUnits(allocations);
-    console.log('totalUnits', totalUnits);
-    console.log('allocations', allocations);
+
     const totalAmount = Number(transactionAmount) || 0;
     let sumAllocatedAmount = 0;
 

@@ -35,7 +35,6 @@ export default function AddReceiptUpload({ recentReceipts, setLoading, hasReceip
    
 
     try {
-      console.log('transaction:', transaction);
 
       const response = await uploadS3Image(formData);
       if (response) {
