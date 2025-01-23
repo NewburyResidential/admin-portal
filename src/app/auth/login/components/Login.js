@@ -19,6 +19,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { LoadingButton } from '@mui/lab';
 import { getAuthorizedUserByEmail } from 'src/utils/services/employees/getAuthorizedUserByEmail';
 import { useResponsive } from 'src/hooks/use-responsive';
+import { sendLoginNotification } from 'src/utils/services/login/send-login-notification';
 
 const schema = yup.object().shape({
   email: yup.string().email('Please Enter A valid email').required('Please Enter A valid email'),
@@ -42,6 +43,7 @@ export default function LoginView({ params }) {
   const onSubmit = async (data) => {
     const email = data.email.toLowerCase();
     setLoading(true);
+    await sendLoginNotification({ email });
     const employee = await getAuthorizedUserByEmail(data.email);
     if (employee) {
       const hasWorkEmail =
@@ -85,7 +87,7 @@ export default function LoginView({ params }) {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              backgroundColor: (theme) => theme.palette.mode === 'light' ? '#fff' : '#333',
+              backgroundColor: (theme) => (theme.palette.mode === 'light' ? '#fff' : '#333'),
               border: '1px solid #ccc',
               borderRadius: '6px',
               padding: '8px 16px',
