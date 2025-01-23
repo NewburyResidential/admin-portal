@@ -32,7 +32,6 @@ export default function Information({ employee }) {
 
   const data = [
     { icon: 'mingcute:location-fill', text: employee?.fullAddress },
-    { icon: 'mingcute:birthday-2-fill', text: `${formatDateFromISO(employee.birthDate)} (${calculateAgeInYears(employee.birthDate)})` },
     { icon: 'ic:baseline-work-history', text: `${yearsOfServiceText}${monthsOfServiceText} of Service` },
     { icon: 'solar:phone-bold', text: formatPhoneNumber(employee?.personalPhone) },
     { icon: 'fluent:mail-24-filled', text: fToTitleCase(employee.personalEmail) },
