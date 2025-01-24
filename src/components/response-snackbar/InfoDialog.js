@@ -19,30 +19,30 @@ export default function InfoDialog({ open, onClose, errors = [], isAdmin }) {
     <Dialog open={open} onClose={onClose} maxWidth="md">
       {errors.length > 1 && (
         <DialogTitle
-            sx={(theme) => ({
-              borderTop: `6px solid ${theme.palette[errors[activeTab].severity].main}`,
-            })}
-          >
-            <Tabs value={activeTab} onChange={(_, newValue) => setActiveTab(newValue)} variant="scrollable" scrollButtons="auto">
-              {errors.map((error, index) => (
-                <Tab
-                  key={index}
-                  label={error?.message || 'No label available'}
-                  sx={(theme) => ({
-                    margin: '4px',
-                    borderRadius: '4px',
-                    '&.MuiTab-root': {
-                      color: theme.palette[error.severity].dark,
-                    },
-                    '&.Mui-selected': {
-                      color: theme.palette[error.severity].main,
-                    },
-                  })}
-                />
-              ))}
-            </Tabs>
-            <Box mt={2}>{errors[activeTab]?.message}</Box>
-          </DialogTitle>
+          sx={(theme) => ({
+            borderTop: `6px solid ${theme.palette[errors[activeTab].severity].main}`,
+          })}
+        >
+          <Tabs value={activeTab} onChange={(_, newValue) => setActiveTab(newValue)} variant="scrollable" scrollButtons="auto">
+            {errors.map((error, index) => (
+              <Tab
+                key={index}
+                label={error?.message || 'No label available'}
+                sx={(theme) => ({
+                  margin: '4px',
+                  borderRadius: '4px',
+                  '&.MuiTab-root': {
+                    color: theme.palette[error.severity].dark,
+                  },
+                  '&.Mui-selected': {
+                    color: theme.palette[error.severity].main,
+                  },
+                })}
+              />
+            ))}
+          </Tabs>
+          <Box mt={2}>{errors[activeTab]?.message}</Box>
+        </DialogTitle>
       )}
 
       {errors.length === 1 && (
@@ -83,7 +83,7 @@ export default function InfoDialog({ open, onClose, errors = [], isAdmin }) {
                     overflowX: 'auto',
                   }}
                 >
-                  {errors[activeTab].infoDialog.stack}
+                  {errors[activeTab]?.infoDialog?.stack}
                 </Typography>
               ) : (
                 <Typography variant="body1">No data available</Typography>
