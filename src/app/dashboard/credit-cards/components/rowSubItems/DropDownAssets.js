@@ -11,6 +11,7 @@ export default function DropDownAssets({ baseFieldName, allocationIndex }) {
   const recalculateByUnit = useRecalculateByUnit();
 
   const handleChange = (newValue) => {
+    const glValue = getValues(`${baseFieldName}.glAccount`);
 
     if (newValue?.id === '4') {
       setValue(`${baseFieldName}.glAccount`, {
@@ -18,7 +19,7 @@ export default function DropDownAssets({ baseFieldName, allocationIndex }) {
         accountName: 'Reimbursement',
         accountNumber: '231353244',
       });
-    } else {
+    } else if (glValue?.accountId === '231353244') {
       setValue(`${baseFieldName}.glAccount`, null);
     }
     const calculationMethod = getValues(`calculationMethod`);
