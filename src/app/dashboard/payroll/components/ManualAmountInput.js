@@ -108,8 +108,8 @@ const ManualAmountInput = ({
         if (entrataWithdrawalPayload) {
           const entrataWithdrawalResponse = await postEntrataInvoice({
             payload: entrataWithdrawalPayload,
-            successTitle: 'Entrata Trakpay Posted',
-            errorTitle: 'Error Posting Entrata Trakpay',
+            successTitle: 'Entrata Manual Posted',
+            errorTitle: 'Error Posting Entrata Manual',
           });
           responses.push(entrataWithdrawalResponse);
           completedSteps++;
@@ -137,7 +137,6 @@ const ManualAmountInput = ({
     }
   };
 
-
   return (
     <Card>
       <CardContent>
@@ -161,7 +160,7 @@ const ManualAmountInput = ({
             View
           </Button>
           <LoadingButton loading={isSubmitting} variant="contained" onClick={handleSubmit} sx={{ minWidth: '230px' }}>
-            Submit Amount Transactions 
+            Submit Amount Transactions
           </LoadingButton>
           <LinearProgress
             variant="determinate"
