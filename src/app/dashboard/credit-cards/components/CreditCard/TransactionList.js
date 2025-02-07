@@ -25,6 +25,7 @@ import RowItem from '../rowItems/RowItem';
 import { useSettingsContext } from 'src/components/display-settings';
 import CreditCardSettingsDialog from '../accountSettings/SettingsDialog';
 import { isSuggestedReceipt } from '../utils/isSuggestedReceipt';
+import Typography from '@mui/material/Typography';
 
 //import UserTableToolbar from '../user-table-toolbar';
 //import UserTableFiltersResult from '../user-table-filters-result';
@@ -70,6 +71,8 @@ export default function TransactionList({
 
   const settings = useSettingsContext();
   const { editMode } = settings;
+
+  const [showError] = useState(true);
 
   function matchReceipts(transaction, receipts) {
     return receipts.reduce((acc, receipt) => {
@@ -245,93 +248,114 @@ export default function TransactionList({
   const denseHeight = 72;
 
   return (
-    <>
-      <CreditCardSettingsDialog employees={employees} creditCardAccounts={creditCardAccounts} open={editMode} />
-      <Container maxWidth="xl">
-        <Card>
-          <Tabs
-            value={filters.status}
-            onChange={handleFilterStatus}
-            sx={{
-              px: 2.5,
-              boxShadow: (theme) => `inset 0 -2px 0 0 ${alpha(theme.palette.grey[500], 0.08)}`,
-            }}
-          >
-            {STATUS_OPTIONS.map((tab) => (
-              <Tab
-                key={tab.value}
-                iconPosition="end"
-                value={tab.value}
-                label={tab.label}
-                icon={
-                  <Label
-                    variant={(tab.value === filters.status && 'filled') || 'soft'}
-                    color={(tab.value === 'personal' && 'info') || (tab.value === 'categorized' && 'warning') || 'default'}
-                  >
-                    {tab.value === 'all' &&
-                      (user.roles.includes('admin')
-                        ? displayedTransactions.length
-                        : displayedTransactions.filter((transaction) => transaction?.reviewers?.includes(user.pk))?.length)}
-                    {tab.value === 'personal' && displayedTransactions.filter((transaction) => transaction.owner === user.pk).length}
-                    {tab.value === 'categorized' &&
-                      displayedTransactions.filter((transaction) => transaction.status === 'categorized' && user.roles.includes('admin'))
-                        .length}
-                  </Label>
-                }
-              />
-            ))}
-          </Tabs>
-
-          <TransactionFilter filters={filters} onFilters={handleFilters} employees={authorizedEmployeesAndAvailable} user={user} />
-
-          {canReset && (
-            <ResetTransactionFilter
-              employees={employees}
-              filters={filters}
-              onFilters={handleFilters}
-              onResetFilters={handleResetFilters}
-              results={dataFiltered.length}
-              sx={{ p: 2.5, pt: 0 }}
-            />
-          )}
-
-          <TableContainer sx={{ position: 'relative', overflow: 'unset', height: '60vh' }}>
-            <Scrollbar sx={{ maxHeight: '60vh' }}>
-              <Table size={table.dense ? 'small' : 'medium'} sx={{ minWidth: 960 }}>
-                <TableBody>
-                  {dataInPage.map((transaction, index) => (
-                    <RowItem
-                      key={transaction.sk}
-                      transaction={transaction}
-                      transactionIndex={table.page * table.rowsPerPage + index}
-                      vendors={vendors}
-                      setVendors={setVendors}
-                      chartOfAccounts={chartOfAccounts}
-                      recentReceipts={suggestedReceipts}
-                      user={user}
-                      handleRemoveTransaction={handleRemoveTransaction}
-                    />
-                  ))}
-
-                  <TableEmptyRows height={denseHeight} emptyRows={emptyRows(table.page, table.rowsPerPage, displayedTransactions.length)} />
-
-                  <TableNoData notFound={notFound} title="No Transactions" />
-                </TableBody>
-              </Table>
-            </Scrollbar>
-          </TableContainer>
-
-          <TablePaginationCustom
-            count={dataFiltered.length}
-            page={table.page}
-            rowsPerPage={table.rowsPerPage}
-            onPageChange={table.onChangePage}
-            onRowsPerPageChange={table.onChangeRowsPerPage}
-            dense={false}
-            onChangeDense={false}
-          />
+    <Container maxWidth="xl">
+      {showError ? (
+        <Card
+          sx={{
+            p: 5,
+            textAlign: 'center',
+            minHeight: '50vh',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <Typography variant="h4" sx={{ mb: 2, color: 'error.main' }}>
+            Entrata&apos;s Server is Down
+          </Typography>
+          <Typography variant="body1" sx={{ color: 'text.secondary' }}>
+            Please try again later
+          </Typography>
         </Card>
-      </Container>
-    </>
+      ) : (
+        <>
+          <CreditCardSettingsDialog employees={employees} creditCardAccounts={creditCardAccounts} open={editMode} />
+          <Card>
+            <Tabs
+              value={filters.status}
+              onChange={handleFilterStatus}
+              sx={{
+                px: 2.5,
+                boxShadow: (theme) => `inset 0 -2px 0 0 ${alpha(theme.palette.grey[500], 0.08)}`,
+              }}
+            >
+              {STATUS_OPTIONS.map((tab) => (
+                <Tab
+                  key={tab.value}
+                  iconPosition="end"
+                  value={tab.value}
+                  label={tab.label}
+                  icon={
+                    <Label
+                      variant={(tab.value === filters.status && 'filled') || 'soft'}
+                      color={(tab.value === 'personal' && 'info') || (tab.value === 'categorized' && 'warning') || 'default'}
+                    >
+                      {tab.value === 'all' &&
+                        (user.roles.includes('admin')
+                          ? displayedTransactions.length
+                          : displayedTransactions.filter((transaction) => transaction?.reviewers?.includes(user.pk))?.length)}
+                      {tab.value === 'personal' && displayedTransactions.filter((transaction) => transaction.owner === user.pk).length}
+                      {tab.value === 'categorized' &&
+                        displayedTransactions.filter((transaction) => transaction.status === 'categorized' && user.roles.includes('admin'))
+                          .length}
+                    </Label>
+                  }
+                />
+              ))}
+            </Tabs>
+
+            <TransactionFilter filters={filters} onFilters={handleFilters} employees={authorizedEmployeesAndAvailable} user={user} />
+
+            {canReset && (
+              <ResetTransactionFilter
+                employees={employees}
+                filters={filters}
+                onFilters={handleFilters}
+                onResetFilters={handleResetFilters}
+                results={dataFiltered.length}
+                sx={{ p: 2.5, pt: 0 }}
+              />
+            )}
+
+            <TableContainer sx={{ position: 'relative', overflow: 'unset', height: '60vh' }}>
+              <Scrollbar sx={{ maxHeight: '60vh' }}>
+                <Table size={table.dense ? 'small' : 'medium'} sx={{ minWidth: 960 }}>
+                  <TableBody>
+                    {dataInPage.map((transaction, index) => (
+                      <RowItem
+                        key={transaction.sk}
+                        transaction={transaction}
+                        transactionIndex={table.page * table.rowsPerPage + index}
+                        vendors={vendors}
+                        setVendors={setVendors}
+                        chartOfAccounts={chartOfAccounts}
+                        recentReceipts={suggestedReceipts}
+                        user={user}
+                        handleRemoveTransaction={handleRemoveTransaction}
+                      />
+                    ))}
+
+                    <TableEmptyRows height={denseHeight} emptyRows={emptyRows(table.page, table.rowsPerPage, displayedTransactions.length)} />
+
+                    <TableNoData notFound={notFound} title="No Transactions" />
+                  </TableBody>
+                </Table>
+              </Scrollbar>
+            </TableContainer>
+
+            <TablePaginationCustom
+              count={dataFiltered.length}
+              page={table.page}
+              rowsPerPage={table.rowsPerPage}
+              onPageChange={table.onChangePage}
+              onRowsPerPageChange={table.onChangeRowsPerPage}
+              dense={false}
+              onChangeDense={false}
+            />
+          </Card>
+        </>
+      )}
+    </Container>
   );
 }
