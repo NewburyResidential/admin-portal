@@ -3,13 +3,16 @@ import Card from '@mui/material/Card';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import Chip from '@mui/material/Chip';
 
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import CancelIcon from '@mui/icons-material/Cancel';
 
 import { useFormContext } from 'react-hook-form';
 import { copyS3Object } from 'src/utils/services/cc-expenses/uploadS3Image';
 import { format } from 'date-fns';
+import { assetItems } from 'src/assets/data/assets';
 
 export default function ReceiptCards({ id, setOpen, setLoading, suggestedReceipts }) {
   const { setValue } = useFormContext();
@@ -18,13 +21,31 @@ export default function ReceiptCards({ id, setOpen, setLoading, suggestedReceipt
     window.open(imageUrl, '_blank');
   };
 
-  const handleChooseReceipt = async (objectKey, fileName) => {
+  const handleChooseReceipt = async (receipt) => {
     setLoading(true);
     setOpen(false);
+    if (receipt && receipt.allocations && receipt.allocations.length > 0) {
+      const updatedAllocations = receipt.allocations.map((allocation) => {
+        const matchingAsset = assetItems.find((asset) => asset.accountId === allocation.asset.accountId);
 
+        return {
+          ...allocation,
+          asset: matchingAsset || null,
+          note: receipt.notes || '',
+        };
+      });
+      setValue('calculationMethod', receipt.calculationMethod);
+      setValue('allocations', updatedAllocations);
+    }
 
     try {
-      const response = await copyS3Object('admin-portal-suggested-receipts', 'admin-portal-receipts', objectKey, id, fileName);
+      const response = await copyS3Object({
+        sourceBucket: 'admin-portal-cc-suggested-receipts',
+        destinationBucket: 'admin-portal-receipts',
+        objectKey: receipt.pk,
+        id,
+        fileExtension: receipt.fileExtension,
+      });
       if (response) {
         setValue(`receipt`, response.fileUrl);
         setValue(`tempPdfReceipt`, response.tempPdfUrl);
@@ -36,18 +57,12 @@ export default function ReceiptCards({ id, setOpen, setLoading, suggestedReceipt
     }
   };
 
-  const calculateTotalScore = (receipt) => Object.values(receipt).reduce((acc, item) => acc + (item.score || 0), 0);
-  const sortedSuggestedReceipts = suggestedReceipts
-    .sort((a, b) => calculateTotalScore(b) - calculateTotalScore(a))
-    .slice(0, 3);
-
   return (
     <Grid container spacing={2}>
-      {sortedSuggestedReceipts.map((receipt) => {
-        const totalScore = calculateTotalScore(receipt);
-
+      {suggestedReceipts.map((receipt) => {
+        const totalScore = receipt.scoreTotal;
         return (
-          <Grid item xs={12} sm={6} md={4} key={receipt.id}>
+          <Grid item xs={12} sm={6} md={4} key={receipt.pk}>
             <Card
               variant="outlined"
               sx={{
@@ -55,31 +70,39 @@ export default function ReceiptCards({ id, setOpen, setLoading, suggestedReceipt
                 borderRadius: '8px',
                 display: 'flex',
                 flexDirection: 'column',
-                padding: 2.5,
-                border: totalScore === 3 ? '2px dashed' : '2px dashed',
-                borderColor: (theme) => (theme.palette.mode === 'light' ? (totalScore >= 3 ? '#355E3B' : 'grey.400') : 'grey.700'),
+                px: 2.5,
+                pt: 5,
+                pb: 2.5,
+                border: totalScore === 1 ? '2px dashed' : '2px dashed',
+                borderColor: (theme) => (theme.palette.mode === 'light' ? (totalScore >= 1 ? '#355E3B' : 'grey.400') : 'grey.700'),
+                position: 'relative',
               }}
             >
-              <Typography variant="body2" component="p" sx={{ marginBottom: '8px', textAlign: 'center', fontWeight: 'bold' }}>
-                {receipt.fileName}
+              {receipt.numberOfTimesUsed > 0 && (
+                <Chip
+                  label={`Used ${receipt.numberOfTimesUsed} time${receipt.numberOfTimesUsed > 1 ? 's' : ''}`}
+                  color="info"
+                  size="small"
+                  sx={{
+                    position: 'absolute',
+                    top: 12,
+                    right: 12,
+                  }}
+                />
+              )}
+              <Typography variant="body2" component="p" sx={{ mb: 1, textAlign: 'center', fontWeight: 'bold' }}>
+                {receipt.modifiedBy === 'S3 Upload' ? 'Uploaded in S3' : `${receipt.modifiedBy} uploaded ${receipt.uploadedOn}`}
               </Typography>
-              <Typography variant="body2" component="p" sx={{ fontStyle: 'italic', marginBottom: '24px', textAlign: 'center' }}>
-                {receipt.modifiedBy === 'S3 Upload' ? 'Uploaded in S3' : `${receipt.modifiedBy} on ${receipt.modifiedOn}`}
+              <Typography variant="body2" component="p" sx={{ fontStyle: 'italic', mb: 3, textAlign: 'center' }}>
+                {receipt?.receiptAiSummary}
               </Typography>
+
               <Box sx={{ borderRadius: '4px', flexGrow: 1 }}>
-                {Object.entries(receipt)
-                  .filter(
-                    ([key]) =>
-                      key !== 'id' &&
-                      key !== 'filename' &&
-                      key !== 'modifiedOn' &&
-                      key !== 'modifiedBy' &&
-                      key !== 'fileName' &&
-                      key !== 'objectKey' &&
-                      key !== 'expire' &&
-                      key !== 'scoreTotal'
-                  )
-                  .map(([key, value], index, array) => (
+                {['transactionDate', 'merchant', 'total'].map((key) => {
+                  const value = receipt[key];
+                  if (!value) return null;
+
+                  return (
                     <Box
                       key={key}
                       sx={{
@@ -89,7 +112,7 @@ export default function ReceiptCards({ id, setOpen, setLoading, suggestedReceipt
                         overflow: 'hidden',
                         textOverflow: 'ellipsis',
                         marginBottom: '8px',
-                        backgroundColor: value.score >= 1 ? '#f0f5f3' : value.score === 0.5 ? '#FFF0E1' : 'transparent',
+                        backgroundColor: value.score === 1 ? '#f0f5f3' : value.score >= 0.5 ? '#FFF0E1' : '#ffebee',
                         borderRadius: '8px',
                         padding: '8px 14px',
                       }}
@@ -105,25 +128,28 @@ export default function ReceiptCards({ id, setOpen, setLoading, suggestedReceipt
                         }}
                       >
                         <Box component="span" sx={{ fontWeight: 'bold' }}>
-                          {key === 'transactionDate' ? 'Transaction Date' : `${key.charAt(0).toUpperCase() + key.slice(1)}`}
+                          {key === 'transactionDate' ? 'Transaction Date' : key.charAt(0).toUpperCase() + key.slice(1)}
                         </Box>
                         {`: ${
                           value.value === null || value.value === undefined || value.value === 'null'
                             ? ''
                             : key === 'transactionDate'
-                              ? formatDate(value.value)
-                              : Array.isArray(value.value)
-                                ? value.value.join(', ')
+                              ? new Date(value.value).toLocaleDateString()
+                              : key === 'total'
+                                ? new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(value.value)
                                 : value.value
                         }`}
                       </Typography>
                       {value.score >= 1 ? (
                         <CheckCircleOutlineIcon sx={{ color: '#4caf50', ml: 2 }} />
-                      ) : value.score === 0.5 ? (
+                      ) : value.score >= 0.5 ? (
                         <HelpOutlineIcon sx={{ color: '#E97451', ml: 2 }} />
-                      ) : null}
+                      ) : (
+                        <CancelIcon sx={{ color: '#d32f2f', ml: 2 }} />
+                      )}
                     </Box>
-                  ))}
+                  );
+                })}
                 <Box
                   sx={{
                     display: 'flex',
@@ -136,8 +162,8 @@ export default function ReceiptCards({ id, setOpen, setLoading, suggestedReceipt
                 >
                   <Button
                     onClick={() => {
-                      const encodedObjectKey = encodeURIComponent(receipt.objectKey);
-                      handleViewReceipt(`https://admin-portal-suggested-receipts.s3.amazonaws.com/${encodedObjectKey}`);
+                      const encodedObjectKey = encodeURIComponent(receipt.pk);
+                      handleViewReceipt(`https://admin-portal-cc-suggested-receipts.s3.us-east-1.amazonaws.com/${encodedObjectKey}`);
                     }}
                     sx={{ px: 2, width: '100%' }}
                     variant="outlined"
@@ -146,7 +172,7 @@ export default function ReceiptCards({ id, setOpen, setLoading, suggestedReceipt
                   </Button>
                   <Button
                     onClick={() => {
-                      handleChooseReceipt(receipt.objectKey, receipt.fileName);
+                      handleChooseReceipt(receipt);
                     }}
                     sx={{ px: 2, width: '100%' }}
                     variant="contained"

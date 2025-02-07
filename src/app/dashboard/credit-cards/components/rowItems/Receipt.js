@@ -6,7 +6,7 @@ import Box from '@mui/material/Box';
 import AddReceiptUpload from '../ReceiptUpload/AddReceiptUpload';
 import CircularProgress from '@mui/material/CircularProgress';
 
-export default function Receipt({ receiptIsLoading, setReceiptIsLoading, transaction, recentReceipts, isDragActive }) {
+export default function Receipt({ receiptIsLoading, setReceiptIsLoading, transaction, recentReceipts, isDragActive, user }) {
   const receiptUrl = useWatch({
     name: `receipt`,
   });
@@ -19,6 +19,7 @@ export default function Receipt({ receiptIsLoading, setReceiptIsLoading, transac
         <CircularProgress size={20} color="primary" />
       ) : (
         <AddReceiptUpload
+          user={user}
           recentReceipts={recentReceipts}
           transaction={transaction}
           setLoading={setReceiptIsLoading}

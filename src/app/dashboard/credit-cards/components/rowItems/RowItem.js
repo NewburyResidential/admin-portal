@@ -85,7 +85,11 @@ export default function RowItem({
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
-    accept: 'image/png, image/jpeg, application/pdf',
+    accept: {
+      'image/png': ['.png'],
+      'image/jpeg': ['.jpg', '.jpeg'],
+      'application/pdf': ['.pdf'],
+    },
     noDrag: false,
     noClick: false,
   });
@@ -129,58 +133,70 @@ export default function RowItem({
 
   return (
     <FormProvider {...methods}>
-      <Box
+      <tr
         {...getRootProps({
           onClick: (e) => e.stopPropagation(),
         })}
-        sx={containerStyle}
+        style={{ backgroundColor }}
       >
-        <input {...getInputProps()} />
-        <Box sx={{ flex: '0 0 auto', pr: 0, pl: 0, width: '70px', textAlign: 'center' }}>
-          <Receipt
-            receiptIsLoading={receiptIsLoading}
-            setReceiptIsLoading={setReceiptIsLoading}
-            recentReceipts={recentReceipts}
-            transaction={transaction}
-            onClick={(e) => e.stopPropagation()}
-            isDragActive={isDragActive}
-          />
-        </Box>
-        <Box sx={{ flex: 1.5, textAlign: 'center' }}>
-          <DropDownVendor vendors={vendors} setVendors={setVendors} merchant={transaction.merchant} />
-        </Box>
-        <Box sx={{ flex: 1, textAlign: 'center' }}>{titleCase(transaction.name)}</Box>
-        <Box sx={{ flex: 1, textAlign: 'center' }}>{transaction.accountName}</Box>{' '}
-        <Box sx={{ flex: 1, textAlign: 'center', minWidth: '10%' }}>{fConvertFromEuropeDate(transaction.transactionDate)}</Box>
-        <Box sx={{ flex: 0.88, textAlign: 'center', pr: 1 }}>
-          <LoadingButton
-            sx={{ width: '100px' }}
-            variant={transaction.status === 'categorized' ? 'contained' : 'outlined'}
-            onClick={handleSubmit(onSubmit)}
-            loading={isSubmitting}
-            color={transaction.status === 'categorized' ? 'success' : 'inherit'}
-          >
-            {transaction.status === 'categorized' ? 'Approve' : 'Submit'}
-          </LoadingButton>
-        </Box>
-      </Box>
+        <td colSpan="6" style={{ padding: 0 }}>
+          <Box sx={containerStyle}>
+            <input {...getInputProps()} />
+            <Box sx={{ flex: '0 0 auto', pr: 0, pl: 0, width: '70px', textAlign: 'center' }}>
+              <Receipt
+                user={user}
+                receiptIsLoading={receiptIsLoading}
+                setReceiptIsLoading={setReceiptIsLoading}
+                recentReceipts={recentReceipts}
+                transaction={transaction}
+                onClick={(e) => e.stopPropagation()}
+                isDragActive={isDragActive}
+              />
+            </Box>
+            <Box sx={{ flex: 1.5, textAlign: 'center' }}>
+              <DropDownVendor vendors={vendors} setVendors={setVendors} merchant={transaction.merchant} />
+            </Box>
+            <Box sx={{ flex: 1, textAlign: 'center' }}>{titleCase(transaction.name)}</Box>
+            <Box sx={{ flex: 1, textAlign: 'center' }}>{transaction.accountName}</Box>
+            <Box sx={{ flex: 1, textAlign: 'center', minWidth: '10%' }}>{fConvertFromEuropeDate(transaction.transactionDate)}</Box>
+            <Box sx={{ flex: 0.88, textAlign: 'center', pr: 1 }}>
+              <LoadingButton
+                sx={{ width: '100px' }}
+                variant={transaction.status === 'categorized' ? 'contained' : 'outlined'}
+                onClick={handleSubmit(onSubmit)}
+                loading={isSubmitting}
+                color={transaction.status === 'categorized' ? 'success' : 'inherit'}
+              >
+                {transaction.status === 'categorized' ? 'Approve' : 'Submit'}
+              </LoadingButton>
+            </Box>
+          </Box>
+        </td>
+      </tr>
 
       {allocationFields.map((allocation, allocationIndex) => (
-        <Box key={allocation.id}>
-          <RowSubItem
-            allocationFields={allocationFields}
-            allocationIndex={allocationIndex}
-            chartOfAccounts={chartOfAccounts}
-            backgroundColor={backgroundColor}
-            totalAmount={transaction.amount}
-            isSplit={isSplit}
-            append={append}
-            remove={remove}
-          />
-        </Box>
+        <tr key={allocation.id}>
+          <td colSpan="6" style={{ padding: 0 }}>
+            <RowSubItem
+              allocationFields={allocationFields}
+              allocationIndex={allocationIndex}
+              chartOfAccounts={chartOfAccounts}
+              backgroundColor={backgroundColor}
+              totalAmount={transaction.amount}
+              isSplit={isSplit}
+              append={append}
+              remove={remove}
+            />
+          </td>
+        </tr>
       ))}
+
       {isSplit && (
-        <SplitButtons totalAmount={transaction.amount} control={control} transaction={transaction} backgroundColor={backgroundColor} />
+        <tr>
+          <td colSpan="6" style={{ padding: 0 }}>
+            <SplitButtons totalAmount={transaction.amount} control={control} transaction={transaction} backgroundColor={backgroundColor} />
+          </td>
+        </tr>
       )}
     </FormProvider>
   );

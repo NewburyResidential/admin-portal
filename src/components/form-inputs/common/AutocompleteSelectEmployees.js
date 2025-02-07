@@ -1,6 +1,8 @@
 import React, { useState, useMemo } from 'react';
 import { Autocomplete, TextField, Checkbox, Typography, Box } from '@mui/material';
 import { highlightText } from '../utils/modify-text';
+// uuid
+import { v4 as uuidv4 } from 'uuid';
 
 //TODO: Add highlightText to the fullName, jobTitle, and costCenter1Label
 export default function AutocompleteSelectEmployees({
@@ -52,29 +54,31 @@ export default function AutocompleteSelectEmployees({
       onInputChange={(event, newInputValue) => setCurrentInputValue(newInputValue)}
       disableCloseOnSelect={multiple}
       isOptionEqualToValue={(option, optionValue) => option.pk === optionValue?.pk}
-      renderOption={(props, option, { selected }) => (
-        <Box
-          {...props}
-          key={option.pk}
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            backgroundColor: selected ? '#ECE8EA' : 'inherit',
-          }}
-        >
-          {multiple && <Checkbox checked={selected} />}
-          <Box ml={1}>
-            <Typography variant="body1">
-              {/* {option.fullName} */}
-              {highlightText(option.fullName, currentInputValue)}
-            </Typography>
-            <Typography variant="body2" sx={{ fontSize: '0.70rem' }}>
-              {/* {option.jobTitle} ({option.costCenter1Label}) */}
-              {highlightText(`${option.jobTitle} (${option.costCenter1Label})`, currentInputValue)}
-            </Typography>
+      renderOption={(props, option, { selected }) => {
+        const { key: _key, ...otherProps } = props;
+
+        return (
+          <Box
+            {...otherProps}
+            key={option.pk}
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              backgroundColor: selected ? '#ECE8EA' : 'inherit',
+            }}
+          >
+            {multiple && <Checkbox key={`checkbox-${option.pk}`} checked={selected} />}
+            <Box key={`content-${option.pk}`} ml={1}>
+              <Typography key={`name-${option.pk}`} variant="body1">
+                {highlightText(option.fullName, currentInputValue)}
+              </Typography>
+              <Typography key={`details-${option.pk}`} variant="body2" sx={{ fontSize: '0.70rem' }}>
+                {highlightText(`${option.jobTitle} (${option.costCenter1Label})`, currentInputValue)}
+              </Typography>
+            </Box>
           </Box>
-        </Box>
-      )}
+        );
+      }}
       renderInput={(params) => <TextField {...params} label={label} placeholder={placeholder || ''} />}
       filterOptions={(options, { inputValue }) =>
         options.filter(

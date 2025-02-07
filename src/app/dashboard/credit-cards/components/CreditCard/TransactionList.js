@@ -24,7 +24,6 @@ import { fConvertFromEuropeDate } from 'src/utils/format-time';
 import RowItem from '../rowItems/RowItem';
 import { useSettingsContext } from 'src/components/display-settings';
 import CreditCardSettingsDialog from '../accountSettings/SettingsDialog';
-import { isSuggestedReceipt } from '../utils/isSuggestedReceipt';
 
 //import UserTableToolbar from '../user-table-toolbar';
 //import UserTableFiltersResult from '../user-table-filters-result';
@@ -71,39 +70,24 @@ export default function TransactionList({
   const settings = useSettingsContext();
   const { editMode } = settings;
 
-  function matchReceipts(transaction, receipts) {
-    return receipts.reduce((acc, receipt) => {
-      const receiptData = isSuggestedReceipt(transaction, receipt);
-      if (receiptData) {
-        acc.push(receiptData);
-      }
-      return acc;
-    }, []);
-  }
-
   // Memoize the transaction processing logic
   const processedTransactions = useMemo(() => {
     const filteredTransactions = user.roles.includes('admin')
       ? unapprovedTransactions
-      : unapprovedTransactions.filter(transaction => transaction.status === 'unapproved');
+      : unapprovedTransactions.filter((transaction) => transaction.status === 'unapproved');
 
     return filteredTransactions.map((transaction) => {
-      const receipts = matchReceipts(transaction, suggestedReceipts);
-      const bestMatch =
-        receipts.length > 0
-          ? receipts.reduce((best, current) => ((current.scoreTotal || current.score) > (best.scoreTotal || best.score) ? current : best))
-          : null;
-
       return {
         ...transaction,
-        bestMatchReceipt: bestMatch,
-        bestMatchScore: bestMatch ? bestMatch.scoreTotal || bestMatch.score : 0,
-        suggestedReceipts: receipts,
-        owner: creditCardAccountsWithEmployees.find((account) => account.pk === transaction.accountName)?.owner || null,
-        reviewers: creditCardAccountsWithEmployees.find((account) => account.pk === transaction.accountName)?.reviewers || [],
+        owner:
+          creditCardAccountsWithEmployees.find((account) => account.pk === transaction.accountName?.replace(/\d+/g, '').trim())?.owner ||
+          null,
+        reviewers:
+          creditCardAccountsWithEmployees.find((account) => account.pk === transaction.accountName?.replace(/\d+/g, '').trim())
+            ?.reviewers || [],
       };
     });
-  }, [unapprovedTransactions, suggestedReceipts, creditCardAccountsWithEmployees, user.roles]);
+  }, [unapprovedTransactions, creditCardAccountsWithEmployees, user.roles]);
 
   const authorizedEmployeesAndAvailable = useMemo(() => {
     const ownerSet = new Set(
@@ -165,70 +149,79 @@ export default function TransactionList({
   function applyFilter({ inputData, comparator, dataFilters }) {
     const { vendorOptions, employeeOptions, dateOptions, amountOptions, exactDate, exactAmount, status } = dataFilters;
 
-    const stabilizedThis = inputData.map((el, index) => [el, index]);
+    let filteredData = [...inputData];
 
-    // Sort by transaction date (oldest to newest)
+    // Filter by status
+    if (status === 'personal') {
+      filteredData = filteredData.filter((item) => item.owner === user.pk);
+    } else if (status === 'categorized') {
+      filteredData = filteredData.filter((item) => item.status === 'categorized');
+    }
+
+    // Filter by employee
+    if (employeeOptions?.length) {
+      filteredData = filteredData.filter((item) => employeeOptions.includes(item.owner));
+    }
+
+    // Filter by vendor
+    if (vendorOptions) {
+      filteredData = filteredData.filter((item) => item.merchant?.toLowerCase().includes(vendorOptions.toLowerCase()));
+    }
+
+    // Filter by amount
+    if (exactAmount) {
+      // Handle exact amount filter
+      filteredData = filteredData.filter((item) => Math.abs(parseFloat(item.amount) - parseFloat(exactAmount)) < 0.01);
+    } else if (amountOptions?.from || amountOptions?.to) {
+      // Handle amount range filter
+      filteredData = filteredData.filter((item) => {
+        const amount = parseFloat(item.amount);
+        if (amountOptions.from && amountOptions.to) {
+          return amount >= parseFloat(amountOptions.from) && amount <= parseFloat(amountOptions.to);
+        }
+        if (amountOptions.from) {
+          return amount >= parseFloat(amountOptions.from);
+        }
+        if (amountOptions.to) {
+          return amount <= parseFloat(amountOptions.to);
+        }
+        return true;
+      });
+    }
+
+    // Filter by date
+    if (exactDate) {
+      // Handle exact date filter
+      filteredData = filteredData.filter((item) => {
+        const itemDate = fConvertFromEuropeDate(item.date);
+        return itemDate.getTime() === exactDate.getTime();
+      });
+    } else if (dateOptions?.from || dateOptions?.to) {
+      // Handle date range filter
+      filteredData = filteredData.filter((item) => {
+        const itemDate = fConvertFromEuropeDate(item.date);
+        if (dateOptions.from && dateOptions.to) {
+          return itemDate >= dateOptions.from && itemDate <= dateOptions.to;
+        }
+        if (dateOptions.from) {
+          return itemDate >= dateOptions.from;
+        }
+        if (dateOptions.to) {
+          return itemDate <= dateOptions.to;
+        }
+        return true;
+      });
+    }
+
+    // Apply sorting
+    const stabilizedThis = filteredData.map((el, index) => [el, index]);
     stabilizedThis.sort((a, b) => {
-      const dateA = new Date(fConvertFromEuropeDate(a[0].transactionDate));
-      const dateB = new Date(fConvertFromEuropeDate(b[0].transactionDate));
-      return dateA - dateB;
+      const order = comparator(a[0], b[0]);
+      if (order !== 0) return order;
+      return a[1] - b[1];
     });
 
-    inputData = stabilizedThis.map((el) => el[0]);
-
-    if (vendorOptions) {
-      inputData = inputData.filter(
-        (transaction) =>
-          transaction.name?.toLowerCase().includes(vendorOptions.toLowerCase()) ||
-          transaction.merchant?.toLowerCase().includes(vendorOptions.toLowerCase())
-      );
-    }
-
-    if (dateOptions?.from) {
-      inputData = inputData.filter(
-        (transaction) => new Date(fConvertFromEuropeDate(transaction.transactionDate)).getTime() >= new Date(dateOptions.from).getTime()
-      );
-    }
-
-    if (dateOptions?.to) {
-      inputData = inputData.filter(
-        (transaction) => new Date(fConvertFromEuropeDate(transaction.transactionDate)).getTime() <= new Date(dateOptions.to).getTime()
-      );
-    }
-
-    if (exactDate) {
-      inputData = inputData.filter((transaction) => fConvertFromEuropeDate(transaction.transactionDate) === exactDate);
-    }
-
-    if (employeeOptions?.length > 0) {
-      inputData = inputData.filter((transaction) => employeeOptions.includes(transaction.owner));
-    }
-
-    if (amountOptions?.from) {
-      inputData = inputData.filter((transaction) => transaction.amount >= amountOptions.from);
-    }
-
-    if (amountOptions?.to) {
-      inputData = inputData.filter((transaction) => transaction.amount <= amountOptions.to);
-    }
-
-    if (exactAmount) {
-      inputData = inputData.filter((transaction) => transaction.amount.toString().includes(exactAmount));
-    }
-
-    if (status === 'all') {
-      if (user.roles.includes('admin')) {
-        return inputData;
-      }
-      return inputData.filter((transaction) => transaction?.reviewers?.includes(user.pk));
-    }
-    if (status === 'personal') {
-      inputData = inputData.filter((transaction) => transaction.owner === user.pk);
-    } else if (status === 'categorized') {
-      inputData = inputData.filter((transaction) => transaction.status === 'categorized' && user.roles.includes('admin'));
-    }
-
-    return inputData;
+    return stabilizedThis.map((el) => el[0]);
   }
 
   const handleFilterStatus = useCallback(
@@ -294,6 +287,11 @@ export default function TransactionList({
               sx={{ p: 2.5, pt: 0 }}
             />
           )}
+
+          {/* can you just add a list of the filtered transactions here? */}
+          {/* {dataInPage.map((transaction) => (
+            <div key={transaction.sk}>{transaction.sk}</div>
+          ))} */}
 
           <TableContainer sx={{ position: 'relative', overflow: 'unset', height: '60vh' }}>
             <Scrollbar sx={{ maxHeight: '60vh' }}>

@@ -20,7 +20,7 @@ export const isSuggestedReceipt = (transaction, receipt) => {
   const receiptDate = receipt.transactionDate;
   const receiptMerchant = receipt.merchantName;
   const receiptTotal = receipt.chargedAmount;
-  const receiptCreditCardName = receipt.creditCard.name;
+  const receiptCreditCardName = receipt.creditCardHolder || receipt.creditCard.name;
 
   const receiptData = {
     pk: receipt.pk,
@@ -35,10 +35,9 @@ export const isSuggestedReceipt = (transaction, receipt) => {
     fileExtension: receipt.fileExtension,
     allocations: receipt.allocations,
     calculationMethod: receipt.calculationMethod,
+    notes: receipt.notes,
   };
   if (transaction.transactionDate && receiptDate) {
-    console.log('transaction.transactionDate', transaction.transactionDate);
-    console.log('receiptDate', receiptDate);
     const convertedTransactionDate = fConvertFromEuropeDate(transaction.transactionDate);
 
     const newTransactionDate = new Date(convertedTransactionDate);
@@ -122,7 +121,6 @@ export const isSuggestedReceipt = (transaction, receipt) => {
       receiptData.merchant.score * weights.merchant;
 
     // Convert scoreTotal (0-1) to percentage (0-100)
-    console.log('receiptData.scoreTotal', receiptData.scoreTotal);
     receiptData.receiptPercentTotal = Math.round(receiptData.scoreTotal * 100);
 
     return receiptData;
