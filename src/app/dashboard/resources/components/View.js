@@ -1,6 +1,7 @@
 'use client';
 
 import { useSettingsContext } from 'src/components/display-settings';
+import { useEffect } from 'react';
 
 import Shortcuts from './Shortcuts';
 import ResourceGroups from './Groups';
@@ -8,7 +9,10 @@ import SearchResources from './SearchResources';
 
 import Container from '@mui/material/Container';
 
-export default function View({ resourcesObject, session }) {
+export default function View({ resourcesObject, session, unapprovedTransactions, suggestedReceipts, unapprovedTransactionsWithReceipts }) {
+  console.log('suggestedReceipts', suggestedReceipts);
+  console.log('unapprovedTransactionsWithReceipts', unapprovedTransactionsWithReceipts);
+
   const settings = useSettingsContext();
 
   return (
@@ -20,12 +24,10 @@ export default function View({ resourcesObject, session }) {
   );
 }
 
-
-  /* <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+/* <Box sx={{ display: 'flex', justifyContent: 'center' }}>
         <Tabs value={value} onChange={handleChange}>
           <Tab label="Resources" sx={{ fontSize: '16px' }} />
           <Tab label="Properties" sx={{ fontSize: '16px' }} />
           <Tab label="Employees" sx={{ fontSize: '16px' }} />
         </Tabs>
       </Box> */
-

@@ -1,5 +1,5 @@
 import { useTheme } from '@mui/material/styles';
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { useDropzone } from 'react-dropzone';
 
 import Box from '@mui/material/Box';
@@ -17,16 +17,18 @@ import updateTransaction from 'src/utils/services/cc-expenses/updateTransaction'
 import { useSnackbar } from 'src/utils/providers/SnackbarProvider';
 import { uploadS3Image } from 'src/utils/services/cc-expenses/uploadS3Image';
 
-export default function RowItem({
+const RowItem = React.memo(({
   transaction,
-  transactionIndex,
   vendors,
   setVendors,
   chartOfAccounts,
   recentReceipts,
   user,
   handleRemoveTransaction,
-}) {
+}) => {
+  // Add a unique ID for this component instance
+
+  // console.log('transaction', transaction);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [receiptIsLoading, setReceiptIsLoading] = useState(false);
   const { showResponseSnackbar } = useSnackbar();
@@ -44,6 +46,37 @@ export default function RowItem({
 
   const theme = useTheme();
   const isLight = theme.palette.mode === 'light';
+
+  // Determine if this transaction group is odd/even
+  // const isOdd = transactionIndex % 2 === 0;
+  // const backgroundColor = isOdd
+  //   ? (isLight ? '#f0f0f0' : '#212B36')
+  //   : (isLight ? '#FAFBFC' : '#2F3944');
+
+  const rowGroupStyle = useMemo(
+    () => ({
+      '&:nth-of-type(4n+1), &:nth-of-type(4n+2)': {
+        '& > td > div': { backgroundColor: isLight ? '#f0f0f0' : '#212B36' },
+      },
+      '&:nth-of-type(4n+3), &:nth-of-type(4n+4)': {
+        '& > td > div': { backgroundColor: isLight ? '#FAFBFC' : '#2F3944' },
+      },
+    }),
+    [isLight]
+  );
+
+  const containerStyle = useMemo(
+    () => ({
+      display: 'flex',
+      pt: 2,
+      pb: 3,
+      pl: 2,
+      alignItems: 'center',
+      gap: 2,
+      transition: 'all 0.2s ease',
+    }),
+    []
+  );
 
   const {
     fields: allocationFields,
@@ -80,116 +113,127 @@ export default function RowItem({
         }
       }
     },
-    [transaction.sk, setValue, setReceiptIsLoading]
+    [transaction.sk, setValue]
   );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
-    accept: 'image/png, image/jpeg, application/pdf',
+    accept: {
+      'image/png': ['.png'],
+      'image/jpeg': ['.jpg', '.jpeg'],
+      'application/pdf': ['.pdf'],
+    },
     noDrag: false,
     noClick: false,
   });
 
-  const backgroundColor = transactionIndex % 2 !== 0 ? (isLight ? '#FAFBFC' : '#2F3944') : isLight ? '#f0f0f0' : '#212B36';
-
-  const containerStyle = {
-    display: 'flex',
-    backgroundColor,
-    pt: 2,
-    pb: 3,
-    pl: 2,
-    alignItems: 'center',
-    gap: 2,
-    transition: 'all 0.2s ease',
-  };
-
-  const onSubmit = async (data) => {
-    setIsSubmitting(true);
-    const attributesToUpdate = {
-      allocations: data.allocations,
-      vendor: data.vendor,
-      receipt: data.receipt,
-      tempPdfReceipt: data.tempPdfReceipt,
-      calculationMethod: data.calculationMethod,
-      status: user.roles?.includes('admin') ? 'reviewed' : 'categorized',
-      ...(data.status === 'unapproved' && { categorizedBy: user.fullName }),
-      ...(user.roles?.includes('admin') && { approvedBy: user.fullName }),
-    };
-    try {
-      const response = await updateTransaction(data.pk, data.sk, attributesToUpdate);
-      showResponseSnackbar(response);
-      if (response.severity === 'success') {
-        handleRemoveTransaction(data.sk);
+  const onSubmit = useCallback(
+    async (data) => {
+      setIsSubmitting(true);
+      const attributesToUpdate = {
+        allocations: data.allocations,
+        vendor: data.vendor,
+        receipt: data.receipt,
+        tempPdfReceipt: data.tempPdfReceipt,
+        calculationMethod: data.calculationMethod,
+        status: user.roles?.includes('admin') ? 'reviewed' : 'categorized',
+        ...(data.status === 'unapproved' && { categorizedBy: user.fullName }),
+        ...(user.roles?.includes('admin') && { approvedBy: user.fullName }),
+      };
+      try {
+        const response = await updateTransaction(data.pk, data.sk, attributesToUpdate);
+        showResponseSnackbar(response);
+        if (response.severity === 'success') {
+          handleRemoveTransaction(data.sk);
+        }
+      } catch (error) {
+        console.error('Error updating transactions:', error);
       }
-    } catch (error) {
-      console.error('Error updating transactions:', error);
-    }
-    setIsSubmitting(false);
-  };
+      setIsSubmitting(false);
+    },
+    [user, handleRemoveTransaction, showResponseSnackbar]
+  );
 
   return (
     <FormProvider {...methods}>
       <Box
+        component="tr"
+        sx={rowGroupStyle}
         {...getRootProps({
           onClick: (e) => e.stopPropagation(),
         })}
-        sx={containerStyle}
       >
-        <input {...getInputProps()} />
-        <Box sx={{ flex: '0 0 auto', pr: 0, pl: 0, width: '70px', textAlign: 'center' }}>
-          <Receipt
-            receiptIsLoading={receiptIsLoading}
-            setReceiptIsLoading={setReceiptIsLoading}
-            recentReceipts={recentReceipts}
-            transaction={transaction}
-            onClick={(e) => e.stopPropagation()}
-            isDragActive={isDragActive}
-          />
-        </Box>
-        <Box sx={{ flex: 1.5, textAlign: 'center' }}>
-          <DropDownVendor vendors={vendors} setVendors={setVendors} merchant={transaction.merchant} />
-        </Box>
-        <Box sx={{ flex: 1, textAlign: 'center' }}>{titleCase(transaction.name)}</Box>
-        <Box sx={{ flex: 1, textAlign: 'center' }}>{transaction.accountName}</Box>{' '}
-        <Box sx={{ flex: 1, textAlign: 'center', minWidth: '10%' }}>{fConvertFromEuropeDate(transaction.transactionDate)}</Box>
-        <Box sx={{ flex: 0.88, textAlign: 'center', pr: 1 }}>
-          <LoadingButton
-            sx={{ width: '100px' }}
-            variant={transaction.status === 'categorized' ? 'contained' : 'outlined'}
-            onClick={handleSubmit(onSubmit)}
-            loading={isSubmitting}
-            color={transaction.status === 'categorized' ? 'success' : 'inherit'}
-          >
-            {transaction.status === 'categorized' ? 'Approve' : 'Submit'}
-          </LoadingButton>
-        </Box>
+        <td colSpan="6" style={{ padding: 0 }}>
+          <Box sx={containerStyle}>
+            <input {...getInputProps()} />
+            <Box sx={{ flex: '0 0 auto', pr: 0, pl: 0, width: '70px', textAlign: 'center' }}>
+              <Receipt
+                user={user}
+                receiptIsLoading={receiptIsLoading}
+                setReceiptIsLoading={setReceiptIsLoading}
+                recentReceipts={recentReceipts}
+                transaction={transaction}
+                onClick={(e) => e.stopPropagation()}
+                isDragActive={isDragActive}
+              />
+            </Box>
+            <Box sx={{ flex: 1.5, textAlign: 'center' }}>
+              <DropDownVendor vendors={vendors} setVendors={setVendors} merchant={transaction.merchant} />
+            </Box>
+            <Box sx={{ flex: 1, textAlign: 'center' }}>{titleCase(transaction.name)}</Box>
+            <Box sx={{ flex: 1, textAlign: 'center' }}>{transaction.accountName}</Box>
+            <Box sx={{ flex: 1, textAlign: 'center', minWidth: '10%' }}>{fConvertFromEuropeDate(transaction.transactionDate)}</Box>
+            <Box sx={{ flex: 0.88, textAlign: 'center', pr: 1 }}>
+              <LoadingButton
+                sx={{ width: '100px' }}
+                variant={transaction.status === 'categorized' ? 'contained' : 'outlined'}
+                onClick={handleSubmit(onSubmit)}
+                loading={isSubmitting}
+                color={transaction.status === 'categorized' ? 'success' : 'inherit'}
+              >
+                {transaction.status === 'categorized' ? 'Approve' : 'Submit'}
+              </LoadingButton>
+            </Box>
+          </Box>
+        </td>
       </Box>
 
       {allocationFields.map((allocation, allocationIndex) => (
-        <Box key={allocation.id}>
-          <RowSubItem
-            allocationFields={allocationFields}
-            allocationIndex={allocationIndex}
-            chartOfAccounts={chartOfAccounts}
-            backgroundColor={backgroundColor}
-            totalAmount={transaction.amount}
-            isSplit={isSplit}
-            append={append}
-            remove={remove}
-          />
+        <Box component="tr" key={allocation.id} sx={rowGroupStyle}>
+          <td colSpan="6" style={{ padding: 0 }}>
+            <RowSubItem
+              allocationFields={allocationFields}
+              allocationIndex={allocationIndex}
+              chartOfAccounts={chartOfAccounts}
+              isSplit={isSplit}
+              append={append}
+              remove={remove}
+              totalAmount={transaction.amount}
+            />
+          </td>
         </Box>
       ))}
+
       {isSplit && (
-        <SplitButtons totalAmount={transaction.amount} control={control} transaction={transaction} backgroundColor={backgroundColor} />
+        <Box component="tr" sx={rowGroupStyle}>
+          <td colSpan="6" style={{ padding: 0 }}>
+            <Box>
+              <SplitButtons totalAmount={transaction.amount} control={control} transaction={transaction} />
+            </Box>
+          </td>
+        </Box>
       )}
     </FormProvider>
   );
-}
+});
 
-function titleCase(str) {
+// Use useMemo for the titleCase function
+const titleCase = (str) => {
   return str
     .toLowerCase()
     .split(' ')
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(' ');
-}
+};
+
+export default RowItem;

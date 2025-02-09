@@ -16,7 +16,7 @@ import ExactDatePicker from 'src/components/form-inputs/ExactDatePicker';
 
 // ----------------------------------------------------------------------
 
-export default function EmployeeFilter({ filters, onFilters, employees }) {
+export default function EmployeeFilter({ filters, onFilters, employees, loading }) {
   const [isExactFilter, setIsExactFilter] = useState(false);
 
   const handleFilterVendorOptions = useCallback(
@@ -101,12 +101,14 @@ export default function EmployeeFilter({ filters, onFilters, employees }) {
           onChange={handleFilterEmployees}
           multiple
           label="Search By Employee, Property or Position"
+          disabled={loading}
         />
         <TextField
           fullWidth
           value={filters.vendorOptions}
           onChange={handleFilterVendorOptions}
           placeholder="Search By Vendor..."
+          disabled={loading}
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">

@@ -1,26 +1,9 @@
 'use server';
 
-export default async function getSuggestedReceipts() {
-  const url = 'https://0yxexcpp8f.execute-api.us-east-1.amazonaws.com/getSuggestedReceipts';
-  const requestOptions = {
-    //cache: 'no-cache',
-    next: { revalidate: 0 },
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  };
+import { dynamoScan } from '../sdk-config/aws/dynamo-db';
 
-  try {
-    const response = await fetch(url, requestOptions);
-    if (!response.ok) {
-      console.error(`HTTP error! Status: ${response.status}`);
-      return [];
-    }
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error('Error fetching data: ', error);
-    return [];
-  }
+export default async function getSuggestedReceipts() {
+  const dynamoSuggestedReceipts = await dynamoScan({ tableName: 'admin_portal_cc_suggested_receipts' });
+  const suggestedReceipts = dynamoSuggestedReceipts.Items;
+  return suggestedReceipts;
 }

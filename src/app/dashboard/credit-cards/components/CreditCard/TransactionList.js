@@ -1,7 +1,9 @@
 'use client';
 
 import isEqual from 'lodash/isEqual';
-import { useState, useCallback, useMemo, useEffect } from 'react';
+import { useState, useCallback, useMemo, useEffect, useRef } from 'react';
+import { Box, LinearProgress, TableRow, TableCell } from '@mui/material';
+import Big from 'big.js';
 
 // @mui
 import { alpha } from '@mui/material/styles';
@@ -24,8 +26,7 @@ import { fConvertFromEuropeDate } from 'src/utils/format-time';
 import RowItem from '../rowItems/RowItem';
 import { useSettingsContext } from 'src/components/display-settings';
 import CreditCardSettingsDialog from '../accountSettings/SettingsDialog';
-import { isSuggestedReceipt } from '../utils/isSuggestedReceipt';
-import Typography from '@mui/material/Typography';
+import { LoadingScreen } from 'src/components/loading-screen';
 
 //import UserTableToolbar from '../user-table-toolbar';
 //import UserTableFiltersResult from '../user-table-filters-result';
@@ -72,41 +73,26 @@ export default function TransactionList({
   const settings = useSettingsContext();
   const { editMode } = settings;
 
-  const [showError] = useState(true);
-
-  function matchReceipts(transaction, receipts) {
-    return receipts.reduce((acc, receipt) => {
-      const receiptData = isSuggestedReceipt(transaction, receipt);
-      if (receiptData) {
-        acc.push(receiptData);
-      }
-      return acc;
-    }, []);
-  }
+  const [isMounted, setIsMounted] = useState(false);
 
   // Memoize the transaction processing logic
   const processedTransactions = useMemo(() => {
     const filteredTransactions = user.roles.includes('admin')
       ? unapprovedTransactions
-      : unapprovedTransactions.filter(transaction => transaction.status === 'unapproved');
+      : unapprovedTransactions.filter((transaction) => transaction.status === 'unapproved');
 
     return filteredTransactions.map((transaction) => {
-      const receipts = matchReceipts(transaction, suggestedReceipts);
-      const bestMatch =
-        receipts.length > 0
-          ? receipts.reduce((best, current) => ((current.scoreTotal || current.score) > (best.scoreTotal || best.score) ? current : best))
-          : null;
-
       return {
         ...transaction,
-        bestMatchReceipt: bestMatch,
-        bestMatchScore: bestMatch ? bestMatch.scoreTotal || bestMatch.score : 0,
-        suggestedReceipts: receipts,
-        owner: creditCardAccountsWithEmployees.find((account) => account.pk === transaction.accountName)?.owner || null,
-        reviewers: creditCardAccountsWithEmployees.find((account) => account.pk === transaction.accountName)?.reviewers || [],
+        owner:
+          creditCardAccountsWithEmployees.find((account) => account.pk === transaction.accountName?.replace(/\d+/g, '').trim())?.owner ||
+          null,
+        reviewers:
+          creditCardAccountsWithEmployees.find((account) => account.pk === transaction.accountName?.replace(/\d+/g, '').trim())
+            ?.reviewers || [],
       };
     });
-  }, [unapprovedTransactions, suggestedReceipts, creditCardAccountsWithEmployees, user.roles]);
+  }, [unapprovedTransactions, creditCardAccountsWithEmployees, user.roles]);
 
   const authorizedEmployeesAndAvailable = useMemo(() => {
     const ownerSet = new Set(
@@ -122,20 +108,39 @@ export default function TransactionList({
   // Update displayed transactions with processed data
   useEffect(() => {
     setDisplayedTransactions(processedTransactions);
+    setIsMounted(true);
   }, [processedTransactions]);
 
   //TODO: Check for aggresive page caching
   const table = useTable({
-    defaultRowsPerPage: 50,
+    defaultRowsPerPage: 25,
     rowsPerPageOptions: [10, 25, 50],
   });
 
   const [displayedTransactions, setDisplayedTransactions] = useState(unapprovedTransactions);
   const [filters, setFilters] = useState(defaultFilters);
+  const [activeFilters, setActiveFilters] = useState(defaultFilters);
+  const [isFiltering, setIsFiltering] = useState(false);
+  const filterTimeoutRef = useRef(null);
   const [vendors, setVendors] = useState(vendorData);
 
+  const getCategoryData = useCallback((status) => {
+    switch (status) {
+      case 'all':
+        return user.roles.includes('admin')
+          ? displayedTransactions
+          : displayedTransactions.filter((transaction) => transaction?.reviewers?.includes(user.pk));
+      case 'personal':
+        return displayedTransactions.filter((transaction) => transaction.owner === user.pk);
+      case 'categorized':
+        return displayedTransactions.filter((transaction) => transaction.status === 'categorized' && user.roles.includes('admin'));
+      default:
+        return [];
+    }
+  }, [displayedTransactions, user.roles, user.pk]);
+
   const dataFiltered = applyFilter({
-    inputData: displayedTransactions,
+    inputData: getCategoryData(filters.status), // Filter from the correct category data first
     comparator: getComparator(table.order, table.orderBy),
     dataFilters: filters,
   });
@@ -150,88 +155,130 @@ export default function TransactionList({
 
   const handleFilters = useCallback(
     (name, value) => {
-      table.onResetPage();
-      setFilters((prevState) => ({
-        ...prevState,
+      // Clear any existing timeout
+      if (filterTimeoutRef.current) {
+        clearTimeout(filterTimeoutRef.current);
+      }
+
+      // Immediately update the filter input value and show loading
+      setFilters((prev) => ({
+        ...prev,
         [name]: value,
       }));
+      setIsFiltering(true);
+
+      // Set timeout duration based on input type and method
+      const typedInputs = ['vendorOptions', 'amountOptions', 'exactAmount', 'exactDate', 'dateOptions'];
+      const timeoutDuration = typedInputs.includes(name) && value !== null ? 1500 : 500;
+
+      // Wait for specified duration before applying the filter
+      filterTimeoutRef.current = setTimeout(() => {
+        setActiveFilters((prev) => ({
+          ...prev,
+          [name]: value,
+        }));
+        setIsFiltering(false);
+        table.onResetPage();
+      }, timeoutDuration);
     },
     [table]
   );
 
-  const handleRemoveTransaction = (transactionId) => {
+  const handleRemoveTransaction = useCallback((transactionId) => {
     setDisplayedTransactions((prevState) => prevState.filter((t) => t.sk !== transactionId));
-  };
+  }, []);
 
   // ----------------------------------------------------------------------
 
   function applyFilter({ inputData, comparator, dataFilters }) {
     const { vendorOptions, employeeOptions, dateOptions, amountOptions, exactDate, exactAmount, status } = dataFilters;
 
-    const stabilizedThis = inputData.map((el, index) => [el, index]);
+    let filteredData = [...inputData];
 
-    // Sort by transaction date (oldest to newest)
+    // Filter by status
+    if (status === 'personal') {
+      filteredData = filteredData.filter((item) => item.owner === user.pk);
+    } else if (status === 'categorized') {
+      filteredData = filteredData.filter((item) => item.status === 'categorized');
+    }
+
+    // Filter by employee
+    if (employeeOptions?.length) {
+      filteredData = filteredData.filter((item) => employeeOptions.includes(item.owner));
+    }
+
+    // Filter by vendor
+    if (vendorOptions) {
+      filteredData = filteredData.filter((item) => item.merchant?.toLowerCase().includes(vendorOptions.toLowerCase()));
+    }
+
+    // Filter by amount
+    if (exactAmount) {
+      // Handle exact amount filter
+      filteredData = filteredData.filter((item) => {
+        try {
+          const itemAmount = new Big(item.amount);
+          const targetAmount = new Big(exactAmount);
+          return itemAmount.minus(targetAmount).abs().lt(0.01);
+        } catch (err) {
+          return false; // Handle invalid number formats
+        }
+      });
+    } else if (amountOptions?.from || amountOptions?.to) {
+      // Handle amount range filter
+      filteredData = filteredData.filter((item) => {
+        try {
+          const amount = new Big(item.amount);
+          if (amountOptions.from && amountOptions.to) {
+            return amount.gte(new Big(amountOptions.from)) && amount.lte(new Big(amountOptions.to));
+          }
+          if (amountOptions.from) {
+            return amount.gte(new Big(amountOptions.from));
+          }
+          if (amountOptions.to) {
+            return amount.lte(new Big(amountOptions.to));
+          }
+          return true;
+        } catch (err) {
+          return false; // Handle invalid number formats
+        }
+      });
+    }
+
+    // Filter by date
+    if (exactDate) {
+      // Handle exact date filter
+      filteredData = filteredData.filter((item) => {
+        const itemDate = fConvertFromEuropeDate(item.transactionDate);
+        return itemDate === exactDate;
+      });
+    } else if (dateOptions?.from || dateOptions?.to) {
+      // Handle date range filter
+      filteredData = filteredData.filter((item) => {
+        console.log(item);
+        const itemDate = fConvertFromEuropeDate(item.transactionDate);
+        if (dateOptions.from && dateOptions.to) {
+          return itemDate >= dateOptions.from && itemDate <= dateOptions.to;
+        }
+        if (dateOptions.from) {
+          return itemDate >= dateOptions.from;
+        }
+        if (dateOptions.to) {
+          return itemDate <= dateOptions.to;
+        }
+        return true;
+      });
+    }
+
+    // Apply sorting
+    const stabilizedThis = filteredData.map((el, index) => [el, index]);
     stabilizedThis.sort((a, b) => {
-      const dateA = new Date(fConvertFromEuropeDate(a[0].transactionDate));
-      const dateB = new Date(fConvertFromEuropeDate(b[0].transactionDate));
-      return dateA - dateB;
+      const order = comparator(a[0], b[0]);
+      if (order !== 0) return order;
+      return a[1] - b[1];
     });
 
-    inputData = stabilizedThis.map((el) => el[0]);
-
-    if (vendorOptions) {
-      inputData = inputData.filter(
-        (transaction) =>
-          transaction.name?.toLowerCase().includes(vendorOptions.toLowerCase()) ||
-          transaction.merchant?.toLowerCase().includes(vendorOptions.toLowerCase())
-      );
-    }
-
-    if (dateOptions?.from) {
-      inputData = inputData.filter(
-        (transaction) => new Date(fConvertFromEuropeDate(transaction.transactionDate)).getTime() >= new Date(dateOptions.from).getTime()
-      );
-    }
-
-    if (dateOptions?.to) {
-      inputData = inputData.filter(
-        (transaction) => new Date(fConvertFromEuropeDate(transaction.transactionDate)).getTime() <= new Date(dateOptions.to).getTime()
-      );
-    }
-
-    if (exactDate) {
-      inputData = inputData.filter((transaction) => fConvertFromEuropeDate(transaction.transactionDate) === exactDate);
-    }
-
-    if (employeeOptions?.length > 0) {
-      inputData = inputData.filter((transaction) => employeeOptions.includes(transaction.owner));
-    }
-
-    if (amountOptions?.from) {
-      inputData = inputData.filter((transaction) => transaction.amount >= amountOptions.from);
-    }
-
-    if (amountOptions?.to) {
-      inputData = inputData.filter((transaction) => transaction.amount <= amountOptions.to);
-    }
-
-    if (exactAmount) {
-      inputData = inputData.filter((transaction) => transaction.amount.toString().includes(exactAmount));
-    }
-
-    if (status === 'all') {
-      if (user.roles.includes('admin')) {
-        return inputData;
-      }
-      return inputData.filter((transaction) => transaction?.reviewers?.includes(user.pk));
-    }
-    if (status === 'personal') {
-      inputData = inputData.filter((transaction) => transaction.owner === user.pk);
-    } else if (status === 'categorized') {
-      inputData = inputData.filter((transaction) => transaction.status === 'categorized' && user.roles.includes('admin'));
-    }
-
-    return inputData;
+    return stabilizedThis.map((el) => el[0]);
   }
 
   const handleFilterStatus = useCallback(
@@ -242,87 +289,106 @@ export default function TransactionList({
   );
 
   const handleResetFilters = useCallback(() => {
-    setFilters(defaultFilters);
+    setIsFiltering(true);
+    setTimeout(() => {
+      setFilters(defaultFilters);
+      setIsFiltering(false);
+    }, 500);
   }, []);
 
   const denseHeight = 72;
 
-  return (
-    <Container maxWidth="xl">
-      {showError ? (
-        <Card
-          sx={{
-            p: 5,
-            textAlign: 'center',
-            minHeight: '50vh',
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
-        >
-          <Typography variant="h4" sx={{ mb: 2, color: 'error.main' }}>
-            Entrata&apos;s Server is Down
-          </Typography>
-          <Typography variant="body1" sx={{ color: 'text.secondary' }}>
-            Please try again later
-          </Typography>
+  if (!isMounted) {
+    return (
+      <Container maxWidth="xl">
+        <Card>
+          <Box
+            sx={{
+              height: '60vh',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <Box sx={{ width: '100%', maxWidth: 360 }}>
+              <LinearProgress color="inherit" />
+            </Box>
+          </Box>
         </Card>
-      ) : (
-        <>
-          <CreditCardSettingsDialog employees={employees} creditCardAccounts={creditCardAccounts} open={editMode} />
-          <Card>
-            <Tabs
-              value={filters.status}
-              onChange={handleFilterStatus}
-              sx={{
-                px: 2.5,
-                boxShadow: (theme) => `inset 0 -2px 0 0 ${alpha(theme.palette.grey[500], 0.08)}`,
-              }}
-            >
-              {STATUS_OPTIONS.map((tab) => (
-                <Tab
-                  key={tab.value}
-                  iconPosition="end"
-                  value={tab.value}
-                  label={tab.label}
-                  icon={
-                    <Label
-                      variant={(tab.value === filters.status && 'filled') || 'soft'}
-                      color={(tab.value === 'personal' && 'info') || (tab.value === 'categorized' && 'warning') || 'default'}
-                    >
-                      {tab.value === 'all' &&
-                        (user.roles.includes('admin')
-                          ? displayedTransactions.length
-                          : displayedTransactions.filter((transaction) => transaction?.reviewers?.includes(user.pk))?.length)}
-                      {tab.value === 'personal' && displayedTransactions.filter((transaction) => transaction.owner === user.pk).length}
-                      {tab.value === 'categorized' &&
-                        displayedTransactions.filter((transaction) => transaction.status === 'categorized' && user.roles.includes('admin'))
-                          .length}
-                    </Label>
-                  }
-                />
-              ))}
-            </Tabs>
+      </Container>
+    );
+  }
 
-            <TransactionFilter filters={filters} onFilters={handleFilters} employees={authorizedEmployeesAndAvailable} user={user} />
-
-            {canReset && (
-              <ResetTransactionFilter
-                employees={employees}
-                filters={filters}
-                onFilters={handleFilters}
-                onResetFilters={handleResetFilters}
-                results={dataFiltered.length}
-                sx={{ p: 2.5, pt: 0 }}
+  return (
+    <>
+      <CreditCardSettingsDialog employees={employees} creditCardAccounts={creditCardAccounts} open={editMode} />
+      <Container maxWidth="xl">
+        <Card>
+          <Tabs
+            value={filters.status}
+            onChange={handleFilterStatus}
+            sx={{
+              px: 2.5,
+              boxShadow: (theme) => `inset 0 -2px 0 0 ${alpha(theme.palette.grey[500], 0.08)}`,
+            }}
+          >
+            {STATUS_OPTIONS.map((tab) => (
+              <Tab
+                key={tab.value}
+                iconPosition="end"
+                value={tab.value}
+                label={tab.label}
+                icon={
+                  <Label
+                    variant={(tab.value === filters.status && 'filled') || 'soft'}
+                    color={(tab.value === 'personal' && 'info') || (tab.value === 'categorized' && 'warning') || 'default'}
+                  >
+                    {getCategoryData(tab.value).length}
+                  </Label>
+                }
               />
-            )}
+            ))}
+          </Tabs>
 
-            <TableContainer sx={{ position: 'relative', overflow: 'unset', height: '60vh' }}>
-              <Scrollbar sx={{ maxHeight: '60vh' }}>
-                <Table size={table.dense ? 'small' : 'medium'} sx={{ minWidth: 960 }}>
-                  <TableBody>
-                    {dataInPage.map((transaction, index) => (
+          <TransactionFilter filters={filters} onFilters={handleFilters} employees={authorizedEmployeesAndAvailable} user={user} />
+
+          {canReset && (
+            <ResetTransactionFilter
+              employees={employees}
+              filters={filters}
+              onFilters={handleFilters}
+              onResetFilters={handleResetFilters}
+              results={dataFiltered.length}
+              sx={{ p: 2.5, pt: 0 }}
+            />
+          )}
+
+          {/* can you just add a list of the filtered transactions here? */}
+          {/* {dataInPage.map((transaction) => (
+            <div key={transaction.sk}>{transaction.sk}</div>
+          ))} */}
+
+          <TableContainer sx={{ position: 'relative', overflow: 'unset', height: '60vh' }}>
+            <Scrollbar sx={{ maxHeight: '60vh' }}>
+              <Table size={table.dense ? 'small' : 'medium'} sx={{ minWidth: 960 }}>
+                <TableBody>
+                  {isFiltering ? (
+                    <TableRow>
+                      <TableCell colSpan={8} sx={{ height: '400px', border: 'none' }}>
+                        <Box
+                          sx={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            height: '100%',
+                          }}
+                        >
+                          <LinearProgress color="inherit" sx={{ width: 1, maxWidth: 360 }} />
+                        </Box>
+                      </TableCell>
+                    </TableRow>
+                  ) : (
+                    dataInPage.map((transaction, index) => (
                       <RowItem
                         key={transaction.sk}
                         transaction={transaction}
@@ -334,28 +400,28 @@ export default function TransactionList({
                         user={user}
                         handleRemoveTransaction={handleRemoveTransaction}
                       />
-                    ))}
+                    ))
+                  )}
 
-                    <TableEmptyRows height={denseHeight} emptyRows={emptyRows(table.page, table.rowsPerPage, displayedTransactions.length)} />
+                  <TableEmptyRows height={denseHeight} emptyRows={emptyRows(table.page, table.rowsPerPage, displayedTransactions.length)} />
 
-                    <TableNoData notFound={notFound} title="No Transactions" />
-                  </TableBody>
-                </Table>
-              </Scrollbar>
-            </TableContainer>
+                  {!isFiltering && <TableNoData notFound={notFound} title="No Transactions" />}
+                </TableBody>
+              </Table>
+            </Scrollbar>
+          </TableContainer>
 
-            <TablePaginationCustom
-              count={dataFiltered.length}
-              page={table.page}
-              rowsPerPage={table.rowsPerPage}
-              onPageChange={table.onChangePage}
-              onRowsPerPageChange={table.onChangeRowsPerPage}
-              dense={false}
-              onChangeDense={false}
-            />
-          </Card>
-        </>
-      )}
-    </Container>
+          <TablePaginationCustom
+            count={dataFiltered.length}
+            page={table.page}
+            rowsPerPage={table.rowsPerPage}
+            onPageChange={table.onChangePage}
+            onRowsPerPageChange={table.onChangeRowsPerPage}
+            dense={false}
+            onChangeDense={false}
+          />
+        </Card>
+      </Container>
+    </>
   );
 }

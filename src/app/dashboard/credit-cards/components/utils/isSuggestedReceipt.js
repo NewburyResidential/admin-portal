@@ -19,7 +19,7 @@ export const isSuggestedReceipt = (transaction, receipt) => {
 
   const receiptData = {
     id: receipt.id,
-    modifiedOn: receipt.modifiedOn,
+    uploadedOn: receipt.uploadedOn,
     modifiedBy: receipt.modifiedBy,
     fileName: receipt.fileName,
     objectKey: receipt.objectKey,

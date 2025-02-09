@@ -44,12 +44,11 @@ export async function uploadS3Image(formData) {
   }
 }
 
-export async function copyS3Object(sourceBucket, destinationBucket, objectKey, id, fileName) {
+export async function copyS3Object({ sourceBucket, destinationBucket, objectKey, id, fileExtension }) {
   const copySource = encodeURIComponent(`${sourceBucket}/${objectKey}`);
 
-  const fileExtension = fileName.substring(fileName.lastIndexOf('.'));
-  const isPdf = fileName.toLowerCase().endsWith('.pdf');
-  const key = `receipts/${id}${fileExtension}`;
+  const isPdf = fileExtension === 'pdf';
+  const key = `receipts/${id}.${fileExtension}`;
 
   const params = {
     CopySource: copySource,
@@ -57,14 +56,9 @@ export async function copyS3Object(sourceBucket, destinationBucket, objectKey, i
     Key: key,
   };
 
-  console.log('fileExtenstion:', fileExtension);
-  console.log('isPdf:', isPdf);
-  console.log('key:', key);
-  console.log('params:', params);
-
   try {
     await s3Client.send(new CopyObjectCommand(params));
-    const fileUrl = `https://${destinationBucket}.s3.amazonaws.com/receipts/${encodeURIComponent(`${id}${fileExtension}`)}`;
+    const fileUrl = `https://${destinationBucket}.s3.amazonaws.com/receipts/${encodeURIComponent(`${id}.${fileExtension}`)}`;
     const pdfUrl = `https://${destinationBucket}.s3.amazonaws.com/temp-pdfs/${encodeURIComponent(`${id}.pdf`)}`;
     const tempPdfUrl = isPdf ? fileUrl : pdfUrl;
     return { fileUrl, tempPdfUrl };

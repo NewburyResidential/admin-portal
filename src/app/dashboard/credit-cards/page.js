@@ -9,8 +9,8 @@ import { dashboardPaths } from 'src/routes/paths';
 import { getCreditCardAccounts } from 'src/utils/services/cc-expenses/getCreditCardAccounts';
 import { getAllEmployees } from 'src/utils/services/employees/getAllEmployees';
 import TransactionList from './components/CreditCard/TransactionList';
-import getUnapprovedTransactions from 'src/utils/services/cc-expenses/getUnapprovedTransactions';
 import updateAccountsWithEmployees from './components/utils/update-accounts-with-employees';
+import { getUnapprovedTransactionsWithReceipts } from 'src/utils/services/cc-expenses/getUnapprovedTransactionsWithReceipts';
 
 export default async function page() {
   const [vendors, chartOfAccounts, suggestedReceipts, session, creditCardAccounts, employees, unapprovedTransactions] = await Promise.all([
@@ -20,7 +20,7 @@ export default async function page() {
     getServerSession(authOptions),
     getCreditCardAccounts(),
     getAllEmployees(),
-    getUnapprovedTransactions(),
+    getUnapprovedTransactionsWithReceipts(),
   ]);
 
   isAuthorizedToViewPage(session, dashboardPaths.creditCards.root);
