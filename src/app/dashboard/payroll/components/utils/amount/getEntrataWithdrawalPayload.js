@@ -31,7 +31,7 @@ export function getEntrataWithdrawalPayload(entries, normalDate, fileName) {
       params: {
         apBatch: {
           isPaused: '0',
-          isPosted: '0',
+          isPosted: '1',
           apHeaders: {
             apHeader: {
               apPayeeId: 63387,

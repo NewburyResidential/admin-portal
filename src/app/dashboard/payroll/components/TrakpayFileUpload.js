@@ -41,20 +41,41 @@ const TrakpayFileUpload = ({
           header: true,
           skipEmptyLines: true,
           complete: (results) => {
-            // Find the Total Cost and convert to Big
-            const totalCost = new Big(results.data.find((row) => row._10?.trim() === 'Total Cost')?._11 || '0');
+            // Debug: Log all rows
+            console.log('All CSV rows:', results.data);
 
-            // Get employee details with Big amounts
+            // Find the Total Cost by checking __parsed_extra array
+            const totalCostRow = results.data.find((row) => row.__parsed_extra?.includes('Total Cost'));
+            const totalCostIndex = totalCostRow?.__parsed_extra?.indexOf('Total Cost');
+            const totalCostValue =
+              totalCostIndex !== undefined && totalCostIndex >= 0 ? totalCostRow.__parsed_extra[totalCostIndex + 1] : '0';
+            const totalCost = new Big(totalCostValue);
+
+            // Find the headers row
+            const headersRow = results.data.find(
+              (row) => row.__parsed_extra?.includes('Employee ID') && row.__parsed_extra?.includes('Premium Paid')
+            );
+
+            // Get employee details with Big amounts - start looking after the headers row
+            const headerIndex = results.data.indexOf(headersRow);
             const employeeDetails = results.data
+              .slice(headerIndex + 1)
               .filter((row) => {
-                const hasEmployeeId = row._4 && !Number.isNaN(Number(row._4));
-                const hasPremiumPaid = row._18 && !Number.isNaN(Number(row._18));
+                const employeeIdIndex = headersRow.__parsed_extra.indexOf('Employee ID');
+                const premiumPaidIndex = headersRow.__parsed_extra.indexOf('Premium Paid');
+
+                const hasEmployeeId = row.__parsed_extra?.[employeeIdIndex] && !Number.isNaN(Number(row.__parsed_extra[employeeIdIndex]));
+                const hasPremiumPaid =
+                  row.__parsed_extra?.[premiumPaidIndex] && !Number.isNaN(Number(row.__parsed_extra[premiumPaidIndex]));
+
                 return hasEmployeeId && hasPremiumPaid;
               })
               .map((row) => ({
-                employeeId: row._4,
-                premiumPaid: new Big(row._18),
+                employeeId: row.__parsed_extra[headersRow.__parsed_extra.indexOf('Employee ID')],
+                premiumPaid: new Big(row.__parsed_extra[headersRow.__parsed_extra.indexOf('Premium Paid')]),
               }));
+
+            console.log('employeeDetails', employeeDetails);
 
             // Calculate total from employees
             const employeeTotal = employeeDetails.reduce((sum, emp) => sum.plus(emp.premiumPaid), new Big(0));
