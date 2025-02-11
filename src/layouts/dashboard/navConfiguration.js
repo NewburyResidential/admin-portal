@@ -28,7 +28,7 @@ export const navConfiguration = [
         icon: ICONS.creditCard,
         children: [
           { title: 'Upload Receipts', path: dashboardPaths.creditCards.upload },
-          { title: 'Transactions', path: dashboardPaths.creditCards.root, roles: ['credit-card-assigner'] }, // Create Root Folder
+          { title: 'Transactions', path: dashboardPaths.creditCards.transactions, roles: ['credit-card-assigner'] }, // Create Root Folder
           { title: 'Reports', path: dashboardPaths.creditCards.reports, roles: ['accounting'] },
         ],
       },
