@@ -12,15 +12,19 @@ import Tab from '@mui/material/Tab';
 export default function InfoDialog({ open, onClose, errors = [], isAdmin }) {
   const [activeTab, setActiveTab] = useState(0);
 
-  // Skip if no errors
-  if (!errors.length) return null;
+  // Skip if no errors or if errors is not an array
+  if (!Array.isArray(errors) || !errors.length) return null;
+
+  // Ensure current error exists
+  const currentError = errors[activeTab] || {};
+  const severity = currentError?.severity || 'error';
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md">
       {errors.length > 1 && (
         <DialogTitle
           sx={(theme) => ({
-            borderTop: `6px solid ${theme.palette[errors[activeTab].severity].main}`,
+            borderTop: `6px solid ${theme.palette[severity].main}`,
           })}
         >
           <Tabs value={activeTab} onChange={(_, newValue) => setActiveTab(newValue)} variant="scrollable" scrollButtons="auto">
@@ -32,35 +36,35 @@ export default function InfoDialog({ open, onClose, errors = [], isAdmin }) {
                   margin: '4px',
                   borderRadius: '4px',
                   '&.MuiTab-root': {
-                    color: theme.palette[error.severity].dark,
+                    color: theme.palette[error?.severity || 'error'].dark,
                   },
                   '&.Mui-selected': {
-                    color: theme.palette[error.severity].main,
+                    color: theme.palette[error?.severity || 'error'].main,
                   },
                 })}
               />
             ))}
           </Tabs>
-          <Box mt={2}>{errors[activeTab]?.message}</Box>
+          <Box mt={2}>{currentError?.message}</Box>
         </DialogTitle>
       )}
 
       {errors.length === 1 && (
         <DialogTitle
           sx={(theme) => ({
-            borderTop: `6px solid ${theme.palette[errors[activeTab].severity].main}`,
+            borderTop: `6px solid ${theme.palette[severity].main}`,
           })}
         >
-          {errors[activeTab]?.message}
+          {currentError?.message}
         </DialogTitle>
       )}
 
       <DialogContent>
         {isAdmin ? (
           <>
-            {errors[activeTab]?.infoDialog?.summary && (
-              <Typography variant="h6" color={(theme) => `${theme.palette[errors[activeTab].severity].dark}`} mb={3}>
-                {errors[activeTab]?.infoDialog?.summary}
+            {currentError?.infoDialog?.summary && (
+              <Typography variant="h6" color={(theme) => `${theme.palette[severity].dark}`} mb={3}>
+                {currentError.infoDialog.summary}
               </Typography>
             )}
 
@@ -70,7 +74,7 @@ export default function InfoDialog({ open, onClose, errors = [], isAdmin }) {
                 overflowY: 'auto',
               }}
             >
-              {errors[activeTab]?.infoDialog?.stack ? (
+              {currentError?.infoDialog?.stack ? (
                 <Typography
                   component="pre"
                   sx={{
@@ -83,7 +87,7 @@ export default function InfoDialog({ open, onClose, errors = [], isAdmin }) {
                     overflowX: 'auto',
                   }}
                 >
-                  {errors[activeTab]?.infoDialog?.stack}
+                  {currentError.infoDialog.stack}
                 </Typography>
               ) : (
                 <Typography variant="body1">No data available</Typography>

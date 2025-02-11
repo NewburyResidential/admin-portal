@@ -155,7 +155,7 @@ export default function FileInput({ employees, user, chartOfAccounts }) {
       showResponseSnackbar([
         {
           severity: 'warning',
-          message: 'Error occured with Ai analysis' || 'Failed to analyze receipt. Please fill in the details manually.',
+          message: 'Unable to use AI' || 'Failed to analyze receipt. Please fill in the details manually.',
         },
       ]);
     } finally {
