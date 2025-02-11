@@ -5,8 +5,7 @@ import { analyzeReceipt } from 'src/utils/services/cc-expenses/analyze-receipts'
 import useDialog from 'src/components/custom-dialog/use-dialog';
 import UploadSingleFile from 'src/components/upload-files/UploadSingleFile';
 import ReceiptFormDigalog from './ReceiptFormDigalog';
-import { useForm , useFieldArray , FormProvider } from 'react-hook-form';
-
+import { useForm, useFieldArray, FormProvider } from 'react-hook-form';
 
 import { yupResolver } from '@hookform/resolvers/yup';
 import { receiptSchema } from './utils/receipt-schema';
@@ -23,7 +22,6 @@ export default function FileInput({ employees, user, chartOfAccounts }) {
   const [isUploading, setIsUploading] = useState(false);
 
   const pk = `web-${uuidv4()}`;
- // const s3Key = `test.${selectedFile.type.split('/')[1]}`;
 
   const { showResponseSnackbar } = useSnackbar();
 
@@ -89,8 +87,7 @@ export default function FileInput({ employees, user, chartOfAccounts }) {
   const onSubmit = async (data) => {
     console.log(data);
     setIsUploading(true);
-    const s3Key = `test.heic`;
-
+    const s3Key = `${pk}.${selectedFile.type.split('/')[1]}`;
 
     const transformedAllocations = data.allocations.map((allocation) => ({
       ...allocation,
@@ -104,7 +101,7 @@ export default function FileInput({ employees, user, chartOfAccounts }) {
 
     const receiptData = {
       ...data,
-      pk: 'test',
+      pk,
       s3Key,
       chargedAmount: data.amount,
       allocations: transformedAllocations,
@@ -147,7 +144,7 @@ export default function FileInput({ employees, user, chartOfAccounts }) {
 
       const results = await Promise.race([analyzeReceipt(base64String), timeoutPromise]);
 
-      const {data} = results;
+      const { data } = results;
       setValue('merchantName', data.merchant);
       setValue('amount', data.total);
       setValue('transactionDate', data.date);
@@ -158,7 +155,7 @@ export default function FileInput({ employees, user, chartOfAccounts }) {
       showResponseSnackbar([
         {
           severity: 'warning',
-          message: "Error occured with Ai analysis" || 'Failed to analyze receipt. Please fill in the details manually.',
+          message: 'Error occured with Ai analysis' || 'Failed to analyze receipt. Please fill in the details manually.',
         },
       ]);
     } finally {
