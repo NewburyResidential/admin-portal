@@ -93,6 +93,7 @@ export default function ReceiptTable({ setOpen, setLoading, id, recentReceipts, 
       if (response) {
         setValue(`receipt`, response.fileUrl);
         setValue(`tempPdfReceipt`, response.tempPdfUrl);
+        setValue('suggestedReceiptReference', receipt.pk);
       }
     } catch (error) {
       console.error('Error uploading file:', error);

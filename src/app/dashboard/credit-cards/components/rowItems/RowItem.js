@@ -16,6 +16,7 @@ import { transactionsSchema } from '../utils/transactions-schema';
 import updateTransaction from 'src/utils/services/cc-expenses/updateTransaction';
 import { useSnackbar } from 'src/utils/providers/SnackbarProvider';
 import { uploadS3Image } from 'src/utils/services/cc-expenses/uploadS3Image';
+import incrementSuggestedReceipt from 'src/utils/services/cc-expenses/incrementSuggestedReceipt';
 
 const RowItem = React.memo(
   ({ transaction, vendors, setVendors, chartOfAccounts, recentReceipts, user, handleRemoveTransaction, transactionIndex }) => {
@@ -82,6 +83,7 @@ const RowItem = React.memo(
             if (response) {
               setValue('receipt', response.fileUrl);
               setValue('tempPdfReceipt', response.tempPdfUrl);
+              setValue('suggestedReceiptReference', null);
             }
           } catch (error) {
             console.error('Error uploading file:', error);
@@ -107,6 +109,7 @@ const RowItem = React.memo(
     const onSubmit = useCallback(
       async (data) => {
         console.log('data', data);
+
         setIsSubmitting(true);
         const attributesToUpdate = {
           allocations: data.allocations,
@@ -115,15 +118,20 @@ const RowItem = React.memo(
           tempPdfReceipt: data.tempPdfReceipt,
           calculationMethod: data.calculationMethod,
           status: user.roles?.includes('admin') ? 'reviewed' : 'categorized',
+         // status: 'unapproved',
           ...(data.status === 'unapproved' && { categorizedBy: user.fullName }),
           ...(user.roles?.includes('admin') && { approvedBy: user.fullName }),
         };
         try {
-          const response = await updateTransaction(data.pk, data.sk, attributesToUpdate);
-          showResponseSnackbar(response);
-          if (response.severity === 'success') {
-            handleRemoveTransaction(data.sk);
+          const updateResponse = await updateTransaction(data.pk, data.sk, attributesToUpdate);
+          if (updateResponse.severity === 'success') {
+            if (data.suggestedReceiptReference) {
+              console.log('data.suggestedReceiptReference', data.suggestedReceiptReference);
+              await incrementSuggestedReceipt({ pk: data.suggestedReceiptReference });
+            }
+             handleRemoveTransaction(data.sk);
           }
+          showResponseSnackbar(updateResponse);
         } catch (error) {
           console.error('Error updating transactions:', error);
         }

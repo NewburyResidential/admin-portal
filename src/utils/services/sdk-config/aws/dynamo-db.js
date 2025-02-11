@@ -192,3 +192,33 @@ export async function dynamoAdd({ tableName, item }) {
     throw error;
   }
 }
+
+export async function dynamoIncrementAttribute({ tableName, pk, sk = null, attributeName, incrementBy = 1 }) {
+  const params = {
+    TableName: tableName,
+    Key: sk ? { pk, sk } : { pk },
+    UpdateExpression: 'ADD #attr :increment',
+    ExpressionAttributeNames: {
+      '#attr': attributeName,
+    },
+    ExpressionAttributeValues: {
+      ':increment': incrementBy,
+    },
+    ReturnValues: 'UPDATED_NEW',
+  };
+
+  try {
+    const response = await dynamoDocumentClient.send(new UpdateCommand(params));
+    Sentry.addBreadcrumb({
+      category: 'response',
+      message: 'Dynamo increment operation successful:',
+      level: 'info',
+      data: response,
+    });
+    return response;
+  } catch (error) {
+    error.message = `(Error incrementing attribute in DynamoDB) ${error.message}`;
+    Sentry.captureException(error);
+    throw error;
+  }
+}

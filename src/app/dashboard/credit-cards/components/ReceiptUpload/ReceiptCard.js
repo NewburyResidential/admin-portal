@@ -61,6 +61,8 @@ export default function ReceiptCards({ id, setOpen, setLoading, suggestedReceipt
       if (response) {
         setValue(`receipt`, response.fileUrl);
         setValue(`tempPdfReceipt`, response.tempPdfUrl);
+        setValue('suggestedReceiptReference', receipt.pk);
+        
       }
     } catch (error) {
       console.error('Error uploading file:', error);

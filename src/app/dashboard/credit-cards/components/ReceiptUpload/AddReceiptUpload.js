@@ -46,6 +46,7 @@ export default function AddReceiptUpload({ recentReceipts, setLoading, hasReceip
       if (response) {
         setValue(`receipt`, response.fileUrl);
         setValue(`tempPdfReceipt`, response.tempPdfUrl);
+        setValue(`suggestedReceiptReference`, null);
       }
     } catch (error) {
       console.error('Error uploading file:', error);
@@ -109,6 +110,7 @@ export default function AddReceiptUpload({ recentReceipts, setLoading, hasReceip
       if (response) {
         setValue('receipt', response.fileUrl);
         setValue('tempPdfReceipt', response.tempPdfUrl);
+        setValue('suggestedReceiptReference', receipt.pk);
       }
     } catch (error) {
       console.error('Error uploading file:', error);
@@ -189,7 +191,7 @@ export default function AddReceiptUpload({ recentReceipts, setLoading, hasReceip
                 }}
               />
             )}
-            <Typography variant="body2" component="p" sx={{ mb: 1, textAlign: 'center', fontWeight: 'bold' }}>
+            <Typography variant="body2" component="p" sx={{ mb: 2, textAlign: 'center', fontWeight: 'bold', mt: 2 }}>
               {hoveredReceipt.modifiedBy === 'S3 Upload'
                 ? 'Uploaded in S3'
                 : `${hoveredReceipt.modifiedBy} uploaded ${hoveredReceipt.uploadedOn}`}
