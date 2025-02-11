@@ -70,7 +70,7 @@ export default function InfoDialog({ open, onClose, errors = [], isAdmin }) {
                 overflowY: 'auto',
               }}
             >
-              {errors[activeTab].infoDialog?.stack ? (
+              {errors[activeTab]?.infoDialog?.stack ? (
                 <Typography
                   component="pre"
                   sx={{

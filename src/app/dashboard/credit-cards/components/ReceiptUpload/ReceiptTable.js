@@ -17,7 +17,7 @@ import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import Chip from '@mui/material/Chip';
 
-export default function ReceiptTable({ setOpen, setLoading, id, recentReceipts, user, currentCardUsed }) {
+export default function ReceiptTable({ setOpen, setLoading, id, recentReceipts, user, currentCardUsed, chartOfAccounts, totalAmount }) {
   const [filter, setFilter] = useState(currentCardUsed);
   const { setValue, getValues } = useFormContext();
 
@@ -58,23 +58,35 @@ export default function ReceiptTable({ setOpen, setLoading, id, recentReceipts, 
     setLoading(true);
     setOpen(false);
     if (receipt && receipt.allocations && receipt.allocations.length > 0) {
+      console.log('receipt.allocations', receipt.allocations);
       const updatedAllocations = receipt.allocations.map((allocation) => {
-        const matchingAsset = assetItems.find((asset) => asset.accountId === allocation.asset.accountId);
-
+        const matchingAsset = allocation.asset?.accountId
+          ? assetItems.find((asset) => asset.accountId === allocation.asset.accountId)
+          : null;
+        const matchingGlAccount = allocation.glAccount?.accountId
+          ? chartOfAccounts.find((glAccount) => glAccount.accountId === allocation.glAccount.accountId)
+          : null;
         return {
           ...allocation,
           asset: matchingAsset || null,
-          note: receipt.notes || '',
+          glAccount: matchingGlAccount || null,
+          note: allocation.note || receipt.notes || '',
+          amount: receipt.allocations.length > 1 ? allocation.amount : totalAmount,
+          helper: receipt.allocations.length > 1 ? allocation.helper : '100',
         };
       });
-      setValue('calculationMethod', receipt.calculationMethod);
+      if (updatedAllocations.length > 1) {
+        setValue('calculationMethod', receipt.calculationMethod);
+      } else {
+        setValue('calculationMethod', 'amount');
+      }
       setValue('allocations', updatedAllocations);
     }
     try {
       const response = await copyS3Object({
         sourceBucket: 'admin-portal-cc-suggested-receipts',
         destinationBucket: 'admin-portal-receipts',
-        objectKey: receipt.pk,
+        objectKey: receipt.s3Key ? receipt.s3Key : receipt.pk,
         id,
         fileExtension: receipt.fileExtension,
       });
@@ -143,7 +155,7 @@ export default function ReceiptTable({ setOpen, setLoading, id, recentReceipts, 
                     <Button
                       variant="outlined"
                       onClick={() => {
-                        const encodedObjectKey = encodeURIComponent(row.pk);
+                        const encodedObjectKey = encodeURIComponent(row.s3Key ? row.s3Key : row.pk);
                         handleViewReceipt(`https://admin-portal-cc-suggested-receipts.s3.us-east-1.amazonaws.com/${encodedObjectKey}`);
                       }}
                       sx={{ marginRight: '16px', width: '100px' }}

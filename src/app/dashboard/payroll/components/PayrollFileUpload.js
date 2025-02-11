@@ -151,7 +151,7 @@ const PayrollFileUpload = ({
               }
             });
             const operatingTransferAmount = operatingEntries.reduce((acc, entry) => {
-              const propertyId = entry.propertyId;
+              const {propertyId} = entry;
               if (!acc[propertyId]) {
                 acc[propertyId] = { amount: new Big(0) };
               }
@@ -160,7 +160,7 @@ const PayrollFileUpload = ({
             }, {});
 
             const transferAmounts = withdrawalEntries.reduce((acc, entry) => {
-              const propertyId = entry.propertyId;
+              const {propertyId} = entry;
               const amount = new Big(entry.rate);
 
               if (!acc[propertyId]) {

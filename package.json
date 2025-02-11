@@ -18,6 +18,7 @@
     "email": "email dev --dir src/utils/services/email"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.36.3",
     "@auth/dynamodb-adapter": "^2.7.4",
     "@aws-sdk/client-dynamodb": "^3.574.0",
     "@aws-sdk/client-s3": "^3.484.0",
@@ -62,6 +63,7 @@
     "node-fetch": "^3.3.2",
     "nprogress": "^0.2.0",
     "numeral": "^2.0.6",
+    "openai": "^4.83.0",
     "pandadoc-node-client": "^6.2.0",
     "papaparse": "^5.4.1",
     "pdf-lib": "^1.17.1",

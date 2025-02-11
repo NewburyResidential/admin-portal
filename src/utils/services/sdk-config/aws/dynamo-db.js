@@ -1,5 +1,5 @@
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
-import { DynamoDBDocumentClient, QueryCommand, UpdateCommand, DeleteCommand, ScanCommand } from '@aws-sdk/lib-dynamodb';
+import { DynamoDBDocumentClient, QueryCommand, UpdateCommand, DeleteCommand, ScanCommand, PutCommand } from '@aws-sdk/lib-dynamodb';
 import { AWS_CONFIG } from 'src/config-global';
 import * as Sentry from '@sentry/nextjs';
 
@@ -167,6 +167,28 @@ export async function dynamoDeleteItem({ tableName, pk, sk }) {
     return response;
   } catch (error) {
     error.message = `(Error deleting item from DynamoDB) ${error.message}`;
+    throw error;
+  }
+}
+
+export async function dynamoAdd({ tableName, item }) {
+  try {
+    const params = {
+      TableName: tableName,
+      Item: item,
+    };
+
+    const response = await dynamoDocumentClient.send(new PutCommand(params));
+    Sentry.addBreadcrumb({
+      category: 'response',
+      message: 'Dynamo add operation successful:',
+      level: 'info',
+      data: response,
+    });
+    return response;
+  } catch (error) {
+    error.message = `(Error adding item to DynamoDB) ${error.message}`;
+    Sentry.captureException(error);
     throw error;
   }
 }

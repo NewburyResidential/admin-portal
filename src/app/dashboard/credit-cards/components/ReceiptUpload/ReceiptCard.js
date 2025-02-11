@@ -14,7 +14,7 @@ import { copyS3Object } from 'src/utils/services/cc-expenses/uploadS3Image';
 import { format } from 'date-fns';
 import { assetItems } from 'src/assets/data/assets';
 
-export default function ReceiptCards({ id, setOpen, setLoading, suggestedReceipts }) {
+export default function ReceiptCards({ id, setOpen, setLoading, suggestedReceipts, chartOfAccounts, totalAmount }) {
   const { setValue } = useFormContext();
 
   const handleViewReceipt = (imageUrl) => {
@@ -25,16 +25,28 @@ export default function ReceiptCards({ id, setOpen, setLoading, suggestedReceipt
     setLoading(true);
     setOpen(false);
     if (receipt && receipt.allocations && receipt.allocations.length > 0) {
+      console.log('receipt.allocations', receipt.allocations);
       const updatedAllocations = receipt.allocations.map((allocation) => {
-        const matchingAsset = assetItems.find((asset) => asset.accountId === allocation.asset.accountId);
-
+        const matchingAsset = allocation.asset?.accountId
+          ? assetItems.find((asset) => asset.accountId === allocation.asset.accountId)
+          : null;
+        const matchingGlAccount = allocation.glAccount?.accountId
+          ? chartOfAccounts.find((glAccount) => glAccount.accountId === allocation.glAccount.accountId)
+          : null;
         return {
           ...allocation,
           asset: matchingAsset || null,
-          note: receipt.notes || '',
+          glAccount: matchingGlAccount || null,
+          note: allocation.note || receipt.notes || '',
+          amount: receipt.allocations.length > 1 ? allocation.amount : totalAmount,
+          helper: receipt.allocations.length > 1 ? allocation.helper : '100',
         };
       });
-      setValue('calculationMethod', receipt.calculationMethod);
+      if (updatedAllocations.length > 1) {
+        setValue('calculationMethod', receipt.calculationMethod);
+      } else {
+        setValue('calculationMethod', 'amount');
+      }
       setValue('allocations', updatedAllocations);
     }
 
@@ -42,7 +54,7 @@ export default function ReceiptCards({ id, setOpen, setLoading, suggestedReceipt
       const response = await copyS3Object({
         sourceBucket: 'admin-portal-cc-suggested-receipts',
         destinationBucket: 'admin-portal-receipts',
-        objectKey: receipt.pk,
+        objectKey: receipt.s3Key ? receipt.s3Key : receipt.pk,
         id,
         fileExtension: receipt.fileExtension,
       });
@@ -162,7 +174,7 @@ export default function ReceiptCards({ id, setOpen, setLoading, suggestedReceipt
                 >
                   <Button
                     onClick={() => {
-                      const encodedObjectKey = encodeURIComponent(receipt.pk);
+                      const encodedObjectKey = encodeURIComponent(receipt.s3Key ? receipt.s3Key : receipt.pk);
                       handleViewReceipt(`https://admin-portal-cc-suggested-receipts.s3.us-east-1.amazonaws.com/${encodedObjectKey}`);
                     }}
                     sx={{ px: 2, width: '100%' }}

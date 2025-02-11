@@ -24,6 +24,7 @@ export const isSuggestedReceipt = (transaction, receipt) => {
 
   const receiptData = {
     pk: receipt.pk,
+    s3Key: receipt.s3Key || null,
     uploadedOn: receipt.uploadedOn,
     modifiedBy: receiptCreditCardName,
     transactionDate: { value: receiptDate, score: 0 },

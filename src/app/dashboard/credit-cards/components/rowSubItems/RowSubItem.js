@@ -18,6 +18,8 @@ export default function RowSubItem({
   isSplit,
   append,
   remove,
+  showGl = true,
+  showAmount = true,
 }) {
   const clearAmounts = useClearCalculations();
   const recalculateByUnit = useRecalculateByUnit();
@@ -78,19 +80,23 @@ export default function RowSubItem({
       <Box sx={{ flex: 3.2 }}>
         <DropDownAssets allocationIndex={allocationIndex} baseFieldName={baseFieldName} />
       </Box>
-      <Box sx={{ flex: 3.2 }}>
-        <DropDownGl chartOfAccounts={chartOfAccounts} baseFieldName={baseFieldName} />
-      </Box>
+      {showGl && (
+        <Box sx={{ flex: 3.2 }}>
+          <DropDownGl chartOfAccounts={chartOfAccounts} baseFieldName={baseFieldName} />
+        </Box>
+      )}
       <Box sx={{ flex: 3.2 }}>
         <TextFieldNote baseFieldName={baseFieldName} />
       </Box>
-      <InputAmounts
-        allocationFields={allocationFields}
-        allocationIndex={allocationIndex}
-        baseFieldName={baseFieldName}
-        totalAmount={totalAmount}
-        isSplit={isSplit}
-      />
+      {showAmount && (
+        <InputAmounts
+          allocationFields={allocationFields}
+          allocationIndex={allocationIndex}
+          baseFieldName={baseFieldName}
+          totalAmount={totalAmount}
+          isSplit={isSplit}
+        />
+      )}
     </Box>
   );
 }

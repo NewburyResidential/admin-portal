@@ -11,6 +11,7 @@ const rawDashboardPaths = {
     root: `/credit-cards`,
     sub: {
       transactions: `/transactions`,
+      upload: `/upload`,
       reports: `/reports`,
     },
   },

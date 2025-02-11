@@ -23,11 +23,11 @@ export const navConfiguration = [
     subheader: 'Accounting',
     items: [
       {
-        roles: ['accounting', 'credit-card-assigner'],
         title: 'Expenses',
         path: dashboardPaths.creditCards.root,
         icon: ICONS.creditCard,
         children: [
+          { title: 'Upload Receipts', path: dashboardPaths.creditCards.upload },
           { title: 'Transactions', path: dashboardPaths.creditCards.root, roles: ['credit-card-assigner'] }, // Create Root Folder
           { title: 'Reports', path: dashboardPaths.creditCards.reports, roles: ['accounting'] },
         ],

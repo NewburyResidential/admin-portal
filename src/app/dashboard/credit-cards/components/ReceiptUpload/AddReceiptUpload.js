@@ -17,7 +17,7 @@ import Badge from '@mui/material/Badge';
 import CancelIcon from '@mui/icons-material/Cancel';
 import Chip from '@mui/material/Chip';
 
-export default function AddReceiptUpload({ recentReceipts, setLoading, hasReceipt, transaction, isDragActive, user }) {
+export default function AddReceiptUpload({ recentReceipts, setLoading, hasReceipt, transaction, isDragActive, user, chartOfAccounts }) {
   //console.log('transaction', transaction);
 
   const { setValue, getValues } = useFormContext();
@@ -30,7 +30,7 @@ export default function AddReceiptUpload({ recentReceipts, setLoading, hasReceip
   const handleMenuClick = (event) => setAnchorEl(event.currentTarget);
   const handleCloseMenu = () => setAnchorEl(null);
 
-  const suggestedReceipts = transaction.suggestedReceipts;
+  const {suggestedReceipts} = transaction;
 
   const bestMatch = suggestedReceipts && suggestedReceipts.length > 0 ? suggestedReceipts[0] : null;
 
@@ -72,26 +72,37 @@ export default function AddReceiptUpload({ recentReceipts, setLoading, hasReceip
   };
 
   const handleMatchedReceiptUpload = async (receipt) => {
+    console.log('receipt', receipt);
     setLoading(true);
     if (receipt && receipt.allocations && receipt.allocations.length > 0) {
-      console.log('receipt.allocations', receipt.allocations);
-      console.log('receipt.notes', receipt);
       const updatedAllocations = receipt.allocations.map((allocation) => {
-        const matchingAsset = assetItems.find((asset) => asset.accountId === allocation.asset.accountId);
+        const matchingAsset = allocation.asset?.accountId
+          ? assetItems.find((asset) => asset.accountId === allocation.asset.accountId)
+          : null;
+        const matchingGlAccount = allocation.glAccount?.accountId
+          ? chartOfAccounts.find((glAccount) => glAccount.accountId === allocation.glAccount.accountId)
+          : null;
         return {
           ...allocation,
           asset: matchingAsset || null,
-          note: receipt.notes || '',
+          glAccount: matchingGlAccount || null,
+          note: allocation.note || receipt.notes || '',
+          amount: receipt.allocations.length > 1 ? allocation.amount : transaction.amount,
+          helper: receipt.allocations.length > 1 ? allocation.helper : '100',
         };
       });
-      setValue('calculationMethod', receipt.calculationMethod);
+      if (updatedAllocations.length > 1) {
+        setValue('calculationMethod', receipt.calculationMethod);
+      } else {
+        setValue('calculationMethod', 'amount');
+      }
       setValue('allocations', updatedAllocations);
     }
     try {
       const response = await copyS3Object({
         sourceBucket: 'admin-portal-cc-suggested-receipts',
         destinationBucket: 'admin-portal-receipts',
-        objectKey: receipt.pk,
+        objectKey: receipt.s3Key ? receipt.s3Key : receipt.pk,
         id: transaction.sk,
         fileExtension: receipt.fileExtension,
       });
@@ -123,6 +134,7 @@ export default function AddReceiptUpload({ recentReceipts, setLoading, hasReceip
         recentReceipts={recentReceipts}
         suggestedReceipts={suggestedReceipts}
         user={user}
+        chartOfAccounts={chartOfAccounts}
       />
       {hoveredReceipt && (
         <Box
@@ -255,7 +267,7 @@ export default function AddReceiptUpload({ recentReceipts, setLoading, hasReceip
             {hoveredReceipt.fileExtension?.toLowerCase() === 'pdf' ? (
               <iframe
                 title={`Receipt PDF for ${transaction.description || 'transaction'}`}
-                src={`https://admin-portal-cc-suggested-receipts.s3.us-east-1.amazonaws.com/${encodeURIComponent(hoveredReceipt.pk)}#toolbar=0&navpanes=0&scrollbar=0&view=FitV&zoom=page-actual`}
+                src={`https://admin-portal-cc-suggested-receipts.s3.us-east-1.amazonaws.com/${encodeURIComponent(hoveredReceipt.s3Key ? hoveredReceipt.s3Key : hoveredReceipt.pk)}#toolbar=0&navpanes=0&scrollbar=0&view=FitV&zoom=page-actual`}
                 style={{
                   height: '80vh',
                   width: '80%',
@@ -282,7 +294,7 @@ export default function AddReceiptUpload({ recentReceipts, setLoading, hasReceip
               </object>
               */
               <img
-                src={`https://admin-portal-cc-suggested-receipts.s3.us-east-1.amazonaws.com/${encodeURIComponent(hoveredReceipt.pk)}`}
+                src={`https://admin-portal-cc-suggested-receipts.s3.us-east-1.amazonaws.com/${encodeURIComponent(hoveredReceipt.s3Key ? hoveredReceipt.s3Key : hoveredReceipt.pk)}`}
                 alt="Receipt Preview"
                 style={{
                   maxHeight: '80vh',

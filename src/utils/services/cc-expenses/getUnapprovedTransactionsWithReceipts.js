@@ -12,7 +12,7 @@ export const getUnapprovedTransactionsWithReceipts = async () => {
     if (!cardName) {
       return acc;
     }
-    const cardId = cardName.toLowerCase();
+    const cardId = cardName?.toLowerCase();
     if (cardName === 'Emailed' || cardName === 'Amazon') {
       const emailedCardHolders = ['brian murphy', 'michael axiotakis', 'tom anthony', 'laura murphy'];
       emailedCardHolders.forEach((holder) => {

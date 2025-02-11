@@ -11,17 +11,17 @@ export default function ReactHookAutocomplete({ label, options, name, disabled =
       name={name}
       control={control}
       render={({ field, fieldState: { error } }) => {
-        const { currentValue, onChange: fieldOnChange, ...restField } = field;
+        const { value, onChange: fieldOnChange, ...restField } = field;
         return (
           <FormControl error={!!error} fullWidth variant="outlined">
             <Autocomplete
               {...restField}
               {...other}
               options={options}
-              getOptionLabel={(option) => option.label}
-              isOptionEqualToValue={(option, value) => option.value === value?.value}
+              getOptionLabel={(opt) => opt.label}
+              isOptionEqualToValue={(option, val) => option.value === val?.value}
               disabled={disabled}
-              value={currentValue || null}
+              value={value || null}
               onChange={(event, changeValue) => {
                 fieldOnChange(changeValue);
                 if (onChange) {

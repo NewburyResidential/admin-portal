@@ -49,6 +49,7 @@ export async function copyS3Object({ sourceBucket, destinationBucket, objectKey,
 
   const isPdf = fileExtension === 'pdf';
   const key = `receipts/${id}.${fileExtension}`;
+ 
 
   const params = {
     CopySource: copySource,
@@ -61,6 +62,8 @@ export async function copyS3Object({ sourceBucket, destinationBucket, objectKey,
     const fileUrl = `https://${destinationBucket}.s3.amazonaws.com/receipts/${encodeURIComponent(`${id}.${fileExtension}`)}`;
     const pdfUrl = `https://${destinationBucket}.s3.amazonaws.com/temp-pdfs/${encodeURIComponent(`${id}.pdf`)}`;
     const tempPdfUrl = isPdf ? fileUrl : pdfUrl;
+    console.log('fileUrl', fileUrl);
+    console.log('tempPdfUrl', tempPdfUrl);
     return { fileUrl, tempPdfUrl };
   } catch (err) {
     console.log('Error', err);
