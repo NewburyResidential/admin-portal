@@ -11,6 +11,7 @@ import Tab from '@mui/material/Tab';
 
 export default function InfoDialog({ open, onClose, errors = [], isAdmin }) {
   const [activeTab, setActiveTab] = useState(0);
+  console.log(errors);
 
   // Skip if no errors or if errors is not an array
   if (!Array.isArray(errors) || !errors.length) return null;
@@ -60,7 +61,7 @@ export default function InfoDialog({ open, onClose, errors = [], isAdmin }) {
       )}
 
       <DialogContent>
-        {isAdmin ? (
+        {isAdmin && currentError?.infoDialog ? (
           <>
             {currentError?.infoDialog?.summary && (
               <Typography variant="h6" color={(theme) => `${theme.palette[severity].dark}`} mb={3}>
