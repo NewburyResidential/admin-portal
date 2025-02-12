@@ -3,6 +3,7 @@ import { useFormContext } from 'react-hook-form';
 import { copyS3Object } from 'src/utils/services/cc-expenses/uploadS3Image';
 import { parse, compareAsc } from 'date-fns';
 import { assetItems } from 'src/assets/data/assets';
+import { useSnackbar } from 'src/utils/providers/SnackbarProvider';
 
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -23,6 +24,7 @@ export default function ReceiptTable({ setOpen, setLoading, id, recentReceipts, 
   const [filter, setFilter] = useState(currentCardUsed);
   const { setValue, getValues } = useFormContext();
   const [showUsedReceipts, setShowUsedReceipts] = useState(false);
+  const { showResponseSnackbar } = useSnackbar();
 
   const creditCardAllowedToReview = user.creditCardAccountsToReview;
 
@@ -108,6 +110,9 @@ export default function ReceiptTable({ setOpen, setLoading, id, recentReceipts, 
       }
     } catch (error) {
       console.error('Error uploading file:', error);
+      showResponseSnackbar({ severity: 'error', message: 'Error uploading file: too large' });
+
+     
     } finally {
       setLoading(false);
     }

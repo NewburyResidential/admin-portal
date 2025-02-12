@@ -2,6 +2,7 @@ import { useRef, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { copyS3Object, uploadS3Image } from 'src/utils/services/cc-expenses/uploadS3Image';
 import { assetItems } from 'src/assets/data/assets';
+import { useSnackbar } from 'src/utils/providers/SnackbarProvider';
 
 import Box from '@mui/material/Box';
 import Iconify from 'src/components/iconify';
@@ -26,11 +27,12 @@ export default function AddReceiptUpload({ recentReceipts, setLoading, hasReceip
   const [open, setOpen] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
   const [hoveredReceipt, setHoveredReceipt] = useState(null);
+  const { showResponseSnackbar } = useSnackbar();
 
   const handleMenuClick = (event) => setAnchorEl(event.currentTarget);
   const handleCloseMenu = () => setAnchorEl(null);
 
-  const {suggestedReceipts} = transaction;
+  const { suggestedReceipts } = transaction;
 
   const bestMatch = suggestedReceipts && suggestedReceipts.length > 0 ? suggestedReceipts[0] : null;
 
@@ -50,6 +52,7 @@ export default function AddReceiptUpload({ recentReceipts, setLoading, hasReceip
       }
     } catch (error) {
       console.error('Error uploading file:', error);
+      showResponseSnackbar({ severity: 'error', message: 'Error uploading file: too large' });
     } finally {
       setLoading(false);
     }
@@ -114,6 +117,7 @@ export default function AddReceiptUpload({ recentReceipts, setLoading, hasReceip
       }
     } catch (error) {
       console.error('Error uploading file:', error);
+      showResponseSnackbar({ severity: 'error', message: 'Error uploading file: too large' });
     } finally {
       setLoading(false);
     }

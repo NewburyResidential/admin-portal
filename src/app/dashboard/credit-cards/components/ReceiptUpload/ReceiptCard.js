@@ -13,9 +13,11 @@ import { useFormContext } from 'react-hook-form';
 import { copyS3Object } from 'src/utils/services/cc-expenses/uploadS3Image';
 import { format } from 'date-fns';
 import { assetItems } from 'src/assets/data/assets';
+import { useSnackbar } from 'src/utils/providers/SnackbarProvider';
 
 export default function ReceiptCards({ id, setOpen, setLoading, suggestedReceipts, chartOfAccounts, totalAmount }) {
   const { setValue } = useFormContext();
+  const { showResponseSnackbar } = useSnackbar();
 
   const handleViewReceipt = (imageUrl) => {
     window.open(imageUrl, '_blank');
@@ -62,6 +64,7 @@ export default function ReceiptCards({ id, setOpen, setLoading, suggestedReceipt
         setValue(`receipt`, response.fileUrl);
         setValue(`tempPdfReceipt`, response.tempPdfUrl);
         setValue('suggestedReceiptReference', receipt.pk);
+        showResponseSnackbar({ severity: 'error', message: 'Error uploading file: too large' });
         
       }
     } catch (error) {

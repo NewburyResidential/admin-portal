@@ -87,12 +87,13 @@ const RowItem = React.memo(
             }
           } catch (error) {
             console.error('Error uploading file:', error);
+            showResponseSnackbar({ severity: 'error', message: 'Error uploading file: too large' });
           } finally {
             setReceiptIsLoading(false);
           }
         }
       },
-      [transaction.sk, setValue]
+      [transaction.sk, setValue, showResponseSnackbar]
     );
 
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -118,7 +119,7 @@ const RowItem = React.memo(
           tempPdfReceipt: data.tempPdfReceipt,
           calculationMethod: data.calculationMethod,
           status: user.roles?.includes('admin') ? 'reviewed' : 'categorized',
-         // status: 'unapproved',
+          // status: 'unapproved',
           ...(data.status === 'unapproved' && { categorizedBy: user.fullName }),
           ...(user.roles?.includes('admin') && { approvedBy: user.fullName }),
         };
@@ -129,7 +130,7 @@ const RowItem = React.memo(
               console.log('data.suggestedReceiptReference', data.suggestedReceiptReference);
               await incrementSuggestedReceipt({ pk: data.suggestedReceiptReference });
             }
-             handleRemoveTransaction(data.sk);
+            handleRemoveTransaction(data.sk);
           }
           showResponseSnackbar(updateResponse);
         } catch (error) {

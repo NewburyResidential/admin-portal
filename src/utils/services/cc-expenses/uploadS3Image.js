@@ -14,6 +14,12 @@ const s3Client = new S3Client({
 export async function uploadS3Image(formData) {
   const Bucket = formData.get('bucket');
   const file = formData.get('file');
+
+  // Add size logging
+  const fileSizeInBytes = file.size;
+  const fileSizeInMB = fileSizeInBytes / (1024 * 1024);
+  console.log(`File size: ${fileSizeInMB.toFixed(2)} MB`);
+
   const fileExtension = file.name.substring(file.name.lastIndexOf('.'));
   const id = formData.get('name');
   const filename = `${id}${fileExtension}`;
@@ -40,7 +46,7 @@ export async function uploadS3Image(formData) {
     return { fileUrl, tempPdfUrl };
   } catch (error) {
     console.error('Error uploading image:', error);
-    return null;
+    throw new Error('Error uploading image');
   }
 }
 
@@ -49,7 +55,6 @@ export async function copyS3Object({ sourceBucket, destinationBucket, objectKey,
 
   const isPdf = fileExtension === 'pdf';
   const key = `receipts/${id}.${fileExtension}`;
- 
 
   const params = {
     CopySource: copySource,
@@ -67,6 +72,6 @@ export async function copyS3Object({ sourceBucket, destinationBucket, objectKey,
     return { fileUrl, tempPdfUrl };
   } catch (err) {
     console.log('Error', err);
-    return null;
+    throw new Error('Error uploading image');
   }
 }
