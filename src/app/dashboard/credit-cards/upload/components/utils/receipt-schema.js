@@ -47,6 +47,7 @@ export const receiptSchema = yup
       .test({
         name: 'amount-equals-total',
         test: function amountEqualsTotal(value) {
+      
           if (!value) return false;
           const allocations = this.parent.allocations || [];
           if (allocations.length === 0) return false;
@@ -76,9 +77,13 @@ export const receiptSchema = yup
             }
             return acc;
           }, new Big(0));
-          const totalString = total.toString();
 
-          return value === totalString;
+          try {
+            const valueAsBig = new Big(value);
+            return valueAsBig.eq(total);
+          } catch (error) {
+            return false;
+          }
         },
         message: 'Each allocation must sum to the total amount',
       }),
