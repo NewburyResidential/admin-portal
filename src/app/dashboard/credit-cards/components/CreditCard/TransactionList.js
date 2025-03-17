@@ -272,7 +272,9 @@ export default function TransactionList({
     // Apply sorting
     const stabilizedThis = filteredData.map((el, index) => [el, index]);
     stabilizedThis.sort((a, b) => {
-      const order = comparator(a[0], b[0]);
+      const dateA = new Date(a[0].transactionDate);
+      const dateB = new Date(b[0].transactionDate);
+      const order = dateA - dateB;  // Changed to dateA - dateB for oldest to newest (ascending)
       if (order !== 0) return order;
       return a[1] - b[1];
     });
