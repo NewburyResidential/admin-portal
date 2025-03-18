@@ -3,6 +3,7 @@ import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { useDropzone } from 'react-dropzone';
 
 import Box from '@mui/material/Box';
+import Badge from '@mui/material/Badge';
 
 import Receipt from './Receipt';
 import DropDownVendor from './DropDownVendor';
@@ -17,6 +18,7 @@ import updateTransaction from 'src/utils/services/cc-expenses/updateTransaction'
 import { useSnackbar } from 'src/utils/providers/SnackbarProvider';
 import { uploadS3Image } from 'src/utils/services/cc-expenses/uploadS3Image';
 import incrementSuggestedReceipt from 'src/utils/services/cc-expenses/incrementSuggestedReceipt';
+import Iconify from 'src/components/iconify';
 
 const RowItem = React.memo(
   ({ transaction, vendors, setVendors, chartOfAccounts, recentReceipts, user, handleRemoveTransaction, transactionIndex }) => {
@@ -151,36 +153,48 @@ const RowItem = React.memo(
           })}
         >
           <td colSpan="6" style={{ padding: 0 }}>
-            <Box sx={containerStyle}>
-              <input {...getInputProps()} />
-              <Box sx={{ flex: '0 0 auto', pr: 0, pl: 0, width: '70px', textAlign: 'center' }}>
-                <Receipt
-                  user={user}
-                  receiptIsLoading={receiptIsLoading}
-                  setReceiptIsLoading={setReceiptIsLoading}
-                  recentReceipts={recentReceipts}
-                  transaction={transaction}
-                  onClick={(e) => e.stopPropagation()}
-                  isDragActive={isDragActive}
-                  chartOfAccounts={chartOfAccounts}
+            <Box sx={{ position: 'relative' }}>
+            {transaction.isDue && (<Box sx={{ position: 'absolute', top: 12, right: 12 }}>
+                <Iconify 
+                  icon="material-symbols:error-rounded" 
+                  color="primary"
+                  sx={{ 
+                    color: 'error.main',
+                 
+                  }}
                 />
-              </Box>
-              <Box sx={{ flex: 1.5, textAlign: 'center' }}>
-                <DropDownVendor vendors={vendors} setVendors={setVendors} merchant={transaction.merchant} />
-              </Box>
-              <Box sx={{ flex: 1, textAlign: 'center' }}>{titleCase(transaction.name)}</Box>
-              <Box sx={{ flex: 1, textAlign: 'center' }}>{transaction.accountName}</Box>
-              <Box sx={{ flex: 1, textAlign: 'center', minWidth: '10%' }}>{fConvertFromEuropeDate(transaction.transactionDate)}</Box>
-              <Box sx={{ flex: 0.88, textAlign: 'center', pr: 1 }}>
-                <LoadingButton
-                  sx={{ width: '100px' }}
-                  variant={transaction.status === 'categorized' ? 'contained' : 'outlined'}
-                  onClick={handleSubmit(onSubmit)}
-                  loading={isSubmitting}
-                  color={transaction.status === 'categorized' ? 'success' : 'inherit'}
-                >
-                  {transaction.status === 'categorized' ? 'Approve' : 'Submit'}
-                </LoadingButton>
+              </Box>)}
+              <Box sx={containerStyle}>
+                <input {...getInputProps()} />
+                <Box sx={{ flex: '0 0 auto', pr: 0, pl: 0, width: '70px', textAlign: 'center' }}>
+                  <Receipt
+                    user={user}
+                    receiptIsLoading={receiptIsLoading}
+                    setReceiptIsLoading={setReceiptIsLoading}
+                    recentReceipts={recentReceipts}
+                    transaction={transaction}
+                    onClick={(e) => e.stopPropagation()}
+                    isDragActive={isDragActive}
+                    chartOfAccounts={chartOfAccounts}
+                  />
+                </Box>
+                <Box sx={{ flex: 1.5, textAlign: 'center' }}>
+                  <DropDownVendor vendors={vendors} setVendors={setVendors} merchant={transaction.merchant} />
+                </Box>
+                <Box sx={{ flex: 1, textAlign: 'center' }}>{titleCase(transaction.name)}</Box>
+                <Box sx={{ flex: 1, textAlign: 'center' }}>{transaction.accountName}</Box>
+                <Box sx={{ flex: 1, textAlign: 'center', minWidth: '10%' }}>{fConvertFromEuropeDate(transaction.transactionDate)}</Box>
+                <Box sx={{ flex: 0.88, textAlign: 'center', pr: 1 }}>
+                  <LoadingButton
+                    sx={{ width: '100px' }}
+                    variant={transaction.status === 'categorized' ? 'contained' : 'outlined'}
+                    onClick={handleSubmit(onSubmit)}
+                    loading={isSubmitting}
+                    color={transaction.status === 'categorized' ? 'success' : 'inherit'}
+                  >
+                    {transaction.status === 'categorized' ? 'Approve' : 'Submit'}
+                  </LoadingButton>
+                </Box>
               </Box>
             </Box>
           </td>

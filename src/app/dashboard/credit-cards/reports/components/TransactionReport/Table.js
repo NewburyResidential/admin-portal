@@ -136,6 +136,7 @@ export default function TransactionReportTable() {
               <TableCell>Merchant</TableCell>
               <TableCell>Status</TableCell>
               <TableCell>Amount</TableCell>
+              <TableCell>Transaction ID</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -148,6 +149,7 @@ export default function TransactionReportTable() {
                   <Chip label={transaction.status} color={getStatusColor(transaction.status)} />
                 </TableCell>
                 <TableCell>${new Big(transaction.amount || 0).toFixed(2)}</TableCell>
+                <TableCell>{transaction.sk}</TableCell>
               </TableRow>
             ))}
           </TableBody>

@@ -45,6 +45,22 @@ export const getUnapprovedTransactionsWithReceipts = async () => {
     return {
       ...transaction,
       suggestedReceipts: possibleMatches.length > 0 ? possibleMatches : null,
+      isDue: (() => {
+        const today = new Date();
+        const currentMonth = today.getMonth();
+        const currentYear = today.getFullYear();
+        
+        // Is today on or after the 5th of the current month?
+      //  const isReconciliationPeriodStarted = today.getDate() >= 1;
+        
+      //  if (!isReconciliationPeriodStarted) return false;
+        
+        const postedDate = new Date(transaction.postedDate);
+        const cutoffDate = new Date(currentYear, currentMonth, 5);
+        
+        // Is the transaction posted before the 5th of the current month?
+        return postedDate < cutoffDate;
+      })()
     };
   });
 
