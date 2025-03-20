@@ -44,36 +44,57 @@ const TrakpayFileUpload = ({
             // Debug: Log all rows
             console.log('All CSV rows:', results.data);
 
-            // Find the Total Cost by checking __parsed_extra array
-            const totalCostRow = results.data.find((row) => row.__parsed_extra?.includes('Total Cost'));
-            const totalCostIndex = totalCostRow?.__parsed_extra?.indexOf('Total Cost');
-            const totalCostValue =
-              totalCostIndex !== undefined && totalCostIndex >= 0 ? totalCostRow.__parsed_extra[totalCostIndex + 1] : '0';
+            // Find the Total Cost by checking each row's properties
+            const totalCostRow = results.data.find((row) => {
+              // Check all properties in the row for "Total Cost"
+              return Object.values(row).includes("Total Cost");
+            });
+            
+            console.log('totalCostRow', totalCostRow);
+            
+            // Find which property contains "Total Cost"
+            const totalCostKey = Object.keys(totalCostRow).find(key => totalCostRow[key] === "Total Cost");
+            
+            // The total cost value should be in the next column (typically "_11" based on the example)
+            const valueKeys = Object.keys(totalCostRow);
+            const totalCostKeyIndex = valueKeys.indexOf(totalCostKey);
+            const totalCostValueKey = valueKeys[totalCostKeyIndex + 1];
+            const totalCostValue = totalCostRow[totalCostValueKey] || '0';
+            
             const totalCost = new Big(totalCostValue);
+            console.log('totalCost', totalCost.toString());
 
-            // Find the headers row
-            const headersRow = results.data.find(
-              (row) => row.__parsed_extra?.includes('Employee ID') && row.__parsed_extra?.includes('Premium Paid')
-            );
+            // Find the headers row (the row with "Employee ID" and "Premium Paid")
+            const headersRow = results.data.find(row => {
+              return Object.values(row).includes("Employee ID") && Object.values(row).includes("Premium Paid");
+            });
 
             // Get employee details with Big amounts - start looking after the headers row
             const headerIndex = results.data.indexOf(headersRow);
+            console.log('headerIndex', headerIndex);
             const employeeDetails = results.data
               .slice(headerIndex + 1)
               .filter((row) => {
-                const employeeIdIndex = headersRow.__parsed_extra.indexOf('Employee ID');
-                const premiumPaidIndex = headersRow.__parsed_extra.indexOf('Premium Paid');
-
-                const hasEmployeeId = row.__parsed_extra?.[employeeIdIndex] && !Number.isNaN(Number(row.__parsed_extra[employeeIdIndex]));
-                const hasPremiumPaid =
-                  row.__parsed_extra?.[premiumPaidIndex] && !Number.isNaN(Number(row.__parsed_extra[premiumPaidIndex]));
-
+                // Find which properties contain "Employee ID" and "Premium Paid"
+                const employeeIdKey = Object.keys(headersRow).find(key => headersRow[key] === "Employee ID");
+                const premiumPaidKey = Object.keys(headersRow).find(key => headersRow[key] === "Premium Paid");
+                
+                // Check if this row has valid values for Employee ID and Premium Paid
+                const hasEmployeeId = row[employeeIdKey] && !Number.isNaN(Number(row[employeeIdKey]));
+                const hasPremiumPaid = row[premiumPaidKey] && !Number.isNaN(Number(row[premiumPaidKey]));
+                
                 return hasEmployeeId && hasPremiumPaid;
               })
-              .map((row) => ({
-                employeeId: row.__parsed_extra[headersRow.__parsed_extra.indexOf('Employee ID')],
-                premiumPaid: new Big(row.__parsed_extra[headersRow.__parsed_extra.indexOf('Premium Paid')]),
-              }));
+              .map((row) => {
+                // Find which properties contain the values we need
+                const employeeIdKey = Object.keys(headersRow).find(key => headersRow[key] === "Employee ID");
+                const premiumPaidKey = Object.keys(headersRow).find(key => headersRow[key] === "Premium Paid");
+                
+                return {
+                  employeeId: row[employeeIdKey],
+                  premiumPaid: new Big(row[premiumPaidKey]),
+                };
+              });
 
             console.log('employeeDetails', employeeDetails);
 

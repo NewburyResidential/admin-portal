@@ -17,7 +17,15 @@ export default function View() {
     }, 0);
   };
 
-  const totalAmount = calculateTotalAmount(transactions);
+  const calculatePositiveOnlyTotal = () => {
+    return transactions.reduce((total, item) => {
+      // Only add to total if amount is positive
+      return total + (Number(item.amount) > 0 ? Number(item.amount) : 0);
+    }, 0);
+  };
+
+  const totalAmount = calculateTotalAmount();
+  const positiveOnlyTotal = calculatePositiveOnlyTotal();
 
   const handleViewChange = (event, newView) => {
     if (newView !== null) {
@@ -44,7 +52,7 @@ export default function View() {
 
       {viewMode !== 'transactions' ? (
         <>
-          <FilterBar totalAmount={totalAmount} setTransactions={setTransactions} transactions={transactions} />
+          <FilterBar totalAmount={totalAmount} positiveOnlyTotal={positiveOnlyTotal} setTransactions={setTransactions} transactions={transactions} />
           <Table transactions={transactions} />
         </>
       ) : (

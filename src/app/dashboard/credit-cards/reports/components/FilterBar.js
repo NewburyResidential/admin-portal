@@ -16,7 +16,7 @@ import TextFieldPostDate from './TextFieldPostDate';
 import getTransactions from 'src/utils/services/cc-expenses/getTransactions';
 import { uploadPreEntrataTransactions } from 'src/utils/services/cc-expenses/uploadPreEntrataTransactions';
 
-export default function FilterBar({ setTransactions, totalAmount, transactions }) {
+export default function FilterBar({ setTransactions, totalAmount, transactions, positiveOnlyTotal }) {
   const [assets, setAssets] = useState(null);
   const [postDate, setPostDate] = useState('');
   const [loading, setLoading] = useState(false);
@@ -145,6 +145,7 @@ export default function FilterBar({ setTransactions, totalAmount, transactions }
     }
   };
 
+
   return (
     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2, width: '100%' }}>
       <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
@@ -161,11 +162,37 @@ export default function FilterBar({ setTransactions, totalAmount, transactions }
         </Button>
       </Box>
 
-      <Card sx={{ p: 2, width: '200px' }}>
-        <Typography variant="body1" component="div" sx={{ display: 'flex', justifyContent: 'center' }}>
-          Total: ${Number(totalAmount.toFixed(2)).toLocaleString()}
-        </Typography>
-      </Card>
+      <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2 }}>
+        {/* Total Amount Card */}
+        <Box sx={{ 
+          backgroundColor: 'primary.dark', 
+          borderRadius: '16px', 
+          px: 3, 
+          py: 1.5,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center'
+        }}>
+          <Typography variant="body1" component="div" sx={{ color: 'white' }}>
+            Total: ${Number(totalAmount.toFixed(2)).toLocaleString()}
+          </Typography>
+        </Box>
+        
+        {/* Positive Total Card */}
+        <Box sx={{ 
+          backgroundColor: 'success.dark', 
+          borderRadius: '16px', 
+          px: 3, 
+          py: 1.5,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center'
+        }}>
+          <Typography variant="body1" component="div" sx={{ color: 'white' }}>
+            Positive: ${Number(positiveOnlyTotal.toFixed(2)).toLocaleString()}
+          </Typography>
+        </Box>
+      </Box>
     </Box>
   );
 }

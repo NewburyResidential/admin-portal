@@ -67,7 +67,7 @@ const PayrollFileUpload = ({
             results.data.forEach((row) => {
               const locationId = row['Location ID']?.trim() || '';
               const asset = assetObject[locationId];
-              const glAccountId = row.Account?.trim() || '';
+              const glAccountId = (row.Account || row.account)?.trim() || '';
               const employeeId = row['Employee ID']?.trim() || '';
 
               if (!asset) return;
@@ -183,6 +183,7 @@ const PayrollFileUpload = ({
             setPayrollDistribution(transferAmounts);
             setView('payrollAmounts');
             const fileName = uploadedFile.name;
+
             console.log(getWaveDepositPayloads(depositEntriesByAsset, normalDate, weirdDate, propertyAmounts, fileName));
             setPayloads({
               waveTax: getWaveTaxPayload(results.data, normalDate, weirdDate, fileName),
