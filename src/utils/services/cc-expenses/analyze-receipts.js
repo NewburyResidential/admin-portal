@@ -1,7 +1,6 @@
 'use server';
 
 import Anthropic from '@anthropic-ai/sdk';
-
 import OpenAI from 'openai';
 
 export async function analyzeReceipt(base64String) {
@@ -49,7 +48,7 @@ export async function analyzeImageWithAnthropic(fileBase64) {
   const anthropic = new Anthropic({
     apiKey: process.env.ANTHROPIC_API_KEY,
     defaultHeaders: {
-      'anthropic-beta': 'pdfs-2024-09-25', // Enable PDF support
+      'anthropic-beta': 'pdfs-2024-09-25',
     },
   });
 
@@ -58,7 +57,20 @@ export async function analyzeImageWithAnthropic(fileBase64) {
       model: 'claude-3-5-sonnet-20241022',
       max_tokens: 1000,
       temperature: 0,
-      system: `The image includes receipt, bill or invoice. Use the context to extract the information. Your goal is to extract relevant data to construct a JSON object with the following structure: { "total": "number" (The total amount charged, formatted as a positive decimal without currency symbols, including all fees, tips, and other charges as explicitly stated on the document. Do not perform any calculations to derive this number.), "date": "MM/DD/YYYY" (The transaction date must be accurately extracted from the document and formatted as MM/DD/YYYY. This date should reflect the charge date and must be within the past year from today's date.), "merchant": "string" (Provide the general business name only, limited to 28 characters. Exclude any location details or additional descriptions. For example, use "Amazon" for transactions involving multiple merchants under Amazon's platform. Try to determine who the item was purchased from.), "summary": "string" (A short but detailed overview of the main items or categories from this purchase - e.g. "Groceries - produce, meat, dairy items and furniture", "Electronics: laptop and charger with accessories", "Restaurant order - 2 entrees, drinks, appetizer". Include key items or categories that represent the bulk of the purchase while omitting minor items. Aim to give a clear picture of what the transaction was for without listing every item. Return null if the context cannot be confidently determined.) } Ensure the output is a valid JSON object. Return only the required fields in the JSON format specified. If any field cannot be confidently determined from the image, set its value to null.`,
+      system: `You are a JSON-only response system. Return ONLY a JSON object with no additional text or explanation.
+
+The image includes a receipt, bill or invoice. Extract a JSON object with this structure:
+{
+  "total": "number" (The total amount charged, formatted as a positive decimal without currency symbols, including all fees, tips, and other charges as explicitly stated on the document. Do not perform any calculations to derive this number.),
+  
+  "date": "MM/DD/YYYY" (The transaction date must be accurately extracted from the document and formatted as MM/DD/YYYY. This date should reflect the charge date and must be within the past year or within this current month.),
+  
+  "merchant": "string" (Provide the general business name only, limited to 28 characters. Exclude any location details or additional descriptions. For example, use "Amazon" for transactions involving multiple merchants under Amazon's platform. Try to determine who the item was purchased from.),
+  
+  "summary": "string" (A short but detailed overview of the main items or categories from this purchase - e.g. "Groceries - produce, meat, dairy items and furniture", "Electronics: laptop and charger with accessories", "Restaurant order - 2 entrees, drinks, appetizer". Include key items or categories that represent the bulk of the purchase while omitting minor items. Aim to give a clear picture of what the transaction was for without listing every item. Return null if the context cannot be confidently determined.)
+}
+
+Return ONLY the JSON object with no additional text before or after. If any field cannot be confidently determined from the image, set its value to null.`,
       messages: [
         {
           role: 'user',
@@ -73,7 +85,7 @@ export async function analyzeImageWithAnthropic(fileBase64) {
             },
             {
               type: 'text',
-              text: 'Analyze this receipt and provide the information in the specified JSON format.',
+              text: 'Return the receipt information as JSON.',
             },
           ],
         },
