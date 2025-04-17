@@ -26,7 +26,7 @@ export function getEntrataWithdrawalPayload(entries, normalDate, fileName) {
 
   const postData = {
     auth: {
-      type: 'basic',
+      type: 'apikey',
     },
     requestId: '15',
     method: {

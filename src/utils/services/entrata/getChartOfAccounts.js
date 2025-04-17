@@ -1,5 +1,4 @@
-import { ENTRATA_API } from 'src/config-global';
-import { authorization } from './authorization';
+import { ENTRATA_API, ENTRATA_API_KEY } from 'src/config-global';
 import { chartOfAccounts } from 'src/assets/data/chart-of-accounts';
 
 export default async function getEntrataChartOfAccounts() {
@@ -9,11 +8,11 @@ export default async function getEntrataChartOfAccounts() {
 }
 
 async function fetchData() {
-  const endpoint = '/api/v1/financial';
+  const endpoint = '/v1/financial';
   const bodyMethod = 'getGlTrees';
   const url = `${ENTRATA_API.baseUrl}${endpoint}`;
   const body = {
-    auth: { type: 'basic' },
+    auth: { type: 'apikey' },
     requestId: '15',
     method: { name: bodyMethod },
   };
@@ -23,7 +22,7 @@ async function fetchData() {
       next: { revalidate: 3600 },
       method: 'POST',
       headers: {
-        Authorization: authorization,
+        'X-Api-Key': ENTRATA_API_KEY,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(body),

@@ -1,6 +1,6 @@
 'use server';
 
-import axios from 'axios';
+import { ENTRATA_API, ENTRATA_API_KEY } from 'src/config-global';
 import snackbarSuccessResponse from 'src/components/response-snackbar/utility/snackbarSuccessResponse';
 import snackbarCatchErrorResponse from 'src/components/response-snackbar/utility/snackbarCatchErrorResponse';
 import snackbarStatusErrorResponse from 'src/components/response-snackbar/utility/snackbarStatusErrorResponse';
@@ -10,19 +10,31 @@ export async function postEntrataInvoice({
   successTitle = 'Entrata Invoice Posted',
   errorTitle = 'Error Posting Entrata Invoice',
 }) {
-  const entrataBaseUrl = 'https://newburyresidential.entrata.com/api/v1/vendors';
-  const username = process.env.ENTRATA_USERNAME;
-  const password = process.env.ENTRATA_PASSWORD;
+  const endpoint = '/v1/vendors';
+  const url = `${ENTRATA_API.baseUrl}${endpoint}`;
+
+  const body = {
+    auth: { type: 'apikey' },
+    requestId: '15',
+    method: { name: 'sendInvoices' },
+    ...payload,
+  };
 
   try {
-    const response = await axios.post(entrataBaseUrl, payload, {
-      auth: {
-        username,
-        password,
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'X-Api-Key': ENTRATA_API_KEY,
+        'Content-Type': 'application/json',
       },
+      body: JSON.stringify(body),
     });
 
-    const entrataResponse = response?.data;
+    if (!response.ok) {
+      throw new Error(`Error: ${response.status}`);
+    }
+
+    const entrataResponse = await response.json();
     console.log('entrataResponse', entrataResponse);
 
     const responseStatus = entrataResponse?.response?.result?.apBatch?.apHeaders?.apHeader[0]?.status;

@@ -5,24 +5,22 @@ import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import axios from 'axios';
 import { DynamoDBDocumentClient, UpdateCommand } from '@aws-sdk/lib-dynamodb';
 import fetch from 'node-fetch';
+import { ENTRATA_API_KEY, ENTRATA_API } from 'src/config-global';
 
 const dynamoClient = new DynamoDBClient(AWS_CONFIG);
 const dynamoDocumentClient = DynamoDBDocumentClient.from(dynamoClient);
 
 export async function uploadPreEntrataTransactions(transaction, assetId) {
-  const entrataBaseUrl = 'https://newburyresidential.entrata.com/api/v1/vendors';
-  const { username } = ENTRATA_API;
-  const { password } = ENTRATA_API;
-  console.log('username:', username);
-  console.log('password:', password);
+  const entrataBaseUrl = `${ENTRATA_API.baseUrl}/v1/vendors`;
+
 
   const postData = await buildEntrataApiPayload(transaction, assetId);
 
   try {
     const response = await axios.post(entrataBaseUrl, postData, {
-      auth: {
-        username,
-        password,
+      headers: {
+        'X-Api-Key': ENTRATA_API_KEY,
+        'Content-Type': 'application/json',
       },
     });
     const { data } = response;
@@ -58,7 +56,7 @@ async function buildEntrataApiPayload(transaction, assetId) {
 
   return {
     auth: {
-      type: 'basic',
+      type: 'apikey',
     },
     requestId: '15',
     method: {

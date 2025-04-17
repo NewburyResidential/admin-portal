@@ -1,5 +1,4 @@
-import { ENTRATA_API } from 'src/config-global';
-import { authorization } from './authorization';
+import { ENTRATA_API, ENTRATA_API_KEY } from 'src/config-global';
 
 export default async function getVendorLocations() {
   const data = await fetchData();
@@ -8,11 +7,11 @@ export default async function getVendorLocations() {
 }
 
 async function fetchData() {
-  const endpoint = '/api/v1/vendors';
+  const endpoint = '/v1/vendors';
   const bodyMethod = 'getVendorLocations';
   const url = `${ENTRATA_API.baseUrl}${endpoint}`;
   const body = {
-    auth: { type: 'basic' },
+    auth: { type: 'apikey' },
     requestId: '15',
     method: { name: bodyMethod },
   };
@@ -23,7 +22,7 @@ async function fetchData() {
       next: { revalidate: 0 },
       method: 'POST',
       headers: {
-        Authorization: authorization,
+        'X-Api-Key': ENTRATA_API_KEY,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(body),
