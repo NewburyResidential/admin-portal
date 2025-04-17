@@ -1,11 +1,10 @@
 'use server';
 
-import { AWS_CONFIG, ENTRATA_API } from 'src/config-global';
+import { AWS_CONFIG, ENTRATA_API_KEY, ENTRATA_API } from 'src/config-global';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import axios from 'axios';
 import { DynamoDBDocumentClient, UpdateCommand } from '@aws-sdk/lib-dynamodb';
 import fetch from 'node-fetch';
-import { ENTRATA_API_KEY, ENTRATA_API } from 'src/config-global';
 
 const dynamoClient = new DynamoDBClient(AWS_CONFIG);
 const dynamoDocumentClient = DynamoDBDocumentClient.from(dynamoClient);
