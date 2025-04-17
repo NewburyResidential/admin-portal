@@ -108,7 +108,7 @@ async function buildAddVendor(vendor) {
                 location: [
                   {
                     name: 'Corporate',
-                    vendorCode: vendorCode,
+                    vendorCode,
                     isPrimary: '1',
                     approvedForAllProperties: '1',
                     remittances: {
