@@ -12,6 +12,9 @@ module.exports = {
   },
   experimental: {
     serverComponentsExternalPackages: ['@aws-sdk'],
+    serverActions: {
+      bodySizeLimit: '10mb',
+    },
   },
   trailingSlash: true,
   modularizeImports: {
