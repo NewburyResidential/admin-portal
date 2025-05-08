@@ -38,7 +38,7 @@ export const getUnapprovedTransactionsWithReceipts = async () => {
     const matchingReceipts = receiptsByCreditCard[lookupKey] || [];
     const possibleMatches = matchingReceipts
       .map((receipt) => isSuggestedReceipt(transaction, receipt))
-      .filter((match) => match && match.scoreTotal >= 0.5)
+      .filter((match) => match && match.scoreTotal >= 0.49)
       .sort((a, b) => b.scoreTotal - a.scoreTotal)
       .slice(0, 3);
 

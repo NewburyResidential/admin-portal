@@ -112,8 +112,8 @@ export const isSuggestedReceipt = (transaction, receipt) => {
   if (isPossibleMatch) {
     const weights = {
       date: 0.25,
-      amount: 0.45,
-      merchant: 0.3,
+      amount: 0.50,
+      merchant: 0.25,
     };
 
     receiptData.scoreTotal =
