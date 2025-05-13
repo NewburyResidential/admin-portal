@@ -7,6 +7,7 @@ export const ICONS = {
   lowes: 'bi:cart-fill',
   resources: 'bi:file-earmark-text-fill',
   payroll: 'material-symbols:payments-outline',
+  sherwinWilliams: 'material-symbols:format-paint',
 };
 
 // roles should be included in main group if different roles are required for children
@@ -43,6 +44,12 @@ export const navConfiguration = [
         roles: ['admin'],
         path: dashboardPaths.payroll.root,
         icon: ICONS.payroll,
+      },
+      {
+        title: 'Sherwin Williams',
+        roles: ['admin'],
+        path: dashboardPaths.sherwinWilliams.root,
+        icon: ICONS.sherwinWilliams,
       },
     ],
   },

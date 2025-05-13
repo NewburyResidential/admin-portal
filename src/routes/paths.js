@@ -31,6 +31,10 @@ const rawDashboardPaths = {
   payroll: {
     root: `/payroll`,
   },
+
+  sherwinWilliams: {
+    root: `/sherwin-williams`,
+  },
 };
 
 export const onboardingPaths = {
