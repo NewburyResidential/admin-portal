@@ -31,9 +31,18 @@ export default function FileInput({ employees, user, chartOfAccounts }) {
 
     const date = new Date(timestamp);
     const now = new Date();
-    const diffInHours = (now - date) / (1000 * 60 * 60);
 
-    if (diffInHours < 24) {
+    // Helper to zero out time for date-only comparison
+    const toDateOnly = (d) => new Date(d.getFullYear(), d.getMonth(), d.getDate());
+
+    const dateOnly = toDateOnly(date);
+    const nowOnly = toDateOnly(now);
+
+    // Calculate yesterday
+    const yesterdayOnly = new Date(nowOnly);
+    yesterdayOnly.setDate(nowOnly.getDate() - 1);
+
+    if (dateOnly.getTime() === nowOnly.getTime()) {
       return `Today at ${date.toLocaleTimeString('en-US', {
         hour: 'numeric',
         minute: '2-digit',
@@ -41,7 +50,7 @@ export default function FileInput({ employees, user, chartOfAccounts }) {
       })}`;
     }
 
-    if (diffInHours < 48) {
+    if (dateOnly.getTime() === yesterdayOnly.getTime()) {
       return `Yesterday at ${date.toLocaleTimeString('en-US', {
         hour: 'numeric',
         minute: '2-digit',
@@ -58,24 +67,19 @@ export default function FileInput({ employees, user, chartOfAccounts }) {
     });
   };
 
-  // Helper function to filter receipts from last 48 hours
+  // Helper function to filter and cap recent receipts to 30
   const filterRecentReceipts = (receipts) => {
     if (!receipts || !Array.isArray(receipts)) return [];
 
-    const now = new Date();
-    const fortyEightHoursAgo = new Date(now.getTime() - 48 * 60 * 60 * 1000);
-
-    const filteredReceipts = receipts.filter((receipt) => {
-      const receiptDate = new Date(receipt.timestamp || receipt.uploadedOn || receipt.createdAt);
-      return receiptDate >= fortyEightHoursAgo;
-    });
-
     // Sort by timestamp, latest first
-    return filteredReceipts.sort((a, b) => {
+    const sortedReceipts = receipts.sort((a, b) => {
       const dateA = new Date(a.timestamp || a.uploadedOn || a.createdAt);
       const dateB = new Date(b.timestamp || b.uploadedOn || b.createdAt);
       return dateB - dateA; // Descending order (latest first)
     });
+
+    // Cap at 30 receipts
+    return sortedReceipts.slice(0, 30);
   };
 
   useEffect(() => {
