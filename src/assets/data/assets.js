@@ -143,21 +143,21 @@ export const assetItems = [
   },
 
   {
-    pk: '2005',
+    id: '2005',
     accountId: '93402899048305398',
     accountingSoftware: 'pre-entrata',
     category: 'Properties',
     label: 'Beason Well Apartments',
-    units: 48,
+    units: 72,
     waveARId: 'QWNjb3VudDoyMzAxNzAwNTQwNjc5MTA2NjAzO0J1c2luZXNzOjc5OTg2NWE2LTlmMGEtNDgwNS1iZTg0LTJkMDgyOTE5MWVhYw==',
   },
   {
-    pk: '2006',
+    id: '2006',
     accountId: '934028990483342305398',
     accountingSoftware: 'pre-entrata',
     category: 'Properties',
     label: 'Orleans Terrace Apartments',
-    units: 32,
+    units: 36,
     waveARId: 'QWNjb3VudDoyMzAxNzAwNzk2ODMzNjQwNTUxO0J1c2luZXNzOjc5OTg2NWE2LTlmMGEtNDgwNS1iZTg0LTJkMDgyOTE5MWVhYw==',
   },
   // Corporate
