@@ -142,6 +142,24 @@ export const assetItems = [
     waveARId: 'QWNjb3VudDoyMDkwMDM3MTE1NzY0MTI1NzMxO0J1c2luZXNzOjc5OTg2NWE2LTlmMGEtNDgwNS1iZTg0LTJkMDgyOTE5MWVhYw==',
   },
 
+  {
+    pk: '2005',
+    accountId: '93402899048305398',
+    accountingSoftware: 'pre-entrata',
+    category: 'Properties',
+    label: 'Beason Well Apartments',
+    units: 48,
+    waveARId: 'QWNjb3VudDoyMzAxNzAwNTQwNjc5MTA2NjAzO0J1c2luZXNzOjc5OTg2NWE2LTlmMGEtNDgwNS1iZTg0LTJkMDgyOTE5MWVhYw==',
+  },
+  {
+    pk: '2006',
+    accountId: '934028990483342305398',
+    accountingSoftware: 'pre-entrata',
+    category: 'Properties',
+    label: 'Orleans Terrace Apartments',
+    units: 32,
+    waveARId: 'QWNjb3VudDoyMzAxNzAwNzk2ODMzNjQwNTUxO0J1c2luZXNzOjc5OTg2NWE2LTlmMGEtNDgwNS1iZTg0LTJkMDgyOTE5MWVhYw==',
+  },
   // Corporate
   {
     category: 'Home Office',
