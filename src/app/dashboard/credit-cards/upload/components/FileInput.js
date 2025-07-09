@@ -181,7 +181,7 @@ export default function FileInput({ employees, user, chartOfAccounts }) {
       s3Key,
       chargedAmount: data.amount,
       allocations: transformedAllocations,
-      expire: Math.floor(Date.now() / 1000) + 45 * 24 * 60 * 60,
+      expire: Math.floor(Date.now() / 1000) + 60 * 24 * 60 * 60,
       uploadedOn: getTodaysDate(),
       fileExtension: selectedFile.type.split('/')[1],
       creditCardHolder: data.creditCardHolder.label,
