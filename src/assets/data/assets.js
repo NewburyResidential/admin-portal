@@ -117,7 +117,7 @@ export const assetItems = [
   {
     category: 'Properties',
     id: '2001',
-    label: 'Sycamore Place',
+    label: 'The Overlook At Ashland',
     accountId: '100026145',
     units: 96,
     accountingSoftware: 'entrata',
