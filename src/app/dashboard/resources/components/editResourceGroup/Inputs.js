@@ -13,16 +13,16 @@ export default function Inputs() {
     <Grid container spacing={2} mb={2} mt={1}>
       {pending ? (
         <>
-          <Grid item xs={12}>
+          <Grid size={12}>
             <Skeleton variant="rounded" height={60} />
           </Grid>
-          <Grid item xs={12}>
+          <Grid size={12}>
             <Skeleton variant="rounded" height={60} />
           </Grid>
         </>
       ) : (
         <>
-          <Grid item xs={12}>
+          <Grid size={12}>
             <Controller
               name="label"
               control={control}
@@ -43,7 +43,7 @@ export default function Inputs() {
               )}
             />
           </Grid>
-          <Grid item xs={12}>
+          <Grid size={12}>
             <Controller
               name="icon"
               control={control}

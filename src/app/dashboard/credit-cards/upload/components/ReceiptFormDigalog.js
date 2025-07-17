@@ -66,25 +66,25 @@ export default function ReceiptFormDigalog({
             any notes about the transaction that may help with review.
           </Typography>
           <Grid container spacing={2} alignItems="center" mt={2}>
-            <Grid item xs={3}>
+            <Grid size={3}>
               <ReactHookAutocomplete options={employeeOptions} name="creditCardHolder" label="Who&apos;s Card Was Charged" />
             </Grid>
 
-            <Grid item xs={3}>
+            <Grid size={3}>
               {isWaiting ? (
                 <Skeleton variant="rounded" width="100%" height={55} sx={{ borderRadius: 0.8 }} />
               ) : (
                 <ReactHookDatePicker name="transactionDate" label="Date of Purchase" />
               )}
             </Grid>
-            <Grid item xs={3}>
+            <Grid size={3}>
               {isWaiting ? (
                 <Skeleton variant="rounded" width="100%" height={55} sx={{ borderRadius: 0.8 }} />
               ) : (
                 <ReactHookTextField name="merchantName" label="Merchant Name" />
               )}
             </Grid>
-            <Grid item xs={3}>
+            <Grid size={3}>
               {isWaiting ? (
                 <Skeleton variant="rounded" width="100%" height={55} sx={{ borderRadius: 0.8 }} />
               ) : (
@@ -150,7 +150,6 @@ export default function ReceiptFormDigalog({
           </LoadingButton>
         </DialogActions>
       </Dialog>
-
       <InfoDialog open={openInfo} onClose={() => setOpenInfo(false)} />
     </>
   );

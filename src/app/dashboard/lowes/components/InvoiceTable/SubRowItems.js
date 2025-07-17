@@ -44,31 +44,33 @@ export default function SubRowItems({ lineItem, catalogedItems, itemIndex }) {
     <>
       <Box sx={{ padding: '9px 25px', backgroundColor }}>
         <Grid container spacing={2}>
-          <Grid item xs={5} sx={{ ...gridItemStyle, justifyContent: 'flex-start', textOverflow: 'ellipsis' }}>
+          <Grid
+            sx={{ ...gridItemStyle, justifyContent: 'flex-start', textOverflow: 'ellipsis' }}
+            size={5}>
             <Typography variant="body1" noWrap fontSize="13px">
               {itemLabel}
             </Typography>
           </Grid>
 
-          <Grid item xs={2.5} sx={gridItemStyle}>
+          <Grid sx={gridItemStyle} size={2.5}>
             <Typography variant="body1" fontSize="13px">
               {accountName}
             </Typography>
           </Grid>
 
-          <Grid item xs={1.5} sx={gridItemStyle}>
+          <Grid sx={gridItemStyle} size={1.5}>
             <Typography variant="body1" fontSize="13px">
               {lineItem.qty}
             </Typography>
           </Grid>
 
-          <Grid item xs={1.5} sx={gridItemStyle}>
+          <Grid sx={gridItemStyle} size={1.5}>
             <Typography variant="body1" fontSize="13px">
               {lineItem.cost}
             </Typography>
           </Grid>
 
-          <Grid item xs={1.5} sx={gridItemStyle}>
+          <Grid sx={gridItemStyle} size={1.5}>
             <Typography variant="body1" fontSize="13px">
               {lineItem.totalCost}
             </Typography>

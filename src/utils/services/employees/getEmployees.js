@@ -40,7 +40,7 @@ export default async function getEmployees(pk) {
   try {
     const data = await dynamoQuery({ tableName: 'newbury_employees', pk })
     const restructuredEmployeeData = restructureEmployeeData(data);
-      revalidateTag('employee'); // TODO revalidate correctly
+ 
 
     return restructuredEmployeeData;
   } catch (error) {

@@ -299,7 +299,7 @@ export default function AddReceiptUpload({ recentReceipts, setLoading, hasReceip
                 <p>Unable to display PDF. <a href={`https://admin-portal-cc-suggested-receipts.s3.us-east-1.amazonaws.com/${encodeURIComponent(hoveredReceipt.pk)}`} target="_blank" rel="noopener noreferrer">Click here to download</a></p>
               </object>
               */
-              <img
+              (<img
                 src={`https://admin-portal-cc-suggested-receipts.s3.us-east-1.amazonaws.com/${encodeURIComponent(hoveredReceipt.s3Key ? hoveredReceipt.s3Key : hoveredReceipt.pk)}`}
                 alt="Receipt Preview"
                 style={{
@@ -312,7 +312,7 @@ export default function AddReceiptUpload({ recentReceipts, setLoading, hasReceip
                   borderRadius: '8px',
                   boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
                 }}
-              />
+              />)
             )}
           </Box>
         </Box>

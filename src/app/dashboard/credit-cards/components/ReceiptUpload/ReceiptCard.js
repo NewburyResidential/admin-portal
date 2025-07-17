@@ -79,7 +79,13 @@ export default function ReceiptCards({ id, setOpen, setLoading, suggestedReceipt
       {suggestedReceipts.map((receipt) => {
         const totalScore = receipt.scoreTotal;
         return (
-          <Grid item xs={12} sm={6} md={4} key={receipt.pk}>
+          <Grid
+            key={receipt.pk}
+            size={{
+              xs: 12,
+              sm: 6,
+              md: 4
+            }}>
             <Card
               variant="outlined"
               sx={{

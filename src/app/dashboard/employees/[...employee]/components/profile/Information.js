@@ -87,10 +87,14 @@ export default function Information({ employee }) {
         confirmButtonIsLoading={isLoading}
       />
       <Grid container spacing={3} justifyContent="center">
-        <Grid item xs={12} sm={12}>
+        <Grid
+          size={{
+            xs: 12,
+            sm: 12
+          }}>
           <Card sx={{ flexGrow: 1, px: 3, py: 4, mt: 2 }}>
             <Grid container spacing={3}>
-              <Grid item xs={6}>
+              <Grid size={6}>
                 <Stack spacing={2}>
                   {leftSideData.map((item, index) => (
                     <Stack key={index} direction="row" spacing={2} alignItems="center">
@@ -101,7 +105,7 @@ export default function Information({ employee }) {
                 </Stack>
               </Grid>
 
-              <Grid item xs={6}>
+              <Grid size={6}>
                 <Stack spacing={2}>
                   {rightSideData.map((item, index) => (
                     <Stack key={index} direction="row" spacing={2} alignItems="center">

@@ -66,28 +66,28 @@ export default function Inputs({ resourceType, categoryOptions }) {
     <Grid container spacing={2} mb={2} mt={1}>
       {pending ? (
         <>
-          <Grid item xs={6}>
+          <Grid size={6}>
             <Skeleton variant="rounded" height={60} />
           </Grid>
-          <Grid item xs={6}>
+          <Grid size={6}>
             <Skeleton variant="rounded" height={60} />
           </Grid>
-          <Grid item xs={12}>
+          <Grid size={12}>
             <Skeleton variant="rounded" height={60} />
           </Grid>
-          <Grid item xs={12}>
+          <Grid size={12}>
             <Skeleton variant="rounded" height={60} />
           </Grid>
-          <Grid item xs={12}>
+          <Grid size={12}>
             <Skeleton variant="rounded" height={60} />
           </Grid>
-          <Grid item xs={12}>
+          <Grid size={12}>
             <Skeleton variant="rounded" height={60} />
           </Grid>
         </>
       ) : (
         <>
-          <Grid item xs={6}>
+          <Grid size={6}>
             <Controller
               name="label"
               control={control}
@@ -109,7 +109,7 @@ export default function Inputs({ resourceType, categoryOptions }) {
             />
           </Grid>
           {resourceType !== 'resources' ? (
-            <Grid item xs={6}>
+            <Grid size={6}>
               <Controller
                 name="logo"
                 control={control}
@@ -164,7 +164,7 @@ export default function Inputs({ resourceType, categoryOptions }) {
               />
             </Grid>
           ) : (
-            <Grid item xs={6}>
+            <Grid size={6}>
               <Controller
                 name="category"
                 control={control}
@@ -193,7 +193,7 @@ export default function Inputs({ resourceType, categoryOptions }) {
             </Grid>
           )}
 
-          <Grid item xs={12}>
+          <Grid size={12}>
             <Controller
               name="description"
               control={control}
@@ -216,11 +216,11 @@ export default function Inputs({ resourceType, categoryOptions }) {
               )}
             />
           </Grid>
-          <Grid item xs={12}>
+          <Grid size={12}>
            <ReactHookSelectRoles />
           </Grid>
 
-          <Grid item xs={12}>
+          <Grid size={12}>
             <Controller
               name="uploadType"
               control={control}
@@ -252,7 +252,7 @@ export default function Inputs({ resourceType, categoryOptions }) {
             />
           </Grid>
           {uploadType === 'website' ? (
-            <Grid item xs={12}>
+            <Grid size={12}>
               <Controller
                 name="url"
                 control={control}
@@ -274,7 +274,7 @@ export default function Inputs({ resourceType, categoryOptions }) {
               />
             </Grid>
           ) : (
-            <Grid item xs={12}>
+            <Grid size={12}>
               <Controller
                 name="file"
                 control={control}

@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import Card from '@mui/material/Card';
-import Grid from '@mui/material/Unstable_Grid2';
+import Grid from '@mui/material/Grid';
 import Chip from '@mui/material/Chip';
 import ReactHookSelect from 'src/components/form-inputs/ReactHookSelect';
 import ReactHookTextField from 'src/components/form-inputs/ReactHookTextField';
@@ -67,7 +67,7 @@ export default function Settings({ employee, user }) {
       <FormProvider {...methods}>
         <form action={handleSubmit(onSubmit)}>
           <Grid container spacing={3}>
-            <Grid xs={6}>
+            <Grid size={6}>
               <ReactHookSelect
                 label="Portal Access"
                 name="status"
@@ -104,10 +104,10 @@ export default function Settings({ employee, user }) {
               </Grid>
             )} */}
 
-            <Grid xs={6}>
+            <Grid size={6}>
               <ReactHookSelectRoles />
             </Grid>
-            <Grid xs={12} sx={{ display: 'flex', justifyContent: 'end' }}>
+            <Grid sx={{ display: 'flex', justifyContent: 'end' }} size={12}>
               <ReactHookSubmitButton label="Save Changes" disabled={!isDirty} />
             </Grid>
           </Grid>

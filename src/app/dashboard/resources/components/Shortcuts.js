@@ -6,7 +6,7 @@ import Typography from '@mui/material/Typography';
 
 import ResourceCard from './ResourceCard';
 import { useResponsive } from 'src/hooks/use-responsive';
-import { alpha } from '@mui/material';
+import { alpha } from '@mui/material/styles';
 
 
 function prioritizeItem(items, targetLabel) {
@@ -22,7 +22,12 @@ export default function Shortcuts({ editMode, shortcuts, userName }) {
   const prioritizedShortcuts = prioritizeItem(shortcuts, 'Create A Support Ticket');
 
   const renderCards = prioritizedShortcuts.map((shortcut, index) => (
-    <Grid item xs={12} sm={index === 0 ? 12 : 6} key={shortcut.pk}>
+    <Grid
+      key={shortcut.pk}
+      size={{
+        xs: 12,
+        sm: index === 0 ? 12 : 6
+      }}>
       <ResourceCard
         label={shortcut.label}
         logo={
@@ -66,7 +71,7 @@ export default function Shortcuts({ editMode, shortcuts, userName }) {
       <Grid container spacing={2}>
         {renderCards}
         {editMode && (
-          <Grid item xs={isLaptop ? 6 : 12}>
+          <Grid size={isLaptop ? 6 : 12}>
             <ResourceCard
               openDialog={() => setDialog({ open: true, resource: null, resourceType: 'shortcuts' })}
               isAddNew

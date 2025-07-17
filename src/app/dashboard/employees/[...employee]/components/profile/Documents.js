@@ -42,7 +42,7 @@ export default function Documents({ employee, user }) {
       </Typography>
       <Grid container spacing={3}>
         {employee.requiredDocuments.map((document) => (
-          <Grid item xs={6}>
+          <Grid size={6}>
             <DocumentCard document={document} />
           </Grid>
         ))}
@@ -58,7 +58,7 @@ export default function Documents({ employee, user }) {
       </Box>
       <Grid container spacing={3}>
         {employee.otherDocuments.map((document) => (
-          <Grid item xs={6}>
+          <Grid size={6}>
             <DocumentCard document={document} setEditDialog={setEditDialog} />
           </Grid>
         ))}

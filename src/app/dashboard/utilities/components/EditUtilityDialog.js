@@ -154,7 +154,11 @@ export default function EditUtilityDialog({ open, onClose, bill, onSave }) {
       <DialogContent>
         <Grid container spacing={3} sx={{ mt: 0.5 }}>
           {/* Payment and Account Info */}
-          <Grid item xs={12} md={6}>
+          <Grid
+            size={{
+              xs: 12,
+              md: 6
+            }}>
             <TextField
               fullWidth
               label="Payment ID"
@@ -163,7 +167,11 @@ export default function EditUtilityDialog({ open, onClose, bill, onSave }) {
               helperText={errors.paymentId?.message}
             />
           </Grid>
-          <Grid item xs={12} md={6}>
+          <Grid
+            size={{
+              xs: 12,
+              md: 6
+            }}>
             <TextField
               fullWidth
               label="Account Number"
@@ -174,7 +182,11 @@ export default function EditUtilityDialog({ open, onClose, bill, onSave }) {
           </Grid>
 
           {/* Address Information - Now Equal Size */}
-          <Grid item xs={12} md={6}>
+          <Grid
+            size={{
+              xs: 12,
+              md: 6
+            }}>
             <TextField
               fullWidth
               label="Apartment"
@@ -183,7 +195,11 @@ export default function EditUtilityDialog({ open, onClose, bill, onSave }) {
               helperText={errors.apartment?.message}
             />
           </Grid>
-          <Grid item xs={12} md={6}>
+          <Grid
+            size={{
+              xs: 12,
+              md: 6
+            }}>
             <TextField
               fullWidth
               label="Complete Address"
@@ -194,7 +210,11 @@ export default function EditUtilityDialog({ open, onClose, bill, onSave }) {
           </Grid>
 
           {/* Service Dates */}
-          <Grid item xs={12} md={6}>
+          <Grid
+            size={{
+              xs: 12,
+              md: 6
+            }}>
             <TextField
               fullWidth
               label="Start Service (MM/DD/YYYY)"
@@ -204,7 +224,11 @@ export default function EditUtilityDialog({ open, onClose, bill, onSave }) {
               helperText={errors.startService?.message}
             />
           </Grid>
-          <Grid item xs={12} md={6}>
+          <Grid
+            size={{
+              xs: 12,
+              md: 6
+            }}>
             <TextField
               fullWidth
               label="End Service (MM/DD/YYYY)"
@@ -216,7 +240,11 @@ export default function EditUtilityDialog({ open, onClose, bill, onSave }) {
           </Grid>
 
           {/* Amounts */}
-          <Grid item xs={12} md={6}>
+          <Grid
+            size={{
+              xs: 12,
+              md: 6
+            }}>
             <TextField
               fullWidth
               label="Electric Amount"
@@ -225,7 +253,11 @@ export default function EditUtilityDialog({ open, onClose, bill, onSave }) {
               helperText={errors.electricAmount?.message}
             />
           </Grid>
-          <Grid item xs={12} md={6}>
+          <Grid
+            size={{
+              xs: 12,
+              md: 6
+            }}>
             <TextField
               fullWidth
               label="Water/Sewer Amount"
@@ -234,7 +266,11 @@ export default function EditUtilityDialog({ open, onClose, bill, onSave }) {
               helperText={errors.waterSewerAmount?.message}
             />
           </Grid>
-          <Grid item xs={12} md={6}>
+          <Grid
+            size={{
+              xs: 12,
+              md: 6
+            }}>
             <TextField
               fullWidth
               label="Gas Amount"
@@ -243,7 +279,11 @@ export default function EditUtilityDialog({ open, onClose, bill, onSave }) {
               helperText={errors.gasAmount?.message}
             />
           </Grid>
-          <Grid item xs={12} md={6}>
+          <Grid
+            size={{
+              xs: 12,
+              md: 6
+            }}>
             <TextField
               fullWidth
               label="Misc Amount"
@@ -252,7 +292,11 @@ export default function EditUtilityDialog({ open, onClose, bill, onSave }) {
               helperText={errors.miscAmount?.message}
             />
           </Grid>
-          <Grid item xs={12} md={6}>
+          <Grid
+            size={{
+              xs: 12,
+              md: 6
+            }}>
             <TextField
               fullWidth
               label="Tax Amount"
@@ -261,7 +305,11 @@ export default function EditUtilityDialog({ open, onClose, bill, onSave }) {
               helperText={errors.taxAmount?.message}
             />
           </Grid>
-          <Grid item xs={12} md={6}>
+          <Grid
+            size={{
+              xs: 12,
+              md: 6
+            }}>
             <TextField
               fullWidth
               label="Total Amount"
@@ -270,7 +318,7 @@ export default function EditUtilityDialog({ open, onClose, bill, onSave }) {
               helperText={errors.totalAmount?.message}
             />
           </Grid>
-          <Grid item xs={12}>
+          <Grid size={12}>
             <FormControlLabel control={<Checkbox {...register('ignoreScraped')} />} label="Ignore Scraped Amount Mismatch" />
           </Grid>
         </Grid>

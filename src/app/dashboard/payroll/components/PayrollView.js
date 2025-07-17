@@ -48,7 +48,11 @@ const PayrollView = ({ assets }) => {
 
   return (
     <Grid container spacing={3}>
-      <Grid item xs={12} md={showTrakpay ? 6 : 12}>
+      <Grid
+        size={{
+          xs: 12,
+          md: showTrakpay ? 6 : 12
+        }}>
         <PayrollFileUpload
           assetObject={assetObject}
           onPropertyPercentages={handlePropertyPercentages}
@@ -65,9 +69,12 @@ const PayrollView = ({ assets }) => {
           weirdDate={weirdDate}
         />
       </Grid>
-
       {showTrakpay && (
-        <Grid item xs={12} md={6}>
+        <Grid
+          size={{
+            xs: 12,
+            md: 6
+          }}>
           <TrakpayFileUpload
             propertyPercentages={propertyPercentages}
             trakpayFile={trakpayFile}
@@ -84,9 +91,8 @@ const PayrollView = ({ assets }) => {
           />
         </Grid>
       )}
-
       {payrollFile && (
-        <Grid item xs={12}>
+        <Grid size={12}>
           <ManualAmountInput
             propertyPercentages={propertyPercentages}
             assets={assets}
@@ -99,12 +105,11 @@ const PayrollView = ({ assets }) => {
           />
         </Grid>
       )}
-
       {(Object.keys(manualDistribution).length > 0 ||
         Object.keys(payrollDistribution).length > 0 ||
         Object.keys(trakpayDistribution).length > 0) &&
         view !== null && (
-          <Grid item xs={12}>
+          <Grid size={12}>
             <AmountByPropertyList
               normalDate={normalDate}
               distributionData={

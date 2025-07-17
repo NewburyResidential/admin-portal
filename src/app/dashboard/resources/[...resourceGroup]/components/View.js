@@ -73,7 +73,7 @@ export default function View({ resourceGroup, user, categories, categoryOptions 
                   height: '78px',
                   py: 0,
                   px: 1.5,
-                  backgroundColor: (theme) => theme.palette.mode === 'light' ? '#F0FFF0' : '#1C352D',
+                  backgroundColor: (theme) => (theme.palette.mode === 'light' ? '#F0FFF0' : '#1C352D'),
                   cursor: 'pointer',
                 }}
                 onClick={() => {
@@ -123,7 +123,7 @@ export default function View({ resourceGroup, user, categories, categoryOptions 
               </Box>
               <Grid container spacing={editMode ? 2 : 0}>
                 {category.resources.map((resource) => (
-                  <Grid key={resource.pk} item xs={12}>
+                  <Grid key={resource.pk} size={12}>
                     <ResourceCard
                       openDialog={() =>
                         setResourceDialog({
@@ -148,7 +148,7 @@ export default function View({ resourceGroup, user, categories, categoryOptions 
                   </Grid>
                 ))}
                 {editMode && (
-                  <Grid item xs={12}>
+                  <Grid size={12}>
                     <ResourceCard
                       openDialog={() =>
                         setResourceDialog({
