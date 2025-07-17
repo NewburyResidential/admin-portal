@@ -8,7 +8,7 @@ export function getWaveTaxPayload(results, normalDate, weirdDate, fileName) {
   // Aggregate tax amounts
   results.forEach((row) => {
     const { 'Debit Amount': debitAmount = '0', 'Credit Amount': creditAmount = '0' } = row;
-    const glAccountId = (row["Account"] || row["account"] || "").trim();
+    const glAccountId = (row.Account || row.account || "").trim();
     const rawAmount = debitAmount || creditAmount || '0';
 
     let amount;

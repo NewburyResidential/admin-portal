@@ -14,7 +14,7 @@ const s3Client = new S3Client(AWS_CONFIG);
 // file: file to upload
 // contentDisposition: inline or attachment
 
-export const s3Upload = async ({ bucket, key, file, contentDisposition = 'inline' }) => {
+export const s3Upload = async ({ bucket, key, file, contentDisposition = 'inline', metadata = {} }) => {
   const upload = new Upload({
     client: s3Client,
     params: {
@@ -23,6 +23,37 @@ export const s3Upload = async ({ bucket, key, file, contentDisposition = 'inline
       Body: file.stream(),
       ContentType: file.type,
       ContentDisposition: contentDisposition,
+      Metadata: metadata,
+    },
+  });
+
+  try {
+    const data = await upload.done();
+    console.log('Successfully uploaded file.', data);
+    return data;
+  } catch (error) {
+    console.error('Error uploading file: ', error);
+    throw error;
+  }
+};
+
+// Add the FormData version
+export const s3FormDataUpload = async (formData) => {
+  const file = formData.get('file');
+  const bucket = formData.get('bucket');
+  const key = formData.get('key');
+  const contentDisposition = formData.get('contentDisposition') || 'inline';
+  const metadata = JSON.parse(formData.get('metadata') || '{}');
+
+  const upload = new Upload({
+    client: s3Client,
+    params: {
+      Bucket: bucket,
+      Key: key,
+      Body: file.stream(),
+      ContentType: file.type,
+      ContentDisposition: contentDisposition,
+      Metadata: metadata,
     },
   });
 
@@ -67,6 +98,26 @@ export const s3GetSignedUrl = async ({ bucket, key, expiresIn = 3600 }) => {
     return signedUrl;
   } catch (error) {
     console.error('Error generating signed URL: ', error);
+    throw error;
+  }
+};
+
+export const s3GetBase64 = async ({ bucket, key }) => {
+  const params = {
+    Bucket: bucket,
+    Key: key,
+  };
+  
+  try {
+    const command = new GetObjectCommand(params);
+    const { Body } = await s3Client.send(command);
+    const chunks = [];
+    for await (const chunk of Body) chunks.push(chunk);
+    const buffer = Buffer.concat(chunks);
+    const base64 = buffer.toString("base64");
+    return base64;
+  } catch (error) {
+    console.error("Error: in convertObjectToBase64:", error);
     throw error;
   }
 };

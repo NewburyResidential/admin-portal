@@ -1,7 +1,6 @@
 'use client';
 
 import { useSettingsContext } from 'src/components/display-settings';
-import { useEffect } from 'react';
 
 import Shortcuts from './Shortcuts';
 import ResourceGroups from './Groups';

@@ -7,7 +7,7 @@ export const ENTRATA_API = {
   password: mode === 'production' ? process.env.ENTRATA_PASSWORD : process.env.ENTRATA_DEV_PASSWORD,
 };
 
-export const ENTRATA_API_KEY = process.env.ENTRATA_API_KEY;
+export const {ENTRATA_API_KEY} = process.env;
 
 export const HOST_API = process.env.NEXT_PUBLIC_HOST_API;
 export const ASSETS_API = process.env.NEXT_PUBLIC_ASSETS_API;

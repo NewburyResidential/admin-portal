@@ -36,6 +36,8 @@ const PayrollFileUpload = ({
 }) => {
   const { showResponseSnackbar } = useSnackbar();
 
+  const healthBenefitAccounts = ['222401', '222402', '222403'];
+
   const [payloads, setPayloads] = useState({
     waveTax: null,
     waveOperating: null,
@@ -62,8 +64,72 @@ const PayrollFileUpload = ({
           complete: (results) => {
             const aggregatedAmounts = new Map();
             const propertiesByEmployeeObject = {};
+            const employerBenefitByEmployee = {};
 
-            // First pass: combine amounts by propertyId and glAccountId
+            const dataByEmployee = {};
+            const employeeHandlingGl = {};
+
+            // First pass: Group data by employee
+            results.data.forEach((row) => {
+              const employeeId = row['Employee ID']?.trim() || '';
+              if (!dataByEmployee[employeeId]) {
+                dataByEmployee[employeeId] = [];
+              }
+              dataByEmployee[employeeId].push(row);
+            });
+
+            // Process rows once to get employee labels
+            results.data.forEach((row) => {
+              const employeeId = row['Employee ID']?.trim() || '';
+              const account = (row.Account || row.account)?.trim();
+
+              // Only process if we haven't found a label for this employee yet
+              if (!employeeHandlingGl[employeeId] && account in wageAccountOptions) {
+                employeeHandlingGl[employeeId] = wageAccountOptions[account].handlingGl;
+              }
+            });
+
+            console.log('Employee Handling GL:', employeeHandlingGl);
+            console.log('dataByEmployee', dataByEmployee);
+
+            // Now create duplicate entries for health benefits with corresponding handling GL entries
+            const newEntries = [];
+            results.data.forEach((row) => {
+              const employeeId = row['Employee ID']?.trim() || '';
+              const account = (row.Account || row.account)?.trim();
+
+              if (healthBenefitAccounts.includes(account)) {
+                const rawAmount = row['Debit Amount'] || row['Credit Amount'] || '0';
+                try {
+                  const amount = new Big(rawAmount);
+                  if (!amount.eq(0)) {
+                    // Create a duplicate row with 1.5x amount for the health benefit
+                    const currentAccountDescription = row['Account Descripton']?.trim() || '';
+                    const duplicateRow = { ...row };
+                    const employerAmount = amount.times(1.5).round(2);
+                    duplicateRow['Credit Amount'] = employerAmount.toString();
+                    duplicateRow['Debit Amount'] = ''; // Clear debit amount if it exists
+                    duplicateRow['Account Descripton'] = `${currentAccountDescription  } Employer Cost`;
+                    newEntries.push(duplicateRow);
+
+                    // Create a corresponding entry with the employee's handling GL
+                    const handlingGlRow = { ...row };
+                    handlingGlRow.Account = employeeHandlingGl[employeeId].toString();
+                    handlingGlRow['Credit Amount'] = ''; // Clear credit amount if it exists
+                    handlingGlRow['Debit Amount'] = employerAmount.toString();
+                    handlingGlRow['Account Descripton'] = 'Handling For Benefits';
+                    newEntries.push(handlingGlRow);
+                  }
+                } catch (e) {
+                  // Skip invalid amounts
+                }
+              }
+            });
+
+            // Add all new entries to results.data
+            results.data.push(...newEntries);
+
+            // Next pass: combine amounts by propertyId and glAccountId
             results.data.forEach((row) => {
               const locationId = row['Location ID']?.trim() || '';
               const asset = assetObject[locationId];
@@ -75,14 +141,35 @@ const PayrollFileUpload = ({
               // Convert amount to Big.js and validate
               const rawAmount = row['Debit Amount'] || row['Credit Amount'] || '0';
               let amount;
+              let employerAmount;
               try {
                 amount = new Big(rawAmount);
                 if (amount.eq(0)) return; // Skip zero amounts
+
+                // Multiply by 1.5 if account is a health benefit account
+                if (false) {
+                  // if (false) {
+                  employerAmount = amount.times(1.5).round(2); // round to 2 decimal places
+                  amount = employerAmount.plus(amount);
+
+                  // Track employer benefits by employee
+                  if (employeeId) {
+                    if (!employerBenefitByEmployee[employeeId]) {
+                      employerBenefitByEmployee[employeeId] = {
+                        employerAmount: new Big(0),
+                        assetId: asset.id,
+                      };
+                    }
+                    employerBenefitByEmployee[employeeId].employerAmount =
+                      employerBenefitByEmployee[employeeId].employerAmount.plus(employerAmount);
+                  }
+                }
               } catch (e) {
                 return; // Skip invalid amounts
               }
 
               const key = `${asset.id}-${glAccountId}`;
+              //  console.log(row);
 
               // Set up Data aggregation
               if (!aggregatedAmounts.has(key)) {
@@ -117,6 +204,31 @@ const PayrollFileUpload = ({
                   propertiesByEmployeeObject[employeeId].properties[asset.id].plus(amount);
               }
             });
+
+            // After processing all rows, match employer benefits with aggregated amounts
+            Object.entries(employerBenefitByEmployee).forEach(([employeeId, employerData]) => {
+              // Find matching employee in propertiesByEmployeeObject
+              const employeeData = propertiesByEmployeeObject[employeeId];
+              if (employeeData) {
+                // Create key using assetId and handlingGl
+                const key = `${employerData.assetId}-${employeeData.handlingGl}`;
+
+                // Find matching entry in aggregatedAmounts
+                const matchingEntry = aggregatedAmounts.get(key);
+                if (matchingEntry) {
+                  // Add employer amount to the existing amount
+                  matchingEntry.amount = matchingEntry.amount.plus(employerData.employerAmount);
+                } else {
+                  throw new Error('No matching entry found for employer benefit');
+                }
+              } else {
+                throw new Error('No matching employee found for employer benefit');
+              }
+            });
+
+            // Convert Big.js numbers to strings for console logging
+       
+
             setPropertiesByEmployee(propertiesByEmployeeObject);
             const propertyPercentages = calculatePropertyPercentages(propertiesByEmployeeObject);
             onPropertyPercentages(propertyPercentages);
@@ -151,7 +263,7 @@ const PayrollFileUpload = ({
               }
             });
             const operatingTransferAmount = operatingEntries.reduce((acc, entry) => {
-              const {propertyId} = entry;
+              const { propertyId } = entry;
               if (!acc[propertyId]) {
                 acc[propertyId] = { amount: new Big(0) };
               }
@@ -160,7 +272,7 @@ const PayrollFileUpload = ({
             }, {});
 
             const transferAmounts = withdrawalEntries.reduce((acc, entry) => {
-              const {propertyId} = entry;
+              const { propertyId } = entry;
               const amount = new Big(entry.rate);
 
               if (!acc[propertyId]) {
@@ -184,7 +296,6 @@ const PayrollFileUpload = ({
             setView('payrollAmounts');
             const fileName = uploadedFile.name;
 
-            console.log(getWaveDepositPayloads(depositEntriesByAsset, normalDate, weirdDate, propertyAmounts, fileName));
             setPayloads({
               waveTax: getWaveTaxPayload(results.data, normalDate, weirdDate, fileName),
               waveOperating: getWaveOperatingPayload(operatingEntries, normalDate, weirdDate, fileName),

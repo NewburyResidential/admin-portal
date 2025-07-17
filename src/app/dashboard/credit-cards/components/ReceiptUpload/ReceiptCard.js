@@ -206,9 +206,3 @@ export default function ReceiptCards({ id, setOpen, setLoading, suggestedReceipt
   );
 }
 
-function formatDate(dateString) {
-  const [year, month, day] = dateString.split('-').map(Number);
-  const date = new Date(year, month - 1, day);
-  const formattedDate = format(date, 'MM/dd/yyyy');
-  return formattedDate;
-}

@@ -32,6 +32,7 @@ export default function ReactHookSelectEmployees({ name, employees, multiple = f
           disableCloseOnSelect={multiple}
           isOptionEqualToValue={(option, optionValue) => optionValue === null || option.pk === optionValue.pk}
           renderOption={(props, option, { inputValue, selected }) => {
+            // eslint-disable-next-line no-unused-vars
             const { key, ...otherProps } = props;
 
             return (

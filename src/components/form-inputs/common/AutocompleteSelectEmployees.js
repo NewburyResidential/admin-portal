@@ -1,8 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { Autocomplete, TextField, Checkbox, Typography, Box } from '@mui/material';
 import { highlightText } from '../utils/modify-text';
-// uuid
-import { v4 as uuidv4 } from 'uuid';
 
 //TODO: Add highlightText to the fullName, jobTitle, and costCenter1Label
 export default function AutocompleteSelectEmployees({
@@ -55,6 +53,7 @@ export default function AutocompleteSelectEmployees({
       disableCloseOnSelect={multiple}
       isOptionEqualToValue={(option, optionValue) => option.pk === optionValue?.pk}
       renderOption={(props, option, { selected }) => {
+        // eslint-disable-next-line no-unused-vars
         const { key: _key, ...otherProps } = props;
 
         return (

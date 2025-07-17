@@ -3,8 +3,6 @@ import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { useDropzone } from 'react-dropzone';
 
 import Box from '@mui/material/Box';
-import Badge from '@mui/material/Badge';
-
 import Receipt from './Receipt';
 import DropDownVendor from './DropDownVendor';
 import RowSubItem from '../rowSubItems/RowSubItem';

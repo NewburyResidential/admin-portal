@@ -15,6 +15,7 @@ import CardActions from '@mui/material/CardActions';
 import TableContainer from '@mui/material/TableContainer';
 import { CardContent } from '@mui/material';
 import Typography from '@mui/material/Typography';
+import { useSnackbar } from 'src/utils/providers/SnackbarProvider';
 
 import PageChange from './PageChange';
 import ButtonApprove from './ButtonApprove';
@@ -23,12 +24,13 @@ import RowItem from './RowItem';
 import SubRowItems from './SubRowItems';
 import parseCurrency from '../utils/parse-currency';
 import { invoiceSchema } from '../utils/invoice-schema';
-import addInvoice from 'src/utils/services/entrata/addInvoice';
+import { postEntrataInvoice } from 'src/utils/services/entrata/postEntrataInvoice';
 
 export default function InvoiceTable({ groupedInvoices, chartOfAccounts, catalogedItems, setCurrentStep, property }) {
   //console.log('groupedInvoices', groupedInvoices);
   const [loading, setLoading] = useState(false);
   const [expandedStates, setExpandedStates] = useState({});
+  const { showResponseSnackbar } = useSnackbar();
 
   const toggleExpanded = (index) => {
     setExpandedStates((prev) => ({
@@ -38,7 +40,6 @@ export default function InvoiceTable({ groupedInvoices, chartOfAccounts, catalog
   };
 
   const updatedGroupedInvoices = Object.entries(groupedInvoices).map(([invoiceNumber, item]) => {
-
     return {
       ...item,
       invoiceNumber,
@@ -92,7 +93,7 @@ export default function InvoiceTable({ groupedInvoices, chartOfAccounts, catalog
     selectedItems.forEach((item) => {
       const propertyId = item.property.accountId;
       noteArray.push(item.invoiceNumber);
-      
+
       const itemTax = parseCurrency(item.tax);
       const itemShipping = parseCurrency(item.shipping);
       const itemTotalInvoice = parseCurrency(item.totalInvoice);
@@ -106,12 +107,12 @@ export default function InvoiceTable({ groupedInvoices, chartOfAccounts, catalog
         const rate = parseCurrency(lineItem.totalCost);
         itemLineItemTotal = itemLineItemTotal.plus(rate);
         totalLineItemAmount = totalLineItemAmount.plus(rate);
-        
+
         if (rate.eq(0)) return;
-        
+
         const itemLabel = catalogedItems[lineItem?.sku]?.label ? catalogedItems[lineItem?.sku]?.label : lineItem.skuDescription;
         const accountNumber = catalogedItems[lineItem.sku].glAccountNumber;
-        
+
         apDetails.push({
           propertyId,
           glAccountId: accountNumber,
@@ -122,7 +123,7 @@ export default function InvoiceTable({ groupedInvoices, chartOfAccounts, catalog
 
       // Calculate expected total for this invoice
       const expectedTotal = itemLineItemTotal.plus(itemTax).plus(itemShipping);
-      
+
       // Compare with actual invoice total
       if (!expectedTotal.eq(itemTotalInvoice)) {
         console.log(`Mismatch found in invoice ${item.invoiceNumber}:`);
@@ -166,13 +167,35 @@ export default function InvoiceTable({ groupedInvoices, chartOfAccounts, catalog
         apDetails: {
           apDetail: apDetails,
         },
-      } 
+      };
+
+      const payload = {
+        auth: {
+          type: 'apikey',
+        },
+        requestId: '15',
+        method: {
+          name: 'sendInvoices',
+          version: 'r2',
+          params: {
+            apBatch: {
+              isPaused: '0',
+              isPosted: '1',
+              apHeaders: {
+                apHeader: invoice,
+              },
+            },
+          },
+        },
+      };
       console.log(itemsPurchased);
 
-      const success = await addInvoice(invoice);
+      const response = await postEntrataInvoice({ payload });
+      showResponseSnackbar(response);
+      console.log('response', response);
       let updatedInvoices;
 
-      if (success) {
+      if (response.severity === 'success') {
         //  await batchUpdateCatalogPurchases(itemsPurchased);
         updatedInvoices = data.invoices.filter((item) => !item.checked);
         setValue('invoices', updatedInvoices);
@@ -244,22 +267,21 @@ export default function InvoiceTable({ groupedInvoices, chartOfAccounts, catalog
                     </Box>
                   );
                 })}
-           
               </>
             </Box>
           </TableContainer>
         </Card>
-        <br /> 
-                <Card sx={{ mt: 10, mb: 2, width: '100%', maxWidth: 400, margin: '0 auto' }}>
-                  <CardContent>
-                    <Typography variant="h6" align="center" color="inherit">
-                      Total Selected Amount
-                    </Typography>
-                    <Typography variant="h4" align="center" color="textPrimary">
-                      {totalSelectedAmount.toString()}
-                    </Typography>
-                  </CardContent>
-                </Card>
+        <br />
+        <Card sx={{ mt: 10, mb: 2, width: '100%', maxWidth: 400, margin: '0 auto' }}>
+          <CardContent>
+            <Typography variant="h6" align="center" color="inherit">
+              Total Selected Amount
+            </Typography>
+            <Typography variant="h4" align="center" color="textPrimary">
+              {totalSelectedAmount.toString()}
+            </Typography>
+          </CardContent>
+        </Card>
       </form>
     </FormProvider>
   );

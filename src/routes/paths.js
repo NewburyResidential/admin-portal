@@ -35,6 +35,10 @@ const rawDashboardPaths = {
   sherwinWilliams: {
     root: `/sherwin-williams`,
   },
+
+  utilities: {
+    root: `/utilities`,
+  },
 };
 
 export const onboardingPaths = {

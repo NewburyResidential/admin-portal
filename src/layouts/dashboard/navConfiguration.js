@@ -8,6 +8,7 @@ export const ICONS = {
   resources: 'bi:file-earmark-text-fill',
   payroll: 'material-symbols:payments-outline',
   sherwinWilliams: 'material-symbols:format-paint',
+  utilities: 'material-symbols:water-drop',
 };
 
 // roles should be included in main group if different roles are required for children
@@ -46,10 +47,16 @@ export const navConfiguration = [
         icon: ICONS.payroll,
       },
       {
-        title: 'Sherwin Williams',
+        title: 'Sherwin',
         roles: ['admin'],
         path: dashboardPaths.sherwinWilliams.root,
         icon: ICONS.sherwinWilliams,
+      },
+      {
+        title: 'Utilities',
+        roles: ['admin'],
+        path: dashboardPaths.utilities.root,
+        icon: ICONS.utilities,
       },
     ],
   },

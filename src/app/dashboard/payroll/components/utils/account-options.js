@@ -141,4 +141,8 @@ export const depositAccountOptions = {
     label: 'Child Support Garnishments',
     waveId: 'QWNjb3VudDoxOTI2MjEwMTYwNDk0MTYyNTExO0J1c2luZXNzOjc5OTg2NWE2LTlmMGEtNDgwNS1iZTg0LTJkMDgyOTE5MWVhYw==',
   },
+  222418: {
+    label: 'HSA Liability',
+    waveId: 'QWNjb3VudDoyMjUzMDkzNjc3NzY3MzczMDU1O0J1c2luZXNzOjc5OTg2NWE2LTlmMGEtNDgwNS1iZTg0LTJkMDgyOTE5MWVhYw==',
+  },
 };
