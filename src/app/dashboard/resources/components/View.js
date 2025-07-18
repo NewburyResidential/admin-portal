@@ -8,9 +8,7 @@ import SearchResources from './SearchResources';
 
 import Container from '@mui/material/Container';
 
-export default function View({ resourcesObject, session, unapprovedTransactions, suggestedReceipts, unapprovedTransactionsWithReceipts }) {
-  console.log('suggestedReceipts', suggestedReceipts);
-  console.log('unapprovedTransactionsWithReceipts', unapprovedTransactionsWithReceipts);
+export default function View({ resourcesObject, session }) {
 
   const settings = useSettingsContext();
 

@@ -14,12 +14,9 @@ export const metadata = {
 };
 
 export default async function Page() {
-  const [rawResourcesResponse, session, unapprovedTransactions, suggestedReceipts, unapprovedTransactionsWithReceipts] = await Promise.all([
+  const [rawResourcesResponse, session] = await Promise.all([
     getResources(),
     getServerSession(authOptions),
-    getUnapprovedTransactions(),
-    getSuggestedReceipts(),
-    getUnapprovedTransactionsWithReceipts(),
   ]);
   isAuthorizedToViewPage(session, dashboardPaths.resources.root);
   const rawResources = rawResourcesResponse.data || [];
@@ -41,9 +38,6 @@ export default async function Page() {
     <View
       resourcesObject={resourcesObject}
       session={session}
-      unapprovedTransactions={unapprovedTransactions}
-      suggestedReceipts={suggestedReceipts}
-      unapprovedTransactionsWithReceipts={unapprovedTransactionsWithReceipts}
     />
   );
 }
