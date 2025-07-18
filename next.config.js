@@ -6,7 +6,7 @@ module.exports = {
       fullUrl: true,
     },
   },
-  cacheMaxMemorySize: 0, // disable default in-memory caching
+  //cacheMaxMemorySize: 0, // disable default in-memory caching
   eslint: {
     ignoreDuringBuilds: false,
   },

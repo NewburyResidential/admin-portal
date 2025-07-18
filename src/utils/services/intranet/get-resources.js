@@ -6,8 +6,9 @@ import snackbarSuccessResponse from 'src/components/response-snackbar/utility/sn
 import snackbarCatchErrorResponse from 'src/components/response-snackbar/utility/snackbarCatchErrorResponse';
 import snackbarStatusErrorResponse from 'src/components/response-snackbar/utility/snackbarStatusErrorResponse';
 import { dynamoScan } from '../sdk-config/aws/dynamo-db';
+import { unstable_cache } from 'next/cache';
 
-export default async function getResources() {
+async function getResourcesRaw() {
   Sentry.setTag('functionName', 'getResources');
 
   const successTitle = 'Get all Resources successfully';
@@ -26,3 +27,10 @@ export default async function getResources() {
     return snackbarCatchErrorResponse(error, errorTitle);
   }
 }
+
+// Export the cached version
+export default unstable_cache(
+  getResourcesRaw,
+  ['get-intranet-resources'],
+  { tags: ['intranet-resources'] } 
+);

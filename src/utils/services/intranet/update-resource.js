@@ -25,7 +25,7 @@ export default async function updateResource({ pk, attributes }) {
     const responseStatus = response?.$metadata.httpStatusCode;
     const expectedStatus = 200;
     if (responseStatus === expectedStatus) {
-      revalidateTag('resources');
+      revalidateTag('intranet-resources');
       return snackbarSuccessResponse(response, successTitle);
     }
     return snackbarStatusErrorResponse(response, responseStatus, expectedStatus, errorTitle);
