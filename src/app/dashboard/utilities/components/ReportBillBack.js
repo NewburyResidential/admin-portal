@@ -1,15 +1,21 @@
-/* eslint no-unused-vars: ["error", { "argsIgnorePattern": "^_" }] */
-
 'use client';
+
+/* eslint no-unused-vars: ["error", { "argsIgnorePattern": "^_" }] */
 
 import { useState } from 'react';
 import Big from 'big.js';
+import { differenceInCalendarDays, isBefore, isAfter, parse } from 'date-fns';
 
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import LoadingButton from '@mui/lab/LoadingButton';
-import { DataGrid } from '@mui/x-data-grid';
-import { differenceInCalendarDays, isBefore, isAfter, parse } from 'date-fns';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Checkbox from '@mui/material/Checkbox';
 import IconButton from '@mui/material/IconButton';
 import Link from '@mui/material/Link';
 import VisibilityIcon from '@mui/icons-material/Visibility';
@@ -31,95 +37,96 @@ export default function ReportBillBack({ leases, utilityBills, refreshData }) {
   const [selectedRows, setSelectedRows] = useState([]);
   const [billbackPending, setBillbackPending] = useState(false);
 
+  const handleSelectRow = (index) => {
+    setSelectedRows((prev) => (prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index]));
+  };
+
+  const handleSelectAll = (event) => {
+    if (event.target.checked) {
+      setSelectedRows(billBacks.map((_, idx) => idx));
+    } else {
+      setSelectedRows([]);
+    }
+  };
+
   const handleSubmit = async () => {
     setBillbackPending(true);
     const billbacksData = selectedRows.map((index) => billBacks[index]);
     try {
       const response = await enterUtilityBillbacks(billbacksData);
       showResponseSnackbar(response);
-      // Refresh data after successful submission
-      await refreshData(); // Ensure refreshData is available in the scope
+      await refreshData();
     } catch (error) {
-      // console.error('Error with chargeback:', billbacksData, error);
+      // handle error
     }
-
     setSelectedRows([]);
     setBillbackPending(false);
   };
 
-  const columns = [
-    { field: 'nameFull', headerName: 'Name', flex: 1, headerAlign: 'center', align: 'left' },
-    { field: 'building', headerName: 'Building', flex: 1, headerAlign: 'center', align: 'center' },
-    { field: 'unit', headerName: 'Unit', flex: 1, headerAlign: 'center', align: 'center' },
-    { field: 'leaseDates', headerName: 'Lease Dates', flex: 1, headerAlign: 'center', align: 'center' },
-    { field: 'billDates', headerName: 'Bill Dates', flex: 1, headerAlign: 'center', align: 'center' },
-    { field: 'daysProratedText', headerName: 'Days Prorated', type: 'number', flex: 1, headerAlign: 'center', align: 'center' },
-    {
-      field: 'originalAmount',
-      headerName: 'Original Amount',
-      type: 'number',
-      flex: 1,
-      headerAlign: 'center',
-      align: 'center',
-      valueFormatter: ({ value }) => value,
-    },
-    {
-      field: 'proratedAmount',
-      headerName: 'Prorated Amount',
-      type: 'number',
-      flex: 1,
-      headerAlign: 'center',
-      align: 'center',
-      valueFormatter: ({ value }) => value,
-    },
-    {
-      field: 'viewBill',
-      headerName: 'View Bill',
-      flex: 1,
-      headerAlign: 'center',
-      align: 'center',
-      renderCell: (params) => (
-        <IconButton size="small" color="primary" component={Link} href={getS3Url(params.row.sourceFile?.key)} target="_blank">
-          <VisibilityIcon />
-        </IconButton>
-      ),
-    },
-  ];
-
-  const rows = billBacks.map((bill, index) => ({
-    id: index,
-    ...bill,
-  }));
-
   return (
-    <Card sx={{ mt: 5, height: 400, width: '100%', pb: 2 }}>
-      <Box sx={{ display: 'flex', height: '100%' }}>
-        <Box sx={{ flexGrow: 1 }}>
-          <DataGrid
-            rows={rows}
-            columns={columns}
-            pageSize={5}
-            rowsPerPageOptions={[5]}
-            checkboxSelection
-            onRowSelectionModelChange={(newSelectionModel) => {
-              setSelectedRows(newSelectionModel);
-            }}
-            rowSelectionModel={selectedRows}
-            isRowSelectable={() => {
-              return true; 
-            }}
-            getRowClassName={(params) => params.row.billedback && 'highlightSubmitted'}
-            sx={{
-              '.highlightSubmitted': {
-                bgcolor: '#E8F5E9',
-                color: 'grey',
-              },
-            }}
-          />
-        </Box>
-      </Box>
-      <Box sx={{ backgroundColor: 'white', width: '180px', height: '50px', position: 'absolute', marginTop: '-36px' }} />
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: '18px', marginTop: '-36px', ml: 3 }}>
+    <Card sx={{ mt: 5, width: '100%', pb: 2 }}>
+      <TableContainer>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell padding="checkbox">
+                <Checkbox
+                  indeterminate={selectedRows.length > 0 && selectedRows.length < billBacks.length}
+                  checked={billBacks.length > 0 && selectedRows.length === billBacks.length}
+                  onChange={handleSelectAll}
+                  inputProps={{ 'aria-label': 'select all billbacks' }}
+                />
+              </TableCell>
+              <TableCell>Name</TableCell>
+              <TableCell align="center">Building</TableCell>
+              <TableCell align="center">Unit</TableCell>
+              <TableCell align="center">Lease Dates</TableCell>
+              <TableCell align="center">Bill Dates</TableCell>
+              <TableCell align="center">Days Prorated</TableCell>
+              <TableCell align="center">Original Amount</TableCell>
+              <TableCell align="center">Prorated Amount</TableCell>
+              <TableCell align="center">View Bill</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {billBacks.map((row, idx) => (
+              <TableRow
+                key={idx}
+                selected={selectedRows.includes(idx)}
+                sx={
+                  row.billedback
+                    ? {
+                        bgcolor: '#E8F5E9',
+                        color: 'grey',
+                      }
+                    : {}
+                }
+              >
+                <TableCell padding="checkbox">
+                  <Checkbox checked={selectedRows.includes(idx)} onChange={() => handleSelectRow(idx)} />
+                </TableCell>
+                <TableCell>{row.nameFull}</TableCell>
+                <TableCell align="center">{row.building}</TableCell>
+                <TableCell align="center">{row.unit}</TableCell>
+                <TableCell align="center">{row.leaseDates}</TableCell>
+                <TableCell align="center">{row.billDates}</TableCell>
+                <TableCell align="center">{row.daysProratedText}</TableCell>
+                <TableCell align="center">{row.originalAmount}</TableCell>
+                <TableCell align="center">{row.proratedAmount}</TableCell>
+                <TableCell align="center">
+                  <IconButton size="small" color="primary" component={Link} href={getS3Url(row.sourceFile?.key)} target="_blank">
+                    <VisibilityIcon />
+                  </IconButton>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      {/* Remove the following line: */}
+      {/* <Box sx={{ backgroundColor: 'white', width: '180px', height: '50px', position: 'absolute', marginTop: '-36px' }} /> */}
+      {/* Move the button below the table, with spacing */}
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: '18px', mt: 2, ml: 3 }}>
         <LoadingButton variant="contained" color="primary" onClick={handleSubmit} loading={billbackPending} disabled={!selectedRows.length}>
           {selectedRows.length ? `Submit Billbacks (${selectedRows.length})` : 'Submit Billbacks'}
         </LoadingButton>

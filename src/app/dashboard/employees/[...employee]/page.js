@@ -5,7 +5,8 @@ import EmployeeTabs from './components/EmployeeTabs';
 import isAuthorizedToViewPage from 'src/layouts/dashboard/authorization/isAuthorizedToViewPage';
 import { dashboardPaths } from 'src/routes/paths';
 
-export default async function page({ params }) {
+export default async function page(props) {
+  const params = await props.params;
   const employeeNumber = params.employee[0]?.match(/-(\d+)$/)?.[1];
 
   const [employee, session] = await Promise.all([getEmployees(employeeNumber), getServerSession(authOptions)]);

@@ -29,6 +29,7 @@ export default function UtilityTableWrapper({ assetList, utilities }) {
   const handleUpload = (uploadedFiles) => {
     setOpenDialog(true);
   };
+  
 
   return (
     <>
