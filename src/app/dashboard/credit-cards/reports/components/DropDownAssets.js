@@ -39,12 +39,15 @@ export default function DropDownAssets({ assets, setAssets }) {
         />
       )}
       isOptionEqualToValue={(option, selected) => option.accountId === selected.accountId}
-      renderOption={(props, option, { selected }) => (
-        <li {...props} key={option.accountId}>
-          <Checkbox style={{ marginRight: 8 }} checked={selected} />
-          <ListItemText primary={option.label} />
-        </li>
-      )}
+      renderOption={(props, option, { selected }) => {
+        const { key, ...rest } = props;
+        return (
+          <li key={key} {...rest}>
+            <Checkbox style={{ marginRight: 8 }} checked={selected} />
+            <ListItemText primary={option.label} />
+          </li>
+        );
+      }}
       renderGroup={(params) => (
         <div key={params.key}>
           <ListSubheader
