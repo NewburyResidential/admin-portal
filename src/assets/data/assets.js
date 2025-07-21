@@ -118,7 +118,7 @@ export const assetItems = [
     category: 'Properties',
     id: '2001',
     label: 'The Overlook At Ashland',
-    accountId: '100026145',
+    accountId: '100106957',
     units: 96,
     accountingSoftware: 'entrata',
     waveARId: 'QWNjb3VudDoxOTA2ODM3NzE0MjcyMDM5NzA3O0J1c2luZXNzOjc5OTg2NWE2LTlmMGEtNDgwNS1iZTg0LTJkMDgyOTE5MWVhYw==',
