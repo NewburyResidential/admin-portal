@@ -144,8 +144,8 @@ export const assetItems = [
 
   {
     id: '2005',
-    accountId: '93402899048305398',
-    accountingSoftware: 'pre-entrata',
+    accountId: '100107288',
+    accountingSoftware: 'entrata',
     category: 'Properties',
     label: 'Beason Well Apartments',
     units: 72,
@@ -153,8 +153,8 @@ export const assetItems = [
   },
   {
     id: '2006',
-    accountId: '934028990483342305398',
-    accountingSoftware: 'pre-entrata',
+    accountId: '100107289',
+    accountingSoftware: 'entrata',
     category: 'Properties',
     label: 'Orleans Terrace Apartments',
     units: 36,
