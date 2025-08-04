@@ -25,7 +25,7 @@ export const navConfiguration = [
     subheader: 'Accounting',
     items: [
       {
-        title: 'Expenses',
+        title: 'P-Card',
         path: dashboardPaths.creditCards.root,
         icon: ICONS.creditCard,
         children: [
