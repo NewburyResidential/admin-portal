@@ -56,8 +56,8 @@ export const isSuggestedReceipt = (transaction, receipt) => {
   }
 
   if (transaction.amount && receiptTotal) {
-    const bigTransactionAmount = new Big(transaction.amount);
-    const bigReceiptTotal = new Big(receiptTotal);
+    const bigTransactionAmount = new Big(transaction.amount).abs();
+    const bigReceiptTotal = new Big(receiptTotal).abs();
 
     if (bigTransactionAmount.eq(bigReceiptTotal)) {
       receiptData.total.score = 1.0;
@@ -112,7 +112,7 @@ export const isSuggestedReceipt = (transaction, receipt) => {
   if (isPossibleMatch) {
     const weights = {
       date: 0.25,
-      amount: 0.50,
+      amount: 0.5,
       merchant: 0.25,
     };
 
