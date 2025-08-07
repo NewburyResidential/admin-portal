@@ -9,13 +9,17 @@ export const ICONS = {
   payroll: 'material-symbols:payments-outline',
   sherwinWilliams: 'material-symbols:format-paint',
   utilities: 'material-symbols:water-drop',
+  newburyWebsite: 'material-symbols:web',
 };
 
 // roles should be included in main group if different roles are required for children
 export const navConfiguration = [
   {
     subheader: 'Overview',
-    items: [{ title: 'Resources', path: dashboardPaths.resources.root, icon: ICONS.resources, forceDeepActive: true }],
+    items: [
+      { title: 'Resources', path: dashboardPaths.resources.root, icon: ICONS.resources, forceDeepActive: true },
+      { title: 'Newbury Website', path: 'https://newburyresidential.com/about', icon: ICONS.newburyWebsite, forceDeepActive: true },
+    ],
   },
   {
     subheader: 'Human Resource',
