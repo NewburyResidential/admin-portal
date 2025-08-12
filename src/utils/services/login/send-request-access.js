@@ -15,7 +15,7 @@ const sesClient = new SESClient({
 
 export async function sendRequestAccess({ email, currentPath, type }) {
   console.log(email);
-  const emailHtml = render(<AccessRequestEmail email={email} currentPath={currentPath} type={type} />);
+  const emailHtml = await render(<AccessRequestEmail email={email} currentPath={currentPath} type={type} />);
 
   const params = {
     Source: 'Mike@newburyresidential.com',

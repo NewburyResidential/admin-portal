@@ -14,7 +14,7 @@ const sesClient = new SESClient({
 });
 
 export async function sendSupportEmail({ email, message }) {
-  const emailHtml = render(<SupportEmail email={email} message={message} />);
+  const emailHtml = await render(<SupportEmail email={email} message={message} />);
 
   const params = {
     Source: 'Mike@newburyresidential.com',

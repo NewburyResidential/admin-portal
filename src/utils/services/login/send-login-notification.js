@@ -14,7 +14,7 @@ const sesClient = new SESClient({
 });
 
 export async function sendLoginNotification({ email }) {
-  const emailHtml = render(<LoginNotificationEmail email={email} />);
+  const emailHtml = await render(<LoginNotificationEmail email={email} />);
 
   const params = {
     Source: 'Mike@newburyresidential.com',

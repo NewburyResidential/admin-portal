@@ -14,7 +14,7 @@ const sesClient = new SESClient({
 });
 
 export async function sendVerificationRequest({ identifier: email, url }) {
-  const emailHtml = render(<LoginEmail url={url} />);
+  const emailHtml = await render(<LoginEmail url={url} />);
 
   const params = {
     Source: 'Mike@newburyresidential.com',
