@@ -57,6 +57,7 @@ export default function ReportBillBack({ leases, utilityBills, refreshData }) {
       showResponseSnackbar(response);
       await refreshData();
     } catch (error) {
+      console.log('error', error);
       // handle error
     }
     setSelectedRows([]);

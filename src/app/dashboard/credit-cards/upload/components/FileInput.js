@@ -17,7 +17,7 @@ import { Card, Typography, List, ListItem, ListItemText, Divider, Box, IconButto
 import Iconify from 'src/components/iconify';
 import getSuggestedReceiptsByUploader from 'src/utils/services/cc-expenses/getSuggestedReceiptsByUploader';
 
-export default function FileInput({ employees, user, chartOfAccounts }) {
+export default function FileInput({ employees, user, chartOfAccounts, newburyAssets }) {
   const { open, handleOpen, handleClose } = useDialog();
   const [selectedFile, setSelectedFile] = useState(null);
   const [isWaiting, setIsWaiting] = useState(false);
@@ -236,7 +236,7 @@ export default function FileInput({ employees, user, chartOfAccounts }) {
       showResponseSnackbar([
         {
           severity: 'warning',
-          message: 'Unable to use AI' || 'Failed to analyze receipt. Please fill in the details manually.',
+          message: 'Failed to analyze receipt. Please fill in the details manually.',
         },
       ]);
     } finally {
@@ -425,6 +425,7 @@ export default function FileInput({ employees, user, chartOfAccounts }) {
         chartOfAccounts={chartOfAccounts}
         onSubmit={onSubmit}
         isUploading={isUploading}
+        newburyAssets={newburyAssets}
       />
     </FormProvider>
   );

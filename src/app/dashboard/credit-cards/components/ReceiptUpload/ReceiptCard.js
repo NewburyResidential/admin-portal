@@ -12,10 +12,9 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import { useFormContext } from 'react-hook-form';
 import { copyS3Object } from 'src/utils/services/cc-expenses/uploadS3Image';
 import { format } from 'date-fns';
-import { assetItems } from 'src/assets/data/assets';
 import { useSnackbar } from 'src/utils/providers/SnackbarProvider';
 
-export default function ReceiptCards({ id, setOpen, setLoading, suggestedReceipts, chartOfAccounts, totalAmount }) {
+export default function ReceiptCards({ id, setOpen, setLoading, suggestedReceipts, chartOfAccounts, totalAmount, newburyAssets }) {
   const { setValue } = useFormContext();
   const { showResponseSnackbar } = useSnackbar();
 
@@ -30,7 +29,7 @@ export default function ReceiptCards({ id, setOpen, setLoading, suggestedReceipt
       console.log('receipt.allocations', receipt.allocations);
       const updatedAllocations = receipt.allocations.map((allocation) => {
         const matchingAsset = allocation.asset?.accountId
-          ? assetItems.find((asset) => asset.accountId === allocation.asset.accountId)
+          ? newburyAssets.find((asset) => asset.accountId === allocation.asset.accountId)
           : null;
         const matchingGlAccount = allocation.glAccount?.accountId
           ? chartOfAccounts.find((glAccount) => glAccount.accountId === allocation.glAccount.accountId)

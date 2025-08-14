@@ -10,7 +10,7 @@ import IconButton from '@mui/material/IconButton';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
-export default function RowItem({ itemIndex, invoice, expanded, toggleExpanded }) {
+export default function RowItem({ itemIndex, invoice, expanded, toggleExpanded, newburyAssets }) {
   const { control, setValue } = useFormContext();
 
   const toggleRowChecked = () => {
@@ -66,7 +66,7 @@ export default function RowItem({ itemIndex, invoice, expanded, toggleExpanded }
         <CheckboxApprove itemIndex={itemIndex} />
       </Box>
       <Box sx={{ flex: 1.7 }}>
-        <DropDownAssets itemIndex={itemIndex} />
+        <DropDownAssets itemIndex={itemIndex} newburyAssets={newburyAssets} />
       </Box>
       <Box sx={{ flex: 1, textAlign: 'center' }}>
         <Typography noWrap sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>

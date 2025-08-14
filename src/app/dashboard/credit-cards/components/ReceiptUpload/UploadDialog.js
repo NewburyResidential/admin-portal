@@ -17,7 +17,7 @@ const Transition = React.forwardRef((props, ref) => {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-export default function UploadDialog({ open, setOpen, setLoading, transaction, recentReceipts, suggestedReceipts, user, chartOfAccounts }) {
+export default function UploadDialog({ open, setOpen, setLoading, transaction, recentReceipts, suggestedReceipts, user, chartOfAccounts, newburyAssets }) {
   const handleClose = () => {
     setOpen(false);
   };
@@ -47,7 +47,7 @@ export default function UploadDialog({ open, setOpen, setLoading, transaction, r
             <Typography variant="h5" component="p" sx={{ fontStyle: 'italic', marginBottom: '20px', fontWeight: 200, mt: 4 }}>
               Suggested Receipts
             </Typography>
-            <ReceiptCard totalAmount={transaction.amount} chartOfAccounts={chartOfAccounts} setOpen={setOpen} setLoading={setLoading} id={transaction.sk} suggestedReceipts={suggestedReceipts} />
+            <ReceiptCard totalAmount={transaction.amount} chartOfAccounts={chartOfAccounts} setOpen={setOpen} setLoading={setLoading} id={transaction.sk} suggestedReceipts={suggestedReceipts} newburyAssets={newburyAssets} />
           </>
         )}
         <Typography variant="h5" component="p" sx={{ fontStyle: 'italic', marginTop: '50px', fontWeight: 200, mt: 4 }}>
@@ -63,6 +63,7 @@ export default function UploadDialog({ open, setOpen, setLoading, transaction, r
           // TODO just adjust this to accountname
           currentCardUsed={transaction.accountName?.replace(/\d+/g, '').trim()}
           totalAmount={transaction.amount}
+          newburyAssets={newburyAssets}
         />
       </Box>
     </Dialog>

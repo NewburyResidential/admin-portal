@@ -7,7 +7,7 @@ import FilterBar from './FilterBar';
 import Table from './TransactionTable';
 import TransactionReportTable from './TransactionReport/Table';
 
-export default function View() {
+export default function View({ newburyAssets }) {
   const [transactions, setTransactions] = useState([]);
   const [viewMode, setViewMode] = useState('transactions');
 
@@ -52,7 +52,7 @@ export default function View() {
 
       {viewMode !== 'transactions' ? (
         <>
-          <FilterBar totalAmount={totalAmount} positiveOnlyTotal={positiveOnlyTotal} setTransactions={setTransactions} transactions={transactions} />
+          <FilterBar totalAmount={totalAmount} positiveOnlyTotal={positiveOnlyTotal} setTransactions={setTransactions} transactions={transactions} newburyAssets={newburyAssets} />
           <Table transactions={transactions} />
         </>
       ) : (

@@ -11,9 +11,10 @@ import { getAllEmployees } from 'src/utils/services/employees/getAllEmployees';
 import TransactionList from '../components/CreditCard/TransactionList';
 import updateAccountsWithEmployees from '../components/utils/update-accounts-with-employees';
 import { getUnapprovedTransactionsWithReceipts } from 'src/utils/services/cc-expenses/getUnapprovedTransactionsWithReceipts';
+import getNewburyAssets from 'src/utils/services/newbury/get-assets';
 
 export default async function page() {
-  const [vendors, chartOfAccounts, suggestedReceipts, session, creditCardAccounts, employees, unapprovedTransactions] = await Promise.all([
+  const [vendors, chartOfAccounts, suggestedReceipts, session, creditCardAccounts, employees, unapprovedTransactions, newburyAssets] = await Promise.all([
     getVendorLocations(),
     getAllChartOfAccounts(),
     getSuggestedReceipts(),
@@ -21,6 +22,7 @@ export default async function page() {
     getCreditCardAccounts(),
     getAllEmployees(),
     getUnapprovedTransactionsWithReceipts(),
+    getNewburyAssets(),
   ]);
 
   isAuthorizedToViewPage(session, dashboardPaths.creditCards.root);
@@ -37,6 +39,7 @@ export default async function page() {
       chartOfAccounts={chartOfAccounts}
       vendorData={vendors}
       suggestedReceipts={suggestedReceipts}
+      newburyAssets={newburyAssets}
     />
   );
 }

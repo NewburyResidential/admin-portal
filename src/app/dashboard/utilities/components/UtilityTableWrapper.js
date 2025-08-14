@@ -7,7 +7,7 @@ import UploadMultipleFiles from 'src/components/upload-files/UploadMultipleFiles
 import UploadDialog from './UploadDialog';
 import ReportBillBack from './ReportBillBack';
 
-export default function UtilityTableWrapper({ assetList, utilities }) {
+export default function UtilityTableWrapper({ utilities, newburyAssets }) {
   const [utilityBills, setUtilityBills] = useState([]);
   const [leases, setLeases] = useState([]);
   const [files, setFiles] = useState([]);
@@ -33,7 +33,7 @@ export default function UtilityTableWrapper({ assetList, utilities }) {
 
   return (
     <>
-      <UploadDialog assetItems={assetList} files={files} setFiles={setFiles} setOpenDialog={setOpenDialog} openDialog={openDialog} />
+      <UploadDialog newburyAssets={newburyAssets} files={files} setFiles={setFiles} setOpenDialog={setOpenDialog} openDialog={openDialog} />
       <UploadMultipleFiles
         accept={{
           'application/pdf': ['.pdf'],
@@ -46,12 +46,12 @@ export default function UtilityTableWrapper({ assetList, utilities }) {
       <UtilityTable
         utilityBills={utilityBills}
         setUtilityBills={setUtilityBills}
-        assetList={assetList}
         utilities={utilities}
         onRefresh={refreshData}
         setLeases={setLeases}
         setFilters={setFilters}
         filters={filters}
+        newburyAssets={newburyAssets}
       />
       <ReportBillBack leases={leases} utilityBills={utilityBills} refreshData={refreshData} />
     </>

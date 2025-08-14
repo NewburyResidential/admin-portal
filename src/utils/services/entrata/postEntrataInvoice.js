@@ -30,10 +30,6 @@ export async function postEntrataInvoice({
       body: JSON.stringify(body),
     });
 
-    if (!response.ok) {
-      throw new Error(`Error: ${response.status}`);
-    }
-
     const entrataResponse = await response.json();
     console.log('entrataResponse', entrataResponse);
 

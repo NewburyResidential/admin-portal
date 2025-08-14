@@ -1,48 +1,46 @@
 'use server';
 
 import { AWS_CONFIG, ENTRATA_API_KEY, ENTRATA_API } from 'src/config-global';
-import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
-import axios from 'axios';
-import { DynamoDBDocumentClient, UpdateCommand } from '@aws-sdk/lib-dynamodb';
+import { dynamoUpdateItemAttributes } from '../sdk-config/aws/dynamo-db';
 import fetch from 'node-fetch';
 
-const dynamoClient = new DynamoDBClient(AWS_CONFIG);
-const dynamoDocumentClient = DynamoDBDocumentClient.from(dynamoClient);
 
 export async function uploadPreEntrataTransactions(transaction, assetId) {
+  console.log('starting');
   const entrataBaseUrl = `${ENTRATA_API.baseUrl}/v1/vendors`;
-
 
   const postData = await buildEntrataApiPayload(transaction, assetId);
 
   try {
-    const response = await axios.post(entrataBaseUrl, postData, {
+    const response = await fetch(entrataBaseUrl, {
+      method: 'POST',
       headers: {
         'X-Api-Key': ENTRATA_API_KEY,
         'Content-Type': 'application/json',
       },
+      body: JSON.stringify(postData),
     });
-    const { data } = response;
-    console.log('Entrata response:', response);
+    const data = await response.json();
+    console.log('Entrata response:', data);
     if (data?.response?.code !== 200) {
-      throw new Error(`Error sending Entrata transaction: ${data.response}`);
+      throw new Error(`Error sending Entrata transaction: ${JSON.stringify(data.response)}`);
     }
 
     try {
-      const dynamoResponse = await dynamoUpdateItemAttributes({
-        tableName: 'admin_portal_expenses',
-        pk: transaction.billingCycle,
-        sk: transaction.sk,
-        attributes: { preEntrataEntered: true },
-      });
-      console.log('DynamoDB response:', dynamoResponse);
+       const dynamoResponse = await dynamoUpdateItemAttributes({
+         tableName: 'admin_portal_expenses',
+         pk: transaction.pk,
+         sk: transaction.id,
+         attributes: { preEntrataEntered: true },
+       });
+       console.log('DynamoDB response:', dynamoResponse);
     } catch (error) {
+      console.log('Error updating DynamoDB item:', error);
       throw new Error('Error updating DynamoDB item:', error);
     }
-    return data;
   } catch (error) {
-    console.error('Error sending Entrata transaction:', error);
-    throw error;
+    console.log('Error sending Entrata transaction:', error);
+    throw new Error('Error sending Entrata transaction:', error);
   }
 }
 
@@ -132,41 +130,4 @@ async function convertImageToBase64(url) {
 function convertDateFormat(dateString) {
   const parts = dateString.split('-');
   return `${parts[1]}/${parts[2]}/${parts[0]}`;
-}
-
-export async function dynamoUpdateItemAttributes({ tableName, pk, sk, attributes }) {
-  let updateExpression = 'SET';
-  const expressionAttributeNames = {};
-  const expressionAttributeValues = {};
-  let firstItem = true;
-
-  for (const [attributeName, attributeValue] of Object.entries(attributes)) {
-    if (!firstItem) {
-      updateExpression += ',';
-    }
-    const attributePlaceholder = `#${attributeName}`;
-    const valuePlaceholder = `:${attributeName}`;
-    updateExpression += ` ${attributePlaceholder} = ${valuePlaceholder}`;
-    expressionAttributeNames[attributePlaceholder] = attributeName;
-    expressionAttributeValues[valuePlaceholder] = attributeValue;
-    firstItem = false;
-  }
-
-  const params = {
-    TableName: tableName,
-    Key: { pk, sk },
-    UpdateExpression: updateExpression,
-    ExpressionAttributeNames: expressionAttributeNames,
-    ExpressionAttributeValues: expressionAttributeValues,
-    ReturnValues: 'UPDATED_NEW',
-  };
-
-  try {
-    const response = await dynamoDocumentClient.send(new UpdateCommand(params));
-    console.log('Update operation successful:', response);
-    return response;
-  } catch (error) {
-    console.error('Error updating item in DynamoDB:', error);
-    throw error; // Propagate errors for proper handling.
-  }
 }

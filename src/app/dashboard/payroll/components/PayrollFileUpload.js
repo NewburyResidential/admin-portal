@@ -20,6 +20,7 @@ import { alpha } from '@mui/material/styles';
 import { LoadingButton } from '@mui/lab';
 
 import { calculatePropertyPercentages } from './utils/calculatePropertyPercentages';
+import { getWaveWithdrawalPayload, getWaveWithdrawalPayloads } from './utils/payroll/getWaveWithdrawalPayloads';
 
 const PayrollFileUpload = ({
   normalDate,
@@ -109,7 +110,7 @@ const PayrollFileUpload = ({
                     const employerAmount = amount.times(1.5).round(2);
                     duplicateRow['Credit Amount'] = employerAmount.toString();
                     duplicateRow['Debit Amount'] = ''; // Clear debit amount if it exists
-                    duplicateRow['Account Descripton'] = `${currentAccountDescription  } Employer Cost`;
+                    duplicateRow['Account Descripton'] = `${currentAccountDescription} Employer Cost`;
                     newEntries.push(duplicateRow);
 
                     // Create a corresponding entry with the employee's handling GL
@@ -147,23 +148,23 @@ const PayrollFileUpload = ({
                 if (amount.eq(0)) return; // Skip zero amounts
 
                 // Multiply by 1.5 if account is a health benefit account
-                if (false) {
-                  // if (false) {
-                  employerAmount = amount.times(1.5).round(2); // round to 2 decimal places
-                  amount = employerAmount.plus(amount);
+                // if (false) {
+                //   // if (false) {
+                //   employerAmount = amount.times(1.5).round(2); // round to 2 decimal places
+                //   amount = employerAmount.plus(amount);
 
-                  // Track employer benefits by employee
-                  if (employeeId) {
-                    if (!employerBenefitByEmployee[employeeId]) {
-                      employerBenefitByEmployee[employeeId] = {
-                        employerAmount: new Big(0),
-                        assetId: asset.id,
-                      };
-                    }
-                    employerBenefitByEmployee[employeeId].employerAmount =
-                      employerBenefitByEmployee[employeeId].employerAmount.plus(employerAmount);
-                  }
-                }
+                //   // Track employer benefits by employee
+                //   if (employeeId) {
+                //     if (!employerBenefitByEmployee[employeeId]) {
+                //       employerBenefitByEmployee[employeeId] = {
+                //         employerAmount: new Big(0),
+                //         assetId: asset.id,
+                //       };
+                //     }
+                //     employerBenefitByEmployee[employeeId].employerAmount =
+                //       employerBenefitByEmployee[employeeId].employerAmount.plus(employerAmount);
+                //   }
+           //     }
               } catch (e) {
                 return; // Skip invalid amounts
               }
@@ -227,7 +228,6 @@ const PayrollFileUpload = ({
             });
 
             // Convert Big.js numbers to strings for console logging
-       
 
             setPropertiesByEmployee(propertiesByEmployeeObject);
             const propertyPercentages = calculatePropertyPercentages(propertiesByEmployeeObject);
@@ -296,11 +296,20 @@ const PayrollFileUpload = ({
             setView('payrollAmounts');
             const fileName = uploadedFile.name;
 
+            console.log('depositEntriesByAsset', depositEntriesByAsset);
+            console.log(
+              'waveDepositPayloads',
+              getWaveDepositPayloads(depositEntriesByAsset, normalDate, weirdDate, propertyAmounts, fileName)
+            );
+
+            const waveDepositPayloads = getWaveDepositPayloads(depositEntriesByAsset, normalDate, weirdDate, propertyAmounts, fileName);
+
             setPayloads({
               waveTax: getWaveTaxPayload(results.data, normalDate, weirdDate, fileName),
               waveOperating: getWaveOperatingPayload(operatingEntries, normalDate, weirdDate, fileName),
-              waveDeposits: getWaveDepositPayloads(depositEntriesByAsset, normalDate, weirdDate, propertyAmounts, fileName),
+              waveDeposits: waveDepositPayloads,
               entrataWithdrawal: getEntrataWithdrawalPayload(withdrawalEntries, normalDate, fileName),
+              waveWithdrawals: getWaveWithdrawalPayloads(waveDepositPayloads, normalDate, weirdDate, fileName),
             });
           },
         });
@@ -318,10 +327,26 @@ const PayrollFileUpload = ({
       if (payloads.waveTax) totalSteps++;
       if (payloads.waveOperating) totalSteps++;
       if (payloads.waveDeposits) totalSteps += payloads.waveDeposits.length;
+      if (payloads.waveWithdrawals) totalSteps += payloads.waveWithdrawals.length;
       if (payloads.entrataWithdrawal) totalSteps++;
+
+      console.log('payloads', payloads);
 
       let completedSteps = 0;
       const responses = [];
+
+      if (payloads.waveWithdrawals && payloads.waveWithdrawals.length > 0) {
+        for (const payload of payloads.waveWithdrawals) {
+          const waveWithdrawalResponse = await postWaveTransaction({
+            payload,
+            successTitle: 'Wave Withdrawals Posted',
+            errorTitle: 'Error Posting Wave Withdrawal',
+          });
+          responses.push(waveWithdrawalResponse);
+          completedSteps++;
+          setProgress((completedSteps / totalSteps) * 100);
+        }
+      }
 
       if (payloads.waveTax) {
         const waveTaxResponse = await postWaveTransaction({
@@ -385,6 +410,7 @@ const PayrollFileUpload = ({
       waveTax: null,
       waveOperating: null,
       waveDeposits: null,
+      waveWithdrawals: null,
       entrataWithdrawal: null,
     });
   };

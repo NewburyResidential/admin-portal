@@ -1,5 +1,5 @@
 import Big from 'big.js';
-import { getTodaysDate } from 'src/utils/format-time';
+import { getPostMonth, getTodaysDate } from 'src/utils/format-time';
 
 export async function getEntrataUtilityPayload(entries, utilities) {
   console.log('Entries:', entries);
@@ -16,13 +16,13 @@ export async function getEntrataUtilityPayload(entries, utilities) {
 
   const calculateAmount = (amount) => {
     if (!amount) return new Big(0);
-    
+
     if (Array.isArray(amount)) {
       return amount.reduce((sum, item) => {
         return sum.plus(new Big(cleanAmount(item.amount)));
       }, new Big(0));
     }
-    
+
     return new Big(cleanAmount(amount));
   };
 
@@ -31,27 +31,31 @@ export async function getEntrataUtilityPayload(entries, utilities) {
     const glAccountMap = {
       electric: isCommon ? '222242' : '222243',
       gas: '222246',
-      waterSewer: isCommon ? '222244' : '222245'
+      waterSewer: isCommon ? '222244' : '222245',
     };
 
     const typeLabels = {
       electric: 'Electric',
       gas: 'Gas',
-      waterSewer: 'Water/Sewer'
+      waterSewer: 'Water/Sewer',
     };
 
     return {
       propertyId: entry.accountId,
       glAccountId: glAccountMap[type],
       description: `${typeLabels[type]} ${entry.accountNumber} - ${isCommon ? 'Common' : 'APT'} ${isCommon ? entry.completeAddress : entry.apartment}`,
-      rate: cleanAmount(amount)
+      rate: cleanAmount(amount),
+      invoicePayment: {
+        invoicePaymentId: 123456789, // Use a smaller number
+        paymentAmount: entry.totalAmount,
+      },
     };
   };
 
   const utilityVendor = entries[0]?.utilityVendor;
   const paymentId = entries[0]?.paymentId;
-  const utilityVendorInfo = utilities.find(util => util.pk === utilityVendor);
-  
+  const utilityVendorInfo = utilities.find((util) => util.pk === utilityVendor);
+
   if (!utilityVendorInfo) {
     throw new Error(`Utility vendor ${utilityVendor} not found`);
   }
@@ -62,13 +66,13 @@ export async function getEntrataUtilityPayload(entries, utilities) {
   let totalMisc = new Big(0);
 
   // Process entries
-  entries.forEach(entry => {
+  entries.forEach((entry) => {
     try {
       // Process utility amounts
       const utilityTypes = [
         { type: 'electric', amount: entry.electricAmount },
         { type: 'gas', amount: entry.gasAmount },
-        { type: 'waterSewer', amount: entry.waterSewerAmount }
+        { type: 'waterSewer', amount: entry.waterSewerAmount },
       ];
 
       utilityTypes.forEach(({ type, amount }) => {
@@ -97,14 +101,15 @@ export async function getEntrataUtilityPayload(entries, utilities) {
   if (total.eq(0) || allApDetails.length === 0) return null;
 
   const sourceFiles = entries
-    .filter(entry => entry?.sourceFile)
-    .map(entry => ({
+    .filter((entry) => entry?.sourceFile)
+    .map((entry) => ({
       bucket: entry.sourceFile.bucket,
-      key: entry.sourceFile.key
+      key: entry.sourceFile.key,
     }));
 
-  const combinedNote = entries.map(entry => entry.accountNumber).join(', ');
+  const combinedNote = entries.map((entry) => entry.accountNumber).join(', ');
   const today = getTodaysDate();
+  const postMonth = getPostMonth();
 
   return {
     payload: {
@@ -132,14 +137,23 @@ export async function getEntrataUtilityPayload(entries, utilities) {
                 note: combinedNote,
                 apDetails: {
                   apDetail: allApDetails,
-                }
+                },
+              },
+            },
+            invoicePayments: {
+              invoicePayment: {
+                invoicePaymentId: 123456789, // Use a smaller number
+                paymentTypeId: 1,
+                paymentNumber: `API Payment - ${today}`,
+                paymentDate: today,
+                postMonth: postMonth,
+                paymentMemo: `Utility Payment`,
               },
             },
           },
         },
       },
     },
-    sourceFiles
+    sourceFiles,
   };
 }
-

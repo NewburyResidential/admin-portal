@@ -9,10 +9,12 @@ export const getUnapprovedTransactionsWithReceipts = async () => {
 
   const receiptsByCreditCard = suggestedReceipts.reduce((acc, receipt) => {
     const cardName = receipt?.creditCardHolder ? receipt?.creditCardHolder : receipt?.creditCard?.name || null;
+    const uploadedBy = receipt?.uploadedBy ? receipt?.uploadedBy : null;
     if (!cardName) {
       return acc;
     }
     const cardId = cardName?.toLowerCase();
+
     if (cardName === 'Emailed' || cardName === 'Amazon') {
       const emailedCardHolders = ['brian murphy', 'michael axiotakis', 'tom anthony', 'laura murphy'];
       emailedCardHolders.forEach((holder) => {
@@ -49,18 +51,18 @@ export const getUnapprovedTransactionsWithReceipts = async () => {
         const today = new Date();
         const currentMonth = today.getMonth();
         const currentYear = today.getFullYear();
-        
+
         // Is today on or after the 5th of the current month?
-      //  const isReconciliationPeriodStarted = today.getDate() >= 1;
-        
-      //  if (!isReconciliationPeriodStarted) return false;
-        
+        //  const isReconciliationPeriodStarted = today.getDate() >= 1;
+
+        //  if (!isReconciliationPeriodStarted) return false;
+
         const postedDate = new Date(transaction.postedDate);
         const cutoffDate = new Date(currentYear, currentMonth, 5);
-        
+
         // Is the transaction posted before the 5th of the current month?
         return postedDate < cutoffDate;
-      })()
+      })(),
     };
   });
 

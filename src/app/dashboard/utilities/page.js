@@ -4,14 +4,14 @@ import getAllUtilities from "src/utils/services/utilities/get-all-utilities";
 
 export default async function UtilitiesPage() {
   // Fetch data in parallel
-  const [assetList, utilities] = await Promise.all([
+  const [newburyAssets, utilities] = await Promise.all([
     getAssets(),
     getAllUtilities(),
   ]);
   
   return (
     <UtilityTableWrapper 
-      assetList={assetList}   
+      newburyAssets={newburyAssets}   
       utilities={utilities}
     />
   );

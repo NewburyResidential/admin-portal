@@ -1,4 +1,3 @@
-import { assetItems } from 'src/assets/data/assets';
 import Popper from '@mui/material/Popper';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
@@ -6,7 +5,7 @@ import ListSubheader from '@mui/material/ListSubheader';
 import Checkbox from '@mui/material/Checkbox';
 import ListItemText from '@mui/material/ListItemText';
 
-export default function DropDownAssets({ assets, setAssets }) {
+export default function DropDownAssets({ assets, setAssets, newburyAssets }) {
   const currentValue = assets || [];
 
   return (
@@ -20,7 +19,7 @@ export default function DropDownAssets({ assets, setAssets }) {
         setAssets(newValue);
       }}
       id="grouped-assets"
-      options={assetItems.sort((a, b) => b.category.localeCompare(a.category))}
+      options={newburyAssets.sort((a, b) => b.category.localeCompare(a.category))}
       groupBy={(option) => option.category}
       getOptionLabel={(option) => option.label}
       renderInput={(params) => (

@@ -10,10 +10,9 @@ import InvoiceTable from './InvoiceTable/InvoiceTable';
 import Scraper from './Scraper';
 import Upload from './Upload';
 import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
-import { assetItems } from 'src/assets/data/assets';
 
-export default function Steps({ chartOfAccounts }) {
-  const assets = assetItems.filter((item) => item.accountingSoftware === 'entrata');
+export default function Steps({ chartOfAccounts, newburyAssets }) {
+  const assets = newburyAssets.filter((item) => item.accountingSoftware === 'entrata');
 
 
   const [groupedInvoices, setGroupedInvoices] = useState({});
@@ -80,6 +79,7 @@ export default function Steps({ chartOfAccounts }) {
           catalogedItems={catalogedItems}
           setCurrentStep={setCurrentStep}
           property={property}
+          newburyAssets={newburyAssets}
         />
       )}
     </div>

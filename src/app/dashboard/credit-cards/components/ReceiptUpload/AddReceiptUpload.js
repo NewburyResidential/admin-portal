@@ -1,7 +1,6 @@
 import { useRef, useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { copyS3Object, uploadS3Image } from 'src/utils/services/cc-expenses/uploadS3Image';
-import { assetItems } from 'src/assets/data/assets';
 import { useSnackbar } from 'src/utils/providers/SnackbarProvider';
 
 import Box from '@mui/material/Box';
@@ -18,7 +17,7 @@ import Badge from '@mui/material/Badge';
 import CancelIcon from '@mui/icons-material/Cancel';
 import Chip from '@mui/material/Chip';
 
-export default function AddReceiptUpload({ recentReceipts, setLoading, hasReceipt, transaction, isDragActive, user, chartOfAccounts }) {
+export default function AddReceiptUpload({ recentReceipts, setLoading, hasReceipt, transaction, isDragActive, user, chartOfAccounts, newburyAssets }) {
   //console.log('transaction', transaction);
 
   const { setValue, getValues } = useFormContext();
@@ -81,7 +80,7 @@ export default function AddReceiptUpload({ recentReceipts, setLoading, hasReceip
     if (receipt && receipt.allocations && receipt.allocations.length > 0) {
       const updatedAllocations = receipt.allocations.map((allocation) => {
         const matchingAsset = allocation.asset?.accountId
-          ? assetItems.find((asset) => asset.accountId === allocation.asset.accountId)
+          ? newburyAssets.find((asset) => asset.accountId === allocation.asset.accountId)
           : null;
         const matchingGlAccount = allocation.glAccount?.accountId
           ? chartOfAccounts.find((glAccount) => glAccount.accountId === allocation.glAccount.accountId)
@@ -141,6 +140,7 @@ export default function AddReceiptUpload({ recentReceipts, setLoading, hasReceip
         suggestedReceipts={suggestedReceipts}
         user={user}
         chartOfAccounts={chartOfAccounts}
+        newburyAssets={newburyAssets}
       />
       {hoveredReceipt && (
         <Box

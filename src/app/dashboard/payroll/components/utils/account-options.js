@@ -109,10 +109,50 @@ export const taxAccountOptions = {
     label: 'AR Income Tax',
     waveId: 'QWNjb3VudDoyMDMzNDY1MjAxNDU3NjcyNDg3O0J1c2luZXNzOjc5OTg2NWE2LTlmMGEtNDgwNS1iZTg0LTJkMDgyOTE5MWVhYw==',
   },
+  222419: {
+    label: 'NY Unemployment Tax',
+    waveId: 'QWNjb3VudDoyMzE4MjUwMTkwODkwMzgyMzE1O0J1c2luZXNzOjc5OTg2NWE2LTlmMGEtNDgwNS1iZTg0LTJkMDgyOTE5MWVhYw==',
+  },
+  222420: {
+    label: 'NY Income Tax',
+    waveId: 'QWNjb3VudDoyMzE4MjUwOTg3NTU2NDgzMTM5O0J1c2luZXNzOjc5OTg2NWE2LTlmMGEtNDgwNS1iZTg0LTJkMDgyOTE5MWVhYw==',
+  },
+};
+
+export const trakPayTaxAccountOptions = {
+  222421: {
+    label: 'NY Disability',
+    waveId: 'QWNjb3VudDoyMzE4MjUxMjExOTE4MTkyNzM1O0J1c2luZXNzOjc5OTg2NWE2LTlmMGEtNDgwNS1iZTg0LTJkMDgyOTE5MWVhYw==',
+  },
+  222422: {
+    label: 'NY Paid Family Leave',
+    waveId: 'QWNjb3VudDoyMzE4MjUxNDg1NjQ2ODYwNDQwO0J1c2luZXNzOjc5OTg2NWE2LTlmMGEtNDgwNS1iZTg0LTJkMDgyOTE5MWVhYw==',
+  },
+};
+
+export const waveWithdrawalAccountOptions = {
+  222418: {
+    label: 'HSA Liability',
+    waveId: 'QWNjb3VudDoyMjUzMDkzNjc3NzY3MzczMDU1O0J1c2luZXNzOjc5OTg2NWE2LTlmMGEtNDgwNS1iZTg0LTJkMDgyOTE5MWVhYw==',
+  },
+  222413: {
+    label: 'Retirement Plan Liability',
+    waveId: 'QWNjb3VudDoxNzI4NTA4OTI2NzY2Mzk1ODM5O0J1c2luZXNzOjc5OTg2NWE2LTlmMGEtNDgwNS1iZTg0LTJkMDgyOTE5MWVhYw==',
+  },
+  222404: {
+    label: 'Direct Deposit Payable',
+    waveId: 'QWNjb3VudDoxNjc5ODcyMjc1MTY5NDU2NjMxO0J1c2luZXNzOjc5OTg2NWE2LTlmMGEtNDgwNS1iZTg0LTJkMDgyOTE5MWVhYw==',
+  },
+  222414: {
+    label: 'Child Support Garnishments',
+    waveId: 'QWNjb3VudDoxOTI2MjEwMTYwNDk0MTYyNTExO0J1c2luZXNzOjc5OTg2NWE2LTlmMGEtNDgwNS1iZTg0LTJkMDgyOTE5MWVhYw==',
+  },
 };
 
 export const depositAccountOptions = {
   ...taxAccountOptions,
+  ...trakPayTaxAccountOptions,
+  ...waveWithdrawalAccountOptions,
   222401: {
     label: 'Dental Insurance',
     waveId: 'QWNjb3VudDoxNjc5Mjk3Mjc4MjI3MDM1MDE1O0J1c2luZXNzOjc5OTg2NWE2LTlmMGEtNDgwNS1iZTg0LTJkMDgyOTE5MWVhYw==',
@@ -124,25 +164,5 @@ export const depositAccountOptions = {
   222403: {
     label: 'Vision Insurance',
     waveId: 'QWNjb3VudDoxNjc5Mjk3NDM2Njk2MjI4ODI4O0J1c2luZXNzOjc5OTg2NWE2LTlmMGEtNDgwNS1iZTg0LTJkMDgyOTE5MWVhYw==',
-  },
-  222404: {
-    label: 'Direct Deposit Payable',
-    waveId: 'QWNjb3VudDoxNjc5ODcyMjc1MTY5NDU2NjMxO0J1c2luZXNzOjc5OTg2NWE2LTlmMGEtNDgwNS1iZTg0LTJkMDgyOTE5MWVhYw==',
-  },
-  222413: {
-    label: 'Retirement Plan Liability',
-    waveId: 'QWNjb3VudDoxNzI4NTA4OTI2NzY2Mzk1ODM5O0J1c2luZXNzOjc5OTg2NWE2LTlmMGEtNDgwNS1iZTg0LTJkMDgyOTE5MWVhYw==',
-  },
-  222414: {
-    label: 'Child Support Garnishments',
-    waveId: 'QWNjb3VudDoxOTI2MjEwMTYwNDk0MTYyNTExO0J1c2luZXNzOjc5OTg2NWE2LTlmMGEtNDgwNS1iZTg0LTJkMDgyOTE5MWVhYw==',
-  },
-  222415: {
-    label: 'Child Support Garnishments',
-    waveId: 'QWNjb3VudDoxOTI2MjEwMTYwNDk0MTYyNTExO0J1c2luZXNzOjc5OTg2NWE2LTlmMGEtNDgwNS1iZTg0LTJkMDgyOTE5MWVhYw==',
-  },
-  222418: {
-    label: 'HSA Liability',
-    waveId: 'QWNjb3VudDoyMjUzMDkzNjc3NzY3MzczMDU1O0J1c2luZXNzOjc5OTg2NWE2LTlmMGEtNDgwNS1iZTg0LTJkMDgyOTE5MWVhYw==',
   },
 };

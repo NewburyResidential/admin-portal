@@ -35,6 +35,7 @@ export default function ReceiptFormDigalog({
   chartOfAccounts,
   onSubmit,
   isUploading,
+  newburyAssets,
 }) {
   const [openInfo, setOpenInfo] = useState(false);
   const { control, setValue, getValues, handleSubmit } = useFormContext();
@@ -131,6 +132,7 @@ export default function ReceiptFormDigalog({
                 chartOfAccounts={chartOfAccounts}
                 showGl
                 showAmount={isSplit}
+                newburyAssets={newburyAssets}
               />
             </Box>
           ))}

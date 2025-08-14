@@ -15,10 +15,10 @@ const STATUS_OPTIONS = [
   { value: 'unapproved', label: 'Unapproved' },
 ];
 
-export default function UtilityFilter({ assetItems, onSearch, setLeases }) {
+export default function UtilityFilter({ newburyAssets, onSearch, setLeases }) {
   const [isLoading, setIsLoading] = useState(false);
   // Flatten and structure options
-  const options = assetItems
+  const options = newburyAssets
     .filter(item => item.utilities && item.utilities.length > 0)
     .reduce((acc, property) => {
       const propertyUtilities = property.utilities.map(utility => ({
@@ -57,7 +57,7 @@ export default function UtilityFilter({ assetItems, onSearch, setLeases }) {
         const currentPropertyId = selectedUtility.propertyId;
 
         // Find the corresponding asset to get the accountId
-        const asset = assetItems.find(item => item.pk === currentPropertyId);
+        const asset = newburyAssets.find(item => item.pk === currentPropertyId);
         const currentAccountId = asset ? asset.accountId : null;
 
         if (!currentAccountId) {
@@ -162,6 +162,6 @@ export default function UtilityFilter({ assetItems, onSearch, setLeases }) {
 }
 
 UtilityFilter.propTypes = {
-  assetItems: PropTypes.array,
+  newburyAssets: PropTypes.array,
   onSearch: PropTypes.func,
 }; 

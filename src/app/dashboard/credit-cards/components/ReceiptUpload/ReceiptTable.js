@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { copyS3Object } from 'src/utils/services/cc-expenses/uploadS3Image';
 import { parse, compareAsc } from 'date-fns';
-import { assetItems } from 'src/assets/data/assets';
 import { useSnackbar } from 'src/utils/providers/SnackbarProvider';
 
 import Table from '@mui/material/Table';
@@ -20,7 +19,7 @@ import Chip from '@mui/material/Chip';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
 
-export default function ReceiptTable({ setOpen, setLoading, id, recentReceipts, user, currentCardUsed, chartOfAccounts, totalAmount }) {
+export default function ReceiptTable({ setOpen, setLoading, id, recentReceipts, user, currentCardUsed, chartOfAccounts, totalAmount, newburyAssets }) {
   const [filter, setFilter] = useState(currentCardUsed);
   const { setValue, getValues } = useFormContext();
   const [showUsedReceipts, setShowUsedReceipts] = useState(false);
@@ -74,7 +73,7 @@ export default function ReceiptTable({ setOpen, setLoading, id, recentReceipts, 
       console.log('receipt.allocations', receipt.allocations);
       const updatedAllocations = receipt.allocations.map((allocation) => {
         const matchingAsset = allocation.asset?.accountId
-          ? assetItems.find((asset) => asset.accountId === allocation.asset.accountId)
+          ? newburyAssets.find((asset) => asset.accountId === allocation.asset.accountId)
           : null;
         const matchingGlAccount = allocation.glAccount?.accountId
           ? chartOfAccounts.find((glAccount) => glAccount.accountId === allocation.glAccount.accountId)

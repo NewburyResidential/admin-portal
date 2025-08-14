@@ -13,7 +13,7 @@ import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import Paper from '@mui/material/Paper';
 
-export default function Inputs({ assetItems }) {
+export default function Inputs({ newburyAssets }) {
   const { pending } = useFormStatus();
   const { control } = useFormContext();
 
@@ -23,7 +23,7 @@ export default function Inputs({ assetItems }) {
   });
 
   // Flatten and structure options
-  const options = assetItems
+  const options = newburyAssets
     .filter(item => item.utilities && item.utilities.length > 0)
     .reduce((acc, property) => {
       const propertyUtilities = property.utilities.map(utility => ({
@@ -35,8 +35,7 @@ export default function Inputs({ assetItems }) {
       return [...acc, ...propertyUtilities];
     }, []);
 
-    console.log(options);
-    console.log(assetItems);
+
 
   return (
     <Stack spacing={2.4} mb={2} mt={3}>

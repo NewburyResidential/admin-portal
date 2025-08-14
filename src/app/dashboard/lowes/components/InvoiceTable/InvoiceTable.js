@@ -25,8 +25,9 @@ import SubRowItems from './SubRowItems';
 import parseCurrency from '../utils/parse-currency';
 import { invoiceSchema } from '../utils/invoice-schema';
 import { postEntrataInvoice } from 'src/utils/services/entrata/postEntrataInvoice';
+import { getPostMonth } from 'src/utils/format-time';
 
-export default function InvoiceTable({ groupedInvoices, chartOfAccounts, catalogedItems, setCurrentStep, property }) {
+export default function InvoiceTable({ groupedInvoices, chartOfAccounts, catalogedItems, setCurrentStep, property, newburyAssets }) {
   //console.log('groupedInvoices', groupedInvoices);
   const [loading, setLoading] = useState(false);
   const [expandedStates, setExpandedStates] = useState({});
@@ -90,6 +91,9 @@ export default function InvoiceTable({ groupedInvoices, chartOfAccounts, catalog
     const apDetails = [];
     const itemsPurchased = [];
 
+    // Generate a unique payment ID for this batch
+    const paymentId = 123456789;
+
     selectedItems.forEach((item) => {
       const propertyId = item.property.accountId;
       noteArray.push(item.invoiceNumber);
@@ -118,6 +122,10 @@ export default function InvoiceTable({ groupedInvoices, chartOfAccounts, catalog
           glAccountId: accountNumber,
           description: itemLabel,
           rate: rate.toString(),
+          invoicePayment: {
+            invoicePaymentId: '1234', 
+            paymentAmount: rate.toString(), 
+          },
         });
       });
 
@@ -150,6 +158,7 @@ export default function InvoiceTable({ groupedInvoices, chartOfAccounts, catalog
       console.log(`Actual grand total: ${totalAmount.toString()}`);
       console.log(`Difference: ${expectedGrandTotal.minus(totalAmount).toString()}`);
     }
+    const postMonth = getPostMonth();
 
     if (totalAmount.eq(totalLineItemAmount.plus(totalTax).plus(totalShipping))) {
       const invoice = {
@@ -183,6 +192,16 @@ export default function InvoiceTable({ groupedInvoices, chartOfAccounts, catalog
               isPosted: '1',
               apHeaders: {
                 apHeader: invoice,
+              },
+              invoicePayments: {
+                invoicePayment: {
+                  invoicePaymentId: '1234',
+                  paymentTypeId: 1,
+                  paymentNumber: `API Payment - ${formattedDate}`,
+                  paymentDate: formattedDate,
+                  postMonth: postMonth,
+                  paymentMemo: `Lowes Payment`,
+                },
               },
             },
           },
@@ -244,6 +263,7 @@ export default function InvoiceTable({ groupedInvoices, chartOfAccounts, catalog
                         itemIndex={page * rowsPerPage + itemIndex}
                         expanded={expandedStates[page * rowsPerPage + itemIndex]}
                         toggleExpanded={toggleExpanded}
+                        newburyAssets={newburyAssets}
                       />
                       <AnimatePresence>
                         {expandedStates[page * rowsPerPage + itemIndex] && (

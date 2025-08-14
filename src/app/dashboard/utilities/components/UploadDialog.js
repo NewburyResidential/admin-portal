@@ -14,7 +14,7 @@ import Alert from '@mui/material/Alert';
 import { s3FormDataUpload } from 'src/utils/services/sdk-config/aws/S3';
 import { v4 as uuidv4 } from 'uuid';
 
-export default function UploadDialog({ openDialog, setOpenDialog, files, setFiles, assetItems }) {
+export default function UploadDialog({ openDialog, setOpenDialog, files, setFiles, newburyAssets }) {
   const [showAlert, setShowAlert] = useState(false);
 
   const uploadBillSchema = yup.object().shape({
@@ -125,7 +125,7 @@ export default function UploadDialog({ openDialog, setOpenDialog, files, setFile
                 Choose the appropriate property and utility vendor realted to the utility bills you are uploading. Do not upload utility
                 bills for different properties or vendors.
               </DialogContentText>
-              <Inputs assetItems={assetItems} />
+              <Inputs newburyAssets={newburyAssets} />
               {showAlert && <Alert severity="error">Issue Uploading Utility</Alert>}
             </DialogContent>
             <Buttons handleClose={handleClose} />

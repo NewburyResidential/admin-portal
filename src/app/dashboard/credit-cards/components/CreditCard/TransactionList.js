@@ -62,6 +62,7 @@ export default function TransactionList({
   chartOfAccounts,
   vendorData,
   suggestedReceipts,
+  newburyAssets,
 }) {
   const STATUS_OPTIONS = [
     { value: 'all', label: 'All' },
@@ -400,6 +401,7 @@ export default function TransactionList({
                         recentReceipts={suggestedReceipts}
                         user={user}
                         handleRemoveTransaction={handleRemoveTransaction}
+                        newburyAssets={newburyAssets}
                       />
                     ))
                   )}

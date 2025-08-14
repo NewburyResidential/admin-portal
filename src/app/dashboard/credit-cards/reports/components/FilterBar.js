@@ -15,7 +15,7 @@ import TextFieldPostDate from './TextFieldPostDate';
 import getTransactions from 'src/utils/services/cc-expenses/getTransactions';
 import { uploadPreEntrataTransactions } from 'src/utils/services/cc-expenses/uploadPreEntrataTransactions';
 
-export default function FilterBar({ setTransactions, totalAmount, transactions, positiveOnlyTotal }) {
+export default function FilterBar({ setTransactions, totalAmount, transactions, positiveOnlyTotal, newburyAssets }) {
   const [assets, setAssets] = useState(null);
   const [postDate, setPostDate] = useState('');
   const [loading, setLoading] = useState(false);
@@ -35,11 +35,13 @@ export default function FilterBar({ setTransactions, totalAmount, transactions, 
         .map((transaction) => {
           return transaction.allocations
             .filter((allocation) => {
-              return assets && Array.isArray(assets) && assets.length > 0 ? assets.some((asset) => asset.waveARId === allocation.asset.waveARId) : true;
+              return assets && Array.isArray(assets) && assets.length > 0
+                ? assets.some((asset) => asset.waveARId === allocation.asset.waveARId)
+                : true;
             })
 
             .map((allocation) => {
-
+              console.log('transaction', transaction);
               return {
                 billedPropertyName: allocation.asset ? allocation.asset.label : '',
                 billedPropertyId: allocation.asset ? allocation.asset.id : '',
@@ -59,7 +61,7 @@ export default function FilterBar({ setTransactions, totalAmount, transactions, 
                 apPayeeId: transaction.vendor ? transaction.vendor.vendorId : '',
                 apPayeeLocationId: transaction.vendor ? transaction.vendor.id : '',
                 id: transaction.sk,
-                billingCycle: transaction.billingCycle,
+                pk: transaction.pk,
                 preEntrataEntered: transaction.preEntrataEntered || false,
               };
             });
@@ -144,12 +146,11 @@ export default function FilterBar({ setTransactions, totalAmount, transactions, 
     }
   };
 
-
   return (
     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2, width: '100%' }}>
       <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
         <TextFieldPostDate postDate={postDate} setPostDate={setPostDate} />
-        <DropDownAssets setAssets={setAssets} assets={assets} />
+        <DropDownAssets setAssets={setAssets} assets={assets} newburyAssets={newburyAssets} />
         <LoadingButton loading={loading} onClick={handleFilter} sx={{ width: '100px', height: '36px' }} variant="contained" color="primary">
           Filter
         </LoadingButton>
@@ -163,30 +164,34 @@ export default function FilterBar({ setTransactions, totalAmount, transactions, 
 
       <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2 }}>
         {/* Total Amount Card */}
-        <Box sx={{ 
-          backgroundColor: 'primary.dark', 
-          borderRadius: '16px', 
-          px: 3, 
-          py: 1.5,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center'
-        }}>
+        <Box
+          sx={{
+            backgroundColor: 'primary.dark',
+            borderRadius: '16px',
+            px: 3,
+            py: 1.5,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
           <Typography variant="body1" component="div" sx={{ color: 'white' }}>
             Total: ${Number(totalAmount.toFixed(2)).toLocaleString()}
           </Typography>
         </Box>
-        
+
         {/* Positive Total Card */}
-        <Box sx={{ 
-          backgroundColor: 'success.dark', 
-          borderRadius: '16px', 
-          px: 3, 
-          py: 1.5,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center'
-        }}>
+        <Box
+          sx={{
+            backgroundColor: 'success.dark',
+            borderRadius: '16px',
+            px: 3,
+            py: 1.5,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
           <Typography variant="body1" component="div" sx={{ color: 'white' }}>
             Positive: ${Number(positiveOnlyTotal.toFixed(2)).toLocaleString()}
           </Typography>

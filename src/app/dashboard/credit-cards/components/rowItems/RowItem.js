@@ -19,7 +19,7 @@ import incrementSuggestedReceipt from 'src/utils/services/cc-expenses/incrementS
 import Iconify from 'src/components/iconify';
 
 const RowItem = React.memo(
-  ({ transaction, vendors, setVendors, chartOfAccounts, recentReceipts, user, handleRemoveTransaction, transactionIndex }) => {
+  ({ transaction, vendors, setVendors, chartOfAccounts, recentReceipts, user, handleRemoveTransaction, transactionIndex, newburyAssets }) => {
     // Add a unique ID for this component instance
     // console.log('transaction', transaction);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -174,6 +174,7 @@ const RowItem = React.memo(
                     onClick={(e) => e.stopPropagation()}
                     isDragActive={isDragActive}
                     chartOfAccounts={chartOfAccounts}
+                    newburyAssets={newburyAssets}
                   />
                 </Box>
                 <Box sx={{ flex: 1.5, textAlign: 'center' }}>
@@ -209,6 +210,7 @@ const RowItem = React.memo(
                 append={append}
                 remove={remove}
                 totalAmount={transaction.amount}
+                newburyAssets={newburyAssets}
               />
             </td>
           </Box>

@@ -57,3 +57,8 @@ export function calculateAgeInMonths(startDate) {
   const totalMonths = differenceInMonths(today, parsedDate);
   return totalMonths % 12;
 }
+
+export function getPostMonth(date) {
+  const dateToUse = date || new Date();
+  return format(new Date(dateToUse), 'MM/yyyy');
+}

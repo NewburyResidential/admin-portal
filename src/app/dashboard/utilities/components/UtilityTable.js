@@ -44,7 +44,7 @@ const defaultFilters = {
   period: '',
 };
 
-export default function UtilityTable({ utilityBills, assetList, utilities, onRefresh, setLeases, setUtilityBills, setFilters, filters }) {
+export default function UtilityTable({ utilityBills, newburyAssets, utilities, onRefresh, setLeases, setUtilityBills, setFilters, filters }) {
   const table = useTable({ defaultRowsPerPage: 25 });
   const [selected, setSelected] = useState([]);
   const { showResponseSnackbar } = useSnackbar();
@@ -144,7 +144,7 @@ export default function UtilityTable({ utilityBills, assetList, utilities, onRef
 
       const itemsWithAccountId = selectedItems.map((item) => ({
         ...item,
-        accountId: getAccountIdFromPropertyId(assetList, item.propertyId),
+        accountId: getAccountIdFromPropertyId(newburyAssets, item.propertyId),
       }));
 
       const groupedByPayment = itemsWithAccountId.reduce((acc, item) => {
@@ -160,6 +160,9 @@ export default function UtilityTable({ utilityBills, assetList, utilities, onRef
       const payloads = await Promise.all(Object.values(groupedByPayment).map((group) => getEntrataUtilityPayload(group, utilities)));
 
       const validPayloads = payloads.filter((payload) => payload !== null);
+
+      console.log('validPayloads', validPayloads);
+      
 
       const totalSteps = validPayloads.length;
       let completedSteps = 0;
@@ -251,7 +254,7 @@ export default function UtilityTable({ utilityBills, assetList, utilities, onRef
   return (
     <>
       <Card>
-        <UtilityFilter assetItems={assetList} onSearch={handleSearch} setLeases={setLeases} />
+        <UtilityFilter newburyAssets={newburyAssets} onSearch={handleSearch} setLeases={setLeases} />
 
         <TableContainer sx={{ position: 'relative', overflow: 'unset' }}>
           <Scrollbar>
@@ -360,7 +363,7 @@ function applyFilter({ inputData, comparator, filters }) {
   return filteredData;
 }
 
-function getAccountIdFromPropertyId(assetList, propertyId) {
-  const asset = assetList.find((a) => a.pk === propertyId);
+function getAccountIdFromPropertyId(newburyAssets, propertyId) {
+  const asset = newburyAssets.find((a) => a.pk === propertyId);
   return asset ? asset.accountId : null;
 }

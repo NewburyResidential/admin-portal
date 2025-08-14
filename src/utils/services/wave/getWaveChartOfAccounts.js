@@ -1,10 +1,11 @@
 import { chartOfAccountsNumberArray } from 'src/assets/data/chart-of-accounts';
-import { assetItems } from 'src/assets/data/assets';
+import getNewburyAssets from '../newbury/get-assets';
 
 export default async function getWaveChartOfAccounts() {
-  const businessIds = assetItems
+  const newburyAssets = await getNewburyAssets();
+  const businessIds = newburyAssets
     .filter((item) => item.accountingSoftware === 'wave')
-    .map((item) => ({ asset: item.id, accountId: item.accountId }));
+    .map((item) => ({ asset: item.pk, accountId: item.accountId }));
 
   const bearerToken = process.env.WAVE_BEARER_TOKEN;
 
@@ -63,6 +64,8 @@ export default async function getWaveChartOfAccounts() {
         });
 
         if (assetAccountCount[asset] !== chartOfAccountsNumberArray.length) {
+          console.log(assetAccountCount[asset]);
+          console.log(chartOfAccountsNumberArray.length);
           throw new Error(`Mismatch in the number of accounts processed for asset ${asset}.`);
         }
       })

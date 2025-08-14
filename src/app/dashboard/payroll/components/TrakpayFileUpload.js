@@ -47,26 +47,26 @@ const TrakpayFileUpload = ({
             // Find the Total Cost by checking each row's properties
             const totalCostRow = results.data.find((row) => {
               // Check all properties in the row for "Total Cost"
-              return Object.values(row).includes("Total Cost");
+              return Object.values(row).includes('Total Cost');
             });
-            
+
             console.log('totalCostRow', totalCostRow);
-            
+
             // Find which property contains "Total Cost"
-            const totalCostKey = Object.keys(totalCostRow).find(key => totalCostRow[key] === "Total Cost");
-            
+            const totalCostKey = Object.keys(totalCostRow).find((key) => totalCostRow[key] === 'Total Cost');
+
             // The total cost value should be in the next column (typically "_11" based on the example)
             const valueKeys = Object.keys(totalCostRow);
             const totalCostKeyIndex = valueKeys.indexOf(totalCostKey);
             const totalCostValueKey = valueKeys[totalCostKeyIndex + 1];
             const totalCostValue = totalCostRow[totalCostValueKey] || '0';
-            
+
             const totalCost = new Big(totalCostValue);
             console.log('totalCost', totalCost.toString());
 
             // Find the headers row (the row with "Employee ID" and "Premium Paid")
-            const headersRow = results.data.find(row => {
-              return Object.values(row).includes("Employee ID") && Object.values(row).includes("Premium Paid");
+            const headersRow = results.data.find((row) => {
+              return Object.values(row).includes('Employee ID') && Object.values(row).includes('Premium Paid');
             });
 
             // Get employee details with Big amounts - start looking after the headers row
@@ -76,20 +76,20 @@ const TrakpayFileUpload = ({
               .slice(headerIndex + 1)
               .filter((row) => {
                 // Find which properties contain "Employee ID" and "Premium Paid"
-                const employeeIdKey = Object.keys(headersRow).find(key => headersRow[key] === "Employee ID");
-                const premiumPaidKey = Object.keys(headersRow).find(key => headersRow[key] === "Premium Paid");
-                
+                const employeeIdKey = Object.keys(headersRow).find((key) => headersRow[key] === 'Employee ID');
+                const premiumPaidKey = Object.keys(headersRow).find((key) => headersRow[key] === 'Premium Paid');
+
                 // Check if this row has valid values for Employee ID and Premium Paid
                 const hasEmployeeId = row[employeeIdKey] && !Number.isNaN(Number(row[employeeIdKey]));
                 const hasPremiumPaid = row[premiumPaidKey] && !Number.isNaN(Number(row[premiumPaidKey]));
-                
+
                 return hasEmployeeId && hasPremiumPaid;
               })
               .map((row) => {
                 // Find which properties contain the values we need
-                const employeeIdKey = Object.keys(headersRow).find(key => headersRow[key] === "Employee ID");
-                const premiumPaidKey = Object.keys(headersRow).find(key => headersRow[key] === "Premium Paid");
-                
+                const employeeIdKey = Object.keys(headersRow).find((key) => headersRow[key] === 'Employee ID');
+                const premiumPaidKey = Object.keys(headersRow).find((key) => headersRow[key] === 'Premium Paid');
+
                 return {
                   employeeId: row[employeeIdKey],
                   premiumPaid: new Big(row[premiumPaidKey]),
@@ -156,33 +156,56 @@ const TrakpayFileUpload = ({
             // Convert Big numbers to strings with 2 decimal places
             const finalPropertyBreakdown = Object.entries(propertyBreakdown).reduce((acc, [propertyId, data]) => {
               acc[propertyId] = {
-                amount: data.amount,
+                amount: data.amount.round(2),
                 breakout: Object.entries(data.breakout).reduce((breakoutAcc, [account, amount]) => {
-                  breakoutAcc[account] = amount;
+                  breakoutAcc[account] = amount.round(2);
                   return breakoutAcc;
                 }, {}),
               };
               return acc;
             }, {});
 
-            // get the total of all breakout values
-            const breakoutTotal = Object.values(finalPropertyBreakdown).reduce((sum, property) => {
-              return Object.values(property.breakout).reduce((breakoutSum, amount) => breakoutSum.plus(amount), sum);
+       
+
+            // Check that breakout amounts equal the property amount and adjust if needed
+            Object.entries(finalPropertyBreakdown).forEach(([propertyId, data]) => {
+              const breakoutTotal = Object.values(data.breakout).reduce((sum, amount) => sum.plus(amount), new Big(0));
+              const difference = data.amount.minus(breakoutTotal);
+
+              if (!difference.eq(0)) {
+                throw new Error('Breakout amounts do not equal the property amount');
+              }
+            });
+
+            // totals of all the amounts
+            const totalAmounts = Object.values(finalPropertyBreakdown).reduce((sum, property) => {
+              return sum.plus(property.amount);
             }, new Big(0));
 
-            // Adjust for any rounding differences
-            const roundingDifference = totalCost.minus(breakoutTotal);
-            if (!roundingDifference.eq(0)) {
+         
+
+            // Check if total matches expected total, if not adjust the last item
+            const difference = totalCost.minus(totalAmounts);
+            if (!difference.eq(0)) {
+              console.log('Adjusting by:', difference.toString());
               const lastPropertyId = Object.keys(finalPropertyBreakdown).pop();
               if (lastPropertyId) {
                 const lastProperty = finalPropertyBreakdown[lastPropertyId];
-                const lastAccountId = Object.keys(lastProperty.breakout).pop();
-                if (lastAccountId) {
-                  lastProperty.breakout[lastAccountId] = lastProperty.breakout[lastAccountId].plus(roundingDifference);
-                  lastProperty.amount = lastProperty.amount.plus(roundingDifference);
+
+                // Adjust the property amount
+                lastProperty.amount = lastProperty.amount.plus(difference);
+
+                // Adjust the last breakout account
+                const propertyAccounts = Object.keys(lastProperty.breakout);
+                if (propertyAccounts.length > 0) {
+                  const lastAccountId = propertyAccounts[propertyAccounts.length - 1];
+                  lastProperty.breakout[lastAccountId] = lastProperty.breakout[lastAccountId].plus(difference);
                 }
               }
             }
+
+       
+
 
             setTrakpayDistribution(finalPropertyBreakdown);
             setView('trakpayAmounts');
@@ -234,6 +257,7 @@ const TrakpayFileUpload = ({
       let totalSteps = 0;
       if (entrataWithdrawalPayload) totalSteps++;
       if (waveOperatingPayload) totalSteps++;
+
 
       let completedSteps = 0;
       const responses = [];
