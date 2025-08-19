@@ -335,10 +335,40 @@ export const POSITION_PRESETS = {
     },
   },
   carpenter_make_ready: {
-    accessStates: {},
+    accessStates: {
+      office_365: ACCESS_STATES.REQUESTED,
+      entrata: ACCESS_STATES.REQUESTED,
+      notify_hellospoke: ACCESS_STATES.REQUESTED,
+    },
+    followUpData: {
+      office_365: {
+        selectedDesktopOption: 'no_desktop',
+      },
+      entrata: {
+        selectedRoles: ['operationsStaff'],
+      },
+      notify_hellospoke: {
+        selectedAccessType: 'on_call_only',
+      },
+    },
   },
   painter: {
-    accessStates: {},
+    accessStates: {
+      office_365: ACCESS_STATES.REQUESTED,
+      entrata: ACCESS_STATES.REQUESTED,
+      notify_hellospoke: ACCESS_STATES.REQUESTED,
+    },
+    followUpData: {
+      office_365: {
+        selectedDesktopOption: 'no_desktop',
+      },
+      entrata: {
+        selectedRoles: ['operationsStaff'],
+      },
+      notify_hellospoke: {
+        selectedAccessType: 'on_call_only',
+      },
+    },
   },
   lead_carpenter: {
     accessStates: {
