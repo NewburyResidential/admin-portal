@@ -261,6 +261,19 @@ const getEmployeeValue = (employee, field) => {
   return employee[field] || 'Not specified';
 };
 
+// Helper function to format phone number
+const formatPhoneNumber = (phone) => {
+  if (!phone) return 'Not specified';
+  // Remove any non-digit characters
+  const cleaned = phone.replace(/\D/g, '');
+  // Format as XXX-XXX-XXXX
+  if (cleaned.length === 10) {
+    return `${cleaned.slice(0, 3)}-${cleaned.slice(3, 6)}-${cleaned.slice(6)}`;
+  }
+  // If not 10 digits, return original
+  return phone;
+};
+
 // Header component for reuse on each page
 const PageHeader = ({ isFirstPage = false, employee, formattedData }) => (
   <Box sx={{ mb: isFirstPage ? 5 : 3 }}>
@@ -349,6 +362,9 @@ const EmployeeDetailsSection = ({ formattedData, employee }) => (
     <Box sx={{ ml: 0 }}>
       <Typography sx={{ mb: 1, fontSize: '12px' }}>
         <strong>Employee Name:</strong> {getEmployeeValue(employee, 'fullName')}
+      </Typography>
+      <Typography sx={{ mb: 1, fontSize: '12px' }}>
+        <strong>Phone Number:</strong> {formatPhoneNumber(getEmployeeValue(employee, 'personalPhone'))}
       </Typography>
       <Typography sx={{ mb: 1, fontSize: '12px' }}>
         <strong>Job Title:</strong>{' '}
