@@ -44,7 +44,7 @@ export const CHECKLIST_DATA = {
           { value: 'no_desktop', label: 'Mobile and Web Version Only' },
           { value: 'with_desktop', label: 'Include Desktop Apps (Outlook, Excel, Word)' },
         ],
-        mobileApp: ['Microsoft Teams', 'Outlook', 'OneDrive', 'Keeper'],
+        mobileApp: ['Microsoft Teams', 'Outlook', 'OneDrive'],
       },
       {
         id: 'shared_email_groups',
