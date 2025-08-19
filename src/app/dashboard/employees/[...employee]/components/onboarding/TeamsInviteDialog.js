@@ -21,14 +21,65 @@ import updateEmployee from 'src/utils/services/employees/update-employee';
 
 export default function TeamsInviteDialog({ open, onClose, onMeetingCreated, formData, selectedPosition, employee }) {
   const [description, setDescription] = useState('');
-  const [attendees, setAttendees] = useState(['Mike@newburyresidential.com', 'Brian@newburyresidential.com', 'Eric@newburyresidential.com']);
+  const [attendees, setAttendees] = useState([
+    'Mike@newburyresidential.com',
+    'Brian@newburyresidential.com',
+    'Eric@newburyresidential.com',
+  ]);
   const [newAttendee, setNewAttendee] = useState('');
   const [isCreating, setIsCreating] = useState(false);
   const hasInitialized = useRef(false);
 
+  // Helper function to safely access employee data with new structure
+  const getEmployeeValue = (employee, field) => {
+    if (!employee) return null;
+
+    // Check if the field is in the onboarding object
+    if (employee.onboarding && employee.onboarding[field]) {
+      const value = employee.onboarding[field];
+
+      // Format expectedHireDate as string
+      if (field === 'expectedHireDate' && value) {
+        try {
+          return new Date(value).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+          });
+        } catch (error) {
+          return value; // Return original value if parsing fails
+        }
+      }
+
+      return value;
+    }
+
+    // Check if employee has the new nested structure with DynamoDB-style attributes
+    if (employee.expectedHireDate && typeof employee.expectedHireDate === 'object') {
+      // New structure with DynamoDB-style attributes
+      switch (field) {
+        case 'fullName':
+          return employee.fullName?.S || employee.fullName || 'New Employee';
+        case 'workEmail':
+          return employee.workEmail?.S || employee.workEmail || '';
+        case 'personalEmail':
+          return employee.personalEmail?.S || employee.personalEmail || '';
+        case 'personalPhone':
+          return employee.personalPhone?.S || employee.personalPhone || '';
+        case 'primaryEmail':
+          return employee.primaryEmail?.S || employee.primaryEmail || '';
+        default:
+          return employee[field]?.S || employee[field] || '';
+      }
+    }
+
+    // Fallback to direct access for backward compatibility
+    return employee[field] || '';
+  };
+
   // Get employee name
   const getEmployeeName = () => {
-    return employee?.fullName || 'New Employee';
+    return getEmployeeValue(employee, 'fullName');
   };
 
   // Get meeting title
@@ -94,17 +145,12 @@ ${employeeName} will be starting with us as a ${jobTitle} on ${startDate} at ${s
 
 Please accept this invite to add it to your calendar and help ensure ${employeeName} has everything they need for their first day. In case you need to reach out, I've included his personal email and phone number below.
 
-Email: ${employee?.personalEmail || employee?.email || employee?.mail || ''}
-Phone: ${employee?.personalPhone || employee?.phone || employee?.mobilePhone || ''}
+Email: ${getEmployeeValue(employee, 'personalEmail')}
+Phone: ${getEmployeeValue(employee, 'personalPhone')}
 
 Looking forward to having ${employeeName} on our team!`;
 
     setDescription(plainTextDescription);
-
-    // Add employee email to attendees if available
-    if (employee?.primaryEmail && !attendees.includes(employee.primaryEmail)) {
-      setAttendees((prev) => [...prev, employee.primaryEmail]);
-    }
 
     // Add property-specific emails if delivery address is selected
     if (formData?.selectedDeliveryAddress) {
@@ -118,7 +164,7 @@ Looking forward to having ${employeeName} on our team!`;
   if (!open && hasInitialized.current) {
     hasInitialized.current = false;
     setDescription('');
-    setAttendees(['Mike@newburyresidential.com']);
+    setAttendees(['Mike@newburyresidential.com', 'Brian@newburyresidential.com', 'Eric@newburyresidential.com']);
     setNewAttendee('');
   }
 

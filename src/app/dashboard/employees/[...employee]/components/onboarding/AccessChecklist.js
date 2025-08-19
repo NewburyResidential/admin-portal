@@ -1117,27 +1117,79 @@ const ChecklistSection = ({ title, items, control, watch, setValue, getValues })
   );
 };
 
-// Employee Information Display Component
-const EmployeeInformation = ({ employee }) => {
+// Add this helper function at the top of the file, after the imports
+const getEmployeeValue = (employee, field) => {
   if (!employee) return null;
 
+  // Check if the field is in the onboarding object
+  if (employee.onboarding && employee.onboarding[field]) {
+    const value = employee.onboarding[field];
+
+    // Format expectedHireDate as string
+    if (field === 'expectedHireDate' && value) {
+      try {
+        return new Date(value).toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+        });
+      } catch (error) {
+        return value; // Return original value if parsing fails
+      }
+    }
+
+    return value;
+  }
+
+  // Check if employee has the new nested structure with DynamoDB-style attributes
+  if (employee.expectedHireDate && typeof employee.expectedHireDate === 'object') {
+    // New structure with DynamoDB-style attributes
+    switch (field) {
+      case 'fullName':
+        return employee.fullName?.S || employee.fullName || 'Not provided';
+      case 'jobTitle':
+        return employee.jobTitle?.S || employee.jobTitle || 'Not provided';
+      case 'workEmail':
+        return employee.workEmail?.S || employee.workEmail || 'Not provided';
+      case 'personalEmail':
+        return employee.personalEmail?.S || employee.personalEmail || 'Not provided';
+      case 'personalPhone':
+        return employee.personalPhone?.S || employee.personalPhone || 'Not provided';
+      case 'compensation':
+        return employee.compensation?.S || employee.compensation || 'Not provided';
+      case 'supervisor':
+        return employee.supervisor?.S || employee.supervisor || 'Not provided';
+      case 'expectedHireDate': {
+        const dateValue = employee.expectedHireDate?.S || employee.expectedHireDate;
+        if (dateValue) {
+          try {
+            return new Date(dateValue).toLocaleDateString('en-US', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+            });
+          } catch (error) {
+            return dateValue;
+          }
+        }
+        return 'Not provided';
+      }
+      default:
+        return employee[field]?.S || employee[field] || 'Not provided';
+    }
+  }
+
+  // Fallback to direct access for backward compatibility
+  return employee[field] || 'Not provided';
+};
+
+// Move CopyableField component outside of EmployeeInformation
+const CopyableField = ({ label, value }) => {
   const handleCopy = (text) => {
     navigator.clipboard.writeText(text).then(() => {});
   };
 
-  const formatPhoneNumber = (phone) => {
-    if (!phone) return 'Not provided';
-    // Remove any non-digit characters
-    const cleaned = phone.replace(/\D/g, '');
-    // Format as XXX-XXX-XXXX
-    if (cleaned.length === 10) {
-      return `${cleaned.slice(0, 3)}-${cleaned.slice(3, 6)}-${cleaned.slice(6)}`;
-    }
-    // If not 10 digits, return original
-    return phone;
-  };
-
-  const CopyableField = ({ label, value }) => (
+  return (
     <Box sx={{ mb: 1 }}>
       <Typography variant="body2" color="text.secondary" sx={{ mb: 0.5 }}>
         <strong>{label}:</strong>
@@ -1181,31 +1233,50 @@ const EmployeeInformation = ({ employee }) => {
       </Box>
     </Box>
   );
+};
+
+// Update EmployeeInformation to remove the inner CopyableField definition
+const EmployeeInformation = ({ employee }) => {
+  if (!employee) return null;
+
+  const formatPhoneNumber = (phone) => {
+    if (!phone) return 'Not provided';
+    // Remove any non-digit characters
+    const cleaned = phone.replace(/\D/g, '');
+    // Format as XXX-XXX-XXXX
+    if (cleaned.length === 10) {
+      return `${cleaned.slice(0, 3)}-${cleaned.slice(3, 6)}-${cleaned.slice(6)}`;
+    }
+    // If not 10 digits, return original
+    return phone;
+  };
 
   return (
     <Paper sx={{ p: 3, mb: 3, borderRadius: 2 }}>
       <Grid container spacing={3}>
         <Grid item xs={12} sm={6}>
-          <CopyableField label="Full Name" value={employee.fullName} />
+          <CopyableField label="Full Name" value={getEmployeeValue(employee, 'fullName')} />
         </Grid>
         <Grid item xs={12} sm={6}>
-          <CopyableField label="Job Title" value={employee.jobTitle} />
+          <CopyableField label="Job Title" value={getEmployeeValue(employee, 'jobTitle')} />
         </Grid>
         <Grid item xs={12} sm={6}>
-          <CopyableField label="Work Email" value={employee.workEmail} />
+          <CopyableField label="Work Email" value={getEmployeeValue(employee, 'workEmail')} />
         </Grid>
         <Grid item xs={12} sm={6}>
-          <CopyableField label="Compensation" value={employee.compensation} />
+          <CopyableField label="Compensation" value={getEmployeeValue(employee, 'compensation')} />
         </Grid>
         <Grid item xs={12} sm={6}>
-          <CopyableField label="Personal Email" value={employee.personalEmail} />
+          <CopyableField label="Personal Email" value={getEmployeeValue(employee, 'personalEmail')} />
         </Grid>
         <Grid item xs={12} sm={6}>
-          <CopyableField label="Personal Phone" value={formatPhoneNumber(employee.personalPhone)} />
+          <CopyableField label="Personal Phone" value={formatPhoneNumber(getEmployeeValue(employee, 'personalPhone'))} />
         </Grid>
-
         <Grid item xs={12} sm={6}>
-          <CopyableField label="Supervisor" value={employee.supervisor} />
+          <CopyableField label="Supervisor" value={getEmployeeValue(employee, 'supervisor')} />
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <CopyableField label="Expected Hire Date" value={getEmployeeValue(employee, 'expectedHireDate')} />
         </Grid>
       </Grid>
     </Paper>
@@ -1482,7 +1553,12 @@ export default function AccessChecklist({ newburyAssets, employee, employees = [
   const handleOpenRemindDialog = () => {
     setShowRemindDialog(true);
     // Pre-select the employee's supervisor if available
-    const supervisorEmployee = employees.find((emp) => emp.fullName === employee?.supervisor);
+    const supervisorName = getEmployeeValue(employee, 'supervisor');
+    const supervisorEmployee = employees.find((emp) => {
+      // Handle both old and new employee structures
+      const empName = emp.fullName?.S || emp.fullName;
+      return empName === supervisorName;
+    });
     if (supervisorEmployee) {
       setSelectedEmployeesToRemind([supervisorEmployee.pk]); // Use the actual supervisor's pk
     }
@@ -1507,7 +1583,7 @@ export default function AccessChecklist({ newburyAssets, employee, employees = [
     try {
       // Extract email addresses from selected employees
       const emails = selectedEmployees
-        .map((emp) => emp.workEmail)
+        .map((emp) => getEmployeeValue(emp, 'workEmail'))
         .filter((email) => email) // Filter out any null/undefined emails
         .filter((email, index, self) => self.indexOf(email) === index); // Remove duplicates
 
@@ -2043,7 +2119,7 @@ export default function AccessChecklist({ newburyAssets, employee, employees = [
           </DialogTitle>
           <DialogContent>
             <Typography variant="body1" sx={{ mb: 2 }}>
-              Who would you like to remind to complete the access checklist for <strong>{employee?.fullName || 'this employee'}</strong>?
+              Who would you like to remind to complete the access checklist for <strong>{getEmployeeValue(employee, 'fullName')}</strong>?
             </Typography>
 
             <Box sx={{ mb: 3 }}>

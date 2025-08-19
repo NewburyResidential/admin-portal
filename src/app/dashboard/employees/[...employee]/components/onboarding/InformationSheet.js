@@ -195,6 +195,72 @@ const printStyles = `
   }
 `;
 
+// Helper function to safely access employee data with new structure
+const getEmployeeValue = (employee, field) => {
+  if (!employee) return null;
+
+  // Check if the field is in the onboarding object
+  if (employee.onboarding && employee.onboarding[field]) {
+    const value = employee.onboarding[field];
+
+    // Format expectedHireDate as string
+    if (field === 'expectedHireDate' && value) {
+      try {
+        return new Date(value).toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+        });
+      } catch (error) {
+        return value; // Return original value if parsing fails
+      }
+    }
+
+    return value;
+  }
+
+  // Check if employee has the new nested structure with DynamoDB-style attributes
+  if (employee.expectedHireDate && typeof employee.expectedHireDate === 'object') {
+    // New structure with DynamoDB-style attributes
+    switch (field) {
+      case 'fullName':
+        return employee.fullName?.S || employee.fullName || 'New Employee';
+      case 'jobTitle':
+        return employee.jobTitle?.S || employee.jobTitle || 'Community Manager';
+      case 'workEmail':
+        return employee.workEmail?.S || employee.workEmail || 'Not specified';
+      case 'personalEmail':
+        return employee.personalEmail?.S || employee.personalEmail || 'Not specified';
+      case 'personalPhone':
+        return employee.personalPhone?.S || employee.personalPhone || 'Not specified';
+      case 'compensation':
+        return employee.compensation?.S || employee.compensation || 'Not specified';
+      case 'supervisor':
+        return employee.supervisor?.S || employee.supervisor || 'Not specified';
+      case 'expectedHireDate': {
+        const dateValue = employee.expectedHireDate?.S || employee.expectedHireDate;
+        if (dateValue) {
+          try {
+            return new Date(dateValue).toLocaleDateString('en-US', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+            });
+          } catch (error) {
+            return dateValue;
+          }
+        }
+        return 'Not specified';
+      }
+      default:
+        return employee[field]?.S || employee[field] || 'Not specified';
+    }
+  }
+
+  // Fallback to direct access for backward compatibility
+  return employee[field] || 'Not specified';
+};
+
 // Header component for reuse on each page
 const PageHeader = ({ isFirstPage = false, employee, formattedData }) => (
   <Box sx={{ mb: isFirstPage ? 5 : 3 }}>
@@ -243,8 +309,8 @@ const PageHeader = ({ isFirstPage = false, employee, formattedData }) => (
         </Typography>
         {!isFirstPage && (
           <Typography sx={{ fontSize: '12px', mt: 1, color: '#666' }}>
-            {employee?.fullName || 'New Employee'} -{' '}
-            {formattedData.position ? findPositionLabel(formattedData.position) : employee?.jobTitle || 'Community Manager'}
+            {getEmployeeValue(employee, 'fullName')} -{' '}
+            {formattedData.position ? findPositionLabel(formattedData.position) : getEmployeeValue(employee, 'jobTitle')}
           </Typography>
         )}
       </Box>
@@ -282,14 +348,14 @@ const EmployeeDetailsSection = ({ formattedData, employee }) => (
   <Box sx={{ mb: 3 }}>
     <Box sx={{ ml: 0 }}>
       <Typography sx={{ mb: 1, fontSize: '12px' }}>
-        <strong>Employee Name:</strong> {employee?.fullName || 'New Employee'}
+        <strong>Employee Name:</strong> {getEmployeeValue(employee, 'fullName')}
       </Typography>
       <Typography sx={{ mb: 1, fontSize: '12px' }}>
         <strong>Job Title:</strong>{' '}
-        {formattedData.position ? findPositionLabel(formattedData.position) : employee?.jobTitle || 'Community Manager'}
+        {formattedData.position ? findPositionLabel(formattedData.position) : getEmployeeValue(employee, 'jobTitle')}
       </Typography>
       <Typography sx={{ mb: 2, fontSize: '12px' }}>
-        <strong>Supervisor:</strong> {employee?.supervisor || 'Not specified'}
+        <strong>Supervisor:</strong> {getEmployeeValue(employee, 'supervisor')}
       </Typography>
 
       <Typography sx={{ mb: 1, fontSize: '12px' }}>
@@ -311,7 +377,7 @@ const EmployeeDetailsSection = ({ formattedData, employee }) => (
             )}
           </>
         ) : (
-          '123 Main Street, Anytown, ST 12345'
+          'Not specified'
         )}
       </Typography>
 
@@ -357,7 +423,7 @@ const EmailSection = ({ formattedData, employee }) => {
         </Typography>
 
         <Typography sx={{ fontSize: '11px', mb: 1 }}>
-          <strong>Microsoft Email:</strong> {employee?.workEmail || 'Not specified'}
+          <strong>Microsoft Email:</strong> {getEmployeeValue(employee, 'workEmail')}
         </Typography>
 
         <Typography sx={{ fontSize: '11px', mb: 2 }}>
