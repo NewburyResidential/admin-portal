@@ -40,6 +40,7 @@ import AutocompleteSelectEmployees from 'src/components/form-inputs/common/Autoc
 import { sendOnboardingRemindEmail } from 'src/utils/services/employees/sendOnboardingRemindEmail';
 import { LoadingButton } from '@mui/lab';
 import { sendOnboardingPermissionsSaved } from 'src/utils/services/employees/sendOnboardingPermissionsSaved';
+import { s3GetSignedUrl } from 'src/utils/services/sdk-config/aws/S3';
 
 // Position card component for single selection - PILL STYLE
 const PositionCard = ({ item, isSelected, onSelect }) => {
@@ -1283,6 +1284,71 @@ const EmployeeInformation = ({ employee }) => {
   );
 };
 
+// Offer Letter Viewer Component
+const OfferLetterViewer = ({ employee }) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  // Check for the new structure with offerLetterBucket and offerLetterKey
+  const offerLetterBucket = employee?.onboarding?.offerLetterBucket?.S || employee?.onboarding?.offerLetterBucket;
+  const offerLetterKey = employee?.onboarding?.offerLetterKey?.S || employee?.onboarding?.offerLetterKey;
+
+  const handleViewOfferLetter = async () => {
+    if (!offerLetterBucket || !offerLetterKey) {
+      setError('No offer letter found');
+      return;
+    }
+
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const signedUrl = await s3GetSignedUrl({
+        bucket: offerLetterBucket,
+        key: offerLetterKey,
+        expiresIn: 3600, // 1 hour
+      });
+
+      console.log('signedUrl', signedUrl);
+      window.open(signedUrl, '_blank');
+    } catch (err) {
+      console.error('Error getting offer letter:', err);
+      setError('Failed to load offer letter');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Only render if both bucket and key exist
+  if (!offerLetterBucket || !offerLetterKey) {
+    return null;
+  }
+
+  return (
+    <Paper sx={{ p: 2, mb: 2, borderRadius: 2 }}>
+      <Grid container spacing={2}>
+        <Grid item xs={12} sm={6}>
+          <Button
+            variant="outlined"
+            size="small"
+            onClick={handleViewOfferLetter}
+            disabled={isLoading}
+            startIcon={isLoading ? <CircularProgress size={16} /> : <ContentCopyIcon />}
+          >
+            {isLoading ? 'Loading...' : 'View Offer Letter'}
+          </Button>
+
+          {error && (
+            <Typography variant="body2" color="error" sx={{ mt: 1 }}>
+              {error}
+            </Typography>
+          )}
+        </Grid>
+      </Grid>
+    </Paper>
+  );
+};
+
 // Main AccessChecklist component
 export default function AccessChecklist({ newburyAssets, employee, employees = [] }) {
   console.log('employee', employee);
@@ -1888,6 +1954,9 @@ export default function AccessChecklist({ newburyAssets, employee, employees = [
       <Box sx={{ maxWidth: 'lg', mx: 'auto' }}>
         <form onSubmit={handleSubmit(onSubmit)}>
           {/* Header */}
+
+          {/* Offer Letter Viewer */}
+          <OfferLetterViewer employee={employee} />
 
           {/* Employee Information */}
           <EmployeeInformation employee={employee} />
