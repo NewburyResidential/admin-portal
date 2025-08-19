@@ -1300,6 +1300,7 @@ export default function AccessChecklist({ newburyAssets, employee, employees = [
   const [isRemindingSending, setIsRemindingSending] = useState(false);
   const [isSavingPermissions, setIsSavingPermissions] = useState(false);
   const [isUpdatingMeeting, setIsUpdatingMeeting] = useState(false);
+  const [isCancelingMeeting, setIsCancelingMeeting] = useState(false);
 
   const {
     control,
@@ -1825,6 +1826,8 @@ export default function AccessChecklist({ newburyAssets, employee, employees = [
       return;
     }
 
+    setIsCancelingMeeting(true);
+
     try {
       // First, cancel the actual calendar event in Microsoft Graph
       const eventId = employee.onboarding.scheduledMeeting;
@@ -1863,6 +1866,8 @@ export default function AccessChecklist({ newburyAssets, employee, employees = [
       }
     } catch (error) {
       console.error('Error cancelling scheduled meeting:', error);
+    } finally {
+      setIsCancelingMeeting(false);
     }
   };
 
@@ -1966,7 +1971,8 @@ export default function AccessChecklist({ newburyAssets, employee, employees = [
                     variant="outlined"
                     size="large"
                     onClick={handleCancelMeeting}
-                    startIcon={<CalendarMonthIcon />}
+                    disabled={isCancelingMeeting}
+                    startIcon={isCancelingMeeting ? <CircularProgress size={20} color="inherit" /> : <CalendarMonthIcon />}
                     sx={{
                       color: 'success.main',
                       borderColor: 'success.main',
@@ -1977,7 +1983,7 @@ export default function AccessChecklist({ newburyAssets, employee, employees = [
                       },
                     }}
                   >
-                    Cancel Scheduled Meeting
+                    {isCancelingMeeting ? 'Canceling...' : 'Cancel Scheduled Meeting'}
                   </Button>
                 ) : (
                   <Button
