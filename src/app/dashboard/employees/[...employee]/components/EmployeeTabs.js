@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 // @mui
 import Tab from '@mui/material/Tab';
 import Card from '@mui/material/Card';
@@ -18,10 +18,11 @@ import ProfileCover from './ProfileCover';
 import { _mock } from 'src/_mock';
 
 import ProfileView from './profile/View';
+import AccessChecklist from './onboarding/AccessChecklist';
 
 // ----------------------------------------------------------------------
 
-const TABS = [
+const DEFAULT_TABS = [
   {
     value: 'profile',
     label: 'Profile',
@@ -34,12 +35,29 @@ const TABS = [
   },
 ];
 
+const ONBOARDING_TABS = [
+  {
+    value: 'onboarding',
+    label: 'Onboarding',
+    icon: <Iconify icon="solar:user-plus-bold" width={24} />,
+  },
+];
+
 // ----------------------------------------------------------------------
 
-export default function EmployeeTabs({ employee, user }) {
+export default function EmployeeTabs({ employee, user, newburyAssets, employees }) {
   const settings = useSettingsContext();
 
-  const [currentTab, setCurrentTab] = useState('profile');
+  // Determine which tabs to show based on employee status
+  const tabs = useMemo(() => {
+    return employee?.status === '#ONBOARDING' ? ONBOARDING_TABS : DEFAULT_TABS;
+  }, [employee?.status]);
+
+  // Set initial tab based on available tabs
+  const [currentTab, setCurrentTab] = useState(() => {
+    return employee?.status === '#ONBOARDING' ? 'onboarding' : 'profile';
+  });
+
   const handleChangeTab = useCallback((event, newValue) => {
     setCurrentTab(newValue);
   }, []);
@@ -57,7 +75,7 @@ export default function EmployeeTabs({ employee, user }) {
       <Card
         sx={{
           mb: 3,
-          height: 290,
+          height: 240, // Change this value - currently 290
         }}
       >
         <ProfileCover
@@ -66,6 +84,7 @@ export default function EmployeeTabs({ employee, user }) {
           avatarUrl={employee?.avatar ? _mock.image.avatar(11) : null}
           coverUrl={_mock.image.cover(3)}
           employeeStatus={employee?.employeeStatus}
+          status={employee?.status}
         />
 
         <Tabs
@@ -86,7 +105,7 @@ export default function EmployeeTabs({ employee, user }) {
             },
           }}
         >
-          {TABS.map((tab) => (
+          {tabs.map((tab) => (
             <Tab key={tab.value} value={tab.value} icon={tab.icon} label={tab.label} />
           ))}
         </Tabs>
@@ -94,6 +113,7 @@ export default function EmployeeTabs({ employee, user }) {
 
       {currentTab === 'profile' && <ProfileView employee={employee} user={user} />}
       {currentTab === 'performance' && <>Coming Soon!</>}
+      {currentTab === 'onboarding' && <AccessChecklist newburyAssets={newburyAssets} employee={employee} employees={employees} />}
 
       {/* <RequiredDocuments userName={user.fullName} fileInputRef={fileInputRef} employee={employee} setEditDialog={setEditDialog} /> */}
 

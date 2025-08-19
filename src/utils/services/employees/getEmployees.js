@@ -10,9 +10,7 @@ function restructureEmployeeData(items) {
   const employeeItem = items.find((item) => item.type === '#EMPLOYEE');
   if (employeeItem) {
     Object.assign(employeeData, employeeItem);
-    employeeData.requiredDocuments = [];
-    employeeData.otherDocuments = [];
-    employeeData.onboarding = {};
+
   }
 
   items.forEach((item) => {

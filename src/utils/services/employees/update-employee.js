@@ -1,6 +1,6 @@
 'use server';
 
-import { revalidateTag } from 'next/cache';
+import { revalidatePath } from 'next/cache';
 import { dynamoUpdateItemAttributes } from '../sdk-config/aws/dynamo-db';
 import * as Sentry from '@sentry/nextjs';
 
@@ -25,7 +25,7 @@ export default async function updateEmployee({ pk, attributes }) {
     const responseStatus = response?.$metadata.httpStatusCode;
     const expectedStatus = 200;
     if (responseStatus === expectedStatus) {
-      revalidateTag('employees');
+      revalidatePath('/dashboard/employees', 'layout');
       return snackbarSuccessResponse(response, successTitle);
     }
     return snackbarStatusErrorResponse(response, responseStatus, expectedStatus, errorTitle);

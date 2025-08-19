@@ -15,7 +15,7 @@ import UpdateProfileAvatar from './UpdateProfileAvatar';
 
 // ----------------------------------------------------------------------
 
-export default function ProfileCover({ name, avatarUrl, role, coverUrl, employeeStatus }) {
+export default function ProfileCover({ name, avatarUrl, role, coverUrl, employeeStatus, status }) {
   const theme = useTheme();
   const [open, setOpen] = useState(false);
   //refactor dialog to usehook
@@ -34,8 +34,8 @@ export default function ProfileCover({ name, avatarUrl, role, coverUrl, employee
         }}
       >
         <Chip
-          label={employeeStatus === 'Active' ? 'Active Employee' : 'Terminated'}
-          color={employeeStatus === 'Active' ? 'success' : 'error'}
+          label={status === '#ONBOARDING' ? 'Onboarding' : employeeStatus === 'Active' ? 'Active Employee' : 'Terminated'}
+          color={status === '#ONBOARDING' ? 'warning' : employeeStatus === 'Active' ? 'success' : 'error'}
           variant="outlined"
           sx={{
             position: 'absolute',
@@ -57,7 +57,7 @@ export default function ProfileCover({ name, avatarUrl, role, coverUrl, employee
           <Box
             sx={{ position: 'relative', mx: 'auto' }}
             onClick={() => {
-              setOpen(true);
+             // setOpen(true);
             }}
           >
             <Avatar
