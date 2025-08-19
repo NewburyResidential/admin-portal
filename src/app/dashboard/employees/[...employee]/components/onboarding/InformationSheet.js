@@ -427,7 +427,7 @@ const EmailSection = ({ formattedData, employee }) => {
         </Typography>
 
         <Typography sx={{ fontSize: '11px', mb: 2 }}>
-          <strong>Temporary Password:</strong> rainy-horror-jon!
+          <strong>Temporary Password:</strong> Rainy-horror-jon!
         </Typography>
 
         {/* Shared Email Groups */}
