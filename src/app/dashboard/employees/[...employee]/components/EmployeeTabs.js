@@ -50,12 +50,12 @@ export default function EmployeeTabs({ employee, user, newburyAssets, employees 
 
   // Determine which tabs to show based on employee status
   const tabs = useMemo(() => {
-    return employee?.status === '#ONBOARDING' ? ONBOARDING_TABS : DEFAULT_TABS;
+    return employee?.status === '#PREONBOARDING' ? ONBOARDING_TABS : DEFAULT_TABS;
   }, [employee?.status]);
 
   // Set initial tab based on available tabs
   const [currentTab, setCurrentTab] = useState(() => {
-    return employee?.status === '#ONBOARDING' ? 'onboarding' : 'profile';
+    return employee?.status === '#PREONBOARDING' ? 'onboarding' : 'profile';
   });
 
   const handleChangeTab = useCallback((event, newValue) => {

@@ -42,7 +42,7 @@ import { roleOptions } from 'src/layouts/dashboard/roleOptions';
 const STATUS_OPTIONS = [
   { value: 'all', label: 'All' },
   { value: '#AUTHORIZED', label: 'Authorized' },
-  { value: '#ONBOARDING', label: 'Onboarding' },
+  { value: '#PREONBOARDING', label: 'Onboarding' },
   { value: '#UNAUTHORIZED', label: 'Unauthorized' },
 ];
 
@@ -169,14 +169,14 @@ export default function UserList({ employees }) {
                     (tab.value === '#AUTHORIZED' && 'success') ||
                     (tab.value === 'pending' && 'warning') ||
                     (tab.value === '#UNAUTHORIZED' && 'error') ||
-                    (tab.value === '#ONBOARDING' && 'warning') ||
+                    (tab.value === '#PREONBOARDING' && 'warning') ||
                     'default'
                   }
                 >
                   {tab.value === 'all' && employees.length}
                   {tab.value === '#AUTHORIZED' && employees.filter((user) => user.status === '#AUTHORIZED').length}
                   {tab.value === '#UNAUTHORIZED' && employees.filter((user) => user.status === '#UNAUTHORIZED').length}
-                  {tab.value === '#ONBOARDING' && employees.filter((user) => user.status === '#ONBOARDING').length}
+                  {tab.value === '#PREONBOARDING' && employees.filter((user) => user.status === '#PREONBOARDING').length}
                 </Label>
               }
             />
@@ -219,7 +219,7 @@ export default function UserList({ employees }) {
                     row={row}
                     onSelectRow={() => {
                       if (row.pk) {
-                        if (row.status === '#ONBOARDING') {
+                        if (row.status === '#PREONBOARDING') {
                           router.push(row.pk);
                         } else {
                           router.push(`${row.fullName.replace(/ /g, '_').toLowerCase()}-${row.pk}`);

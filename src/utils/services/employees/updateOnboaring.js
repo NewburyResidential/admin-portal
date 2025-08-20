@@ -27,7 +27,7 @@ export async function updateOnboardingRequirement(fileData, pk, sk, attributes) 
     attributes: {
       ...attributes,
       ...s3url,
-      type: '#ONBOARDING',
+      type: '#PREONBOARDING',
     },
   });
   revalidatePath('/onboarding/[slug]');
