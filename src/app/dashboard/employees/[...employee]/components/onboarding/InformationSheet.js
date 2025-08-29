@@ -7,9 +7,7 @@ import {
   PhoneAndroid as PhoneAndroidIcon,
   Computer as ComputerIcon,
   Apartment as ApartmentIcon,
-  Key as KeyIcon,
   ShoppingCart as ShoppingCartIcon,
-  Email as EmailIcon,
 } from '@mui/icons-material';
 import dayjs from 'dayjs';
 
@@ -107,10 +105,7 @@ const groupAccessRequestsByCategory = (accessRequests, sizeSelections) => {
     if (!categories[category]) {
       categories[category] = [];
     }
-    categories[category].push({
-      ...request,
-      type: 'access',
-    });
+    categories[category].push({ ...request, type: 'access' });
   });
 
   // Add size selections
@@ -119,22 +114,18 @@ const groupAccessRequestsByCategory = (accessRequests, sizeSelections) => {
     if (!categories[category]) {
       categories[category] = [];
     }
-    categories[category].push({
-      ...selection,
-      type: 'size',
-      followUpConfiguration: { selectedSize: selection.size },
-    });
+    categories[category].push({ ...selection, type: 'size', followUpConfiguration: { selectedSize: selection.size } });
   });
 
   return categories;
 };
 
-// Updated print styles for multi-page support
+// Updated print styles for multi-page support with better page break controls
 const printStyles = `
   @media print {
     @page {
       size: letter;
-      margin: 0;
+      margin: 0.5in;
     }
     
     body * {
@@ -163,15 +154,45 @@ const printStyles = `
     
     .page-container {
       width: 100% !important;
-      height: 100vh !important;
-      padding: 32px !important;
+      min-height: 100vh !important;
+      max-height: 100vh !important;
+      padding: 0.5in !important;
       box-sizing: border-box !important;
       page-break-after: always !important;
       position: relative !important;
+      overflow: hidden !important;
     }
     
     .page-container:last-child {
       page-break-after: avoid !important;
+    }
+    
+    .page-content {
+      height: calc(100vh - 1in) !important;
+      overflow: hidden !important;
+      display: flex !important;
+      flex-direction: column !important;
+    }
+    
+    .page-header {
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    
+    .page-footer {
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+      margin-top: auto !important;
+    }
+    
+    .section-container {
+      page-break-inside: avoid !important;
+      break-inside: avoid !important;
+    }
+    
+    .section-container.allow-break {
+      page-break-inside: auto !important;
+      break-inside: auto !important;
     }
     
     /* Ensure corners reach absolute edges on each page */
@@ -192,6 +213,12 @@ const printStyles = `
       border-top: 90px solid transparent !important;
       opacity: 0.9 !important;
     }
+    
+    /* Prevent orphaned content */
+    .orphan-control {
+      orphans: 3 !important;
+      widows: 3 !important;
+    }
   }
 `;
 
@@ -206,11 +233,7 @@ const getEmployeeValue = (employee, field) => {
     // Format expectedHireDate as string
     if (field === 'expectedHireDate' && value) {
       try {
-        return new Date(value).toLocaleDateString('en-US', {
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric',
-        });
+        return new Date(value).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
       } catch (error) {
         return value; // Return original value if parsing fails
       }
@@ -241,11 +264,7 @@ const getEmployeeValue = (employee, field) => {
         const dateValue = employee.expectedHireDate?.S || employee.expectedHireDate;
         if (dateValue) {
           try {
-            return new Date(dateValue).toLocaleDateString('en-US', {
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric',
-            });
+            return new Date(dateValue).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
           } catch (error) {
             return dateValue;
           }
@@ -276,7 +295,7 @@ const formatPhoneNumber = (phone) => {
 
 // Header component for reuse on each page
 const PageHeader = ({ isFirstPage = false, employee, formattedData }) => (
-  <Box sx={{ mb: isFirstPage ? 5 : 3 }}>
+  <Box sx={{ mb: 2}}>
     {/* Corner triangles */}
     <Box
       className="corner-triangle-top-left"
@@ -312,11 +331,7 @@ const PageHeader = ({ isFirstPage = false, employee, formattedData }) => (
         <Typography
           variant="h3"
           fontWeight="bold"
-          sx={{
-            fontSize: isFirstPage ? '38px' : '24px',
-            whiteSpace: 'nowrap',
-            textDecoration: 'underline',
-          }}
+          sx={{ fontSize: isFirstPage ? '38px' : '24px', whiteSpace: 'nowrap', textDecoration: 'underline' }}
         >
           Employee Information Sheet
         </Typography>
@@ -341,13 +356,8 @@ const PageFooter = ({ pageNumber, totalPages }) => (
     <Divider sx={{ mb: 1, borderColor: '#ccc', mr: 6.5 }} />
     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mr: 7 }}>
       <Typography sx={{ fontSize: '9px', color: '#888' }}>
-        Generated on{' '}
-        {new Date().toLocaleDateString('en-US', {
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric',
-        })}{' '}
-        by Newbury Residential, Inc
+        Generated on {new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })} by Newbury Residential,
+        Inc
       </Typography>
       <Typography sx={{ fontSize: '9px', color: '#888' }}>
         Page {pageNumber} of {totalPages}
@@ -374,147 +384,173 @@ const EmployeeDetailsSection = ({ formattedData, employee }) => (
         <strong>Supervisor:</strong> {getEmployeeValue(employee, 'supervisor')}
       </Typography>
 
-      <Typography sx={{ mb: 1, fontSize: '12px' }}>
-        <strong>Start Date and Time:</strong>{' '}
-        {formattedData.startDateTime ? dayjs(formattedData.startDateTime).format('dddd, MMMM D, YYYY [at] h:mm A') : 'Not specified'}
-      </Typography>
-      <Typography sx={{ mb: 1, fontSize: '12px' }}>
-        <strong>Address to Start:</strong>{' '}
-        {formattedData.deliveryAddress ? (
-          <>
-            {formattedData.deliveryAddress.label}
-            {formattedData.deliveryAddress.address && (
-              <>
-                {' - '}
-                {formattedData.deliveryAddress.address.street && `${formattedData.deliveryAddress.address.street}, `}
-                {formattedData.deliveryAddress.address.city}, {formattedData.deliveryAddress.address.state}{' '}
-                {formattedData.deliveryAddress.address.zip}
-              </>
-            )}
-          </>
-        ) : (
-          'Not specified'
-        )}
-      </Typography>
-
       {/* Information Note */}
       <Box sx={{ mt: 2, p: 2, bgcolor: '#f5f5f5', borderRadius: 1, border: '1px solid #e0e0e0' }}>
         <Typography sx={{ fontSize: '11px', fontStyle: 'italic', color: '#555' }}>
           <strong>Note:</strong> Below is a comprehensive list of your access to Newbury applications, systems, and properties. If you are
-          switching properties or believe anything is missing, please submit a support ticket at www.NewburyPortal.com. The NewburyPortal
-          serves as your central hub for all Newbury-related resources and information!
+          switching properties or believe anything is missing, please submit a support ticket at www.NewburyPortal.com.
         </Typography>
       </Box>
     </Box>
   </Box>
 );
 
-const EmailSection = ({ formattedData, employee }) => {
-  const sharedEmails = generateSharedEmails(formattedData);
-
+const PaylocitySection = () => {
   return (
     <Box sx={{ mb: 3 }}>
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-        <EmailIcon sx={{ fontSize: '16px', color: '#666' }} />
-        <Typography variant="h6" fontWeight="bold" sx={{ fontSize: '14px' }}>
-          Email
+      <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+        <Typography
+          variant="h6"
+          fontWeight="bold"
+          sx={{ fontSize: '16px', color: '#333', borderBottom: '2px solid #7f7f7f', pb: 0.5, mr: 2 }}
+        >
+          Step 1: Complete Paylocity Onboarding
         </Typography>
       </Box>
 
       <Box sx={{ ml: 0 }}>
-        {(() => {
-          const hasOffice365 = formattedData.accessRequests?.some((req) => req.itemId === 'office_365');
-
-          return (
-            <Typography sx={{ fontSize: '11px', mb: 2, lineHeight: 1.4 }}>
-              {hasOffice365
-                ? 'Your Newbury Email will be used for your login usernames and access any work related mail. In addition, anywhere you see Single Sign-On (SSO) such as Entrata or Paylocity, you can use your Newbury email to sign you in. If it asks for a domain use "newburyresidential".'
-                : 'Your Newbury email will be used for login purposes only and does not have an associated mailbox. You can also use this email for Single Sign-On (SSO) applications such as Entrata or Paylocity. If prompted for a domain, enter "newburyresidential."'}
-            </Typography>
-          );
-        })()}
-
-        <Typography sx={{ fontSize: '11px', mb: 1 }}>
-          <strong>Domain:</strong> newburyresidential
+        {/* Step description */}
+        <Typography sx={{ fontSize: '11px', mb: 2, lineHeight: 1.4, color: '#555' }}>
+          You should have received an email from do-not-reply@paylocity.com with instructions to begin your onboarding. This email includes
+          your username and a temporary password. Please log in using those credentials to complete your onboarding steps.
         </Typography>
 
-        <Typography sx={{ fontSize: '11px', mb: 1 }}>
-          <strong>Microsoft Email:</strong> {getEmployeeValue(employee, 'workEmail')}
+        <Typography sx={{ fontSize: '11px', mb: 2, lineHeight: 1.4, color: '#555' }}>
+          If you have already created your account, your login information should look like the example below. If you run into any issues or
+          need a password reset, please don&apos;t hesitate to reach out to us at Recruiting@newburyresidential.com.
         </Typography>
 
-        <Typography sx={{ fontSize: '11px', mb: 2 }}>
-          <strong>Temporary Password:</strong> Rainy-horror-jon!
-        </Typography>
+        {/* Login information */}
+        <Box sx={{ mb: 2 }}>
+          <Typography sx={{ fontSize: '11px', mb: 0.25, lineHeight: 1.4 }}>
+            <strong>Login URL:</strong> https://onboarding.paylocity.com/onboarding/
+          </Typography>
+          <Typography sx={{ fontSize: '11px', mb: 0.25, lineHeight: 1.4 }}>
+            <strong>Company ID:</strong> 319245
+          </Typography>
+          <Typography sx={{ fontSize: '11px', mb: 0.25, lineHeight: 1.4 }}>
+            <strong>Username:</strong> Firstname.Lastname
+          </Typography>
+          <Typography sx={{ fontSize: '11px', mb: 0.25, lineHeight: 1.4 }}>
+            <strong>Password:</strong> [created by you]
+          </Typography>
+        </Box>
 
-        {/* Shared Email Groups */}
-        {sharedEmails.length > 0 && (
-          <>
-            <Typography sx={{ fontSize: '11px', mb: 1, lineHeight: 1.4 }}>
-              You have access to the following shared email inboxes. You may need to manually add the inboxes in Outlook in addition to your
-              work email. To send from these accounts, you will need to add the shared email address to the &quot;From&quot; field. Reach
-              out to your supervisor if you experience any issues.
-            </Typography>
-
-            <Box sx={{ ml: 1, mb: 1 }}>
-              {sharedEmails.map((email, index) => (
-                <Typography key={`shared-email-${email}-${index}`} sx={{ fontSize: '11px', mb: 0.25 }}>
-                  • {email}
-                </Typography>
-              ))}
-            </Box>
-          </>
-        )}
+      
       </Box>
     </Box>
   );
 };
 
-const PasswordsSection = ({ formattedData }) => {
-  // Check if Keeper is selected
-  const hasKeeper = formattedData.accessRequests?.some((req) => req.itemId === 'keeper');
+const EmailSection = ({ formattedData, employee }) => {
+  const sharedEmails = generateSharedEmails(formattedData);
+  const hasOffice365 = formattedData.accessRequests?.some((req) => req.itemId === 'office_365');
 
-  // Don't render the section if Keeper is not selected
-  if (!hasKeeper) return null;
+  // Determine role type for shared email text
+  const roleType = getRoleType(formattedData.position);
 
   return (
     <Box sx={{ mb: 3 }}>
-      {/* Entire section with QR code on the right */}
-      <Box sx={{ display: 'flex', gap: 2, alignItems: 'flex-start' }}>
-        {/* Left side - All content */}
-        <Box sx={{ flex: 1 }}>
-          {/* Title */}
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-            <KeyIcon sx={{ fontSize: '16px', color: '#666' }} />
-            <Typography variant="h6" fontWeight="bold" sx={{ fontSize: '14px' }}>
-              Passwords and Logins
+      <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+        <Typography
+          variant="h6"
+          fontWeight="bold"
+          sx={{ fontSize: '16px', color: '#333', borderBottom: '2px solid #7f7f7f', pb: 0.5, mr: 2 }}
+        >
+          Step 2: Email & Newbury Portal
+        </Typography>
+      </Box>
+
+      <Box sx={{ ml: 0 }}>
+        {/* Two-column layout: left content, right QR code */}
+        <Box sx={{ display: 'flex', gap: 2, alignItems: 'flex-start', mb: 2 }}>
+          {/* Left column - all content */}
+          <Box sx={{ flex: 1 }}>
+            {/* Step description */}
+            <Typography sx={{ fontSize: '11px', mb: 2, lineHeight: 1.4, color: '#555' }}>
+              {hasOffice365
+                ? 'Your Newbury Email will be used for your login usernames and access work related mail. In addition, anywhere you see Single Sign-On (SSO) such as Entrata or Paylocity, you can use your Newbury email to sign you in. The NewburyPortal serves as your central hub for all Newbury-related resources and information!'
+                : 'Your Newbury email will be used for login purposes only and does not have an associated mailbox. You can also use this email for Single Sign-On (SSO) applications such as Entrata or Paylocity. If prompted for a domain, enter "newburyresidential."'}
             </Typography>
+
+            {/* Credentials info */}
+            <Box sx={{ mb: 2 }}>
+              <Typography sx={{ fontSize: '11px', mb: 0.25, lineHeight: 1.4 }}>
+                <strong>Microsoft Email:</strong> {getEmployeeValue(employee, 'workEmail')}
+              </Typography>
+              <Typography sx={{ fontSize: '11px', mb: 0.25, lineHeight: 1.4 }}>
+                <strong>Temporary Password:</strong> Rainy-horror-jon!
+              </Typography>
+            </Box>
           </Box>
 
-          {/* Description */}
-          <Box sx={{ ml: 0 }}>
-            <Typography sx={{ fontSize: '11px', mb: 2, lineHeight: 1.4 }}>
-              We use a password management tool called Keeper to store and organize all your login credentials, making it much easier to
-              access the websites and systems you&apos;ll need for work. You can use Keeper on your phone, computer, or web. Either scan the
-              QR code or go to KeeperSecurity.com and &quot;Use Enterprise SSO Login&quot;.
-              <strong> Please familiarize yourself with this application</strong>
+          {/* Right column - QR code only */}
+          <Box sx={{ flexShrink: 0 }}>
+            <img
+              src="/assets/onboarding/Newburyportal.png"
+              alt="Newbury Portal QR Code"
+              style={{ width: '90px', height: '90px', objectFit: 'contain', border: '1px solid #e0e0e0', borderRadius: '9px' }}
+            />
+          </Box>
+        </Box>
+
+        {/* First checklist item - QR code scan */}
+        <Box sx={{ mb: 2 }}>
+          <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 1 }}>
+            <Box sx={{ width: '16px', height: '16px', border: '2px solid #ccc', borderRadius: '2px', mr: 1, mt: 0.25, flexShrink: 0 }} />
+            <Typography sx={{ fontSize: '11px', lineHeight: 1.4 }}>
+              Scan the QR code to go to www.newburyportal.com. Sign in with the above credentials and it will prompt you to set up a new
+              password and phone authentication.
             </Typography>
           </Box>
         </Box>
 
-        {/* Right side - QR Code spanning full height */}
-        <Box sx={{ flexShrink: 0, alignSelf: 'stretch', display: 'flex', alignItems: 'center' }}>
-          <img
-            src="/assets/onboarding/keeper-url.png"
-            alt="Keeper URL QR Code"
-            style={{
-              width: '85px',
-              height: '85px',
-              objectFit: 'contain',
-              border: '1px solid #e0e0e0',
-              borderRadius: '4px',
-            }}
-          />
+        {/* Second checklist item - Bookmark for quick access */}
+        <Box sx={{ mb: 2 }}>
+          <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 1 }}>
+            <Box sx={{ width: '16px', height: '16px', border: '2px solid #ccc', borderRadius: '2px', mr: 1, mt: 0.25, flexShrink: 0 }} />
+            <Typography sx={{ fontSize: '11px', lineHeight: 1.4 }}>
+              For quick access, bookmark/save the Newbury Portal to your home screen.
+            </Typography>
+          </Box>
+
+          {/* Images side by side */}
+          <Box sx={{ display: 'flex', gap: 2, ml: 2, mt: 1 }}>
+            <img
+              src="/assets/onboarding/step1a.jpeg"
+              alt="Desktop bookmarking guide"
+              style={{ width: '250px', height: '100px', objectFit: 'cover', border: '1px solid #e0e0e0', borderRadius: '4px' }}
+            />
+            <img
+              src="/assets/onboarding/step1b.jpeg"
+              alt="Mobile home screen guide"
+              style={{ width: '250px', height: '100px', objectFit: 'cover', border: '1px solid #e0e0e0', borderRadius: '4px' }}
+            />
+          </Box>
+
+          {/* Third checklist item - Outlook app setup */}
+          <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 1, mt: 2 }}>
+            <Box sx={{ width: '16px', height: '16px', border: '2px solid #ccc', borderRadius: '2px', mr: 1, mt: 0.25, flexShrink: 0 }} />
+            <Typography sx={{ fontSize: '11px', lineHeight: 1.4 }}>
+              Download the Outlook app on your phone. Click &quot;Add Accounts&quot;, Click &quot;Skip&quot; if your personal accounts show. And then sign in to
+              your email with your updated password.
+            </Typography>
+          </Box>
         </Box>
+
+        {/* Shared Email Groups - Updated to checkbox format with role-specific text */}
+        {sharedEmails.length > 0 && (
+          <Box sx={{ mb: 2 }}>
+            <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 1 }}>
+              <Box sx={{ width: '16px', height: '16px', border: '2px solid #ccc', borderRadius: '2px', mr: 1, mt: 0.25, flexShrink: 0 }} />
+              <Typography sx={{ fontSize: '11px', lineHeight: 1.4 }}>
+                {roleType === 'maintenance'
+                  ? `You have access to the following shared email inboxes: [${sharedEmails.join(', ')}]. Note that these emails will be directly forwarded to your work email: ${getEmployeeValue(employee, 'workEmail')}.`
+                  : `You have access to the following shared email inboxes: [${sharedEmails.join(', ')}]. You will need to manually add the inboxes in your Outlook mobile app by clicking "Add Shared Mailbox". They will automatically appear in the desktop version. To send from these accounts, you will need to add the shared email address to the "From" field. Reach out to your supervisor if you experience any issues.`}
+              </Typography>
+            </Box>
+          </Box>
+        )}
       </Box>
     </Box>
   );
@@ -532,18 +568,12 @@ const PropertiesSection = ({ formattedData }) => {
         </Typography>
       </Box>
 
-      <Box
-        sx={{
-          ml: 0,
-          display: 'flex',
-          flexWrap: 'wrap',
-          gap: 1,
-          alignItems: 'flex-start',
-        }}
-      >
+    
+
+      <Box sx={{ ml: 0, display: 'flex', flexWrap: 'wrap', gap: 1, alignItems: 'flex-start' }}>
         {formattedData.properties.map((property, index) => (
           <Chip
-            key={`property-${property.label}-${index}`}
+            key={`property-${property.id || property.label}-${index}`}
             label={property.label}
             size="small"
             variant="outlined"
@@ -551,15 +581,9 @@ const PropertiesSection = ({ formattedData }) => {
               fontSize: '10px',
               height: 'auto',
               minHeight: '24px',
-              '& .MuiChip-label': {
-                fontSize: '10px',
-                lineHeight: 1.3,
-                padding: '4px 8px',
-              },
+              '& .MuiChip-label': { fontSize: '10px', lineHeight: 1.3, padding: '4px 8px' },
               borderColor: '#e0e0e0',
-              '&:hover': {
-                backgroundColor: '#f5f5f5',
-              },
+              '&:hover': { backgroundColor: '#f5f5f5' },
             }}
           />
         ))}
@@ -568,100 +592,104 @@ const PropertiesSection = ({ formattedData }) => {
   );
 };
 
-const AccessRequestsCategorySection = ({ category, items }) => (
-  <Box sx={{ mb: 3 }}>
-    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-      {category === 'System and Software Access' && <ComputerIcon sx={{ fontSize: '16px', color: '#666' }} />}
-      {category === 'Procurement Accounts' && <ShoppingCartIcon sx={{ fontSize: '16px', color: '#666' }} />}
-      <Typography variant="h6" fontWeight="bold" sx={{ fontSize: '14px' }}>
-        {category === 'System and Software Access'
-          ? 'System and Software Access'
-          : category === 'Procurement Accounts'
-            ? 'Procurement Accounts'
-            : category.toUpperCase()}
-      </Typography>
-    </Box>
+const AccessRequestsCategorySection = ({ category, items }) => {
+  // Helper function to get description for each category
+  const getCategoryDescription = (categoryName) => {
+    switch (categoryName) {
+      case 'System and Software Access':
+        return 'Company websites, systems, and software used for daily operations.';
+      case 'Procurement Accounts':
+        return 'Company accounts for purchasing supplies, equipment, and services';
+      default:
+        return '';
+    }
+  };
 
-    {category === 'System and Software Access' || category === 'Procurement Accounts' ? (
-      <Box
-        sx={{
-          ml: 0,
-          display: 'flex',
-          flexWrap: 'wrap',
-          gap: 1,
-          alignItems: 'flex-start',
-        }}
-      >
-        {items.map((item, index) => {
-          // For procurement accounts, include credit limit in the label
-          let chipLabel = item.employeeLabel || item.label;
+  const description = getCategoryDescription(category);
 
-          if (item.itemId === 'shared_email_groups') {
-            return null; // Fix: return null instead of undefined
-          }
+  return (
+    <Box sx={{ mb: 3 }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+        {category === 'System and Software Access' && <ComputerIcon sx={{ fontSize: '16px', color: '#666' }} />}
+        {category === 'Procurement Accounts' && <ShoppingCartIcon sx={{ fontSize: '16px', color: '#666' }} />}
+        <Typography variant="h6" fontWeight="bold" sx={{ fontSize: '14px' }}>
+          {category === 'System and Software Access'
+            ? 'System and Software Access'
+            : category === 'Procurement Accounts'
+              ? 'Procurement Accounts'
+              : category.toUpperCase()}
+        </Typography>
+      </Box>
 
-          return (
-            <Chip
-              key={`access-item-${item.itemId || item.label}-${index}`}
-              label={chipLabel}
-              size="small"
-              variant="outlined"
-              sx={{
-                fontSize: '10px',
-                height: 'auto',
-                minHeight: '24px',
-                '& .MuiChip-label': {
+      {description && <Typography sx={{ fontSize: '11px', fontStyle: 'italic', color: '#666', mb: 2, ml: 0 }}>{description}</Typography>}
+
+      {category === 'System and Software Access' || category === 'Procurement Accounts' ? (
+        <Box sx={{ ml: 0, display: 'flex', flexWrap: 'wrap', gap: 1, alignItems: 'flex-start' }}>
+          {items.map((item, index) => {
+            // For procurement accounts, include credit limit in the label
+            let chipLabel = item.employeeLabel || item.label;
+
+            if (item.itemId === 'shared_email_groups') {
+              return null; // Fix: return null instead of undefined
+            }
+
+            return (
+              <Chip
+                key={`access-item-${item.itemId || item.label}-${index}`}
+                label={chipLabel}
+                size="small"
+                variant="outlined"
+                sx={{
                   fontSize: '10px',
-                  lineHeight: 1.3,
-                  padding: '4px 8px',
-                },
-                borderColor: '#e0e0e0',
-                '&:hover': {
-                  backgroundColor: '#f5f5f5',
-                },
-              }}
-            />
-          );
-        })}
-      </Box>
-    ) : (
-      <Box sx={{ ml: 2 }}>
-        {items.map((item, index) => (
-          <Box key={`access-detail-${item.itemId || item.label}-${index}`} sx={{ mb: 1.5 }}>
-            {/* Main label */}
-            <Typography sx={{ fontSize: '11px', mb: 0.5, fontWeight: 'medium' }}>• {item.employeeLabel || item.label}</Typography>
+                  height: 'auto',
+                  minHeight: '24px',
+                  '& .MuiChip-label': { fontSize: '10px', lineHeight: 1.3, padding: '4px 8px' },
+                  borderColor: '#e0e0e0',
+                  '&:hover': { backgroundColor: '#f5f5f5' },
+                }}
+              />
+            );
+          })}
+        </Box>
+      ) : (
+        <Box sx={{ ml: 2 }}>
+          {items.map((item, index) => (
+            <Box key={`access-detail-${item.itemId || item.label}-${index}`} sx={{ mb: 1.5 }}>
+              {/* Main label */}
+              <Typography sx={{ fontSize: '11px', mb: 0.5, fontWeight: 'medium' }}>• {item.employeeLabel || item.label}</Typography>
 
-            {/* URL and Login info - displayed on separate lines with indentation */}
-            {(item.url || item.loginLabel) && (
-              <Box sx={{ ml: 2, mb: 0.5 }}>
-                {item.url && (
-                  <Typography sx={{ fontSize: '10px', color: '#555', mb: 0.25 }}>
-                    <strong>URL:</strong> {item.url}
-                  </Typography>
-                )}
-                {item.loginLabel && (
-                  <Typography sx={{ fontSize: '10px', color: '#555', mb: 0.25 }}>
-                    <strong>Login:</strong> {item.loginLabel}
-                  </Typography>
-                )}
-              </Box>
-            )}
+              {/* URL and Login info - displayed on separate lines with indentation */}
+              {(item.url || item.loginLabel) && (
+                <Box sx={{ ml: 2, mb: 0.5 }}>
+                  {item.url && (
+                    <Typography sx={{ fontSize: '10px', color: '#555', mb: 0.25 }}>
+                      <strong>URL:</strong> {item.url}
+                    </Typography>
+                  )}
+                  {item.loginLabel && (
+                    <Typography sx={{ fontSize: '10px', color: '#555', mb: 0.25 }}>
+                      <strong>Login:</strong> {item.loginLabel}
+                    </Typography>
+                  )}
+                </Box>
+              )}
 
-            {/* Configuration info */}
-            {item.followUpConfiguration && (
-              <Typography sx={{ fontSize: '10px', color: '#666', ml: 2 }}>
-                {item.type === 'size'
-                  ? `Size: ${item.size.label}`
-                  : formatFollowUpData(item.followUpConfiguration, item.itemId) &&
-                    `Configuration: ${formatFollowUpData(item.followUpConfiguration, item.itemId)}`}
-              </Typography>
-            )}
-          </Box>
-        ))}
-      </Box>
-    )}
-  </Box>
-);
+              {/* Configuration info */}
+              {item.followUpConfiguration && (
+                <Typography sx={{ fontSize: '10px', color: '#666', ml: 2 }}>
+                  {item.type === 'size'
+                    ? `Size: ${item.size.label}`
+                    : formatFollowUpData(item.followUpConfiguration, item.itemId) &&
+                      `Configuration: ${formatFollowUpData(item.followUpConfiguration, item.itemId)}`}
+                </Typography>
+              )}
+            </Box>
+          ))}
+        </Box>
+      )}
+    </Box>
+  );
+};
 
 const MobileAppsSection = ({ formattedData }) => {
   if (!formattedData.mobileApps || formattedData.mobileApps.length === 0) return null;
@@ -680,15 +708,7 @@ const MobileAppsSection = ({ formattedData }) => {
         keep all work-related applications organized and easily accessible.
       </Typography>
 
-      <Box
-        sx={{
-          ml: 0,
-          display: 'flex',
-          flexWrap: 'wrap',
-          gap: 1,
-          alignItems: 'flex-start',
-        }}
-      >
+      <Box sx={{ ml: 0, display: 'flex', flexWrap: 'wrap', gap: 1, alignItems: 'flex-start' }}>
         {formattedData.mobileApps.map((app, index) => (
           <Chip
             key={`mobile-app-${app}-${index}`}
@@ -699,15 +719,9 @@ const MobileAppsSection = ({ formattedData }) => {
               fontSize: '10px',
               height: 'auto',
               minHeight: '24px',
-              '& .MuiChip-label': {
-                fontSize: '10px',
-                lineHeight: 1.3,
-                padding: '4px 8px',
-              },
+              '& .MuiChip-label': { fontSize: '10px', lineHeight: 1.3, padding: '4px 8px' },
               borderColor: '#e0e0e0',
-              '&:hover': {
-                backgroundColor: '#f5f5f5',
-              },
+              '&:hover': { backgroundColor: '#f5f5f5' },
             }}
           />
         ))}
@@ -716,71 +730,324 @@ const MobileAppsSection = ({ formattedData }) => {
   );
 };
 
-// Multi-page Document component
+const BenefitsSection = () => {
+  return (
+    <Box sx={{ mb: 3 }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+        <Typography
+          variant="h6"
+          fontWeight="bold"
+          sx={{ fontSize: '16px', color: '#333', borderBottom: '2px solid #7f7f7f', pb: 0.5, mr: 2 }}
+        >
+          Step 4: Enroll or Deny Benefits
+        </Typography>
+      </Box>
+
+      <Box sx={{ ml: 0 }}>
+        {/* Step description */}
+        <Typography sx={{ fontSize: '11px', mb: 2, lineHeight: 1.4, color: '#555' }}>
+          We offer a comprehensive health package for Medical, Dental and Vision. You must{' '}
+          <span style={{ textDecoration: 'underline' }}>either enroll or deny each coverage</span>. You will receive an email sometime
+          during your first week of employment. Please try and complete this as soon as possible.
+        </Typography>
+
+        {/* Checklist item */}
+        <Box sx={{ mb: 2 }}>
+          <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 1 }}>
+            <Box sx={{ width: '16px', height: '16px', border: '2px solid #ccc', borderRadius: '2px', mr: 1, mt: 0.25, flexShrink: 0 }} />
+            <Typography sx={{ fontSize: '11px', lineHeight: 1.4 }}>Enroll or Deny coverage from Lumity</Typography>
+          </Box>
+        </Box>
+      </Box>
+    </Box>
+  );
+};
+
+const AccessAccountsSection = ({ formattedData, employee }) => {
+  const hasKeeper = formattedData.accessRequests?.some((req) => req.itemId === 'keeper');
+
+  return (
+    <Box sx={{ mb: 3 }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+        <Typography
+          variant="h6"
+          fontWeight="bold"
+          sx={{ fontSize: '16px', color: '#333', borderBottom: '2px solid #7f7f7f', pb: 0.5, mr: 2 }}
+        >
+          Step 5: Access Accounts & Software
+        </Typography>
+      </Box>
+
+      <Box sx={{ ml: 0 }}>
+        {/* Step description - different text based on whether Keeper is selected */}
+        <Typography 
+          sx={{ fontSize: '11px', mb: 2, lineHeight: 1.4, color: '#555' }}
+          dangerouslySetInnerHTML={{
+            __html: hasKeeper 
+              ? "Accounts have been created for you across the following platforms. We use a password management tool called Keeper to store and organize all your login credentials, making it much easier to access the websites and systems you'll need for work. You can use Keeper on your phone, computer, or web. <strong>Please familiarize yourself with this application.</strong>"
+              : "Accounts have been created for you across the following platforms. A registration email has been sent to your Microsoft work email for each account. Please complete your registration as soon as possible, as the links will expire. If you need a reminder of where or how to log in, please visit the Newbury Portal."
+          }}
+        />
+
+        {/* Keeper setup instructions - only if Keeper is selected */}
+        {hasKeeper && (
+          <Box sx={{ mb: 2 }}>
+       
+            
+            {/* Mobile setup */}
+            <Box sx={{ mb: 1.5 }}>
+              <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 1 }}>
+                <Box sx={{ width: '16px', height: '16px', border: '2px solid #ccc', borderRadius: '2px', mr: 1, mt: 0.25, flexShrink: 0 }} />
+                <Typography sx={{ fontSize: '11px', lineHeight: 1.4 }}>
+                  Download the Keeper app on your phone. Click &quot;Log In&quot;. Click &quot;Use Enterprise SSO Login&quot;
+                </Typography>
+              </Box>
+            </Box>
+
+            {/* Computer setup */}
+            <Box sx={{ mb: 1.5 }}>
+              <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 1 }}>
+                <Box sx={{ width: '16px', height: '16px', border: '2px solid #ccc', borderRadius: '2px', mr: 1, mt: 0.25, flexShrink: 0 }} />
+                <Typography sx={{ fontSize: '11px', lineHeight: 1.4 }}>
+                  Access Keeper at https://keepersecurity.com/vault/# click &quot;Log In&quot; Enter your email address and click &quot;Next&quot;
+                </Typography>
+              </Box>
+            </Box>
+
+            {/* Chrome extension setup */}
+            <Box sx={{ mb: 1.5 }}>
+              <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 1 }}>
+                <Box sx={{ width: '16px', height: '16px', border: '2px solid #ccc', borderRadius: '2px', mr: 1, mt: 0.25, flexShrink: 0 }} />
+                <Typography sx={{ fontSize: '11px', lineHeight: 1.4 }}>
+                  Download the Keeper Chrome extension at https://chromewebstore.google.com/
+                </Typography>
+              </Box>
+            </Box>
+          </Box>
+        )}
+      </Box>
+    </Box>
+  );
+};
+
+// Helper function to determine role type (office vs maintenance)
+const getRoleType = (positionId) => {
+  const officeRoles = ['community_manager', 'assistant_manager', 'leasing_agent'];
+  const maintenanceRoles = ['maintenance_supervisor', 'maintenance_technician', 'carpenter_make_ready', 'painter', 'lead_carpenter'];
+
+  if (officeRoles.includes(positionId)) {
+    return 'office';
+  } else if (maintenanceRoles.includes(positionId)) {
+    return 'maintenance';
+  }
+  return 'unknown';
+};
+
+const EntrataSection = ({ formattedData, employee }) => {
+  // Check if Entrata is selected
+  const hasEntrata = formattedData.accessRequests?.some((req) => req.itemId === 'entrata');
+
+  // Don't render the section if Entrata is not selected
+  if (!hasEntrata) return null;
+
+  // Determine role type based on position
+  const roleType = getRoleType(formattedData.position);
+
+  return (
+    <Box sx={{ mb: 3 }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+        <Typography
+          variant="h6"
+          fontWeight="bold"
+          sx={{ fontSize: '16px', color: '#333', borderBottom: '2px solid #7f7f7f', pb: 0.5, mr: 2 }}
+        >
+          Step 3: Entrata
+        </Typography>
+      </Box>
+
+      <Box sx={{ ml: 0 }}>
+        {/* Step description */}
+        <Typography sx={{ fontSize: '11px', mb: 2, lineHeight: 1.4, color: '#555' }}>
+          Entrata is our property management software for daily property operations. Please make sure you can access and bookmark these
+          items.
+        </Typography>
+
+        {/* Web or Mobile Browser - Always shown */}
+        <Box sx={{ mb: 3 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+            <Box sx={{ width: '16px', height: '16px', border: '2px solid #ccc', borderRadius: '2px', mr: 1, flexShrink: 0 }} />
+            <Typography sx={{ fontSize: '12px', color: '#333' }}>Web or Mobile Browser:</Typography>
+          </Box>
+          <Box sx={{ ml: 2 }}>
+            <Typography sx={{ fontSize: '11px', mb: 0.25, lineHeight: 1.4 }}>
+              • Log into https://newburyresidential.entrata.com and use &quot;SSO Login&quot; to sign in.
+            </Typography>
+          </Box>
+        </Box>
+
+        {/* Entrata Facilities App - Only for maintenance roles */}
+        {roleType === 'maintenance' && (
+          <Box sx={{ mb: 3 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+              <Box sx={{ width: '16px', height: '16px', border: '2px solid #ccc', borderRadius: '2px', mr: 1, flexShrink: 0 }} />
+              <Typography sx={{ fontSize: '12px', color: '#333' }}>Entrata Facilities (Mobile App):</Typography>
+            </Box>
+            <Box sx={{ ml: 2 }}>
+              <Typography sx={{ fontSize: '11px', mb: 0.25, lineHeight: 1.4 }}>
+                <strong>Subdomain:</strong> newburyresidential
+              </Typography>
+              <Typography sx={{ fontSize: '11px', mb: 0.25, lineHeight: 1.4 }}>
+                <strong>Username:</strong> {getEmployeeValue(employee, 'workEmail')}
+              </Typography>
+            </Box>
+          </Box>
+        )}
+
+        {/* DocScan - Only for office roles */}
+        {roleType === 'office' && (
+          <Box sx={{ mb: 3 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+              <Box sx={{ width: '16px', height: '16px', border: '2px solid #ccc', borderRadius: '2px', mr: 1, flexShrink: 0 }} />
+              <Typography sx={{ fontSize: '12px', color: '#333' }}>DocScan (Desktop App):</Typography>
+            </Box>
+            <Box sx={{ ml: 2 }}>
+              <Typography sx={{ fontSize: '11px', mb: 0.25, lineHeight: 1.4 }}>
+                <strong>Subdomain:</strong> newburyresidential
+              </Typography>
+              <Typography sx={{ fontSize: '11px', mb: 0.25, lineHeight: 1.4 }}>
+                <strong>Username:</strong> {getEmployeeValue(employee, 'workEmail')}
+              </Typography>
+              <Typography sx={{ fontSize: '11px', mb: 0.25, lineHeight: 1.4 }}>
+                <strong>Password:</strong> [Microsoft Password]
+              </Typography>
+            </Box>
+          </Box>
+        )}
+      </Box>
+    </Box>
+  );
+};
+
+// Multi-page Document component with improved pagination
 const DocumentView = React.forwardRef(({ formattedData, employee }, ref) => {
   const groupedRequests = groupAccessRequestsByCategory(formattedData.accessRequests || [], formattedData.sizeSelections || []);
 
-  // Calculate content sections and their estimated heights for pagination
+  // Calculate content sections with more accurate height estimates
   const sections = useMemo(() => {
     const sectionsArray = [];
 
     // Core sections that always appear
-    sectionsArray.push({ id: 'employee-details', component: EmployeeDetailsSection, height: 200 });
-    sectionsArray.push({ id: 'email', component: EmailSection, height: 180 });
+    sectionsArray.push({ 
+      id: 'employee-details', 
+      component: EmployeeDetailsSection, 
+      height: 180,
+      allowBreak: false 
+    });
+    sectionsArray.push({ 
+      id: 'paylocity', 
+      component: PaylocitySection, 
+      height: 200,
+      allowBreak: false 
+    });
+    sectionsArray.push({ 
+      id: 'email', 
+      component: EmailSection, 
+      height: 250,
+      allowBreak: false 
+    });
 
-    // Conditional passwords section - only if Keeper is selected
-    const hasKeeper = formattedData.accessRequests?.some((req) => req.itemId === 'keeper');
-    if (hasKeeper) {
-      sectionsArray.push({ id: 'passwords', component: PasswordsSection, height: 160 });
+    // Conditional Entrata section - only if Entrata is selected
+    const hasEntrata = formattedData.accessRequests?.some((req) => req.itemId === 'entrata');
+    if (hasEntrata) {
+      sectionsArray.push({ 
+        id: 'entrata', 
+        component: EntrataSection, 
+        height: 220,
+        allowBreak: false 
+      });
     }
+
+    // Benefits section - always appears
+    sectionsArray.push({ 
+      id: 'benefits', 
+      component: BenefitsSection, 
+      height: 140,
+      allowBreak: false 
+    });
+
+    // Access Accounts section - always appears (now includes Keeper setup if selected)
+    const hasKeeper = formattedData.accessRequests?.some((req) => req.itemId === 'keeper');
+    sectionsArray.push({ 
+      id: 'access-accounts', 
+      component: AccessAccountsSection, 
+      height: hasKeeper ? 200 : 100, // Increased height when Keeper is included
+      allowBreak: false 
+    });
 
     // Optional sections
     if (formattedData.properties && formattedData.properties.length > 0) {
-      sectionsArray.push({ id: 'properties', component: PropertiesSection, height: 100 });
+      sectionsArray.push({ 
+        id: 'properties', 
+        component: PropertiesSection, 
+        height: 80 + Math.ceil(formattedData.properties.length / 6) * 30,
+        allowBreak: false 
+      });
     }
 
     // Access request categories (excluding PPE)
     Object.entries(groupedRequests)
       .filter(([category]) => category !== 'Personal Protective Equipment and Uniforms')
       .forEach(([category, items]) => {
-        // Estimate height based on category type and number of items
-        let estimatedHeight = 120; // Base height for header
+        // More accurate height estimation
+        let estimatedHeight = 80; // Base height for header
         if (category === 'System and Software Access' || category === 'Procurement Accounts') {
-          estimatedHeight += Math.ceil(items.length / 4) * 30; // Chips layout
+          estimatedHeight += Math.ceil(items.length / 5) * 35; // Chips layout
         } else {
-          estimatedHeight += items.length * 45; // List layout
+          estimatedHeight += items.length * 50; // List layout with more space
         }
 
         sectionsArray.push({
           id: `category-${category}`,
           component: AccessRequestsCategorySection,
           height: estimatedHeight,
+          allowBreak: true, // Allow breaks for long category lists
           props: { category, items },
         });
       });
 
     // Mobile apps section
     if (formattedData.mobileApps && formattedData.mobileApps.length > 0) {
-      sectionsArray.push({ id: 'mobile-apps', component: MobileAppsSection, height: 120 });
+      sectionsArray.push({ 
+        id: 'mobile-apps', 
+        component: MobileAppsSection, 
+        height: 100 + Math.ceil(formattedData.mobileApps.length / 5) * 30,
+        allowBreak: false 
+      });
     }
 
     return sectionsArray;
   }, [formattedData, groupedRequests]);
 
-  // Paginate sections based on available space
+  // Improved pagination with better space management
   const pages = useMemo(() => {
     const pagesArray = [];
     let currentPage = [];
     let currentPageHeight = 0;
-    const maxPageHeight = 850;
-    const firstPageMaxHeight = 850;
+    const maxPageHeight = 800;
+    const firstPageMaxHeight = 0;
 
     sections.forEach((section, index) => {
       const isFirstPage = pagesArray.length === 0 && currentPage.length === 0;
       const pageLimit = isFirstPage ? firstPageMaxHeight : maxPageHeight;
-
+      
+      // Force a new page when we reach the "access-accounts" section (Step 5)
+      if (section.id === 'access-accounts' && currentPage.length > 0) {
+        pagesArray.push([...currentPage]);
+        currentPage = [section];
+        currentPageHeight = section.height;
+      }
       // If adding this section would exceed the page limit, start a new page
-      if (currentPageHeight + section.height > pageLimit && currentPage.length > 0) {
+      else if (currentPageHeight + section.height > pageLimit && currentPage.length > 0) {
         pagesArray.push([...currentPage]);
         currentPage = [section];
         currentPageHeight = section.height;
@@ -818,28 +1085,47 @@ const DocumentView = React.forwardRef(({ formattedData, employee }, ref) => {
             boxShadow: '0 0 20px rgba(0,0,0,0.1)',
             display: 'flex',
             flexDirection: 'column',
-            '@media print': {
-              boxShadow: 'none',
-              width: '100%',
-              height: '100vh',
+            '@media print': { 
+              boxShadow: 'none', 
+              width: '100%', 
+              height: '100vh', 
               mb: 0,
+              overflow: 'hidden'
             },
           }}
         >
-          <PageHeader isFirstPage={pageIndex === 0} employee={employee} formattedData={formattedData} />
+          <Box className="page-content">
+            <Box className="page-header">
+              <PageHeader isFirstPage={pageIndex === 0} employee={employee} formattedData={formattedData} />
+            </Box>
 
-          {/* Content area */}
-          <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-            {pageSections.map((section) => {
-              const Component = section.component;
-              return <Component key={section.id} formattedData={formattedData} employee={employee} {...(section.props || {})} />;
-            })}
+            {/* Content area */}
+            <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+              {pageSections.map((section, sectionIndex) => {
+                const Component = section.component;
+                return (
+                  <Box 
+                    key={`${section.id}-${pageIndex}-${sectionIndex}`} 
+                    className={`section-container ${section.allowBreak ? 'allow-break' : ''}`}
+                    sx={{ 
+                      pageBreakInside: section.allowBreak ? 'auto' : 'avoid',
+                      breakInside: section.allowBreak ? 'auto' : 'avoid'
+                    }}
+                  >
+                    <Component 
+                      formattedData={formattedData} 
+                      employee={employee} 
+                      {...(section.props || {})} 
+                    />
+                  </Box>
+                );
+              })}
+            </Box>
 
-            {/* Spacer to push footer to bottom */}
-            <Box sx={{ flex: 1 }} />
+            <Box className="page-footer">
+              <PageFooter pageNumber={pageIndex + 1} totalPages={pages.length} />
+            </Box>
           </Box>
-
-          <PageFooter pageNumber={pageIndex + 1} totalPages={pages.length} />
         </Box>
       ))}
     </Box>

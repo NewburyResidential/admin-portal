@@ -11,9 +11,10 @@ export default async function createOnboardingTeamsMeeting({
   endDateTime,
   attendees = [],
   description = '',
-  organizerEmail = 'Mike@newburyresidential.com',
+  organizerEmail = 'calendarscheduler@newburyresidential.com',
 }) {
   Sentry.setTag('functionName', 'createCalendarEvent');
+
 
   try {
     const accessToken = await getMicrosoftAccessToken();

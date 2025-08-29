@@ -24,7 +24,6 @@ export default function TeamsInviteDialog({ open, onClose, onMeetingCreated, for
   const [attendees, setAttendees] = useState([
     'Mike@newburyresidential.com',
     'Brian@newburyresidential.com',
-    'Eric@newburyresidential.com',
   ]);
   const [newAttendee, setNewAttendee] = useState('');
   const [isCreating, setIsCreating] = useState(false);
@@ -207,7 +206,7 @@ Looking forward to having ${employeeName} on our team!`;
         endDateTime: endDateTime.toISOString(),
         attendees,
         description: htmlDescription, // Send the HTML version
-        organizerEmail: 'Mike@newburyresidential.com',
+        organizerEmail: 'calendarscheduler@newburyresidential.com',
       });
 
       if (result.success) {

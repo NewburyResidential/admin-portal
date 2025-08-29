@@ -28,6 +28,8 @@ import {
   Warning as WarningIcon,
   CalendarMonth as CalendarMonthIcon,
   Send as SendIcon,
+  OpenInNew as OpenInNewIcon,
+  Mail as MailIcon, // Add this import for the email icon
 } from '@mui/icons-material';
 import dayjs from 'dayjs';
 import InformationSheet from './InformationSheet';
@@ -1292,6 +1294,9 @@ const OfferLetterViewer = ({ employee }) => {
   // Check for the new structure with offerLetterBucket and offerLetterKey
   const offerLetterBucket = employee?.onboarding?.offerLetterBucket?.S || employee?.onboarding?.offerLetterBucket;
   const offerLetterKey = employee?.onboarding?.offerLetterKey?.S || employee?.onboarding?.offerLetterKey;
+  
+  // Check for Paylocity recruiting link
+  const paylocityRecruitingLink = employee?.onboarding?.paylocityRecruitingLink?.S || employee?.onboarding?.paylocityRecruitingLink;
 
   const handleViewOfferLetter = async () => {
     if (!offerLetterBucket || !offerLetterKey) {
@@ -1319,31 +1324,52 @@ const OfferLetterViewer = ({ employee }) => {
     }
   };
 
-  // Only render if both bucket and key exist
-  if (!offerLetterBucket || !offerLetterKey) {
+  const handleViewInRecruiting = () => {
+    if (paylocityRecruitingLink) {
+      window.open(paylocityRecruitingLink, '_blank');
+    }
+  };
+
+  // Only render if either offer letter or recruiting link exists
+  if (!offerLetterBucket && !offerLetterKey && !paylocityRecruitingLink) {
     return null;
   }
 
   return (
     <Paper sx={{ p: 2, mb: 2, borderRadius: 2 }}>
       <Grid container spacing={2}>
-        <Grid item xs={12} sm={6}>
-          <Button
-            variant="outlined"
-            size="small"
-            onClick={handleViewOfferLetter}
-            disabled={isLoading}
-            startIcon={isLoading ? <CircularProgress size={16} /> : <ContentCopyIcon />}
-          >
-            {isLoading ? 'Loading...' : 'View Offer Letter'}
-          </Button>
+        {(offerLetterBucket && offerLetterKey) && (
+          <Grid item xs={12} sm={6}>
+            <Button
+              variant="outlined"
+              size="small"
+              onClick={handleViewOfferLetter}
+              disabled={isLoading}
+              startIcon={isLoading ? <CircularProgress size={16} /> : <ContentCopyIcon />}
+            >
+              {isLoading ? 'Loading...' : 'View Offer Letter'}
+            </Button>
 
-          {error && (
-            <Typography variant="body2" color="error" sx={{ mt: 1 }}>
-              {error}
-            </Typography>
-          )}
-        </Grid>
+            {error && (
+              <Typography variant="body2" color="error" sx={{ mt: 1 }}>
+                {error}
+              </Typography>
+            )}
+          </Grid>
+        )}
+        
+        {paylocityRecruitingLink && (
+          <Grid item xs={12} sm={6}>
+            <Button
+              variant="outlined"
+              size="small"
+              onClick={handleViewInRecruiting}
+              startIcon={<OpenInNewIcon />}
+            >
+              View in Recruiting
+            </Button>
+          </Grid>
+        )}
       </Grid>
     </Paper>
   );
@@ -1815,7 +1841,7 @@ export default function AccessChecklist({ newburyAssets, employee, employees = [
         eventId,
         startDateTime,
         endDateTime,
-        organizerEmail: 'Mike@newburyresidential.com',
+        organizerEmail: 'calendarscheduler@newburyresidential.com',
       });
 
       if (updateResult.success) {
@@ -1900,7 +1926,7 @@ export default function AccessChecklist({ newburyAssets, employee, employees = [
 
       const cancelResult = await cancelOnboardingTeamsMeeting({
         eventId: eventId,
-        organizerEmail: 'Mike@newburyresidential.com',
+        organizerEmail: 'calendarscheduler@newburyresidential.com',
       });
 
       if (!cancelResult.success) {
@@ -1948,6 +1974,54 @@ export default function AccessChecklist({ newburyAssets, employee, employees = [
   if (showInformationSheet && formattedData) {
     return <InformationSheet formattedData={formattedData} employee={employee} onClose={handleCloseInformationSheet} />;
   }
+
+  // Move the email generation functions inside the component
+  const generateFirstDayEmail = (employee, selectedProperties, selectedDeliveryAddress, startDateTime) => {
+    const employeeName = getEmployeeValue(employee, 'fullName');
+    const firstName = employeeName ? employeeName.split(' ')[0] : 'New Employee';
+    const startTime = startDateTime ? dayjs(startDateTime).format('h:mm A') : 'TBD';
+    const propertyName = selectedDeliveryAddress?.label || 'TBD';
+    const employeeEmail = getEmployeeValue(employee, 'personalEmail');
+    
+    // Build the recipients list
+    const recipients = [
+      employeeEmail,
+      'brian@newburyresidential.com'
+    ];
+    
+    // Add property-specific emails if delivery address has a domain
+    if (selectedDeliveryAddress?.domain) {
+      const domain = selectedDeliveryAddress.domain;
+      recipients.push(`manager@${domain}`, `maintenance@${domain}`);
+    }
+    
+    const subject = `Welcome ${employeeName}!`;
+    
+    const body = `Good morning Team,
+
+We're excited to welcome ${employeeName}, starting their role today at ${startTime} at ${propertyName}. Please join me in welcoming ${firstName} to the team and help ensure they have everything they need for a smooth first day.
+
+Action Required:
+
+Use the attached IT Setup Sheet to get ${firstName} set up in our systems.
+Please confirm with Mike Axiotakis that Onboarding is complete in Paylocity.
+ 
+We're excited to welcome ${firstName} and look forward to their success with the team.
+
+Thank you,`;
+
+    return { subject, body, recipients };
+  };
+
+  const handleFirstDayEmail = () => {
+    const { subject, body, recipients } = generateFirstDayEmail(employee, selectedProperties, selectedDeliveryAddress, startDateTime);
+    
+    // Create mailto link with recipients
+    const mailtoLink = `mailto:${recipients.join(',')}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    
+    // Open the email client
+    window.open(mailtoLink, '_blank');
+  };
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -2077,6 +2151,15 @@ export default function AccessChecklist({ newburyAssets, employee, employees = [
                 )}
                 <Button variant="outlined" size="large" type="submit" startIcon={<SendIcon />} disabled={!areBasicFieldsComplete()}>
                   Generate PDF
+                </Button>
+                <Button 
+                  variant="outlined" 
+                  size="large" 
+                  onClick={handleFirstDayEmail} 
+                  startIcon={<MailIcon />} 
+                  disabled={!areBasicFieldsComplete()}
+                >
+                  First Day Email
                 </Button>
               </Box>
               <LoadingButton

@@ -9,7 +9,7 @@ export default async function updateOnboardingTeamsMeeting({
   eventId,
   startDateTime,
   endDateTime,
-  organizerEmail = 'Mike@newburyresidential.com',
+  organizerEmail = 'calendarscheduler@newburyresidential.com',
 }) {
   Sentry.setTag('functionName', 'updateCalendarEvent');
 

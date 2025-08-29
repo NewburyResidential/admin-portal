@@ -107,6 +107,7 @@ export const CHECKLIST_DATA = {
         employeeLabel: 'HelloSpoke On-Call (Notify)',
         url: 'https://hellospoke.com',
         loginLabel: 'Keeper',
+        mobileApp: ['HelloSpoke Notify'],
         hasFollowUp: true,
         followUpType: 'role_selection',
         followUpLabel: 'Access Type',
