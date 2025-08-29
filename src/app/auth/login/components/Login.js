@@ -1,34 +1,49 @@
 'use client';
 
 // @mui
-import { useState } from 'react';
-import Box from '@mui/material/Box';
+import { useState, useEffect } from 'react';
+// import Box from '@mui/material/Box';
 
-import Typography from '@mui/material/Typography';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import Divider from '@mui/material/Divider';
+// import Typography from '@mui/material/Typography';
+// import TextField from '@mui/material/TextField';
+// import Button from '@mui/material/Button';
+// import Card from '@mui/material/Card';
+// import CardContent from '@mui/material/CardContent';
+// import Divider from '@mui/material/Divider';
 
 import { signIn } from 'next-auth/react';
 
-import * as yup from 'yup';
-import { useForm, Controller } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { LoadingButton } from '@mui/lab';
-import { getAuthorizedUserByEmail } from 'src/utils/services/employees/getAuthorizedUserByEmail';
-import { useResponsive } from 'src/hooks/use-responsive';
-import { sendLoginNotification } from 'src/utils/services/login/send-login-notification';
+// import * as yup from 'yup';
+// import { useForm, Controller } from 'react-hook-form';
+// import { yupResolver } from '@hookform/resolvers/yup';
+// import { LoadingButton } from '@mui/lab';
+// import { getAuthorizedUserByEmail } from 'src/utils/services/employees/getAuthorizedUserByEmail';
+// import { useResponsive } from 'src/hooks/use-responsive';
+// import { sendLoginNotification } from 'src/utils/services/login/send-login-notification';
+import { SplashScreen } from 'src/components/loading-screen';
 
-const schema = yup.object().shape({
-  email: yup.string().email('Please Enter A valid email').required('Please Enter A valid email'),
-});
+// const schema = yup.object().shape({
+//   email: yup.string().email('Please Enter A valid email').required('Please Enter A valid email'),
+// });
 
 export default function LoginView({ params }) {
-  const isLaptop = useResponsive('up', 'lg');
-  const [loading, setLoading] = useState(false);
+  // const isLaptop = useResponsive('up', 'lg');
+  // const [loading, setLoading] = useState(false);
+  const [showSplash, setShowSplash] = useState(true);
   const callbackUrl = params || '/dashboard';
+  
+  // NEW: Auto-trigger Azure login with useEffect
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowSplash(false);
+      signIn('azure-ad', { callbackUrl });
+    }, 2000); // Show splash for 2 seconds then auto-login
+
+    return () => clearTimeout(timer);
+  }, [callbackUrl]);
+
+  // COMMENTED OUT: Original form logic
+  /*
   const {
     control,
     handleSubmit,
@@ -61,7 +76,15 @@ export default function LoginView({ params }) {
   const handleMicrosoftSignIn = () => {
     signIn('azure-ad', { callbackUrl });
   };
+  */
 
+  // Show splash screen while auto-login is processing
+  if (showSplash) {
+    return <SplashScreen />;
+  }
+
+  // COMMENTED OUT: Original return JSX
+  /*
   return (
     <Card sx={{ maxWidth: 500, width: isLaptop ? '100%' : '91%', p: isLaptop ? 3 : 1 }}>
       <CardContent>
@@ -150,4 +173,8 @@ export default function LoginView({ params }) {
       </CardContent>
     </Card>
   );
+  */
+
+  // NEW: Return null or loading state while Azure login is processing
+  return null;
 }
