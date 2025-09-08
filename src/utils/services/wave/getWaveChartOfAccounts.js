@@ -37,7 +37,7 @@ export default async function getWaveChartOfAccounts() {
             }
           }
         }`,
-          variables: { businessId: accountId, page: 1, pageSize: 200 },
+          variables: { businessId: accountId, page: 1, pageSize: 400 },
         };
 
         const response = await fetch('https://gql.waveapps.com/graphql/public', {
@@ -64,8 +64,19 @@ export default async function getWaveChartOfAccounts() {
         });
 
         if (assetAccountCount[asset] !== chartOfAccountsNumberArray.length) {
-          console.log(assetAccountCount[asset]);
-          console.log(chartOfAccountsNumberArray.length);
+          console.log(`Asset ${asset}: Found ${assetAccountCount[asset]} accounts, expected ${chartOfAccountsNumberArray.length}`);
+
+          // Get the displayIds that were found for this asset
+          const foundAccountIds = Object.keys(accounts).filter((displayId) =>
+            accounts[displayId].some((account) => account.asset === asset)
+          );
+
+          // Find missing accounts
+          const missingAccounts = chartOfAccountsNumberArray.filter((expectedId) => !foundAccountIds.includes(expectedId));
+
+          console.log(`Missing accounts for asset ${asset}:`, missingAccounts);
+          console.log(`Found accounts for asset ${asset}:`, foundAccountIds.sort());
+
           throw new Error(`Mismatch in the number of accounts processed for asset ${asset}.`);
         }
       })
