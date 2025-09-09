@@ -4,7 +4,7 @@ import { sendVerificationRequest } from '../../../../utils/services/login/send-v
 
 import { DynamoDB } from '@aws-sdk/client-dynamodb';
 import { DynamoDBDocument } from '@aws-sdk/lib-dynamodb';
-import { DynamoDBAdapter } from "@auth/dynamodb-adapter";
+import { DynamoDBAdapter } from '@auth/dynamodb-adapter';
 import { getAuthorizedUserByEmail } from 'src/utils/services/employees/getAuthorizedUserByEmail';
 import * as Sentry from '@sentry/nextjs';
 
@@ -49,26 +49,42 @@ export const authOptions = {
     error: '/auth/unauthorized',
   },
   callbacks: {
-    async signIn({ user }) {
-      const email = user?.email;
+    async signIn({ user, profile }) {
+      const userPrincipalName = profile?.preferred_username ? profile.preferred_username.toLowerCase() : null;
+      const email = user?.email || userPrincipalName;
+
+      console.log('User Principal Name:', userPrincipalName);
       const employeeData = await getAuthorizedUserByEmail(email);
+
       if (!employeeData) {
-        const encodedEmail = encodeURIComponent(email);
-        return `/auth/unauthorized/login?email=${encodedEmail}`;
+        const encodedName = encodeURIComponent(user.name);
+        return `/auth/unauthorized/login?email=${encodedName}`;
       }
       return true;
     },
-    async session({ session }) {
-      const email = session?.user?.email;
+    async jwt({ token, user, profile }) {
+      if (profile) {
+        token.userPrincipalName = profile.preferred_username;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      const userPrincipalName = token.userPrincipalName ? token.userPrincipalName.toLowerCase() : null;
+      const email = session?.user?.email || userPrincipalName;
       const employeeData = await getAuthorizedUserByEmail(email);
+
       if (employeeData) {
-        session.user = { ...session.user, ...employeeData };
+        session.user = {
+          ...session.user,
+          ...employeeData,
+          email: session.user.email || token.userPrincipalName,
+        };
         Sentry.getGlobalScope().setUser({
           name: session.user.fullName,
           status: session.user.status,
           id: session.user.pk,
           email: session.user.workEmail || session.user.personalEmail,
-          roles: JSON.stringify(session.user.roles), // Stringify roles array
+          roles: JSON.stringify(session.user.roles),
           ip_address: '{{auto}}',
         });
       }
