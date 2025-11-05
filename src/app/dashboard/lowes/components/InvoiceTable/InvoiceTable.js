@@ -207,7 +207,7 @@ export default function InvoiceTable({ groupedInvoices, chartOfAccounts, catalog
           params: {
             apBatch: {
               isPaused: '0',
-              isPosted: '0',
+              isPosted: '1',
               apHeaders: {
                 apHeader: invoice,
               },
