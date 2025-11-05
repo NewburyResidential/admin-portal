@@ -122,10 +122,10 @@ export default function InvoiceTable({ groupedInvoices, chartOfAccounts, catalog
           glAccountId: accountNumber,
           description: itemLabel,
           rate: rate.toString(),
-          invoicePayment: {
-            invoicePaymentId: '1234', 
-            paymentAmount: rate.toString(), 
-          },
+          // invoicePayment: {
+          //   invoicePaymentId: '1234', 
+          //   paymentAmount: rate.toString(), 
+          // },
         });
       });
 
@@ -193,16 +193,16 @@ export default function InvoiceTable({ groupedInvoices, chartOfAccounts, catalog
               apHeaders: {
                 apHeader: invoice,
               },
-              invoicePayments: {
-                invoicePayment: {
-                  invoicePaymentId: '1234',
-                  paymentTypeId: 1,
-                  paymentNumber: `API Payment - ${formattedDate}`,
-                  paymentDate: formattedDate,
-                  postMonth: postMonth,
-                  paymentMemo: `Lowes Payment`,
-                },
-              },
+              // invoicePayments: {
+              //   invoicePayment: {
+              //     invoicePaymentId: '1234',
+              //     paymentTypeId: 1,
+              //     paymentNumber: `API Payment - ${formattedDate}`,
+              //     paymentDate: formattedDate,
+              //     postMonth: postMonth,
+              //     paymentMemo: `Lowes Payment`,
+              //   },
+              // },
             },
           },
         },
