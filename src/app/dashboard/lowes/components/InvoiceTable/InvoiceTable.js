@@ -15,6 +15,12 @@ import CardActions from '@mui/material/CardActions';
 import TableContainer from '@mui/material/TableContainer';
 import { CardContent } from '@mui/material';
 import Typography from '@mui/material/Typography';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogActions from '@mui/material/DialogActions';
+import Button from '@mui/material/Button';
 import { useSnackbar } from 'src/utils/providers/SnackbarProvider';
 
 import PageChange from './PageChange';
@@ -31,6 +37,8 @@ export default function InvoiceTable({ groupedInvoices, chartOfAccounts, catalog
   //console.log('groupedInvoices', groupedInvoices);
   const [loading, setLoading] = useState(false);
   const [expandedStates, setExpandedStates] = useState({});
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [pendingSubmission, setPendingSubmission] = useState(null);
   const { showResponseSnackbar } = useSnackbar();
 
   const toggleExpanded = (index) => {
@@ -76,7 +84,7 @@ export default function InvoiceTable({ groupedInvoices, chartOfAccounts, catalog
   });
   const currentPageInvoices = invoiceFields.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
-  const onSubmit = async (data) => {
+  const processInvoiceSubmission = async (data, taxAdjustment = null) => {
     console.log('group', data.invoices);
     setLoading(true);
     const selectedItems = data.invoices.filter((item) => item.checked);
@@ -123,8 +131,8 @@ export default function InvoiceTable({ groupedInvoices, chartOfAccounts, catalog
           description: itemLabel,
           rate: rate.toString(),
           // invoicePayment: {
-          //   invoicePaymentId: '1234', 
-          //   paymentAmount: rate.toString(), 
+          //   invoicePaymentId: '1234',
+          //   paymentAmount: rate.toString(),
           // },
         });
       });
@@ -152,13 +160,23 @@ export default function InvoiceTable({ groupedInvoices, chartOfAccounts, catalog
     console.log('Total Shipping:', totalShipping.toString());
 
     const expectedGrandTotal = totalLineItemAmount.plus(totalTax).plus(totalShipping);
+    const difference = expectedGrandTotal.minus(totalAmount);
+    const absoluteDifference = difference.abs();
+
     if (!expectedGrandTotal.eq(totalAmount)) {
       console.log('WARNING: Grand total mismatch!');
       console.log(`Expected grand total: ${expectedGrandTotal.toString()}`);
       console.log(`Actual grand total: ${totalAmount.toString()}`);
-      console.log(`Difference: ${expectedGrandTotal.minus(totalAmount).toString()}`);
+      console.log(`Difference: ${difference.toString()}`);
     }
+
     const postMonth = getPostMonth();
+
+    // Apply tax adjustment if provided
+    if (taxAdjustment) {
+      totalTax = totalTax.plus(taxAdjustment);
+      console.log(`Adjusted tax by ${taxAdjustment.toString()} to balance invoice`);
+    }
 
     if (totalAmount.eq(totalLineItemAmount.plus(totalTax).plus(totalShipping))) {
       const invoice = {
@@ -189,7 +207,7 @@ export default function InvoiceTable({ groupedInvoices, chartOfAccounts, catalog
           params: {
             apBatch: {
               isPaused: '0',
-              isPosted: '1',
+              isPosted: '0',
               apHeaders: {
                 apHeader: invoice,
               },
@@ -225,6 +243,70 @@ export default function InvoiceTable({ groupedInvoices, chartOfAccounts, catalog
     }
 
     setLoading(false);
+  };
+
+  const onSubmit = async (data) => {
+    console.log('group', data.invoices);
+    const selectedItems = data.invoices.filter((item) => item.checked);
+
+    // Calculate totals first to check for differences
+    let totalTax = Big(0);
+    let totalShipping = Big(0);
+    let totalAmount = Big(0);
+    let totalLineItemAmount = Big(0);
+
+    selectedItems.forEach((item) => {
+      const itemTax = parseCurrency(item.tax);
+      const itemShipping = parseCurrency(item.shipping);
+      const itemTotalInvoice = parseCurrency(item.totalInvoice);
+
+      totalTax = totalTax.plus(itemTax);
+      totalShipping = totalShipping.plus(itemShipping);
+      totalAmount = totalAmount.plus(itemTotalInvoice);
+
+      item.lineItems.forEach((lineItem) => {
+        const rate = parseCurrency(lineItem.totalCost);
+        totalLineItemAmount = totalLineItemAmount.plus(rate);
+      });
+    });
+
+    const expectedGrandTotal = totalLineItemAmount.plus(totalTax).plus(totalShipping);
+    const difference = expectedGrandTotal.minus(totalAmount);
+    const absoluteDifference = difference.abs();
+
+    // Check if there's a mismatch less than $200
+    if (!expectedGrandTotal.eq(totalAmount) && absoluteDifference.lt(200)) {
+      // Show dialog - pass the negative of the difference to add to tax
+      setPendingSubmission({
+        data,
+        difference: difference.toString(),
+        taxAdjustment: difference.times(-1), // Invert the difference to add to tax
+        adjustedTotal: totalAmount,
+      });
+      setDialogOpen(true);
+    } else if (expectedGrandTotal.eq(totalAmount)) {
+      // No difference, proceed normally
+      await processInvoiceSubmission(data);
+    } else {
+      // Difference is >= $200, show error
+      showResponseSnackbar({
+        severity: 'error',
+        message: `Total mismatch of $${absoluteDifference.toString()} is too large (>= $200). Please review the invoices.`,
+      });
+    }
+  };
+
+  const handleDialogConfirm = async () => {
+    setDialogOpen(false);
+    if (pendingSubmission) {
+      await processInvoiceSubmission(pendingSubmission.data, pendingSubmission.taxAdjustment);
+      setPendingSubmission(null);
+    }
+  };
+
+  const handleDialogCancel = () => {
+    setDialogOpen(false);
+    setPendingSubmission(null);
   };
 
   // Watch all 'checked' states for dynamic updates
@@ -303,6 +385,35 @@ export default function InvoiceTable({ groupedInvoices, chartOfAccounts, catalog
           </CardContent>
         </Card>
       </form>
+
+      <Dialog
+        open={dialogOpen}
+        onClose={handleDialogCancel}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">Total Mismatch Detected</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            There is a difference of <strong>${pendingSubmission?.difference}</strong> between the line items total and the invoice total.
+            <br />
+            <br />
+            The invoice will proceed with a total of <strong>${pendingSubmission?.adjustedTotal?.toString()}</strong> by adjusting the tax
+            amount to balance.
+            <br />
+            <br />
+            Would you like to continue?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDialogCancel} color="inherit">
+            Cancel
+          </Button>
+          <Button onClick={handleDialogConfirm} variant="contained" color="primary" autoFocus>
+            Continue with Adjusted Total
+          </Button>
+        </DialogActions>
+      </Dialog>
     </FormProvider>
   );
 }
