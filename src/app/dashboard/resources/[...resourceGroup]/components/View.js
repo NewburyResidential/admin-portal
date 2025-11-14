@@ -36,6 +36,9 @@ export default function View({ resourceGroup, user, categories, categoryOptions 
     filteredCategories = categories.filter((category) => category.resources.length > 0);
   }
 
+  // Sort categories alphabetically by label
+  filteredCategories = [...filteredCategories].sort((a, b) => a.label.localeCompare(b.label, undefined, { sensitivity: 'base' }));
+
   return (
     <>
       <EditResourceDialog
@@ -122,31 +125,33 @@ export default function View({ resourceGroup, user, categories, categoryOptions 
                 )}
               </Box>
               <Grid container spacing={editMode ? 2 : 0}>
-                {category.resources.map((resource) => (
-                  <Grid key={resource.pk} size={12}>
-                    <ResourceCard
-                      openDialog={() =>
-                        setResourceDialog({
-                          open: true,
-                          resource,
-                          resourceType: 'resources',
-                          categoryId: category.pk,
-                        })
-                      }
-                      image="https://newbury-intranet.s3.amazonaws.com/zondicons--add-outline+(2).png"
-                      label={resource.label}
-                      description={resource.description}
-                      editMode={editMode}
-                      roles={resource?.roles}
-                      isResource
-                      uploadType={resource.uploadType}
-                      url={resource.url || resource?.file?.fileUrl}
-                      fileName={resource?.file?.fileName || null}
-                      updatedOn={resource.updatedOn || null}
-                      updatedBy={resource.updatedBy || null}
-                    />
-                  </Grid>
-                ))}
+                {[...category.resources]
+                  .sort((a, b) => a.label.localeCompare(b.label, undefined, { sensitivity: 'base' }))
+                  .map((resource) => (
+                    <Grid key={resource.pk} size={12}>
+                      <ResourceCard
+                        openDialog={() =>
+                          setResourceDialog({
+                            open: true,
+                            resource,
+                            resourceType: 'resources',
+                            categoryId: category.pk,
+                          })
+                        }
+                        image="https://newbury-intranet.s3.amazonaws.com/zondicons--add-outline+(2).png"
+                        label={resource.label}
+                        description={resource.description}
+                        editMode={editMode}
+                        roles={resource?.roles}
+                        isResource
+                        uploadType={resource.uploadType}
+                        url={resource.url || resource?.file?.fileUrl}
+                        fileName={resource?.file?.fileName || null}
+                        updatedOn={resource.updatedOn || null}
+                        updatedBy={resource.updatedBy || null}
+                      />
+                    </Grid>
+                  ))}
                 {editMode && (
                   <Grid size={12}>
                     <ResourceCard
