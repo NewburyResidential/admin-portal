@@ -6,9 +6,9 @@ export async function getAllEmployees() {
     // Fetch employee data
     const employeeData = await dynamoQueryWithIndex({
       pkValue: '#EMPLOYEE',
-      pkName: 'type',
+      pkName: 'sk',
       tableName: 'newbury_employees',
-      index: 'type-status-index',
+      index: 'sk-status-index',
     });
 
     // Fetch property data

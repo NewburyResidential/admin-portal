@@ -6,10 +6,10 @@ export async function getAuthorizedUserByEmail(email) {
   const data = await dynamoQueryWithIndex({
     pkValue: '#EMPLOYEE',
     skValue: '#AUTHORIZED',
-    pkName: 'type',
+    pkName: 'sk',
     skName: 'status',
     tableName: 'newbury_employees',
-    index: 'type-status-index',
+    index: 'sk-status-index',
   });
 
   const result =
