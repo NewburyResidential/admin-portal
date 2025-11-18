@@ -1289,20 +1289,17 @@ const EmployeeInformation = ({ employee, control }) => {
             render={({ field }) => (
               <Box sx={{ mb: 1 }}>
                 <Typography variant="body2" sx={{ mb: 0.5 }}>
-                  <strong>Temporary Password:</strong> <span style={{ color: '#d32f2f' }}>* Required</span>
+                  <strong>Temporary Password:</strong> <span style={{ color: '#d32f2f', fontSize: '0.75rem' }}>(Required for PDF)</span>
                 </Typography>
                 <TextField
                   {...field}
-                  placeholder="Enter temporary password (required for PDF)"
+                  placeholder="Enter temporary password"
                   variant="outlined"
                   size="small"
                   fullWidth
                   sx={{
                     '& .MuiOutlinedInput-root': {
                       minHeight: 40,
-                      ...((!field.value || field.value === '') && {
-                        borderColor: 'warning.main',
-                      }),
                     },
                   }}
                 />
@@ -1497,15 +1494,22 @@ export default function AccessChecklist({ newburyAssets, employee, employees = [
   const startDateTime = watch('startDateTime');
   const hasScheduledMeeting = employee?.onboarding?.scheduledMeeting;
 
-  // Check if basic required fields are completed (for calendar/PDF)
+  // Check if basic required fields are completed (for calendar/email)
   const areBasicFieldsComplete = () => {
-    const tempPassword = watch('tempPassword');
     return (
       selectedPosition && // Position must be selected
       selectedProperties &&
       selectedProperties.length > 0 && // At least one property selected
       selectedDeliveryAddress && // Delivery address selected
-      startDateTime && // Start date and time selected
+      startDateTime // Start date and time selected
+    );
+  };
+
+  // Check if PDF generation requirements are met (includes temp password)
+  const arePdfFieldsComplete = () => {
+    const tempPassword = watch('tempPassword');
+    return (
+      areBasicFieldsComplete() && // All basic fields must be complete
       tempPassword && // Temporary password must be set
       tempPassword.trim().length > 0 // Password must not be empty
     );
@@ -1611,18 +1615,35 @@ export default function AccessChecklist({ newburyAssets, employee, employees = [
 
   // Modified onSubmit function for direct PDF generation
   const onSubmit = async (data) => {
-    if (!areBasicFieldsComplete()) {
-      console.error('Required fields not completed for PDF generation');
-      return;
-    }
-
-    // Additional check for temp password
-    if (!data.tempPassword || data.tempPassword.trim().length === 0) {
-      console.error('Temporary password is required for PDF generation');
+    if (!arePdfFieldsComplete()) {
+      console.error('Required fields not completed for PDF generation (including temp password)');
       return;
     }
 
     console.log('Form Data:', data);
+
+    // Save the temp password before generating PDF (so it's available in the InformationSheet)
+    if (data.tempPassword && employee?.pk) {
+      try {
+        const existingOnboarding = employee.onboarding || {};
+        const onboardingUpdate = {
+          ...existingOnboarding,
+          tempPassword: data.tempPassword,
+        };
+
+        await updateEmployee({
+          pk: employee.pk,
+          attributes: {
+            onboarding: onboardingUpdate,
+          },
+        });
+
+        console.log('Temp password saved before PDF generation');
+      } catch (error) {
+        console.error('Error saving temp password:', error);
+        // Continue anyway - the form has the value even if save failed
+      }
+    }
 
     // Process and format the data for better readability
     const processedData = {
@@ -1630,6 +1651,7 @@ export default function AccessChecklist({ newburyAssets, employee, employees = [
       properties: selectedProperties,
       deliveryAddress: data.selectedDeliveryAddress,
       startDateTime: data.startDateTime,
+      tempPassword: data.tempPassword, // Pass temp password to InformationSheet
       accessRequests: Object.entries(data.accessStates || {})
         .filter(([_, status]) => status === ACCESS_STATES.REQUESTED)
         .map(([itemId, _]) => {
@@ -2235,7 +2257,7 @@ Thank you,`;
                     Draft Calendar Invite
                   </Button>
                 )}
-                <Button variant="outlined" size="large" type="submit" disabled={!areBasicFieldsComplete()}>
+                <Button variant="outlined" size="large" type="submit" disabled={!arePdfFieldsComplete()}>
                   Generate PDF
                 </Button>
                 <Button variant="outlined" size="large" onClick={handleFirstDayEmail} disabled={!areBasicFieldsComplete()}>

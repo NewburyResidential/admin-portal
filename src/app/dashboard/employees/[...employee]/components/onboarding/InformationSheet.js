@@ -478,7 +478,7 @@ const EmailSection = ({ formattedData, employee }) => {
                 <strong>Microsoft Email:</strong> {getEmployeeValue(employee, 'workEmail')}
               </Typography>
               <Typography sx={{ fontSize: '11px', mb: 0.25, lineHeight: 1.4 }}>
-                <strong>Temporary Password:</strong> {employee?.onboarding?.tempPassword || ''}
+                <strong>Temporary Password:</strong> {formattedData?.tempPassword || ''}
               </Typography>
             </Box>
           </Box>
@@ -1140,8 +1140,8 @@ const InformationSheet = ({ formattedData, employee, onClose, onEmailAfterPrint,
   const [_isPrinting, setIsPrinting] = useState(false);
 
   const handlePrintPDF = () => {
-    // Check if password is set
-    const tempPassword = employee?.onboarding?.tempPassword;
+    // Check if password is set (check formattedData first, then employee object)
+    const tempPassword = formattedData?.tempPassword || employee?.onboarding?.tempPassword;
     if (!tempPassword || tempPassword.trim().length === 0) {
       alert('Warning: Please set a temporary password for the employee before generating the PDF.');
       return;

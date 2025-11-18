@@ -58,14 +58,14 @@ export const CHECKLIST_DATA = {
           { value: 'manager_email', label: 'Manager Email' },
         ],
       },
-      {
-        id: 'keeper',
-        label: 'Keeper Password Manager',
-        employeeLabel: 'Keeper Password Manager',
-        url: 'https://launcher.myapps.microsoft.com/api/signin/f4945b1e-6fce-4c4a-8e1c-8e2df96573c3?tenantId=7d96eabe-af08-470d-ac00-18a43c240156',
-        loginLabel: 'Login with SSO',
-        mobileApp: ['Keeper'],
-      },
+      // {
+      //   id: 'keeper',
+      //   label: 'Keeper Password Manager',
+      //   employeeLabel: 'Keeper Password Manager',
+      //   url: 'https://launcher.myapps.microsoft.com/api/signin/f4945b1e-6fce-4c4a-8e1c-8e2df96573c3?tenantId=7d96eabe-af08-470d-ac00-18a43c240156',
+      //   loginLabel: 'Login with SSO',
+      //   mobileApp: ['Keeper'],
+      // },
       {
         id: 'entrata',
         label: 'Entrata',
