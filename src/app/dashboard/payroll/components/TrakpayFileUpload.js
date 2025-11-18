@@ -165,15 +165,16 @@ const TrakpayFileUpload = ({
               return acc;
             }, {});
 
-       
-
             // Check that breakout amounts equal the property amount and adjust if needed
             Object.entries(finalPropertyBreakdown).forEach(([propertyId, data]) => {
               const breakoutTotal = Object.values(data.breakout).reduce((sum, amount) => sum.plus(amount), new Big(0));
               const difference = data.amount.minus(breakoutTotal);
 
-              if (!difference.eq(0)) {
-                throw new Error('Breakout amounts do not equal the property amount');
+              console.log('breakoutTotal', breakoutTotal.toString());
+              console.log('difference', difference.toString());
+
+              if (difference.abs().gt(0.02)) {
+                 throw new Error('Breakout amounts do not equal the property amount');
               }
             });
 
@@ -181,8 +182,6 @@ const TrakpayFileUpload = ({
             const totalAmounts = Object.values(finalPropertyBreakdown).reduce((sum, property) => {
               return sum.plus(property.amount);
             }, new Big(0));
-
-         
 
             // Check if total matches expected total, if not adjust the last item
             const difference = totalCost.minus(totalAmounts);
@@ -203,9 +202,6 @@ const TrakpayFileUpload = ({
                 }
               }
             }
-
-       
-
 
             setTrakpayDistribution(finalPropertyBreakdown);
             setView('trakpayAmounts');
@@ -257,7 +253,6 @@ const TrakpayFileUpload = ({
       let totalSteps = 0;
       if (entrataWithdrawalPayload) totalSteps++;
       if (waveOperatingPayload) totalSteps++;
-
 
       let completedSteps = 0;
       const responses = [];

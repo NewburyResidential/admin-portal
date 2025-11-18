@@ -6,6 +6,7 @@ import PayrollFileUpload from './PayrollFileUpload';
 import TrakpayFileUpload from './TrakpayFileUpload';
 import ManualAmountInput from './ManualAmountInput';
 import AmountByPropertyList from './AmountByPropertyList';
+import PayrollSummaryView from './PayrollSummaryView';
 
 const PayrollView = ({ assets }) => {
   const normalDate = getNormalDate();
@@ -31,6 +32,7 @@ const PayrollView = ({ assets }) => {
   const [payrollDistribution, setPayrollDistribution] = useState({});
   const [trakpayDistribution, setTrakpayDistribution] = useState({});
   const [propertiesByEmployee, setPropertiesByEmployee] = useState({});
+  const [summaryData, setSummaryData] = useState(null);
 
   const handlePropertyPercentages = (percentages) => {
     setPropertyPercentages(percentages);
@@ -51,8 +53,9 @@ const PayrollView = ({ assets }) => {
       <Grid
         size={{
           xs: 12,
-          md: showTrakpay ? 6 : 12
-        }}>
+          md: showTrakpay ? 6 : 12,
+        }}
+      >
         <PayrollFileUpload
           assetObject={assetObject}
           onPropertyPercentages={handlePropertyPercentages}
@@ -65,6 +68,7 @@ const PayrollView = ({ assets }) => {
           setView={setView}
           handleReset={handleReset}
           setPropertiesByEmployee={setPropertiesByEmployee}
+          setSummaryData={setSummaryData}
           normalDate={normalDate}
           weirdDate={weirdDate}
         />
@@ -73,8 +77,9 @@ const PayrollView = ({ assets }) => {
         <Grid
           size={{
             xs: 12,
-            md: 6
-          }}>
+            md: 6,
+          }}
+        >
           <TrakpayFileUpload
             propertyPercentages={propertyPercentages}
             trakpayFile={trakpayFile}
@@ -108,7 +113,8 @@ const PayrollView = ({ assets }) => {
       {(Object.keys(manualDistribution).length > 0 ||
         Object.keys(payrollDistribution).length > 0 ||
         Object.keys(trakpayDistribution).length > 0) &&
-        view !== null && (
+        view !== null &&
+        view !== 'payrollSummary' && (
           <Grid size={12}>
             <AmountByPropertyList
               normalDate={normalDate}
@@ -120,6 +126,11 @@ const PayrollView = ({ assets }) => {
             />
           </Grid>
         )}
+      {view === 'payrollSummary' && summaryData && (
+        <Grid size={12}>
+          <PayrollSummaryView summaryData={summaryData} assetObject={assetObject} />
+        </Grid>
+      )}
     </Grid>
   );
 };

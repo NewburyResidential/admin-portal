@@ -2,45 +2,49 @@
 
 import { AWS_CONFIG, ENTRATA_API_KEY, ENTRATA_API } from 'src/config-global';
 import { dynamoUpdateItemAttributes } from '../sdk-config/aws/dynamo-db';
-import fetch from 'node-fetch';
-
+import axios from 'axios';
 
 export async function uploadPreEntrataTransactions(transaction, assetId) {
   console.log('starting');
   const entrataBaseUrl = `${ENTRATA_API.baseUrl}/v1/vendors`;
+  console.log('transaction', transaction);
 
   const postData = await buildEntrataApiPayload(transaction, assetId);
 
   try {
-    const response = await fetch(entrataBaseUrl, {
-      method: 'POST',
+    const response = await axios.post(entrataBaseUrl, postData, {
       headers: {
         'X-Api-Key': ENTRATA_API_KEY,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(postData),
     });
-    const data = await response.json();
+
+    const data = response.data;
     console.log('Entrata response:', data);
-    if (data?.response?.code !== 200) {
-      throw new Error(`Error sending Entrata transaction: ${JSON.stringify(data.response)}`);
+
+    // Only update DynamoDB if the Entrata API call was successful
+    if (data?.response?.code === 200) {
+      try {
+        const dynamoResponse = await dynamoUpdateItemAttributes({
+          tableName: 'admin_portal_expenses',
+          pk: transaction.pk,
+          sk: transaction.id,
+          attributes: { preEntrataEntered: true },
+        });
+        console.log('DynamoDB response:', dynamoResponse);
+      } catch (error) {
+        console.log('Error updating DynamoDB item:', error);
+        return data;
+      }
+    } else {
+      console.log('Entrata API call failed, not updating DynamoDB');
+      return data; // Return the failed response instead of throwing
     }
 
-    try {
-       const dynamoResponse = await dynamoUpdateItemAttributes({
-         tableName: 'admin_portal_expenses',
-         pk: transaction.pk,
-         sk: transaction.id,
-         attributes: { preEntrataEntered: true },
-       });
-       console.log('DynamoDB response:', dynamoResponse);
-    } catch (error) {
-      console.log('Error updating DynamoDB item:', error);
-      throw new Error('Error updating DynamoDB item:', error);
-    }
+    return data;
   } catch (error) {
     console.log('Error sending Entrata transaction:', error);
-    throw new Error('Error sending Entrata transaction:', error);
+    return { error: error.response?.data || error.message };
   }
 }
 

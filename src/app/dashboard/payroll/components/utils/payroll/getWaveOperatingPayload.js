@@ -2,6 +2,7 @@ import { waveNewburyBusinessId, waveNewburyOperatingId, operatingAccountOptions 
 import Big from 'big.js';
 
 export function getWaveOperatingPayload(entries, normalDate, weirdDate, fileName) {
+
   const operatingLineItems = entries
     .filter((entry) => {
       try {

@@ -39,6 +39,10 @@ const rawDashboardPaths = {
   utilities: {
     root: `/utilities`,
   },
+
+  performanceBonus: {
+    root: `/performance-bonus`,
+  },
 };
 
 export const onboardingPaths = {

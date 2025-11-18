@@ -41,29 +41,31 @@ const Upload = ({ setGroupedInvoices, setCurrentStep }) => {
 
           if (curr['Total Invoice'] !== '' && curr['Total Invoice'] !== null && curr['Total Invoice'] !== ' ') {
             const totalInvoice = parseCurrency(curr['Total Invoice']);
-
             paymentsApplied = parseCurrency(curr['Payments Applied']);
             const updatedTotalInvoice = totalInvoice.plus(paymentsApplied);
             acc[invoiceNum].totalInvoice = updatedTotalInvoice.toString();
           }
+
           if (curr.Tax !== '' && curr['Total Invoice'] !== null && curr['Total Invoice'] !== ' ') {
             const tax = parseCurrency(curr.Tax);
             let updatedTax = Big(0);
-            // check if tax is big number
 
-            if (tax instanceof Big && !Number.isNaN(paymentsApplied)) {
+            // Check if paymentsApplied was successfully parsed
+            if (paymentsApplied && paymentsApplied instanceof Big) {
               try {
                 updatedTax = tax.plus(paymentsApplied);
               } catch (error) {
                 console.error('Error adding tax and paymentsApplied:', error);
+                updatedTax = tax; // Fallback to just tax if addition fails
               }
-            }
-            if (tax instanceof Big && Number.isNaN(paymentsApplied)) {
+            } else {
               updatedTax = tax;
             }
+
             acc[invoiceNum].tax = updatedTax.toString();
             return acc;
           }
+
           if (
             curr.SkuDesc === 'DELIVERY FEE' ||
             curr.SkuDesc === '3-7DAY GROUND SHPCHRG 301' ||
@@ -77,9 +79,11 @@ const Upload = ({ setGroupedInvoices, setCurrentStep }) => {
 
             return acc;
           }
+
           if (curr.SKU === null || curr.SKU === '' || curr.SKU === ' ' || curr.SkuDesc === 'PROMOTIONAL DISCOUNT APPL') {
             return acc;
           }
+
           acc[invoiceNum].lineItems.push({
             sku: curr.SKU,
             skuDescription: curr.SkuDesc,

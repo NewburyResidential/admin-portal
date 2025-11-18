@@ -25,6 +25,18 @@ export const getUnapprovedTransactionsWithReceipts = async () => {
       });
       return acc;
     }
+
+    if (cardName === 'brian murphy' || cardName === 'tom anthony' || cardName === 'laura murphy') {
+      const specificCardHolders = ['brian murphy', 'tom anthony', 'laura murphy'];
+      specificCardHolders.forEach((holder) => {
+        if (!acc[holder]) {
+          acc[holder] = [];
+        }
+        acc[holder].push(receipt);
+      });
+      return acc;
+    }
+
     if (!acc[cardId]) {
       acc[cardId] = [];
     }

@@ -35,13 +35,7 @@ export default function View({ newburyAssets }) {
 
   return (
     <>
-      <ToggleButtonGroup
-        value={viewMode}
-        exclusive
-        onChange={handleViewChange}
-        aria-label="view mode"
-        sx={{ mb: 2 }}
-      >
+      <ToggleButtonGroup value={viewMode} exclusive onChange={handleViewChange} aria-label="view mode" sx={{ mb: 2 }}>
         <ToggleButton value="transactions" aria-label="bank transactions">
           Bank Transactions
         </ToggleButton>
@@ -52,7 +46,13 @@ export default function View({ newburyAssets }) {
 
       {viewMode !== 'transactions' ? (
         <>
-          <FilterBar totalAmount={totalAmount} positiveOnlyTotal={positiveOnlyTotal} setTransactions={setTransactions} transactions={transactions} newburyAssets={newburyAssets} />
+          <FilterBar
+            totalAmount={totalAmount}
+            positiveOnlyTotal={positiveOnlyTotal}
+            setTransactions={setTransactions}
+            transactions={transactions}
+            newburyAssets={newburyAssets}
+          />
           <Table transactions={transactions} />
         </>
       ) : (

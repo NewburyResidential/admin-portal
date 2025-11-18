@@ -1239,7 +1239,7 @@ const CopyableField = ({ label, value }) => {
 };
 
 // Update EmployeeInformation to remove the inner CopyableField definition
-const EmployeeInformation = ({ employee }) => {
+const EmployeeInformation = ({ employee, control }) => {
   if (!employee) return null;
 
   const formatPhoneNumber = (phone) => {
@@ -1281,6 +1281,35 @@ const EmployeeInformation = ({ employee }) => {
         <Grid item xs={12} sm={6}>
           <CopyableField label="Expected Hire Date" value={getEmployeeValue(employee, 'expectedHireDate')} />
         </Grid>
+        <Grid item xs={12} sm={6}>
+          <Controller
+            name="tempPassword"
+            control={control}
+            defaultValue={employee?.onboarding?.tempPassword || ''}
+            render={({ field }) => (
+              <Box sx={{ mb: 1 }}>
+                <Typography variant="body2" sx={{ mb: 0.5 }}>
+                  <strong>Temporary Password:</strong> <span style={{ color: '#d32f2f' }}>* Required</span>
+                </Typography>
+                <TextField
+                  {...field}
+                  placeholder="Enter temporary password (required for PDF)"
+                  variant="outlined"
+                  size="small"
+                  fullWidth
+                  sx={{
+                    '& .MuiOutlinedInput-root': {
+                      minHeight: 40,
+                      ...((!field.value || field.value === '') && {
+                        borderColor: 'warning.main',
+                      }),
+                    },
+                  }}
+                />
+              </Box>
+            )}
+          />
+        </Grid>
       </Grid>
     </Paper>
   );
@@ -1294,7 +1323,7 @@ const OfferLetterViewer = ({ employee }) => {
   // Check for the new structure with offerLetterBucket and offerLetterKey
   const offerLetterBucket = employee?.onboarding?.offerLetterBucket?.S || employee?.onboarding?.offerLetterBucket;
   const offerLetterKey = employee?.onboarding?.offerLetterKey?.S || employee?.onboarding?.offerLetterKey;
-  
+
   // Check for Paylocity recruiting link
   const paylocityRecruitingLink = employee?.onboarding?.paylocityRecruitingLink?.S || employee?.onboarding?.paylocityRecruitingLink;
 
@@ -1338,7 +1367,7 @@ const OfferLetterViewer = ({ employee }) => {
   return (
     <Paper sx={{ p: 2, mb: 2, borderRadius: 2 }}>
       <Grid container spacing={2}>
-        {(offerLetterBucket && offerLetterKey) && (
+        {offerLetterBucket && offerLetterKey && (
           <Grid item xs={12} sm={6}>
             <Button
               variant="outlined"
@@ -1357,15 +1386,10 @@ const OfferLetterViewer = ({ employee }) => {
             )}
           </Grid>
         )}
-        
+
         {paylocityRecruitingLink && (
           <Grid item xs={12} sm={6}>
-            <Button
-              variant="outlined"
-              size="small"
-              onClick={handleViewInRecruiting}
-              startIcon={<OpenInNewIcon />}
-            >
+            <Button variant="outlined" size="small" onClick={handleViewInRecruiting} startIcon={<OpenInNewIcon />}>
               View in Recruiting
             </Button>
           </Grid>
@@ -1390,7 +1414,8 @@ export default function AccessChecklist({ newburyAssets, employee, employees = [
   const [showRemindDialog, setShowRemindDialog] = useState(false);
   const [selectedEmployeesToRemind, setSelectedEmployeesToRemind] = useState([]);
   const [isRemindingSending, setIsRemindingSending] = useState(false);
-  const [isSavingPermissions, setIsSavingPermissions] = useState(false);
+  const [isSavingDraft, setIsSavingDraft] = useState(false);
+  const [isRequestingPermissions, setIsRequestingPermissions] = useState(false);
   const [isUpdatingMeeting, setIsUpdatingMeeting] = useState(false);
   const [isCancelingMeeting, setIsCancelingMeeting] = useState(false);
 
@@ -1409,6 +1434,7 @@ export default function AccessChecklist({ newburyAssets, employee, employees = [
       startDateTime: null,
       accessStates: {},
       followUpData: {},
+      tempPassword: '', // Add temp password to form defaults
     },
   });
 
@@ -1434,7 +1460,7 @@ export default function AccessChecklist({ newburyAssets, employee, employees = [
 
           if (parsedDate.isValid()) {
             setValue('startDateTime', parsedDate);
-            // Store the original time for comparison
+            // Store the original time reference since this is now the new baseline
             setOriginalStartTime(parsedDate);
           } else {
             console.warn('Invalid saved startDateTime:', savedData.startDateTime);
@@ -1458,6 +1484,11 @@ export default function AccessChecklist({ newburyAssets, employee, employees = [
     } else {
       console.log('No saved access checklist data found');
     }
+
+    // Load temp password if it exists
+    if (employee?.onboarding?.tempPassword) {
+      setValue('tempPassword', employee.onboarding.tempPassword);
+    }
   }, [employee, setValue]);
 
   const selectedPosition = watch('selectedPosition');
@@ -1468,12 +1499,15 @@ export default function AccessChecklist({ newburyAssets, employee, employees = [
 
   // Check if basic required fields are completed (for calendar/PDF)
   const areBasicFieldsComplete = () => {
+    const tempPassword = watch('tempPassword');
     return (
       selectedPosition && // Position must be selected
       selectedProperties &&
       selectedProperties.length > 0 && // At least one property selected
       selectedDeliveryAddress && // Delivery address selected
-      startDateTime // Start date and time selected
+      startDateTime && // Start date and time selected
+      tempPassword && // Temporary password must be set
+      tempPassword.trim().length > 0 // Password must not be empty
     );
   };
 
@@ -1579,6 +1613,12 @@ export default function AccessChecklist({ newburyAssets, employee, employees = [
   const onSubmit = async (data) => {
     if (!areBasicFieldsComplete()) {
       console.error('Required fields not completed for PDF generation');
+      return;
+    }
+
+    // Additional check for temp password
+    if (!data.tempPassword || data.tempPassword.trim().length === 0) {
+      console.error('Temporary password is required for PDF generation');
       return;
     }
 
@@ -1720,7 +1760,7 @@ export default function AccessChecklist({ newburyAssets, employee, employees = [
       return;
     }
 
-    setIsSavingPermissions(true);
+    setIsSavingDraft(true);
 
     try {
       // Prepare the access checklist data
@@ -1738,11 +1778,10 @@ export default function AccessChecklist({ newburyAssets, employee, employees = [
 
       // Create the nested onboarding structure properly
       const existingOnboarding = employee.onboarding || {};
-      console.log('Existing onboarding data:', existingOnboarding);
-
       const onboardingUpdate = {
-        ...existingOnboarding, // Preserve existing onboarding data
+        ...existingOnboarding,
         accessChecklist: accessChecklistData,
+        tempPassword: currentData.tempPassword || null, // Save temp password
       };
 
       console.log('Onboarding update being sent:', onboardingUpdate);
@@ -1756,9 +1795,62 @@ export default function AccessChecklist({ newburyAssets, employee, employees = [
       });
 
       if (updateResult && updateResult.severity === 'success') {
+        console.log('Access checklist draft saved successfully');
+      } else {
+        console.error('Failed to save access checklist draft:', updateResult);
+      }
+    } catch (error) {
+      console.error('Error saving access checklist draft:', error);
+    } finally {
+      setIsSavingDraft(false);
+    }
+  };
+
+  const onRequestPermissions = async () => {
+    const currentData = getValues();
+    console.log('Requesting Permissions Data:', currentData);
+
+    if (!employee?.pk) {
+      console.error('Missing employee pk for requesting permissions');
+      return;
+    }
+
+    setIsRequestingPermissions(true);
+
+    try {
+      // First save the current state
+      const accessChecklistData = {
+        selectedPosition: currentData.selectedPosition,
+        selectedProperties: currentData.selectedProperties || [],
+        selectedDeliveryAddress: currentData.selectedDeliveryAddress,
+        startDateTime: currentData.startDateTime ? currentData.startDateTime.toISOString() : null,
+        accessStates: currentData.accessStates || {},
+        followUpData: currentData.followUpData || {},
+        lastUpdated: new Date().toISOString(),
+      };
+
+      console.log('Saving access checklist data for permissions request:', accessChecklistData);
+
+      // Create the nested onboarding structure properly
+      const existingOnboarding = employee.onboarding || {};
+      const onboardingUpdate = {
+        ...existingOnboarding,
+        accessChecklist: accessChecklistData,
+        tempPassword: currentData.tempPassword || null, // Save temp password
+      };
+
+      // Update employee record with the complete onboarding object
+      const updateResult = await updateEmployee({
+        pk: employee.pk,
+        attributes: {
+          onboarding: onboardingUpdate,
+        },
+      });
+
+      if (updateResult && updateResult.severity === 'success') {
         console.log('Access checklist permissions saved successfully');
 
-        // Send the email notification
+        // Send the email notification for permissions request
         try {
           await sendOnboardingPermissionsSaved({ employee });
           console.log('Onboarding permissions saved email sent successfully');
@@ -1770,9 +1862,9 @@ export default function AccessChecklist({ newburyAssets, employee, employees = [
         console.error('Failed to save access checklist permissions:', updateResult);
       }
     } catch (error) {
-      console.error('Error saving access checklist permissions:', error);
+      console.error('Error requesting access checklist permissions:', error);
     } finally {
-      setIsSavingPermissions(false);
+      setIsRequestingPermissions(false);
     }
   };
 
@@ -1982,29 +2074,23 @@ export default function AccessChecklist({ newburyAssets, employee, employees = [
     const startTime = startDateTime ? dayjs(startDateTime).format('h:mm A') : 'TBD';
     const propertyName = selectedDeliveryAddress?.label || 'TBD';
     const employeeEmail = getEmployeeValue(employee, 'personalEmail');
-    
+
     // Build the recipients list
-    const recipients = [
-      employeeEmail,
-      'brian@newburyresidential.com'
-    ];
-    
+    const recipients = [employeeEmail, 'brian@newburyresidential.com', 'eric@newburyresidential.com'];
+
     // Add property-specific emails if delivery address has a domain
     if (selectedDeliveryAddress?.domain) {
       const domain = selectedDeliveryAddress.domain;
       recipients.push(`manager@${domain}`, `maintenance@${domain}`);
     }
-    
+
     const subject = `Welcome ${employeeName}!`;
-    
+
     const body = `Good morning Team,
 
-We're excited to welcome ${employeeName}, starting their role today at ${startTime} at ${propertyName}. Please join me in welcoming ${firstName} to the team and help ensure they have everything they need for a smooth first day.
-
-Action Required:
+We're excited to welcome ${employeeName}, starting their role today at ${propertyName}. Please join me in welcoming ${firstName} to the team and help ensure they have everything they need for a smooth first day.
 
 Use the attached IT Setup Sheet to get ${firstName} set up in our systems.
-Please confirm with Mike Axiotakis that Onboarding is complete in Paylocity.
  
 We're excited to welcome ${firstName} and look forward to their success with the team.
 
@@ -2015,10 +2101,10 @@ Thank you,`;
 
   const handleFirstDayEmail = () => {
     const { subject, body, recipients } = generateFirstDayEmail(employee, selectedProperties, selectedDeliveryAddress, startDateTime);
-    
+
     // Create mailto link with recipients
-    const mailtoLink = `mailto:${recipients.join(',')}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    
+    const mailtoLink = `mailto:${recipients.join(';')}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
     // Open the email client
     window.open(mailtoLink, '_blank');
   };
@@ -2033,7 +2119,7 @@ Thank you,`;
           <OfferLetterViewer employee={employee} />
 
           {/* Employee Information */}
-          <EmployeeInformation employee={employee} />
+          <EmployeeInformation employee={employee} control={control} />
 
           {/* Position Section - Modified to use custom handler */}
           <Card sx={{ mb: 3, overflow: 'visible' }}>
@@ -2106,7 +2192,7 @@ Thank you,`;
           <Paper sx={{ p: 3, borderRadius: 2, position: 'sticky', bottom: 0, zIndex: 1 }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <Box sx={{ display: 'flex', gap: 2 }}>
-                <Button variant="outlined" size="large" onClick={handleOpenRemindDialog} startIcon={<EmailIcon />}>
+                <Button variant="outlined" size="large" onClick={handleOpenRemindDialog}>
                   Remind
                 </Button>
                 {hasScheduledMeeting ? (
@@ -2149,40 +2235,38 @@ Thank you,`;
                     Draft Calendar Invite
                   </Button>
                 )}
-                <Button variant="outlined" size="large" type="submit" startIcon={<SendIcon />} disabled={!areBasicFieldsComplete()}>
+                <Button variant="outlined" size="large" type="submit" disabled={!areBasicFieldsComplete()}>
                   Generate PDF
                 </Button>
-                <Button 
-                  variant="outlined" 
-                  size="large" 
-                  onClick={handleFirstDayEmail} 
-                  startIcon={<MailIcon />} 
-                  disabled={!areBasicFieldsComplete()}
-                >
+                <Button variant="outlined" size="large" onClick={handleFirstDayEmail} disabled={!areBasicFieldsComplete()}>
                   First Day Email
                 </Button>
               </Box>
-              <LoadingButton
-                variant="contained"
-                size="large"
-                onClick={onSaveDraft}
-                disabled={!areAllFieldsComplete()}
-                loading={isSavingPermissions}
-                loadingPosition="start"
-                startIcon={<SendIcon />}
-                sx={{
-                  ...(areAllFieldsComplete()
-                    ? {}
-                    : {
-                        '&.Mui-disabled': {
-                          color: 'text.disabled',
-                          bgcolor: 'action.disabledBackground',
-                        },
-                      }),
-                }}
-              >
-                Save/Request Permissions
-              </LoadingButton>
+              <Box sx={{ display: 'flex', gap: 2 }}>
+                <LoadingButton variant="outlined" size="large" onClick={onSaveDraft} loading={isSavingDraft} loadingPosition="start">
+                  Save
+                </LoadingButton>
+                <LoadingButton
+                  variant="contained"
+                  size="large"
+                  onClick={onRequestPermissions}
+                  disabled={!areAllFieldsComplete()}
+                  loading={isRequestingPermissions}
+                  loadingPosition="start"
+                  sx={{
+                    ...(areAllFieldsComplete()
+                      ? {}
+                      : {
+                          '&.Mui-disabled': {
+                            color: 'text.disabled',
+                            bgcolor: 'action.disabledBackground',
+                          },
+                        }),
+                  }}
+                >
+                  Ready/Email Mike
+                </LoadingButton>
+              </Box>
             </Box>
           </Paper>
         </form>

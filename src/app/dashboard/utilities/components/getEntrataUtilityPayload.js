@@ -45,10 +45,10 @@ export async function getEntrataUtilityPayload(entries, utilities) {
       glAccountId: glAccountMap[type],
       description: `${typeLabels[type]} ${entry.accountNumber} - ${isCommon ? 'Common' : 'APT'} ${isCommon ? entry.completeAddress : entry.apartment}`,
       rate: cleanAmount(amount),
-      invoicePayment: {
-        invoicePaymentId: 123456789, // Use a smaller number
-        paymentAmount: entry.totalAmount,
-      },
+      // invoicePayment: {
+      //   invoicePaymentId: 123456789, // Use a smaller number
+      //   paymentAmount: entry.totalAmount,
+      // },
     };
   };
 
@@ -140,16 +140,16 @@ export async function getEntrataUtilityPayload(entries, utilities) {
                 },
               },
             },
-            invoicePayments: {
-              invoicePayment: {
-                invoicePaymentId: 123456789, // Use a smaller number
-                paymentTypeId: 1,
-                paymentNumber: `API Payment - ${today}`,
-                paymentDate: today,
-                postMonth: postMonth,
-                paymentMemo: `Utility Payment`,
-              },
-            },
+            // invoicePayments: {
+            //   invoicePayment: {
+            //     invoicePaymentId: 123456789, // Use a smaller number
+            //     paymentTypeId: 1,
+            //     paymentNumber: `API Payment - ${today}`,
+            //     paymentDate: today,
+            //     postMonth: postMonth,
+            //     paymentMemo: `Utility Payment`,
+            //   },
+            // },
           },
         },
       },

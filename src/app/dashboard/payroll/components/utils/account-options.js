@@ -117,6 +117,30 @@ export const taxAccountOptions = {
     label: 'NY Income Tax',
     waveId: 'QWNjb3VudDoyMzE4MjUwOTg3NTU2NDgzMTM5O0J1c2luZXNzOjc5OTg2NWE2LTlmMGEtNDgwNS1iZTg0LTJkMDgyOTE5MWVhYw==',
   },
+  222423: {
+    label: 'GA Income Tax',
+    waveId: 'QWNjb3VudDoyMzc5MzgwOTYyMTUzNzcxNTgzO0J1c2luZXNzOjc5OTg2NWE2LTlmMGEtNDgwNS1iZTg0LTJkMDgyOTE5MWVhYw==',
+  },
+  222424: {
+    label: 'GA Unemployment Tax',
+    waveId: 'QWNjb3VudDoyMzc5Mzg2MDc0NDA2MzY3NjYwO0J1c2luZXNzOjc5OTg2NWE2LTlmMGEtNDgwNS1iZTg0LTJkMDgyOTE5MWVhYw==',
+  },
+  222425: {
+    label: 'AL Income Tax',
+    waveId: 'QWNjb3VudDoyMzg5MzEzNTQ1NTU3ODE1NTE0O0J1c2luZXNzOjc5OTg2NWE2LTlmMGEtNDgwNS1iZTg0LTJkMDgyOTE5MWVhYw==',
+  },
+  222426: {
+    label: 'AL Unemployment Tax',
+    waveId: 'QWNjb3VudDoyMzg5MzE1NjA2MzYxOTc3MzQ2O0J1c2luZXNzOjc5OTg2NWE2LTlmMGEtNDgwNS1iZTg0LTJkMDgyOTE5MWVhYw==',
+  },
+  222427: {
+    label: 'TN Income Tax',
+    waveId: 'QWNjb3VudDoyMzg5MzE4OTEzMTA5MzA3NDk5O0J1c2luZXNzOjc5OTg2NWE2LTlmMGEtNDgwNS1iZTg0LTJkMDgyOTE5MWVhYw==',
+  },
+  222428: {
+    label: 'VA Income Tax',
+    waveId: 'QWNjb3VudDoyMzg5MzIxNDkxOTEwMDEzNDA2O0J1c2luZXNzOjc5OTg2NWE2LTlmMGEtNDgwNS1iZTg0LTJkMDgyOTE5MWVhYw==',
+  },
 };
 
 export const trakPayTaxAccountOptions = {
@@ -134,10 +158,6 @@ export const waveWithdrawalAccountOptions = {
   222418: {
     label: 'HSA Liability',
     waveId: 'QWNjb3VudDoyMjUzMDkzNjc3NzY3MzczMDU1O0J1c2luZXNzOjc5OTg2NWE2LTlmMGEtNDgwNS1iZTg0LTJkMDgyOTE5MWVhYw==',
-  },
-  222413: {
-    label: 'Retirement Plan Liability',
-    waveId: 'QWNjb3VudDoxNzI4NTA4OTI2NzY2Mzk1ODM5O0J1c2luZXNzOjc5OTg2NWE2LTlmMGEtNDgwNS1iZTg0LTJkMDgyOTE5MWVhYw==',
   },
   222404: {
     label: 'Direct Deposit Payable',
@@ -164,5 +184,9 @@ export const depositAccountOptions = {
   222403: {
     label: 'Vision Insurance',
     waveId: 'QWNjb3VudDoxNjc5Mjk3NDM2Njk2MjI4ODI4O0J1c2luZXNzOjc5OTg2NWE2LTlmMGEtNDgwNS1iZTg0LTJkMDgyOTE5MWVhYw==',
+  },
+  222413: {
+    label: 'Retirement Plan Liability',
+    waveId: 'QWNjb3VudDoxNzI4NTA4OTI2NzY2Mzk1ODM5O0J1c2luZXNzOjc5OTg2NWE2LTlmMGEtNDgwNS1iZTg0LTJkMDgyOTE5MWVhYw==',
   },
 };

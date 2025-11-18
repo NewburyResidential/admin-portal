@@ -9,6 +9,7 @@ import SearchResources from './SearchResources';
 import Container from '@mui/material/Container';
 
 export default function View({ resourcesObject, session }) {
+  console.log('resourcesObject', resourcesObject);
 
   const settings = useSettingsContext();
 

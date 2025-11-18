@@ -66,6 +66,7 @@ const defaultFilters = {
 // ----------------------------------------------------------------------
 
 export default function UserList({ employees }) {
+  console.log('employees', employees);
   const table = useTable({ defaultRowsPerPage: 50 });
 
   const router = useRouter();

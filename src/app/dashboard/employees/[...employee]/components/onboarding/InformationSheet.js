@@ -8,6 +8,7 @@ import {
   Computer as ComputerIcon,
   Apartment as ApartmentIcon,
   ShoppingCart as ShoppingCartIcon,
+  ContentCopy as ContentCopyIcon,
 } from '@mui/icons-material';
 import dayjs from 'dayjs';
 
@@ -125,7 +126,7 @@ const printStyles = `
   @media print {
     @page {
       size: letter;
-      margin: 0.5in;
+      margin: 0;
     }
     
     body * {
@@ -295,7 +296,7 @@ const formatPhoneNumber = (phone) => {
 
 // Header component for reuse on each page
 const PageHeader = ({ isFirstPage = false, employee, formattedData }) => (
-  <Box sx={{ mb: 2}}>
+  <Box sx={{ mb: 2 }}>
     {/* Corner triangles */}
     <Box
       className="corner-triangle-top-left"
@@ -435,8 +436,6 @@ const PaylocitySection = () => {
             <strong>Password:</strong> [created by you]
           </Typography>
         </Box>
-
-      
       </Box>
     </Box>
   );
@@ -479,7 +478,7 @@ const EmailSection = ({ formattedData, employee }) => {
                 <strong>Microsoft Email:</strong> {getEmployeeValue(employee, 'workEmail')}
               </Typography>
               <Typography sx={{ fontSize: '11px', mb: 0.25, lineHeight: 1.4 }}>
-                <strong>Temporary Password:</strong> Rainy-horror-jon!
+                <strong>Temporary Password:</strong> {employee?.onboarding?.tempPassword || ''}
               </Typography>
             </Box>
           </Box>
@@ -532,8 +531,8 @@ const EmailSection = ({ formattedData, employee }) => {
           <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 1, mt: 2 }}>
             <Box sx={{ width: '16px', height: '16px', border: '2px solid #ccc', borderRadius: '2px', mr: 1, mt: 0.25, flexShrink: 0 }} />
             <Typography sx={{ fontSize: '11px', lineHeight: 1.4 }}>
-              Download the Outlook app on your phone. Click &quot;Add Accounts&quot;, Click &quot;Skip&quot; if your personal accounts show. And then sign in to
-              your email with your updated password.
+              Download the Outlook app on your phone. Click &quot;Add Accounts&quot;, Click &quot;Skip&quot; if your personal accounts show.
+              And then sign in to your email with your updated password.
             </Typography>
           </Box>
         </Box>
@@ -567,8 +566,6 @@ const PropertiesSection = ({ formattedData }) => {
           Property Access
         </Typography>
       </Box>
-
-    
 
       <Box sx={{ ml: 0, display: 'flex', flexWrap: 'wrap', gap: 1, alignItems: 'flex-start' }}>
         {formattedData.properties.map((property, index) => (
@@ -780,24 +777,24 @@ const AccessAccountsSection = ({ formattedData, employee }) => {
 
       <Box sx={{ ml: 0 }}>
         {/* Step description - different text based on whether Keeper is selected */}
-        <Typography 
+        <Typography
           sx={{ fontSize: '11px', mb: 2, lineHeight: 1.4, color: '#555' }}
           dangerouslySetInnerHTML={{
-            __html: hasKeeper 
+            __html: hasKeeper
               ? "Accounts have been created for you across the following platforms. We use a password management tool called Keeper to store and organize all your login credentials, making it much easier to access the websites and systems you'll need for work. You can use Keeper on your phone, computer, or web. <strong>Please familiarize yourself with this application.</strong>"
-              : "Accounts have been created for you across the following platforms. A registration email has been sent to your Microsoft work email for each account. Please complete your registration as soon as possible, as the links will expire. If you need a reminder of where or how to log in, please visit the Newbury Portal."
+              : 'Accounts have been created for you across the following platforms. A registration email has been sent to your Microsoft work email for each account. Please complete your registration as soon as possible, as the links will expire. If you need a reminder of where or how to log in, please visit the Newbury Portal.',
           }}
         />
 
         {/* Keeper setup instructions - only if Keeper is selected */}
         {hasKeeper && (
           <Box sx={{ mb: 2 }}>
-       
-            
             {/* Mobile setup */}
             <Box sx={{ mb: 1.5 }}>
               <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 1 }}>
-                <Box sx={{ width: '16px', height: '16px', border: '2px solid #ccc', borderRadius: '2px', mr: 1, mt: 0.25, flexShrink: 0 }} />
+                <Box
+                  sx={{ width: '16px', height: '16px', border: '2px solid #ccc', borderRadius: '2px', mr: 1, mt: 0.25, flexShrink: 0 }}
+                />
                 <Typography sx={{ fontSize: '11px', lineHeight: 1.4 }}>
                   Download the Keeper app on your phone. Click &quot;Log In&quot;. Click &quot;Use Enterprise SSO Login&quot;
                 </Typography>
@@ -807,9 +804,12 @@ const AccessAccountsSection = ({ formattedData, employee }) => {
             {/* Computer setup */}
             <Box sx={{ mb: 1.5 }}>
               <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 1 }}>
-                <Box sx={{ width: '16px', height: '16px', border: '2px solid #ccc', borderRadius: '2px', mr: 1, mt: 0.25, flexShrink: 0 }} />
+                <Box
+                  sx={{ width: '16px', height: '16px', border: '2px solid #ccc', borderRadius: '2px', mr: 1, mt: 0.25, flexShrink: 0 }}
+                />
                 <Typography sx={{ fontSize: '11px', lineHeight: 1.4 }}>
-                  Access Keeper at https://keepersecurity.com/vault/# click &quot;Log In&quot; Enter your email address and click &quot;Next&quot;
+                  Access Keeper at https://keepersecurity.com/vault/# click &quot;Log In&quot; Enter your email address and click
+                  &quot;Next&quot;
                 </Typography>
               </Box>
             </Box>
@@ -817,7 +817,9 @@ const AccessAccountsSection = ({ formattedData, employee }) => {
             {/* Chrome extension setup */}
             <Box sx={{ mb: 1.5 }}>
               <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 1 }}>
-                <Box sx={{ width: '16px', height: '16px', border: '2px solid #ccc', borderRadius: '2px', mr: 1, mt: 0.25, flexShrink: 0 }} />
+                <Box
+                  sx={{ width: '16px', height: '16px', border: '2px solid #ccc', borderRadius: '2px', mr: 1, mt: 0.25, flexShrink: 0 }}
+                />
                 <Typography sx={{ fontSize: '11px', lineHeight: 1.4 }}>
                   Download the Keeper Chrome extension at https://chromewebstore.google.com/
                 </Typography>
@@ -899,6 +901,9 @@ const EntrataSection = ({ formattedData, employee }) => {
               <Typography sx={{ fontSize: '11px', mb: 0.25, lineHeight: 1.4 }}>
                 <strong>Username:</strong> {getEmployeeValue(employee, 'workEmail')}
               </Typography>
+              <Typography sx={{ fontSize: '11px', mb: 0.25, lineHeight: 1.4 }}>
+                • Click the checkbox for Terms & Conditions and then click &quot;Saml Login&quot;
+              </Typography>
             </Box>
           </Box>
         )}
@@ -937,60 +942,60 @@ const DocumentView = React.forwardRef(({ formattedData, employee }, ref) => {
     const sectionsArray = [];
 
     // Core sections that always appear
-    sectionsArray.push({ 
-      id: 'employee-details', 
-      component: EmployeeDetailsSection, 
+    sectionsArray.push({
+      id: 'employee-details',
+      component: EmployeeDetailsSection,
       height: 180,
-      allowBreak: false 
+      allowBreak: false,
     });
-    sectionsArray.push({ 
-      id: 'paylocity', 
-      component: PaylocitySection, 
+    sectionsArray.push({
+      id: 'paylocity',
+      component: PaylocitySection,
       height: 200,
-      allowBreak: false 
+      allowBreak: false,
     });
-    sectionsArray.push({ 
-      id: 'email', 
-      component: EmailSection, 
+    sectionsArray.push({
+      id: 'email',
+      component: EmailSection,
       height: 250,
-      allowBreak: false 
+      allowBreak: false,
     });
 
     // Conditional Entrata section - only if Entrata is selected
     const hasEntrata = formattedData.accessRequests?.some((req) => req.itemId === 'entrata');
     if (hasEntrata) {
-      sectionsArray.push({ 
-        id: 'entrata', 
-        component: EntrataSection, 
+      sectionsArray.push({
+        id: 'entrata',
+        component: EntrataSection,
         height: 220,
-        allowBreak: false 
+        allowBreak: false,
       });
     }
 
     // Benefits section - always appears
-    sectionsArray.push({ 
-      id: 'benefits', 
-      component: BenefitsSection, 
+    sectionsArray.push({
+      id: 'benefits',
+      component: BenefitsSection,
       height: 140,
-      allowBreak: false 
+      allowBreak: false,
     });
 
     // Access Accounts section - always appears (now includes Keeper setup if selected)
     const hasKeeper = formattedData.accessRequests?.some((req) => req.itemId === 'keeper');
-    sectionsArray.push({ 
-      id: 'access-accounts', 
-      component: AccessAccountsSection, 
+    sectionsArray.push({
+      id: 'access-accounts',
+      component: AccessAccountsSection,
       height: hasKeeper ? 200 : 100, // Increased height when Keeper is included
-      allowBreak: false 
+      allowBreak: false,
     });
 
     // Optional sections
     if (formattedData.properties && formattedData.properties.length > 0) {
-      sectionsArray.push({ 
-        id: 'properties', 
-        component: PropertiesSection, 
+      sectionsArray.push({
+        id: 'properties',
+        component: PropertiesSection,
         height: 80 + Math.ceil(formattedData.properties.length / 6) * 30,
-        allowBreak: false 
+        allowBreak: false,
       });
     }
 
@@ -1017,11 +1022,11 @@ const DocumentView = React.forwardRef(({ formattedData, employee }, ref) => {
 
     // Mobile apps section
     if (formattedData.mobileApps && formattedData.mobileApps.length > 0) {
-      sectionsArray.push({ 
-        id: 'mobile-apps', 
-        component: MobileAppsSection, 
+      sectionsArray.push({
+        id: 'mobile-apps',
+        component: MobileAppsSection,
         height: 100 + Math.ceil(formattedData.mobileApps.length / 5) * 30,
-        allowBreak: false 
+        allowBreak: false,
       });
     }
 
@@ -1039,7 +1044,7 @@ const DocumentView = React.forwardRef(({ formattedData, employee }, ref) => {
     sections.forEach((section, index) => {
       const isFirstPage = pagesArray.length === 0 && currentPage.length === 0;
       const pageLimit = isFirstPage ? firstPageMaxHeight : maxPageHeight;
-      
+
       // Force a new page when we reach the "access-accounts" section (Step 5)
       if (section.id === 'access-accounts' && currentPage.length > 0) {
         pagesArray.push([...currentPage]);
@@ -1085,12 +1090,12 @@ const DocumentView = React.forwardRef(({ formattedData, employee }, ref) => {
             boxShadow: '0 0 20px rgba(0,0,0,0.1)',
             display: 'flex',
             flexDirection: 'column',
-            '@media print': { 
-              boxShadow: 'none', 
-              width: '100%', 
-              height: '100vh', 
+            '@media print': {
+              boxShadow: 'none',
+              width: '100%',
+              height: '100vh',
               mb: 0,
-              overflow: 'hidden'
+              overflow: 'hidden',
             },
           }}
         >
@@ -1104,19 +1109,15 @@ const DocumentView = React.forwardRef(({ formattedData, employee }, ref) => {
               {pageSections.map((section, sectionIndex) => {
                 const Component = section.component;
                 return (
-                  <Box 
-                    key={`${section.id}-${pageIndex}-${sectionIndex}`} 
+                  <Box
+                    key={`${section.id}-${pageIndex}-${sectionIndex}`}
                     className={`section-container ${section.allowBreak ? 'allow-break' : ''}`}
-                    sx={{ 
+                    sx={{
                       pageBreakInside: section.allowBreak ? 'auto' : 'avoid',
-                      breakInside: section.allowBreak ? 'auto' : 'avoid'
+                      breakInside: section.allowBreak ? 'auto' : 'avoid',
                     }}
                   >
-                    <Component 
-                      formattedData={formattedData} 
-                      employee={employee} 
-                      {...(section.props || {})} 
-                    />
+                    <Component formattedData={formattedData} employee={employee} {...(section.props || {})} />
                   </Box>
                 );
               })}
@@ -1139,7 +1140,20 @@ const InformationSheet = ({ formattedData, employee, onClose, onEmailAfterPrint,
   const [_isPrinting, setIsPrinting] = useState(false);
 
   const handlePrintPDF = () => {
+    // Check if password is set
+    const tempPassword = employee?.onboarding?.tempPassword;
+    if (!tempPassword || tempPassword.trim().length === 0) {
+      alert('Warning: Please set a temporary password for the employee before generating the PDF.');
+      return;
+    }
+
     setIsPrinting(true);
+
+    // Set the document title to include employee name and "Information Sheet"
+    const employeeName = getEmployeeValue(employee, 'fullName');
+    const formattedName = employeeName ? employeeName.toLowerCase().replace(/\s+/g, '.') : 'employee';
+    const originalTitle = document.title;
+    document.title = `${formattedName}.information.sheet`;
 
     // Add print styles to the document
     const styleElement = document.createElement('style');
@@ -1154,6 +1168,9 @@ const InformationSheet = ({ formattedData, employee, onClose, onEmailAfterPrint,
       document.head.removeChild(styleElement);
       setIsPrinting(false);
 
+      // Restore original document title
+      document.title = originalTitle;
+
       // If this is in email mode, show email dialog after print
       if (showEmailOption && onEmailAfterPrint) {
         setTimeout(() => {
@@ -1161,6 +1178,13 @@ const InformationSheet = ({ formattedData, employee, onClose, onEmailAfterPrint,
         }, 500);
       }
     }, 1000);
+  };
+
+  const handleCopyText = () => {
+    const employeeName = getEmployeeValue(employee, 'fullName');
+    const formattedName = employeeName ? employeeName.toLowerCase().replace(/\s+/g, '.') : 'employee';
+    const textToCopy = `${formattedName} Information Sheet`;
+    navigator.clipboard.writeText(textToCopy).then(() => {});
   };
 
   return (
@@ -1181,6 +1205,35 @@ const InformationSheet = ({ formattedData, employee, onClose, onEmailAfterPrint,
               Save as PDF
             </Button>
           </Box>
+        </Box>
+
+        {/* Copy Text Bubble */}
+        <Box
+          onClick={handleCopyText}
+          sx={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: 1,
+            p: 1.5,
+            bgcolor: 'grey.100',
+            borderRadius: 1,
+            border: '1px solid',
+            borderColor: 'grey.300',
+            cursor: 'pointer',
+            userSelect: 'none',
+            '&:hover': {
+              bgcolor: 'grey.200',
+            },
+          }}
+        >
+          <Typography variant="body2" sx={{ fontSize: '14px' }}>
+            {(() => {
+              const employeeName = getEmployeeValue(employee, 'fullName');
+              const formattedName = employeeName ? employeeName.toLowerCase().replace(/\s+/g, '.') : 'employee';
+              return `${formattedName} Information Sheet`;
+            })()}
+          </Typography>
+          <ContentCopyIcon sx={{ fontSize: 16, color: 'text.secondary' }} />
         </Box>
       </Paper>
 

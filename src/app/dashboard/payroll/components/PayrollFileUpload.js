@@ -34,6 +34,7 @@ const PayrollFileUpload = ({
   setPayrollFile,
   setPayrollDistribution,
   setPropertiesByEmployee,
+  setSummaryData,
 }) => {
   const { showResponseSnackbar } = useSnackbar();
 
@@ -164,7 +165,7 @@ const PayrollFileUpload = ({
                 //     employerBenefitByEmployee[employeeId].employerAmount =
                 //       employerBenefitByEmployee[employeeId].employerAmount.plus(employerAmount);
                 //   }
-           //     }
+                //     }
               } catch (e) {
                 return; // Skip invalid amounts
               }
@@ -311,6 +312,28 @@ const PayrollFileUpload = ({
               entrataWithdrawal: getEntrataWithdrawalPayload(withdrawalEntries, normalDate, fileName),
               waveWithdrawals: getWaveWithdrawalPayloads(waveDepositPayloads, normalDate, weirdDate, fileName),
             });
+
+            // Calculate direct deposits by property
+            const directDepositsByProperty = {};
+            Object.entries(propertiesByEmployeeObject).forEach(([employeeId, employeeData]) => {
+              Object.entries(employeeData.properties).forEach(([propertyId, amount]) => {
+                if (!directDepositsByProperty[propertyId]) {
+                  directDepositsByProperty[propertyId] = {
+                    propertyId,
+                    amount: new Big(0),
+                  };
+                }
+                directDepositsByProperty[propertyId].amount = directDepositsByProperty[propertyId].amount.plus(amount);
+              });
+            });
+
+            // Store summary data for the new summary view
+            setSummaryData({
+              entrataWithdrawal: withdrawalEntries,
+              waveOperating: operatingEntries,
+              waveDeposits: depositEntriesByAsset,
+              directDeposits: directDepositsByProperty,
+            });
           },
         });
       };
@@ -413,6 +436,7 @@ const PayrollFileUpload = ({
       waveWithdrawals: null,
       entrataWithdrawal: null,
     });
+    setSummaryData(null);
   };
 
   return (
@@ -472,7 +496,18 @@ const PayrollFileUpload = ({
                 setView('payrollAmounts');
               }}
             >
-              View
+              View Totals by Property
+            </Button>
+
+            <Button
+              variant={view === 'payrollSummary' ? 'contained' : 'outlined'}
+              color={view === 'payrollSummary' ? 'primary' : 'inherit'}
+              sx={{ width: '100%' }}
+              onClick={() => {
+                setView('payrollSummary');
+              }}
+            >
+              View Detailed Summary
             </Button>
 
             <LoadingButton loading={isSubmitting} variant="contained" color="inherit" onClick={handleSubmit} sx={{ width: '100%' }}>

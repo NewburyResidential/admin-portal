@@ -21,6 +21,8 @@ export default function FilterBar({ setTransactions, totalAmount, transactions, 
   const [loading, setLoading] = useState(false);
 
   const handleFilter = async () => {
+  console.log('assets', assets);
+
     setLoading(true);
     const splitDate = postDate.split('/');
     const month = splitDate[0].padStart(2, '0');
@@ -130,7 +132,6 @@ export default function FilterBar({ setTransactions, totalAmount, transactions, 
     for (let i = 0; i < transactions.length; i++) {
       try {
         const transaction = transactions[i];
-
         if (!transaction.preEntrataEntered && transaction.accountingType === 'pre-entrata' && assets.length < 2) {
           console.log('Entering...');
           const assetId = assets[0].accountId;

@@ -1,6 +1,8 @@
 import React from 'react';
-import { Card, CardContent, Typography, List, ListItem, IconButton, Box, Tooltip } from '@mui/material';
+import { Card, CardContent, Typography, List, ListItem, IconButton, Box, Tooltip, Button } from '@mui/material';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import DownloadIcon from '@mui/icons-material/Download';
+import ExcelJS from 'exceljs';
 
 const AmountByPropertyList = ({ distributionData, view, assetObject, normalDate }) => {
   // Transform assetObject to use property ID as key
@@ -35,13 +37,71 @@ const AmountByPropertyList = ({ distributionData, view, assetObject, normalDate 
   // Calculate total amount
   const totalAmount = propertyAmounts.reduce((sum, item) => sum + Number(Number(item.amount).toFixed(2)), 0);
 
+  const handleDownloadExcel = async () => {
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet('Payroll Distribution');
+
+    // Set column widths
+    worksheet.columns = [
+      { header: 'Property', key: 'property', width: 40 },
+      { header: 'Amount', key: 'amount', width: 15 },
+    ];
+
+    // Style the header row
+    worksheet.getRow(1).font = { bold: true, size: 12 };
+    worksheet.getRow(1).fill = {
+      type: 'pattern',
+      pattern: 'solid',
+      fgColor: { argb: 'FFE0E0E0' },
+    };
+
+    // Add data rows
+    propertyAmounts.forEach((item) => {
+      worksheet.addRow({
+        property: assetObjectById[item.property].label,
+        amount: Number(item.amount).toFixed(2),
+      });
+    });
+
+    // Add total row
+    const totalRow = worksheet.addRow({
+      property: 'Total',
+      amount: Number(totalAmount).toFixed(2),
+    });
+    totalRow.font = { bold: true };
+    totalRow.fill = {
+      type: 'pattern',
+      pattern: 'solid',
+      fgColor: { argb: 'FFFFD700' },
+    };
+
+    // Format amount column as currency
+    worksheet.getColumn('amount').numFmt = '$#,##0.00';
+    worksheet.getColumn('amount').alignment = { horizontal: 'right' };
+
+    // Generate buffer and download
+    const buffer = await workbook.xlsx.writeBuffer();
+    const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `${getTitle()}_${normalDate.replace(/\//g, '-')}.xlsx`;
+    link.click();
+    window.URL.revokeObjectURL(url);
+  };
+
   return (
     <Card elevation={3}>
       <CardContent>
-        <Box onClick={() => navigator.clipboard.writeText(`${getTitle()} - ${normalDate}`)} sx={{ cursor: 'pointer' }}>
-          <Typography variant="h6" gutterBottom>
-            {getTitle()} - {normalDate}
-          </Typography>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+          <Box onClick={() => navigator.clipboard.writeText(`${getTitle()} - ${normalDate}`)} sx={{ cursor: 'pointer' }}>
+            <Typography variant="h6">
+              {getTitle()} - {normalDate}
+            </Typography>
+          </Box>
+          <Button variant="contained" color="primary" startIcon={<DownloadIcon />} onClick={handleDownloadExcel} size="small">
+            Download Excel
+          </Button>
         </Box>
         <List>
           {propertyAmounts.map((item, index) => (

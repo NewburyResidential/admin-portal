@@ -16,7 +16,7 @@ export default async function Page(props) {
   const resourceLabel = params?.resourceGroup[0] || null;
   const decodedLabel = decodeURIComponent(resourceLabel);
   const formattedLabel = decodedLabel.replace(/_/g, ' ').toLowerCase();
-  const resourceGroup = rawResources.find((resource) => resource?.label?.toLowerCase() === formattedLabel);
+  const resourceGroup = rawResources.find((resource) => resource?.label?.toLowerCase() === formattedLabel && resource?.resourceType === 'resourceGroups');
   const resourceGroupId = resourceGroup?.pk || null;
   if (!resourceGroupId) {
     return <NotFoundView />;
