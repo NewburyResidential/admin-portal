@@ -4,21 +4,22 @@ import { dynamoQuery } from '../sdk-config/aws/dynamo-db';
 import { revalidateTag } from 'next/cache';
 
 function restructureEmployeeData(items) {
+  console.log(items);
   const employeeData = {};
 
-  const employeeItem = items.find((item) => item.type === '#EMPLOYEE');
+  const employeeItem = items.find((item) => item.sk === '#EMPLOYEE');
   if (employeeItem) {
     Object.assign(employeeData, employeeItem);
   }
 
   items.forEach((item) => {
-    if (item.type === '#DOCUMENT') {
+    if (item.sk === '#DOCUMENT') {
       if (item.required) {
         employeeData.requiredDocuments.push(item);
       } else {
         employeeData.otherDocuments.push(item);
       }
-    } else if (item.type === '#PREONBOARDING') {
+    } else if (item.sk === '#PREONBOARDING') {
       employeeData.onboarding[item.sk] = item;
     }
   });
@@ -35,6 +36,7 @@ function restructureEmployeeData(items) {
 export default async function getEmployees(pk) {
   try {
     const data = await dynamoQuery({ tableName: 'newbury_employees', pk });
+
     const restructuredEmployeeData = restructureEmployeeData(data);
 
     return restructuredEmployeeData;
