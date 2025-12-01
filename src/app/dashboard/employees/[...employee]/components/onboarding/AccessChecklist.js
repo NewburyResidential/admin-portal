@@ -2038,13 +2038,13 @@ export default function AccessChecklist({ newburyAssets, employee, employees = [
     const employeeEmail = getEmployeeValue(employee, 'personalEmail');
 
     // Build the recipients list
-    const recipients = [employeeEmail, 'brian@newburyresidential.com', 'eric@newburyresidential.com'];
+    const recipients = [employeeEmail, 'brian@newburyresidential.com', 'eric@newburyresidential.com', 'sbrown@newburyresidential.com'];
 
     // Add property-specific emails if delivery address has a domain
-    if (selectedDeliveryAddress?.domain) {
-      const domain = selectedDeliveryAddress.domain;
-      recipients.push(`manager@${domain}`, `maintenance@${domain}`);
-    }
+    // if (selectedDeliveryAddress?.domain) {
+    //   const domain = selectedDeliveryAddress.domain;
+    //   recipients.push(`manager@${domain}`, `maintenance@${domain}`);
+    // }
 
     const subject = `Welcome ${employeeName}!`;
 
