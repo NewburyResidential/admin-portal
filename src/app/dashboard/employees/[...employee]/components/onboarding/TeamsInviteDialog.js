@@ -22,9 +22,12 @@ import updateEmployee from 'src/utils/services/employees/update-employee';
 export default function TeamsInviteDialog({ open, onClose, onMeetingCreated, formData, selectedPosition, employee }) {
   const [description, setDescription] = useState('');
   const [attendees, setAttendees] = useState([
-    'Mike@newburyresidential.com',
-    'Brian@newburyresidential.com',
+    'mike@newburyresidential.com',
+    'brian@newburyresidential.com',
+    'eric@newburyresidential.com',
+    'sbrown@newburyresidential.com',
   ]);
+
   const [newAttendee, setNewAttendee] = useState('');
   const [isCreating, setIsCreating] = useState(false);
   const hasInitialized = useRef(false);
@@ -152,9 +155,9 @@ Looking forward to having ${employeeName} on our team!`;
     setDescription(plainTextDescription);
 
     // Add property-specific emails if delivery address is selected
-    if (formData?.selectedDeliveryAddress) {
-      addPropertyEmails(formData.selectedDeliveryAddress);
-    }
+    // if (formData?.selectedDeliveryAddress) {
+    //   addPropertyEmails(formData.selectedDeliveryAddress);
+    // }
 
     hasInitialized.current = true;
   }
@@ -163,16 +166,16 @@ Looking forward to having ${employeeName} on our team!`;
   if (!open && hasInitialized.current) {
     hasInitialized.current = false;
     setDescription('');
-    setAttendees(['Mike@newburyresidential.com', 'Brian@newburyresidential.com', 'Eric@newburyresidential.com']);
+    setAttendees(['mike@newburyresidential.com', 'brian@newburyresidential.com', 'eric@newburyresidential.com', 'sbrown@newburyresidential.com']);
     setNewAttendee('');
   }
 
   // Effect to handle delivery address changes
-  useEffect(() => {
-    if (open && formData?.selectedDeliveryAddress) {
-      addPropertyEmails(formData.selectedDeliveryAddress);
-    }
-  }, [open, formData?.selectedDeliveryAddress]);
+  // useEffect(() => {
+  //   if (open && formData?.selectedDeliveryAddress) {
+  //     addPropertyEmails(formData.selectedDeliveryAddress);
+  //   }
+  // }, [open, formData?.selectedDeliveryAddress]);
 
   const handleAddAttendee = () => {
     if (newAttendee.trim() && !attendees.includes(newAttendee.trim())) {

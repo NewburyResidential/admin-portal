@@ -1811,12 +1811,14 @@ export default function AccessChecklist({ newburyAssets, employee, employees = [
       // Update employee record with the complete onboarding object
       const updateResult = await updateEmployee({
         pk: employee.pk,
+        sk: '#EMPLOYEE',
         attributes: {
           onboarding: onboardingUpdate,
         },
       });
 
       if (updateResult && updateResult.severity === 'success') {
+        await sendOnboardingPermissionsSaved({ employee });
         console.log('Access checklist draft saved successfully');
       } else {
         console.error('Failed to save access checklist draft:', updateResult);
@@ -1825,68 +1827,6 @@ export default function AccessChecklist({ newburyAssets, employee, employees = [
       console.error('Error saving access checklist draft:', error);
     } finally {
       setIsSavingDraft(false);
-    }
-  };
-
-  const onRequestPermissions = async () => {
-    const currentData = getValues();
-    console.log('Requesting Permissions Data:', currentData);
-
-    if (!employee?.pk) {
-      console.error('Missing employee pk for requesting permissions');
-      return;
-    }
-
-    setIsRequestingPermissions(true);
-
-    try {
-      // First save the current state
-      const accessChecklistData = {
-        selectedPosition: currentData.selectedPosition,
-        selectedProperties: currentData.selectedProperties || [],
-        selectedDeliveryAddress: currentData.selectedDeliveryAddress,
-        startDateTime: currentData.startDateTime ? currentData.startDateTime.toISOString() : null,
-        accessStates: currentData.accessStates || {},
-        followUpData: currentData.followUpData || {},
-        lastUpdated: new Date().toISOString(),
-      };
-
-      console.log('Saving access checklist data for permissions request:', accessChecklistData);
-
-      // Create the nested onboarding structure properly
-      const existingOnboarding = employee.onboarding || {};
-      const onboardingUpdate = {
-        ...existingOnboarding,
-        accessChecklist: accessChecklistData,
-        tempPassword: currentData.tempPassword || null, // Save temp password
-      };
-
-      // Update employee record with the complete onboarding object
-      const updateResult = await updateEmployee({
-        pk: employee.pk,
-        attributes: {
-          onboarding: onboardingUpdate,
-        },
-      });
-
-      if (updateResult && updateResult.severity === 'success') {
-        console.log('Access checklist permissions saved successfully');
-
-        // Send the email notification for permissions request
-        try {
-          await sendOnboardingPermissionsSaved({ employee });
-          console.log('Onboarding permissions saved email sent successfully');
-        } catch (emailError) {
-          console.error('Error sending onboarding permissions saved email:', emailError);
-          // Don't throw the error - the permissions were still saved successfully
-        }
-      } else {
-        console.error('Failed to save access checklist permissions:', updateResult);
-      }
-    } catch (error) {
-      console.error('Error requesting access checklist permissions:', error);
-    } finally {
-      setIsRequestingPermissions(false);
     }
   };
 
@@ -2265,28 +2205,8 @@ Thank you,`;
                 </Button>
               </Box>
               <Box sx={{ display: 'flex', gap: 2 }}>
-                <LoadingButton variant="outlined" size="large" onClick={onSaveDraft} loading={isSavingDraft} loadingPosition="start">
+                <LoadingButton variant="contained" size="large" onClick={onSaveDraft} loading={isSavingDraft} loadingPosition="start">
                   Save
-                </LoadingButton>
-                <LoadingButton
-                  variant="contained"
-                  size="large"
-                  onClick={onRequestPermissions}
-                  disabled={!areAllFieldsComplete()}
-                  loading={isRequestingPermissions}
-                  loadingPosition="start"
-                  sx={{
-                    ...(areAllFieldsComplete()
-                      ? {}
-                      : {
-                          '&.Mui-disabled': {
-                            color: 'text.disabled',
-                            bgcolor: 'action.disabledBackground',
-                          },
-                        }),
-                  }}
-                >
-                  Ready/Email Mike
                 </LoadingButton>
               </Box>
             </Box>
